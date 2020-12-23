@@ -9,21 +9,14 @@ rec {
       python2 = {
         displayName = "Erlang";
         argv = [
-          "${executable/bin/todo}"
+          "TODO"
           "-f"
           "{connection_file}"
         ];
-        language = "python2";
-        logo32 = ./logo-32x32.png;
-        logo64 = ./logo-64x64.png;
+        language = "erlang";
+        logo32 = null; # ./logo-32x32.png;
+        logo64 = null; # ./logo-64x64.png;
       };
     };
   };
-
-  languageServer = writeText "language_servers.yaml" (lib.generators.toYAML {} [{
-    name = "python";
-    extensions = ["py"];
-    type = "tcp";
-    args = ["python_language_server" "--tcp" "--host=localhost" "--port={port_number}"];
-  }]);
 }

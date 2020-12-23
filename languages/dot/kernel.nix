@@ -1,4 +1,3 @@
-
 with import <nixpkgs> {};
 with python3Packages;
 
@@ -31,4 +30,4 @@ let
 
 in
 
-python.withPackages (ps: [dot_kernel])
+python.withPackages (ps: [dotKernel])

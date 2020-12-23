@@ -10,7 +10,7 @@ rec {
       sql = {
         displayName = "SQL";
         argv = [
-          "${runSqlKernel}/bin/run-sql-kernel.sh"
+          "TODO"
           "{connection_file}"
         ];
         language = "sql";

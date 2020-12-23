@@ -1,5 +1,5 @@
-with import <nixpkgs> {};
-with makeWrapper;
+let nixpkgs = import <nixpkgs> {}; in
+with nixpkgs;
 
 callPackage ./IHaskell/release-8.8.nix {
   nixpkgs = nixpkgs;

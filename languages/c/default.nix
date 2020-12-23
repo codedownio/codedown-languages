@@ -31,14 +31,14 @@ rec {
     contents = ccls;
   };
 
-  homeFolderPaths = [  compileFlags = writeTextFile {
+  homeFolderPaths = [writeTextFile {
     name = "compile_flags";
     text = ''
     -I${glibc.dev}/include
     -I/home/user/.nix-profile/include
   '';
     destination = "/home/compile_flags.txt";
-  };];
+  }];
 
   extraGitIgnoreLines = [
     ".ccls"

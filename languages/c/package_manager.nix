@@ -80,18 +80,16 @@ rec {
     echo "$search_output" | ${jq}/bin/jq ".[$OFFSET:] | [limit($LIMIT ; .[])] | map(. + {\"name\": .repo} | del(.repo))"
   '';
 
-  packageManager = {
-    config = writeText "package_managers.yaml" (lib.generators.toYAML {} [{
-      type = "generic";
-      name = "c";
-      displayName = "C";
-      attr = "c";
-      image = ./c.png;
-      isAvailable = "exit 0";
-      listAll = ''${listAll}/bin/c-list-all-packages.sh'';
-      listInstalled = "${listInstalledCPackages}";
-      install = ''${installPackage}/bin/c-install-package.sh'';
-      remove = ''${removePackage}'';
-    }]);
-  };
+  packageManager = writeText "package_managers.yaml" (lib.generators.toYAML {} [{
+    type = "generic";
+    name = "c";
+    displayName = "C";
+    attr = "c";
+    image = ./c.png;
+    isAvailable = "exit 0";
+    listAll = ''${listAll}/bin/c-list-all-packages.sh'';
+    listInstalled = "${listInstalledCPackages}";
+    install = ''${installPackage}/bin/c-install-package.sh'';
+    remove = ''${removePackage}'';
+  }]);
 }
