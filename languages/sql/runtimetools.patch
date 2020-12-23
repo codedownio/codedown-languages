@@ -1,0 +1,72 @@
+diff --git a/kernel/base/src/main/java/com/twosigma/beakerx/kernel/RuntimetoolsImpl.java b/kernel/base/src/main/java/com/twosigma/beakerx/kernel/RuntimetoolsImpl.java
+index a3bc20ca..02bb312e 100644
+--- a/kernel/base/src/main/java/com/twosigma/beakerx/kernel/RuntimetoolsImpl.java
++++ b/kernel/base/src/main/java/com/twosigma/beakerx/kernel/RuntimetoolsImpl.java
+@@ -29,7 +29,7 @@ public class RuntimetoolsImpl implements Runtimetools {
+   private String getJar(String name) {
+     try {
+       Path path = Paths.get(KernelFunctionality.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+-      return path.getParent().getParent().getParent().resolve(name).resolve("lib").resolve(name + ".jar").toString();
++      return path.getParent().getParent().getParent().getParent().resolve(name).resolve("build").resolve("libs").resolve(name + ".jar").toString();
+     } catch (Exception e) {
+       throw new RuntimeException(e);
+     }
+diff --git a/kernel/base/src/main/java/com/twosigma/beakerx/socket/KernelSocketsZMQ.java b/kernel/base/src/main/java/com/twosigma/beakerx/socket/KernelSocketsZMQ.java
+index 7172f305..bb2e3a42 100644
+--- a/kernel/base/src/main/java/com/twosigma/beakerx/socket/KernelSocketsZMQ.java
++++ b/kernel/base/src/main/java/com/twosigma/beakerx/socket/KernelSocketsZMQ.java
+@@ -130,18 +130,30 @@ public class KernelSocketsZMQ extends KernelSockets {
+       zmsg = ZMsg.recvMsg(socket);
+       ZFrame[] parts = new ZFrame[zmsg.size()];
+       zmsg.toArray(parts);
+-      byte[] uuid = parts[MessageParts.UUID].getData();
+-      byte[] header = parts[MessageParts.HEADER].getData();
+-      byte[] parent = parts[MessageParts.PARENT].getData();
+-      byte[] metadata = parts[MessageParts.METADATA].getData();
+-      byte[] content = parts[MessageParts.CONTENT].getData();
+-      byte[] expectedSig = parts[MessageParts.HMAC].getData();
+-
+-      verifyDelim(parts[MessageParts.DELIM]);
++
++      ArrayList<byte[]> uuids = new ArrayList<byte[]>();
++      int i = 0;
++      while (true) {
++          byte[] data = parts[i].getData();
++          String val = new String(data, StandardCharsets.UTF_8);
++          if (DELIM.equals(val)) {
++              break;
++          } else {
++              i += 1;
++              uuids.add(data);
++          }
++      }
++
++      byte[] header = parts[MessageParts.HEADER + i - 1].getData();
++      byte[] parent = parts[MessageParts.PARENT + i - 1].getData();
++      byte[] metadata = parts[MessageParts.METADATA + i - 1].getData();
++      byte[] content = parts[MessageParts.CONTENT + i - 1].getData();
++      byte[] expectedSig = parts[MessageParts.HMAC + i - 1].getData();
++
+       verifySignatures(expectedSig, header, parent, metadata, content);
+ 
+       message = new Message(parse(header, Header.class));
+-      if (uuid != null) {
++      for (byte[] uuid : uuids) {
+         message.getIdentities().add(uuid);
+       }
+       message.setParentHeader(parse(parent, Header.class));
+@@ -254,14 +266,6 @@ public class KernelSocketsZMQ extends KernelSockets {
+     }
+   }
+ 
+-  private String verifyDelim(ZFrame zframe) {
+-    String delim = new String(zframe.getData(), StandardCharsets.UTF_8);
+-    if (!DELIM.equals(delim)) {
+-      throw new RuntimeException("Delimiter <IDS|MSG> not found");
+-    }
+-    return delim;
+-  }
+-
+   private boolean isStdinMsg() {
+     return sockets.pollin(3);
+   }
