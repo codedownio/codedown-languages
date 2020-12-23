@@ -1,7 +1,4 @@
-let nixpkgs = import (import ../../../nix/pinned-nixpkgs.nix) {}; in
-
-with nixpkgs;
-with makeWrapper;
+with import <nixpkgs> {};
 
 runCommand "wrapped-stack" {
   stack = haskellPackages.stack;

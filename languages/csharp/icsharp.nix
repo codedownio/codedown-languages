@@ -1,7 +1,4 @@
-let nixpkgs = import (import ../../../nix/pinned-nixpkgs.nix) {}; in
-
-with nixpkgs;
-# with python3Packages;
+with import <nixpkgs> {};
 
 stdenv.mkDerivation {
   name = "icsharp";

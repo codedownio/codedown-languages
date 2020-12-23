@@ -1,10 +1,4 @@
-let
-
-  nixpkgs = import (import ../../../nix/pinned-nixpkgs.nix) {};
-
-in
-
-with nixpkgs;
+with import <nixpkgs> {};
 
 # Note: this is still not working. Filed a PR to attempt to get help here:
 # https://github.com/NixOS/nixpkgs/pull/103560

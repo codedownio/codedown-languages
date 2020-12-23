@@ -1,8 +1,5 @@
-let nixpkgs = import (import ../../../nix/pinned-nixpkgs.nix) {}; in
-
-with nixpkgs;
+with import <nixpkgs> {};
 with python3Packages;
-with makeWrapper;
 
 rec {
   name = "cpp14";

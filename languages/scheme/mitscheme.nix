@@ -1,6 +1,4 @@
-let nixpkgs = import (import ../../../nix/pinned-nixpkgs.nix) {}; in
-
-with nixpkgs;
+with import <nixpkgs> {};
 
 stdenv.mkDerivation rec {
   name = "mit-scheme-10.1.5";

@@ -1,9 +1,4 @@
-let
-  nixpkgs = import ../nix/pinned-nixpkgs.nix;
-  pkgs = import nixpkgs {};
-in
-
-with pkgs;
+with import <nixpkgs> {};
 
 let
   folderBuilder = language: runCommand (language.name + "-folder") {

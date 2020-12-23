@@ -1,8 +1,5 @@
-let nixpkgs = import (import ../../../nix/pinned-nixpkgs.nix) {}; in
-
-with nixpkgs;
+with import <nixpkgs> {};
 with bundlerApp;
-with makeWrapper;
 
 rec {
   name = "ruby";

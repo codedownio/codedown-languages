@@ -1,7 +1,4 @@
-let nixpkgs = import (import ../../../nix/pinned-nixpkgs.nix) {}; in
-
-with nixpkgs;
-with makeWrapper;
+with import <nixpkgs> {};
 
 rec {
   listPackages = writeShellScriptBin "nix-list-packages.sh" ''

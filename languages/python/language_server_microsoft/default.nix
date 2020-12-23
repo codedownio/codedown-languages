@@ -1,5 +1,3 @@
-let nixpkgs = import (import ../../../nix/pinned-nixpkgs.nix) {}; in
-
-with nixpkgs;
+with import <nixpkgs> {};
 
 callPackage ./config.nix { python = python3; }
