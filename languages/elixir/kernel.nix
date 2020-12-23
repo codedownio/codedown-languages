@@ -9,7 +9,7 @@ buildMix {
     owner = "pprzetacznik";
     repo = "IElixir";
     rev = "638c60eb4d639c89bc7c1768ab4256de35e2b034";
-    sha256 = "0mar83vrq77092riz2f64z984x384g7zfbjjf76fqy70lr4x0jwv";
+    sha256 = "1i97whvmqp7n2i2w7a8y797n0nfwwnhaskk2ncbyg6jcyqlslf5k";
   };
 
   beamDeps = [  ];

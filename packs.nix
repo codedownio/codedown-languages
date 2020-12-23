@@ -27,7 +27,7 @@ in
   cpp14 = folderBuilder (import ./languages/cpp/cpp14.nix);
   cpp17 = folderBuilder (import ./languages/cpp/cpp17.nix);
   cpp2a = folderBuilder (import ./languages/cpp/cpp2a.nix);
-  csharp = folderBuilder (import ./languages/csharp);
+  # csharp = folderBuilder (import ./languages/csharp);
   dot = folderBuilder (import ./languages/dot);
   elixir = folderBuilder (import ./languages/elixir);
   erlang = folderBuilder (import ./languages/erlang);
