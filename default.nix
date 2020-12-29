@@ -7,6 +7,7 @@ let
     packageManager = language.packageManager or "";
     languageServer = language.languageServer or "";
     modeInfo = language.modeInfo or "";
+    binaries = language.binaries or [];
   } ''
   mkdir -p $out
   cd $out
@@ -17,6 +18,20 @@ let
   if [ -n "$packageManager" ]; then ln -s "$packageManager" ./package_managers.yaml; fi
   if [ -n "$modeInfo" ]; then ln -s "$modeInfo" ./mode_infos.yaml; fi
   if [ -n "$languageServer" ]; then ln -s "$languageServer" ./language_servers.yaml; fi
+
+  if [ -n "$binaries" ]; then
+    cd $out
+    mkdir -p bin
+    cd bin
+
+    for binary in $binaries; do
+      echo "Processing binary source: $binary"
+      for file in $(find $binary/bin); do
+        echo "Looking at file: $file"
+        ln -s "$file" $(basename "$file")
+      done
+    done
+  fi
 '';
 
 in
