@@ -13,17 +13,6 @@ runCommand "zsh-with-theme" { buildInputs = [makeWrapper]; } ''
   # Colorful welcome message
   cat ${./color.sh} >> .zshrc
 
-  # Powerline
-#   mkdir -p .config/powerline/themes/tmux
-#   cp ${./default.json} .config/powerline/themes/tmux/default.json
-#   mkdir .tmux
-#   cat ${powerline}/share/tmux/powerline.conf > .tmux/powerline.conf
-#   cat <<EOF >> .tmux.conf
-# run-shell "powerline-daemon -q"
-# source "/home/user/.tmux/powerline.conf"
-# set-option -g default-terminal "screen-256color"
-# EOF
-
   makeWrapper ${zsh}/bin/zsh $out/bin/zsh-with-theme \
               --set ZDOTDIR $out
 ''

@@ -63,4 +63,5 @@ in
 
   # Tools
   zshWithTheme = import ./tools/zsh-with-theme;
+  powerline = import ./tools/powerline;
 }
