@@ -24,6 +24,6 @@ source "/home/user/.tmux/powerline.conf"
 set-option -g default-terminal "screen-256color"
 EOF
 
-  makeWrapper ${zsh}/bin/zsh $out/bin/zsh \
+  makeWrapper ${zsh}/bin/zsh $out/bin/zsh-with-powerline \
               --set ZDOTDIR $out
 ''
