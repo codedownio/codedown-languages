@@ -62,5 +62,5 @@ in
   sqlPack = folderBuilder (import ./languages/sql);
 
   # Tools
-  zshWithPowerline = import ./tools/zsh-with-powerline;
+  zshWithTheme = import ./tools/zsh-with-theme;
 }
