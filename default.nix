@@ -37,6 +37,7 @@ let
 in
 
 {
+  # Languages
   bashPack = folderBuilder (import ./languages/bash);
   cPack = folderBuilder (import ./languages/c);
   clojurePack = folderBuilder (import ./languages/clojure);
@@ -58,5 +59,8 @@ in
   rubyPack = folderBuilder (import ./languages/ruby);
   rustPack = folderBuilder (import ./languages/rust);
   schemePack = folderBuilder (import ./languages/scheme);
-  sqlPack   = folderBuilder (import ./languages/sql);
+  sqlPack = folderBuilder (import ./languages/sql);
+
+  # Tools
+  zshWithPowerline = import ./tools/zsh-with-powerline;
 }
