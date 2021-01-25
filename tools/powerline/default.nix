@@ -30,7 +30,7 @@ runCommand "codedown-powerline.conf" {} ''
   cp ${./default.json} ./default.json
 
   cat <<EOF >> powerline.conf
-run-shell "PATH=$PATH:${pythonWithPowerline}/bin ${pythonWithPowerline}/bin/powerline-daemon -q"
+run-shell "PATH=\$PATH:${pythonWithPowerline}/bin ${pythonWithPowerline}/bin/powerline-daemon -q"
 source ${powerline}/share/tmux/powerline.conf
 set-option -g default-terminal "screen-256color"
 EOF
