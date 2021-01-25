@@ -18,7 +18,7 @@ let
     };
   };
 
-  pythonWithPowerline = python3.withPackages (ps: [ps.powerline misc.powerlineMemSegment]);
+  pythonWithPowerline = python3.withPackages (ps: [ps.powerline powerlineMemSegment]);
 
 in
 
@@ -29,7 +29,7 @@ runCommand "codedown-powerline.conf" {} ''
   cp ${./default.json} ./default.json
 
   cat <<EOF >> powerline.conf
-run-shell "powerline-daemon -q"
+run-shell "${pythonWithPowerline}/bin/powerline-daemon -q"
 source ${powerline}/share/tmux/powerline.conf
 set-option -g default-terminal "screen-256color"
 EOF
