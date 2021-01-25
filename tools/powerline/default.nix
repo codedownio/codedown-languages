@@ -1,14 +1,15 @@
 with import <nixpkgs> {};
 with stdenv.lib;
+with python3Packages;
 
 let
-  powerlineMemSegment = python3Packages.buildPythonApplication rec {
+  powerlineMemSegment = buildPythonPackage rec {
     pname = "powerline-mem-segment";
-    version = "2.2";
+    version = "2.4";
 
     src = fetchPypi {
       inherit pname version;
-      sha256 = "0k744wmp5mw6xq9c54y24kv22m525ipjpl6xzr67cq0vbz4728k8";
+      sha256 = "0jfnpajpymqwa2yimnha2f5k3w5f797jsx7p63isp3idxpwgbs7v";
     };
 
     buildInputs = [ python3Packages.psutil ];
