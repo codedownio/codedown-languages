@@ -30,11 +30,7 @@ runCommand "codedown-powerline" { buildInputs = [makeWrapper]; } ''
   cp -r ${./config} ./config
 
   cat <<EOF >> powerline.conf
-set-environment -g POWERLINE_CONFIG_PATHS $out/share/config
-set-option -ga update-environment " POWERLINE_CONFIG_PATHS"
-
 # run-shell will print exit status on nonzero exit, so suppress by returning 0
-# (doesn't seem possible to change this)
 run-shell "powerline-daemon -q &> /dev/null; return 0"
 
 source ${pythonWithPowerline}/share/tmux/powerline.conf
