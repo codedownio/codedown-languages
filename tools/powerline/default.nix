@@ -23,7 +23,7 @@ let
 
 in
 
-runCommand "codedown-powerline" {} ''
+runCommand "codedown-powerline" { buildInputs = [makeWrapper]; } ''
   mkdir -p $out/share
   cd $out/share
 
@@ -35,7 +35,7 @@ set-option -ga update-environment " POWERLINE_CONFIG_PATHS"
 
 # run-shell will print exit status on nonzero exit, so suppress by returning 0
 # (doesn't seem possible to change this)
-run-shell "PATH=\$PATH:${pythonWithPowerline}/bin:${sysstat}/bin powerline-daemon -q &> /dev/null; return 0"
+run-shell "powerline-daemon -q &> /dev/null; return 0"
 
 source ${pythonWithPowerline}/share/tmux/powerline.conf
 EOF
@@ -43,6 +43,7 @@ EOF
   mkdir -p $out/bin
   cd $out/bin
   for file in ${pythonWithPowerline}/bin/powerline*; do
-    ln -s $file $(basename $file)
+    makeWrapper $file ./$(basename $file) --suffix PATH ":" ${sysstat}/bin \
+                                          --set POWERLINE_CONFIG_PATHS $out/share/config:/home/user/.config/powerline
   done
 ''
