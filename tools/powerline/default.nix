@@ -35,6 +35,8 @@ runCommand "codedown-powerline" {} ''
 
 set-environment -g POWERLINE_THEME_OVERRIDES 'default.segments.right=[{"function":"powerline.segments.common.sys.system_load","priority":50},{"function":"powerline.segments.common.sys.cpu_load_percent"}]'
 
+set-option -ga update-environment " POWERLINE_THEME_OVERRIDES"
+
 # run-shell will print exit status on nonzero exit, so suppress by returning 0
 # (doesn't seem possible to change this)
 run-shell "PATH=\$PATH:${pythonWithPowerline}/bin:${sysstat}/bin powerline-daemon -q &> /dev/null; return 0"
