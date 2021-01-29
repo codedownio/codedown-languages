@@ -31,7 +31,7 @@ runCommand "codedown-powerline" {} ''
   cp ${./default.json} $out/config/themes/tmux/default.json
 
   cat <<EOF >> powerline.conf
-set-environment -g POWERLINE_THEME_OVERRIDES "default.segments.right=[]"
+set-environment -g POWERLINE_THEME_OVERRIDES "default.segments.right=[{"function": "powerline.segments.common.sys.system_load","priority": 50},{"function": "powerline.segments.common.sys.cpu_load_percent"},{"function": "powerlinemem.mem_usage.mem_usage"},{"function": "powerline.segments.common.net.network_load"},{"function":"powerline.segments.common.net.hostname"}]"
 
 # run-shell will print exit status on nonzero exit, so suppress by returning 0
 # (doesn't seem possible to change this)
