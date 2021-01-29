@@ -31,15 +31,13 @@ runCommand "codedown-powerline" {} ''
   cp ${./default.json} $out/config/themes/tmux/default.json
 
   cat <<EOF >> powerline.conf
-set -g default-terminal "screen-256color"
+set-environment -g POWERLINE_THEME_OVERRIDES "default.segments.right=[]"
 
 # run-shell will print exit status on nonzero exit, so suppress by returning 0
 # (doesn't seem possible to change this)
 run-shell "PATH=\$PATH:${pythonWithPowerline}/bin:${sysstat}/bin powerline-daemon -q &> /dev/null; return 0"
 
 source ${pythonWithPowerline}/share/tmux/powerline.conf
-
-set-option -g default-terminal "screen-256color"
 EOF
 
   mkdir -p $out/bin
