@@ -1,7 +1,7 @@
 {
   "groups": {
-    "mem_usage":            { "fg": "gray8", "bg": "gray0", "attrs": [] },
-    "mem_usage_gradient":   { "fg": "green_yellow_orange_red", "bg": "gray0", "attrs": [] },
+    "mem_usage":            {"fg": "gray8",      "bg": "gray0", "attrs": []},
+    "mem_usage_gradient":   {"fg": "green_yellow_orange_red", "bg": "gray0", "attrs": []},
     "active_window_status": {"fg": "darkblue",   "bg": "gray0",    "attrs": []},
     "window_status":        {"fg": "gray70",     "bg": "gray0",    "attrs": []},
     "activity_status":      {"fg": "yellow",     "bg": "gray0",    "attrs": []},

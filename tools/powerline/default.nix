@@ -27,7 +27,7 @@ runCommand "codedown-powerline" { buildInputs = [makeWrapper]; } ''
   mkdir -p $out/share
   cd $out/share
 
-  cp -r ${./config} ./config
+  cp -r ${./config} ./powerline_config
 
   cat <<EOF >> powerline.conf
 # run-shell will print exit status on nonzero exit, so suppress by returning 0
@@ -40,6 +40,6 @@ EOF
   cd $out/bin
   for file in ${pythonWithPowerline}/bin/powerline*; do
     makeWrapper $file ./$(basename $file) --suffix PATH ":" ${sysstat}/bin \
-                                          --set POWERLINE_CONFIG_PATHS $out/share/config:/home/user/.config/powerline
+                                          --set POWERLINE_CONFIG_PATHS $out/share/powerline_config        # :/home/user/.config/powerline
   done
 ''
