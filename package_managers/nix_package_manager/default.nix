@@ -25,18 +25,24 @@ let
     nix-env -e "$1"
   '';
 
-in   
+  yamlFile = writeText "package_managers.yaml" (lib.generators.toYAML {} [{
+    type = "generic";
+    name = "nix";
+    displayName = "Nix";
+    image = ./logo.png;
+    description = ''[Nix](https://nixos.org/) is a package manager for Linux systems. Look here for general-purpose packages and libraries.'';
+    isAvailable = "which nix && which nix-env";
+    listAll = ''${listPackages}/bin/nix-list-packages.sh'';
+    refreshPackageCache = ''nix search -u > /dev/null'';
+    listInstalled = ''nix-env -q --json | ${jq}/bin/jq 'to_entries | map({"name": .value.pname, "version": .value.version, "description": .value.meta?.description?}) ' '';
+    install = ''${installPackage}/bin/nix-install-package.sh'';
+    remove = ''${removePackage}/bin/nix-remove-package.sh'';
+  }]);
 
-writeText "package_managers.yaml" (lib.generators.toYAML {} [{
-  type = "generic";
-  name = "nix";
-  displayName = "Nix";
-  image = ./logo.png;
-  description = ''[Nix](https://nixos.org/) is a package manager for Linux systems. Look here for general-purpose packages and libraries.'';
-  isAvailable = "which nix && which nix-env";
-  listAll = ''${listPackages}/bin/nix-list-packages.sh'';
-  refreshPackageCache = ''nix search -u > /dev/null'';
-  listInstalled = ''nix-env -q --json | ${jq}/bin/jq 'to_entries | map({"name": .value.pname, "version": .value.version, "description": .value.meta?.description?}) ' '';
-  install = ''${installPackage}/bin/nix-install-package.sh'';
-  remove = ''${removePackage}/bin/nix-remove-package.sh'';
-}])
+in
+
+runCommand "codedown-nix-package-manager" {} ''
+  mkdir -p $out/lib/codedown-nix-package-manager
+  cd $out/lib/codedown-nix-package-manager
+  ln -s ${yamlFile} package_managers.yaml
+''
