@@ -28,7 +28,6 @@ let
     for binary in $binaries; do
       echo "Processing binary source: $binary"
       for file in $(find $binary/bin); do
-        echo "Looking at file: $file"
         ln -s "$file" $(basename "$file")
       done
     done
