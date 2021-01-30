@@ -62,6 +62,9 @@ in
   sqlPack = folderBuilder (import ./languages/sql);
 
   # Tools
+  nixPackageManager = import ./package_managers/nix_package_manager;
+
+  # Tools
   zshWithTheme = import ./tools/zsh-with-theme;
   powerline = import ./tools/powerline;
 }
