@@ -1,8 +1,9 @@
 with import <nixpkgs> {};
 
 let
-  folderBuilder = language: runCommand (language.name + "-folder") {
-    name = language.name;
+  folderBuilder = language: runCommand ("codedown-" + language.name) {
+    name = "codedown-" + language.name;    
+    baseName = language.name;    
     kernel = language.kernel;
     packageManager = language.packageManager or "";
     languageServer = language.languageServer or "";
@@ -12,8 +13,8 @@ let
   mkdir -p $out
   cd $out
 
-  mkdir -p lib/codedown-$name-pack
-  cd lib/codedown-$name-pack
+  mkdir -p lib/codedown-$baseName-pack
+  cd lib/codedown-$baseName-pack
   if [ -n "$kernel" ]; then ln -s "$kernel" ./kernels; fi
   if [ -n "$packageManager" ]; then ln -s "$packageManager" ./package_managers.yaml; fi
   if [ -n "$modeInfo" ]; then ln -s "$modeInfo" ./mode_infos.yaml; fi
