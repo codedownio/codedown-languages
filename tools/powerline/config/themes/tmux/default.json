@@ -2,6 +2,9 @@
   "segments": {
     "right": [
       {
+        "function": "powerline.segments.common.net.network_load"
+      },
+      {
         "function": "powerline.segments.common.net.hostname"
       }
     ]
