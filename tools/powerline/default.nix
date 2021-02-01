@@ -19,7 +19,7 @@ let
     };
   };
 
-  pythonWithPowerline = python3.withPackages (ps: [ps.powerline powerlineMemSegment]);
+  pythonWithPowerline = python3.withPackages (ps: [ps.powerline powerlineMemSegment python3Packages.psutil]);
 
 in
 
