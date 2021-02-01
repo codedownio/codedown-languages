@@ -2,6 +2,9 @@
   "segments": {
     "right": [
       {
+        "function": "powerline.segments.common.sys.cpu_load_percent"
+      },
+      {
         "function": "powerline.segments.common.net.network_load"
       },
       {
