@@ -21,6 +21,8 @@ let
 
   pythonWithPowerline = python3.withPackages (ps: [ps.powerline powerlineMemSegment python3Packages.psutil]);
 
+  tmcl = import ./tmux-mem-cpu-load.nix;
+
 in
 
 runCommand "codedown-powerline" { buildInputs = [makeWrapper]; } ''
@@ -34,6 +36,8 @@ runCommand "codedown-powerline" { buildInputs = [makeWrapper]; } ''
 run-shell "powerline-daemon -q &> /dev/null; return 0"
 
 source ${pythonWithPowerline}/share/tmux/powerline.conf
+
+set -g status-right "#[fg=green]#(${tmcl}/bin/tmux-mem-cpu-load --colors --powerline-right --interval 2)#[default]"
 EOF
 
   mkdir -p $out/bin
