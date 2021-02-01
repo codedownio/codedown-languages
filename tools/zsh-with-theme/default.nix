@@ -13,6 +13,9 @@ runCommand "zsh-with-theme" { buildInputs = [makeWrapper]; } ''
   # Colorful welcome message
   cat ${./color.sh} >> .zshrc
 
+  # Source the user's .zshrc if present
+  [ -f ~/.zshrc ] && source ~/.zshrc
+
   makeWrapper ${zsh}/bin/zsh $out/bin/zsh-with-theme \
               --set ZDOTDIR $out
 ''
