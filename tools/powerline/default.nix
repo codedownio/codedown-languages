@@ -39,8 +39,12 @@ EOF
   mkdir -p $out/bin
   cd $out/bin
   for file in ${pythonWithPowerline}/bin/powerline*; do
-    makeWrapper $file ./$(basename $file) --suffix PATH ":" ${sysstat}/bin \
-                                          --add-flags "-p $out/share/powerline_config" \
-                                          --add-flags "-p /home/user/.config/powerline"
+    if [ "$(basename $file)" == "powerline-daemon" ]; then
+      ln -s $file ./$(basename $file)
+    else
+      makeWrapper $file ./$(basename $file) --suffix PATH ":" ${sysstat}/bin \
+                                            --add-flags "-p $out/share/powerline_config" \
+                                            --add-flags "-p /home/user/.config/powerline"
+    fi
   done
 ''
