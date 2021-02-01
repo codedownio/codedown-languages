@@ -40,6 +40,7 @@ EOF
   cd $out/bin
   for file in ${pythonWithPowerline}/bin/powerline*; do
     makeWrapper $file ./$(basename $file) --suffix PATH ":" ${sysstat}/bin \
-                                          --add-flags "-p $out/share/powerline_config:/home/user/.config/powerline"
+                                          --add-flags "-p $out/share/powerline_config" \
+                                          --add-flags "-p /home/user/.config/powerline"
   done
 ''
