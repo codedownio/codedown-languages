@@ -1,8 +1,6 @@
 {
 	"common": {
-		"term_truecolor": false,
-		"log_file": "~/powerlog",
-		"log_level": "DEBUG"
+		"term_truecolor": false
 	},
 	"ext": {
 		"ipython": {
