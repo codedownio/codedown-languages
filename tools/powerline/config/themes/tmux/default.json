@@ -6,9 +6,6 @@
         "priority": 50
       },
       {
-        "function": "powerline.segments.common.sys.cpu_load_percent"
-      },
-      {
         "function": "powerlinemem.mem_usage.mem_usage"
       },
       {
