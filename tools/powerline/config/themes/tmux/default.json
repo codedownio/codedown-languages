@@ -7,7 +7,9 @@
       },
       {
         "function": "powerline.segments.common.sys.cpu_load_percent",
-        "format": "{0:.0f}%%"
+        "args": {
+          "format": "{0:.0f}%%"
+        }
       },
       {
         "function": "powerlinemem.mem_usage.mem_usage"
