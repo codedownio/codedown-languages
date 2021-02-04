@@ -16,6 +16,11 @@ rec {
         language = "python2";
         logo32 = null;
         logo64 = null;
+        metadata = {
+          codedown = {
+            priority = 1;
+          };
+        };
       };
     };
   };

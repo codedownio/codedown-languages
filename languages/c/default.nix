@@ -20,6 +20,11 @@ rec {
         language = "c";
         logo32 = null;
         logo64 = ./c.png;
+        metadata = {
+          codedown = {
+            priority = 1;
+          };
+        };
       };
     };
   };

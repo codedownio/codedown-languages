@@ -17,6 +17,11 @@ rec {
         language = "bash";
         logo32 = ./bash.png;
         logo64 = ./bash.png;
+        metadata = {
+          codedown = {
+            priority = 10;
+          };
+        };
       };
     };
   };

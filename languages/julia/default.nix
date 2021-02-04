@@ -37,6 +37,11 @@ rec {
           PYTHON = ''${python}/bin/python'';
           PYTHONPATH = ''${python}/${python.sitePackages}'';
         };
+        metadata = {
+          codedown = {
+            priority = 1;
+          };
+        };
       };
     };
   };

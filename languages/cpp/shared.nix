@@ -37,6 +37,11 @@ rec {
         language = attrName;
         logo32 = null;
         logo64 = logo64;
+        metadata = {
+          codedown = {
+            priority = 1;
+          };
+        };
       };
     }];
   };

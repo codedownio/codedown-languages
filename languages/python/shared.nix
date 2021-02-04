@@ -23,6 +23,7 @@ rec {
         metadata = {
           codedown = {
             other_language_keys = otherLanguageKeys;
+            priority = 1;
           };
         };
       };

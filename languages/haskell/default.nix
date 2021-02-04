@@ -19,6 +19,11 @@ rec {
         language = "haskell";
         logo32 = null;
         logo64 = ./IHaskell/html/logo-64x64.svg;
+        metadata = {
+          codedown = {
+            priority = 1;
+          };
+        };
       };
     };
   };

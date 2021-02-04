@@ -25,6 +25,7 @@ rec {
         metadata = {
           codedown = {
             other_language_keys = ["R"];
+            priority = 1;
           };
         };
       };
