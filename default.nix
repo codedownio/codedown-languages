@@ -54,6 +54,7 @@ in
   javascriptPack = folderBuilder (import ./languages/javascript);
   juliaPack = folderBuilder (import ./languages/julia);
   octavePack = folderBuilder (import ./languages/octave);
+  pythonCorePack = folderBuilder ((import ./languages/python) // { languageServer = null; });
   pythonPack = folderBuilder (import ./languages/python);
   rPack = folderBuilder (import ./languages/r);
   rubyPack = folderBuilder (import ./languages/ruby);
