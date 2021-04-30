@@ -4,8 +4,6 @@ with pkgs;
 with stdenv.lib;
 
 let
-  shared = callPackage ../shared.nix { inherit python; pythonPackages = python.pkgs; };
-
   diagnostic-languageserver = (callPackage ../../../language_servers/diagnostic-languageserver/default.nix {})."diagnostic-languageserver-git+https://github.com/codedownio/diagnostic-languageserver.git#c8aeacf80d3be95581441b9d3e62ce040cfa41f4";
 
   # Make a special Python environment with all the default packages, so we can get a site-packages

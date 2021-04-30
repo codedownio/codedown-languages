@@ -4,8 +4,6 @@ with pkgs;
 with stdenv.lib;
 
 let
-  shared = callPackage ../shared.nix { inherit python; pythonPackages = python.pkgs; };
-
   jediLanguageServer = callPackage ./jedi-language-server {python=python;};
 
   # Make a special Python environment with all the default packages, so we can get a site-packages

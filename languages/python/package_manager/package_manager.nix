@@ -6,12 +6,14 @@ with stdenv.lib;
 let
   shared = callPackage ../shared.nix { inherit python; pythonPackages = python.pkgs; };
 
+  manylinux1 = callPackage ../manylinux1.nix {};
+
   pythonWithReqParser = python.buildEnv.override {
     extraLibs = let ps = python.pkgs; in [(shared.pipNoUserSite ps) requirements-parser ps.setuptools];
     permitUserSite = true;
     makeWrapperArgs = [
       # Append libs needed at runtime for manylinux1 compliance
-      "--set" "LD_LIBRARY_PATH" (makeLibraryPath shared.manylinux1.libs)
+      "--set" "LD_LIBRARY_PATH" (makeLibraryPath manylinux1.libs)
 
       # Include the location of built-in packages as an environment variable
       "--set" "SYSTEM_PACKAGES_JSON" ''${builtInPackagesJSON}''
