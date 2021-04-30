@@ -1,4 +1,5 @@
 with import <nixpkgs> {};
+with stdenv.lib;
 
 let
   folderBuilder = language: runCommand ("codedown-" + language.name) {
@@ -27,7 +28,7 @@ let
 
     for binary in $binaries; do
       echo "Processing binary source: $binary"
-      for file in $(find $binary/bin); do
+      for file in $(find $binary/bin -executable -type f); do
         ln -s "$file" $(basename "$file")
       done
     done
@@ -55,9 +56,11 @@ in
   juliaPack = folderBuilder (import ./languages/julia);
   octavePack = folderBuilder (import ./languages/octave);
   pythonCorePack = folderBuilder ((import ./languages/python {}) // { languageServer = null; });
-  pythonPack = folderBuilder (import ./languages/python {
-    # packageSelector = ps: [ps.matplotlib];
+  pythonPack = folderBuilder (callPackage ./languages/python {
+    python = python3;
+    inherit generators;
     packageSelector = ps: [ps.numpy ps.scipy ps.matplotlib ps.requests ps.pandas ps.ipykernel ps.ipywidgets]
+    # packageSelector = ps: [ps.matplotlib];
   });
   rPack = folderBuilder (import ./languages/r);
   rubyPack = folderBuilder (import ./languages/ruby);
