@@ -29,6 +29,7 @@ let
     for binary in $binaries; do
       echo "Processing binary source: $binary"
       for file in $(find $binary/bin -executable -type f); do
+        [ -f $(basename "$file") ] && continue;
         ln -s "$file" $(basename "$file")
       done
     done
@@ -59,7 +60,7 @@ in
   pythonPack = folderBuilder (callPackage ./languages/python {
     python = python3;
     inherit generators;
-    packageSelector = ps: [ps.numpy ps.scipy ps.matplotlib ps.requests ps.pandas ps.ipykernel ps.ipywidgets]
+    packageSelector = ps: [ps.numpy ps.scipy ps.matplotlib ps.requests ps.pandas ps.ipykernel ps.ipywidgets];
     # packageSelector = ps: [ps.matplotlib];
   });
   rPack = folderBuilder (import ./languages/r);
