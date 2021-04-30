@@ -4,14 +4,14 @@ with pythonPackages;
 with stdenv.lib;
 
 rec {
-  kernel = name: attr: otherLanguageKeys: pkgs.jupyter-kernel.create {
+  kernel = name: attr: otherLanguageKeys: packageSelector: pkgs.jupyter-kernel.create {
     definitions = listToAttrs [{
       name = attr;
       value = {
         displayName = name;
         language = attr;
         argv = [
-          "${pythonWithPip}/bin/python"
+          "${pythonWithPip packageSelector}/bin/python"
           "-m"
           "ipykernel"
           "-f"
@@ -30,12 +30,10 @@ rec {
     }];
   };
 
-  defaultPackages = ps: [ps.numpy ps.scipy ps.matplotlib ps.requests ps.pandas ps.ipykernel ps.ipywidgets];
-
   # Note that this is somewhat tricky. We need to disable PYTHONNOUSERSITE in pip itself
   # (via the special pipNoUserSite), and also the wrapper which will be built by withPackages
   # (via withPackagesPermitUserSite)
-  pythonWithPip = withPackagesPermitUserSite (ps: [(pipNoUserSite ps) ps.setuptools] ++ (defaultPackages ps));
+  pythonWithPip = packageSelector: withPackagesPermitUserSite (ps: [(pipNoUserSite ps) ps.setuptools] ++ (packageSelector ps));
 
   # Taken from pkgs/development/python-modules/pip
   pipNoUserSite = ps: ps.pip.overridePythonAttrs (old: { permitUserSite = true; });

@@ -54,8 +54,11 @@ in
   javascriptPack = folderBuilder (import ./languages/javascript);
   juliaPack = folderBuilder (import ./languages/julia);
   octavePack = folderBuilder (import ./languages/octave);
-  pythonCorePack = folderBuilder ((import ./languages/python) // { languageServer = null; });
-  pythonPack = folderBuilder (import ./languages/python);
+  pythonCorePack = folderBuilder ((import ./languages/python {}) // { languageServer = null; });
+  pythonPack = folderBuilder (import ./languages/python {
+    # packageSelector = ps: [ps.matplotlib];
+    packageSelector = ps: [ps.numpy ps.scipy ps.matplotlib ps.requests ps.pandas ps.ipykernel ps.ipywidgets]
+  });
   rPack = folderBuilder (import ./languages/r);
   rubyPack = folderBuilder (import ./languages/ruby);
   rustPack = folderBuilder (import ./languages/rust);

@@ -1,17 +1,19 @@
 with import <nixpkgs> {};
 with stdenv.lib;
 
+{ packageSelector ? (_: []) }:
+
 rec {
   name = "python";
 
-  binaries = [shared.pythonWithPip];
+  binaries = [(shared.pythonWithPip packageSelector)];
 
-  # Without this, Python thinks its stdout and stderr should have ASCII encoding ("ANSI_X3.4-1968")
+  # Without this, Python thinks its stdout and stderpr should have ASCII encoding ("ANSI_X3.4-1968")
   # Env = [
   #   "PYTHONIOENCODING=utf_8"
   # ];
 
-  kernel = shared.kernel "Python 3.8" "python" ["python" "python3"];
+  kernel = shared.kernel "Python 3.8" "python" ["python" "python3"] packageSelector;
 
   shared = callPackage ./shared.nix {
     pythonPackages = python3.pkgs.override {
@@ -28,14 +30,32 @@ rec {
 
   languageServer = writeText "language_servers.yaml" (generators.toYAML {} [
     # Primary language server
-    (callPackage ./language_server_jedi/config.nix { python = python3; }).config
-    # (callPackage ./language_server_palantir/config.nix { python = python3; }).config
-    # (callPackage ./language_server_microsoft/config.nix { python = python3; }).config
+    (callPackage ./language_server_jedi/config.nix {
+      python = python3;
+      packages = packageSelector python3.pkgs;
+    }).config
+    # (callPackage ./language_server_palantir/config.nix {
+    #   python = python3;
+    #   packages = packageSelector python3.pkgs;
+    # }).config
+    # (callPackage ./language_server_microsoft/config.nix {
+    #   python = python3;
+    #   packages = packageSelector python3.pkgs;
+    # }).config
 
     # Secondary language servers (for diagnostics, formatting, etc.)
-    (callPackage ./language_server_pylint/config.nix { python = python3; }).config
-    (callPackage ./language_server_flake8/config.nix { python = python3; }).config
-    (callPackage ./language_server_pycodestyle/config.nix { python = python3; }).config
+    (callPackage ./language_server_pylint/config.nix {
+      python = python3;
+      packages = packageSelector python3.pkgs;
+    }).config
+    (callPackage ./language_server_flake8/config.nix {
+      python = python3;
+      packages = packageSelector python3.pkgs;
+    }).config
+    (callPackage ./language_server_pycodestyle/config.nix {
+      python = python3;
+      packages = packageSelector python3.pkgs;
+    }).config
   ]);
 
   homeFolderPaths = (import ../../util.nix).folderBuilder ./home_folder;

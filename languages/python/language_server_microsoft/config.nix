@@ -1,4 +1,4 @@
-{stdenv, pkgs, python}:
+{stdenv, pkgs, python, packages ? []}:
 
 with stdenv.lib;
 

@@ -45,7 +45,7 @@ let
     name = pkg.pname;
     version = pkg.version;
     system = true;
-  }) (shared.defaultPackages python.pkgs)));
+  }) [])); # (shared.defaultPackages python.pkgs)
 
   listInstalled = writePy "python-list-installed-packages.py" ./python_list_installed_packages.py;
 
