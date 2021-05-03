@@ -17,6 +17,7 @@ mkShell {
       [ lens conduit conduit-extra aeson ]
     ))
 
-    haskell.haskellPackages.ihaskell.components.exes.ihaskell
+    # haskell.haskellPackages.ihaskell.components.exes.ihaskell
+    haskell.snapshots."lts-17.10".ihaskell.components.exes.ihaskell
   ];
 }

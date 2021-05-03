@@ -1,16 +1,27 @@
-with import <nixpkgs> {};
+{pkgs}:
 
 rec {
   name = "haskell";
 
   binaries = [(import ./stack.nix) haskell.packages.ghc883.ghc];
 
+  # ihaskellWithPackages = ihaskell.override {
+  #   ghcWithPackages = haskell.haskellPackages.ghcWithPackages (ps: with ps;
+  #     [ lens conduit conduit-extra aeson ]
+  #   );
+  # };
+
+  haskellNix = import (builtins.fetchTarball https://github.com/input-output-hk/haskell.nix/archive/master.tar.gz) {};
+  nixpkgs = import pkgs haskellNix.nixpkgsArgs;
+  ihaskellWithPackages = ihaskell;
+  haskell = nixpkgs.haskell-nix;
+
   kernel = jupyter-kernel.create {
     definitions = {
       haskell = {
         displayName = "Haskell";
         argv = [
-          "${import ./ihaskell.nix}/bin/ihaskell"
+          "${haskell.haskellPackages.ihaskell.components.exes.ihaskell}/bin/ihaskell"
           "kernel"
           "{connection_file}"
           "--stack"
@@ -34,7 +45,7 @@ rec {
     attrs = ["haskell"];
     type = "stream";
     args = [
-      "${haskellPackages.haskell-language-server}/bin/haskell-language-server-wrapper"
+      "${haskell.haskellPackages.haskell-language-server}/bin/haskell-language-server-wrapper"
       "--lsp"
       "-l"
       "/tmp/hls.log"
