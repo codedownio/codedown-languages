@@ -1,66 +1,63 @@
-{ callPackage, writeText, generators, python, packageSelector ? (_: []) }:
+{
+  # Common
+  pkgs, callPackage, writeText, stdenv,
+
+  baseName ? "python3",
+  packages ? (_: []),
+  languageServers ? (_: []),
+  codeDownAttr ? "python",
+  otherLanguageKeys ? []
+}:
 
 rec {
   name = "python";
 
-  binaries = [
-    (shared.pythonWithPip packageSelector)
-    python.pkgs.ipython
-  ];
+  metadata = callPackage ./metadata.nix {};
 
-  # Without this, Python thinks its stdout and stderpr should have ASCII encoding ("ANSI_X3.4-1968")
+  base = metadata.baseOptions.${baseName};
+  chosenPackages = packages base.python.pkgs;
+  availableLanguageServers = {};
+  python = base.python.withPackages packages;
+
+  # The stuff below is from when we were supporting Pip
+  # # Note that this is somewhat tricky. We need to disable PYTHONNOUSERSITE in pip itself
+  # # (via the special pipNoUserSite), and also the wrapper which will be built by withPackages
+  # # (via withPackagesPermitUserSite)
+  # pythonWithPip = packageSelector: withPackagesPermitUserSite (ps: [(pipNoUserSite ps) ps.setuptools] ++ (packageSelector ps));
+  # # Taken from pkgs/development/python-modules/pip
+  # pipNoUserSite = ps: ps.pip.overridePythonAttrs (old: { permitUserSite = true; });
+  # manylinux1 = callPackage ./manylinux1.nix { python = python; };
+  # withPackagesPermitUserSite = f: let packages = f pythonPackages; in
+  #   python.buildEnv.override {
+  #     extraLibs = packages;
+  #     # permitUserSite = true;
+  #     makeWrapperArgs = [
+  #       # Append libs needed at runtime for manylinux1 compliance
+  #       "--set" "LD_LIBRARY_PATH" (makeLibraryPath manylinux1.libs)
+
+  #       # Ensure that %%bash magic uses the Nix-provided bash rather than a system one
+  #       "--prefix" "PATH" ":" "${pkgs.bash}/bin"
+  #       "--prefix" "PATH" ":" "${pkgs.coreutils}/bin"
+  #     ];
+  #   };
+
+  # Without this, Python thinks its stdout and stderr should have ASCII encoding ("ANSI_X3.4-1968")
   # Env = [
   #   "PYTHONIOENCODING=utf_8"
   # ];
 
-  kernel = shared.kernel "Python 3.8" "python" ["python" "python3"] packageSelector;
-
-  shared = callPackage ./shared.nix {
-    pythonPackages = python.pkgs.override {
-      overrides = self: super: {
-        ipython = python.pkgs.ipython.overridePythonAttrs (old: { permitUserSite = true; });
-      };
-    };
-    python = python;
-  };
-
-  modeInfo = callPackage ./mode_info.nix {};
-
-  packageManager = callPackage ./package_manager/package_manager.nix { python = python; name = "python38"; displayName = "Python 3.8"; };
-
-  languageServer = writeText "language_servers.yaml" (generators.toYAML {} [
-    # Primary language server
-    (callPackage ./language_server_jedi/config.nix {
-      python = python;
-      packages = packageSelector python.pkgs;
-    }).config
-    # (callPackage ./language_server_palantir/config.nix {
-    #   python = python;
-    #   packages = packageSelector python.pkgs;
-    # }).config
-    # (callPackage ./language_server_microsoft/config.nix {
-    #   python = python;
-    #   packages = packageSelector python.pkgs;
-    # }).config
-
-    # Secondary language servers (for diagnostics, formatting, etc.)
-    (callPackage ./language_server_pylint/config.nix {
-      python = python;
-      packages = packageSelector python.pkgs;
-    }).config
-    (callPackage ./language_server_flake8/config.nix {
-      python = python;
-      packages = packageSelector python.pkgs;
-    }).config
-    (callPackage ./language_server_pycodestyle/config.nix {
-      python = python;
-      packages = packageSelector python.pkgs;
-    }).config
-  ]);
-
-  homeFolderPaths = (import ../../util.nix).folderBuilder ./home_folder;
-
-  extraGitIgnoreLines = [
-    ".ipython"
+  binaries = [
+    python
+    python.pkgs.ipython
   ];
+  kernel = callPackage ./kernel.nix {
+    displayName = base.displayName;
+    inherit python otherLanguageKeys;
+    codeDownAttr = codeDownAttr;
+  };
+  modeInfo = callPackage ./mode_info.nix {};
+  packageManager = null; # callPackage ./package_manager/package_manager.nix { inherit python name displayName; };
+  languageServer = writeText "language_servers.yaml" (stdenv.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
+  homeFolderPaths = null; # (import ../util.nix).folderBuilder ./home_folder;
+  extraGitIgnoreLines = [".ipython"];
 }

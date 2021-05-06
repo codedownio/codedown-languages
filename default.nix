@@ -57,12 +57,7 @@ in
   juliaPack = folderBuilder (import ./languages/julia);
   octavePack = folderBuilder (import ./languages/octave);
   pythonCorePack = folderBuilder ((import ./languages/python {}) // { languageServer = null; });
-  pythonPack = folderBuilder (callPackage ./languages/python {
-    python = python3;
-    inherit generators;
-    packageSelector = ps: [ps.numpy ps.scipy ps.matplotlib ps.requests ps.pandas ps.ipykernel ps.ipywidgets];
-    # packageSelector = ps: [ps.matplotlib];
-  });
+  pythonPack = import ./languages/python;
   rPack = folderBuilder (import ./languages/r);
   rubyPack = folderBuilder (import ./languages/ruby);
   rustPack = folderBuilder (import ./languages/rust);
@@ -75,4 +70,18 @@ in
   # Tools
   zshWithTheme = import ./tools/zsh-with-theme;
   powerline = import ./tools/powerline;
+
+  # Build tools
+  folderBuilder = folderBuilder;
+  mkCodeDownEnvironment = args: let
+    paths = map folderBuilder args.kernels;
+  in
+    runCommand "codedown-environment" {} ''
+      echo "paths: ${generators.toJSON {} paths}"
+      for path in ${generators.toJSON {} paths}; do
+        echo "PATH: $path"
+      done
+      mkdir -p $out/lib/codedown-environment
+      touch $out/
+    '';
 }

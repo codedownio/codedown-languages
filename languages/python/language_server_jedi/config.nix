@@ -15,6 +15,8 @@ let
 in
 
 {
+  server = jediLanguageServer;
+
   config = {
     name = "python";
     extensions = ["py"];
