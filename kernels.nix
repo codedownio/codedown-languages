@@ -13,4 +13,8 @@ codedown.mkCodeDownEnvironment {
       packages = ps: [ps.matplotlib];
     })
   ];
+
+  notebookLanguageServers = [
+
+  ];
 }

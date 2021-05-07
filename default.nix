@@ -74,14 +74,21 @@ in
   # Build tools
   folderBuilder = folderBuilder;
   mkCodeDownEnvironment = args: let
-    paths = map folderBuilder args.kernels;
+    paths = listToAttrs (map (x: { name = x.name; value = folderBuilder x; }) args.kernels);
   in
-    runCommand "codedown-environment" {} ''
-      echo "paths: ${generators.toJSON {} paths}"
-      for path in ${generators.toJSON {} paths}; do
-        echo "PATH: $path"
-      done
-      mkdir -p $out/lib/codedown-environment
-      touch $out/
+    runCommand "codedown-environment" { buildInputs = [jq]; } ''
+      mkdir -p $out/lib/
+      mkdir -p $out/bin/
+
+      cat ${writeText "paths.txt" (lib.generators.toJSON {} paths)} | jq -r '. | to_entries[] | [.key, .value] | @tsv' |
+        while IFS=$'\t' read -r name path; do
+          for file in $path/lib/*; do
+            ln -s "$file" $out/lib/$(basename "$file")
+          done
+
+          for file in $path/bin/*; do
+            ln -s "$file" $out/bin/$(basename "$file")
+          done
+        done
     '';
 }

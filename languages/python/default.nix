@@ -15,9 +15,8 @@ rec {
   metadata = callPackage ./metadata.nix {};
 
   base = metadata.baseOptions.${baseName};
-  chosenPackages = packages base.python.pkgs;
   availableLanguageServers = {};
-  python = base.python.withPackages packages;
+  python = base.python.withPackages (ps: [ps.ipykernel ps.ipywidgets] ++ (packages ps));
 
   # The stuff below is from when we were supporting Pip
   # # Note that this is somewhat tricky. We need to disable PYTHONNOUSERSITE in pip itself
