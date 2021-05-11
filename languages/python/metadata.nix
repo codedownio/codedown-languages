@@ -27,7 +27,6 @@ rec {
     # Primary language server
     jedi = (callPackage ./language_server_jedi/config.nix {
       python = python;
-      packages = packages;
     });
     palantir = (callPackage ./language_server_palantir/config.nix {
       python = python;

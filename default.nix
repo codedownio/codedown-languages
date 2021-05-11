@@ -54,7 +54,7 @@ in
   goPack = folderBuilder (import ./languages/go);
   haskellPack = folderBuilder (import ./languages/haskell);
   javascriptPack = folderBuilder (import ./languages/javascript);
-  juliaPack = folderBuilder (import ./languages/julia);
+  juliaPack = import ./languages/julia;
   octavePack = folderBuilder (import ./languages/octave);
   pythonCorePack = folderBuilder ((import ./languages/python {}) // { languageServer = null; });
   pythonPack = import ./languages/python;
@@ -66,6 +66,9 @@ in
 
   # Tools
   nixPackageManager = import ./package_managers/nix_package_manager;
+
+  # Notebook language servers
+  spellchecker = import ./language_servers/markdown_spellcheck_lsp.nix;
 
   # Tools
   zshWithTheme = import ./tools/zsh-with-theme;
