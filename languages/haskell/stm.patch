@@ -1,0 +1,13 @@
+diff --git a/stm.cabal b/stm.cabal
+index bde3023..bd9cb62 100644
+--- a/stm.cabal
++++ b/stm.cabal
+@@ -47,7 +47,7 @@ library
+         build-depends: nats (>= 0.1.3 && < 0.3) || (>= 1 && < 1.2)
+ 
+     build-depends:
+-        base  >= 4.3 && < 4.14,
++        base  >= 4.3 && < 4.15,
+         array >= 0.3 && < 0.6
+ 
+     exposed-modules:
