@@ -1,4 +1,4 @@
-{pkgs}:
+{pkgs, callPackage, writeText, stdenv}:
 
 rec {
   name = "haskell";
@@ -14,13 +14,13 @@ rec {
   haskellNix = import (builtins.fetchTarball https://github.com/input-output-hk/haskell.nix/archive/master.tar.gz) {};
   nixpkgs = import pkgs haskellNix.nixpkgsArgs;
   haskell = nixpkgs.haskell-nix;
-  ihaskellWithPackages = ihaskell;
+  # ihaskellWithPackages = ihaskell;
 
   hls = callPackage ./hls.nix {};
 
   kernel = callPackage ./kernel.nix {};
-  languageServer = writeText "language_servers.yaml" (lib.generators.toYAML {} [hls]);
-  modeInfo = writeText "mode_config.yaml" (lib.generators.toYAML {} [{
+  languageServer = writeText "language_servers.yaml" (stdenv.lib.generators.toYAML {} [hls]);
+  modeInfo = writeText "mode_config.yaml" (stdenv.lib.generators.toYAML {} [{
     attrName = "haskell";
     codeMirrorMode = "haskell";
     extensionsToHighlight = ["hs"];
