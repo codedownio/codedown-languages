@@ -68,7 +68,7 @@ in
   nixPackageManager = import ./package_managers/nix_package_manager;
 
   # Notebook language servers
-  spellchecker = import ./language_servers/markdown_spellcheck_lsp.nix;
+  spellchecker = import ./language_servers/markdown-spellcheck-lsp.nix;
 
   # Tools
   zshWithTheme = import ./tools/zsh-with-theme;
