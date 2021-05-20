@@ -1,7 +1,7 @@
 with import <nixpkgs> {};
 with lib.lists;
 
-rec {
+let
   config = writeText "language_servers.yaml" (lib.generators.toYAML {} [{
     name = "spellchecker";
     extensions = [];
@@ -27,4 +27,12 @@ rec {
     makeWrapper ${server}/bin/markdown-spellcheck-lsp $out/bin/markdown-spellcheck-lsp \
                 --suffix PATH ':' ${customHunspell}/bin
   '';
-}
+
+in
+
+runCommand "codedown-spellchecker" {
+  meta = hunspell.meta;
+} ''
+  mkdir -p $out/lib/codedown-spellchecker
+  cp ${config} $out/lib/codedown-spellchecker/language_servers.yaml
+''

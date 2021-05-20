@@ -1,10 +1,12 @@
-with import <nixpkgs> {};
+{nixpkgs}:
+
+with nixpkgs;
 with stdenv.lib;
 
 let
   folderBuilder = language: runCommand ("codedown-" + language.name) {
-    name = "codedown-" + language.name;    
-    baseName = language.name;    
+    name = "codedown-" + language.name;
+    baseName = language.name;
     kernel = language.kernel;
     packageManager = language.packageManager or "";
     languageServer = language.languageServer or "";
@@ -77,9 +79,10 @@ in
   # Build tools
   folderBuilder = folderBuilder;
   mkCodeDownEnvironment = args: let
-    paths = listToAttrs (map (x: { name = x.name; value = folderBuilder x; }) args.kernels);
+    paths = (listToAttrs (map (x: { name = x.name; value = folderBuilder x; }) args.kernels))
+          // (listToAttrs (map (x: { name = "asdf"; value = x; }) args.notebookLanguageServers));
   in
-    runCommand "codedown-environment" { buildInputs = [jq]; } ''
+    runCommand "codedown-environment" { buildInputs = [jq];  } ''
       mkdir -p $out/lib/
       mkdir -p $out/bin/
 
