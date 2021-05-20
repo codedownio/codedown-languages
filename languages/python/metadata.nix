@@ -1,22 +1,29 @@
 { pkgs }:
 
 with pkgs;
+with stdenv.lib;
 
 rec {
   name = "python";
 
-  displayName = python: "Python " + python.version;
+  baseCandidates = [
+    "python"
+    "python2" "python27"
+    "python3" "python36" "python37" "python38" "python39"
+    "pypy"
+    "pypy2" "pypy27"
+    "pypy3" "pypy36" "pypy37" "pypy38" "pypy39"
+  ];
+  baseOptions = map (x:
+    let python = getAttr x pkgs; in {
+      inherit python;
+      name = x;
+      displayName = "Python " + python.version;
+      meta = python.meta;
+      logo = ./logo-64x64.png;
+    }
+  ) (filter (x: hasAttr x pkgs) baseCandidates);
 
-  baseOptions = {
-    python2 = let python = python2; in { inherit python; displayName = displayName python; meta = python.meta; logo = ./logo-64x64.png; };
-    python3 = let python = python27; in { inherit python; displayName = displayName python; meta = python.meta; logo = ./logo-64x64.png; };
-    python27 = let python = python27; in { inherit python; displayName = displayName python; meta = python.meta; logo = ./logo-64x64.png; };
-    python36 = let python = python36; in { inherit python; displayName = displayName python; meta = python.meta; logo = ./logo-64x64.png; };
-    python37 = let python = python37; in { inherit python; displayName = displayName python; meta = python.meta; logo = ./logo-64x64.png; };
-    python38 = let python = python38; in { inherit python; displayName = displayName python; meta = python.meta; logo = ./logo-64x64.png; };
-    python39 = let python = python39; in { inherit python; displayName = displayName python; meta = python.meta; logo = ./logo-64x64.png; };
-  };
-  
   packageOptions = base@{python, ...}: python.pkgs.override {
     overrides = self: super: {
       ipython = python.pkgs.ipython.overridePythonAttrs (old: { permitUserSite = true; });

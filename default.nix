@@ -1,6 +1,6 @@
-{nixpkgs}:
+{pkgs}:
 
-with nixpkgs;
+with pkgs;
 with stdenv.lib;
 
 let
@@ -59,7 +59,7 @@ in
   juliaPack = import ./languages/julia;
   octavePack = folderBuilder (import ./languages/octave);
   pythonCorePack = folderBuilder ((import ./languages/python {}) // { languageServer = null; });
-  pythonPack = import ./languages/python;
+  pythonPack = callPackage ./languages/python {};
   rPack = folderBuilder (import ./languages/r);
   rubyPack = folderBuilder (import ./languages/ruby);
   rustPack = folderBuilder (import ./languages/rust);
