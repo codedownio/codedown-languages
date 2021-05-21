@@ -1,46 +1,38 @@
-with import <nixpkgs> {};
-with python3Packages;
-with stdenv;
+{pkgs, callPackage, writeText}:
+
+with pkgs.lib;
 
 rec {
-  name = "rust";
+  metadata = callPackage ./metadata.nix {};
 
-  binaries = [rustc cargo gcc];
+  build = {
+    baseName,
+    packages ? (_: []),
+    languageServers ? (_: []),
+    codeDownAttr ? baseName,
+    otherLanguageKeys ? []
+  }:
+    let
+      base = findSingle (x: x.name == baseName) null "multiple" metadata.baseOptions;
 
-  kernel = jupyter-kernel.create {
-    definitions = {
-      rust = {
-        displayName = "Rust";
-        argv = [
-          "${evcxr}/bin/evcxr_jupyter"
-          "--control_file"
-          "{connection_file}"
-        ];
-        language = "rust";
-        logo32 = ./logo-32x32.png;
-        logo64 = ./logo-64x64.png;
-        metadata = {
-          codedown = {
-            priority = 1;
-          };
+      rustPackages = base.rust.packages.stable;
+
+      availableLanguageServers = metadata.languageServerOptions base python.pkgs;
+    in {
+      name = "rust";
+      binaries = [rustPackages.rustc rustPackages.cargo pkgs.gcc];
+      kernel = callPackage ./kernel.nix {
+        evcxr = pkgs.evcxr.override {
+          rustPlatform = rustPackages.rustPlatform;
+          cargo = rustPackages.cargo;
         };
       };
+      languageServer = null;
+      modeInfo = writeText "mode_config.yaml" (generators.toYAML {} [{
+        attrName = "rust";
+        codeMirrorMode = "rust";
+        extensionsToHighlight = ["rs" "rc"];
+        extensionsToRun = ["rs"];
+      }]);
     };
-  };
-
-  languageServer = writeText "language_servers.yaml" (lib.generators.toYAML {} [{
-    name = "rust";
-    extensions = ["rs"];
-    attrs = ["rust"];
-    type = "stream";
-    args = ["${rustPackages.rls}/bin/rls"];
-    notebook_suffix = ".rs";
-  }]);
-
-  modeInfo = writeText "mode_config.yaml" (lib.generators.toYAML {} [{
-    attrName = "rust";
-    codeMirrorMode = "rust";
-    extensionsToHighlight = ["rs" "rc"];
-    extensionsToRun = ["rs"];
-  }]);
 }

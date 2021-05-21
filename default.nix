@@ -59,7 +59,6 @@ rec {
   octavePack = folderBuilder (import ./languages/octave);
   rPack = folderBuilder (import ./languages/r);
   rubyPack = folderBuilder (import ./languages/ruby);
-  rustPack = folderBuilder (import ./languages/rust);
   schemePack = folderBuilder (import ./languages/scheme);
   sqlPack = folderBuilder (import ./languages/sql);
 
@@ -68,6 +67,7 @@ rec {
     julia = callPackage ./languages/julia {};
     python = callPackage ./languages/python {};
     ruby = callPackage ./languages/ruby {};
+    rust = callPackage ./languages/rust {};
   };
   allBaseOptions = mapAttrs (name: value: value.metadata.baseOptions) languages;
 
