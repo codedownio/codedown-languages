@@ -1,5 +1,8 @@
 
 let
+  bootstrapNixpkgs = import <nixpkgs> {};
+  fetchgit = bootstrapNixpkgs.fetchgit;
+
   codedownSrc = import ./.;
   # codedownSrc = import /home/tom/tools/codedown-languages;
   # codedownSrc = import (builtins.fetchGit {
@@ -13,20 +16,23 @@ let
   })];
 
   channels = rec {
-    nixpkgs-20-09 = import (builtins.fetchGit {
+    nixpkgs-20-09 = import (fetchgit {
       url = https://github.com/NixOS/nixpkgs.git;
       rev = "33824cdf8e4fec30c5b9ddc91b18991c3c375227";
-      ref = "release-20.09";
+      branchName = "release-20.09";
+      sha256 = "1sad0x998k3iid2vp57kv4skvf90yh4gbs61dv3p45c2qi3sql46";
     }) { inherit overlays; };
 
-    nixpkgs-unstable = import (builtins.fetchGit {
+    nixpkgs-unstable = import (fetchgit {
       url = https://github.com/NixOS/nixpkgs.git;
       rev = "7013a0f2791da4c38c7e6f56d48139aeb344991b";
-      ref = "nixpkgs-unstable";
+      branchName = "nixpkgs-unstable";
+      sha256 = "1az617wpx535nfn0rz63cyvv8b5rlsp80cdq07da2dws8zzylnbm";
     }) { inherit overlays; };
   };
 
   nixpkgs = channels.nixpkgs-20-09;
+  nixpkgsUnstable = channels.nixpkgs-unstable;
 
 in
 
