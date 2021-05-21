@@ -38,9 +38,9 @@ in
 
 nixpkgs.codedown.mkCodeDownEnvironment {
   kernels = [
-    (nixpkgs.codedown.languages.octave.build {
+    (nixpkgsUnstable.codedown.languages.octave.build {
       baseName = "octave";
-      packages = ps: [];
+      packages = ps: [ps.arduino];
       languageServers = choices: [];
     })
 
