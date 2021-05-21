@@ -56,7 +56,6 @@ rec {
   goPack = folderBuilder (import ./languages/go);
   haskellPack = folderBuilder (import ./languages/haskell);
   javascriptPack = folderBuilder (import ./languages/javascript);
-  octavePack = folderBuilder (import ./languages/octave);
   rPack = folderBuilder (import ./languages/r);
   rubyPack = folderBuilder (import ./languages/ruby);
   schemePack = folderBuilder (import ./languages/scheme);
@@ -65,6 +64,7 @@ rec {
   # Languages
   languages = {
     julia = callPackage ./languages/julia {};
+    octave = callPackage ./languages/octave {};
     python = callPackage ./languages/python {};
     ruby = callPackage ./languages/ruby {};
     rust = callPackage ./languages/rust {};

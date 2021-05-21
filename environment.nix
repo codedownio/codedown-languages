@@ -32,6 +32,12 @@ in
 
 nixpkgs.codedown.mkCodeDownEnvironment {
   kernels = [
+    (nixpkgs.codedown.languages.octave.build {
+      baseName = "octave";
+      packages = ps: [];
+      languageServers = choices: [];
+    })
+
     (nixpkgs.codedown.languages.python.build {
       baseName = "python38";
       packages = ps: [ps.matplotlib ps.scipy];

@@ -1,29 +1,76 @@
-with import <nixpkgs> {};
-with python3Packages;
+{lib, jupyter-kernel, runCommand, makeWrapper, python3, ghostscript, fontconfig, octave}:
 
 let
-  metakernel = import ./metakernel.nix;
-  octaveWithBinaries = import ./octave.nix;
+  fetchPypi = python3.pkgs.fetchPypi;
+  buildPythonPackage = python3.pkgs.buildPythonPackage;
+
+  metakernel = buildPythonPackage rec {
+    pname = "metakernel";
+    version = "0.27.5";
+
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "0aqq9zil6h7kxsg3v2008nr6lv47qvcsash8qzmi1xh6r4x606zy";
+    };
+
+    buildInputs = with python3.pkgs; [ipykernel];
+
+    # Tests hang, so disable
+    doCheck = false;
+
+    meta = {
+      description = "Metakernel for Jupyter";
+      homepage = https://github.com/Calysto/metakernel;
+      license = lib.licenses.bsd3;
+      maintainers = with lib.maintainers; [ thomasjm ];
+    };
+  };
+
+  octaveKernel = buildPythonPackage rec {
+    pname = "octave_kernel";
+    version = "0.32.0";
+
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "0dfbxfcf3bz4jswnpkibnjwlkgy0y4j563nrhaqxv3nfa65bksif";
+    };
+
+    buildInputs = with python3.pkgs; [ metakernel ipykernel ];
+
+    # Tests failing because jupyter_kernel_test not available
+    doCheck = false;
+
+    meta = {
+      description = "A Jupyter kernel for Octave.";
+      homepage = https://github.com/Calysto/octave_kernel;
+      license = lib.licenses.bsd3;
+      maintainers = with lib.maintainers; [ thomasjm ];
+    };
+  };
+
+  python = python3.withPackages (ps: [metakernel octaveKernel] ++ (with ps; [traitlets jupyter_core ipykernel]));
 
 in
 
-buildPythonPackage rec {
-  pname = "octave_kernel";
-  version = "0.30.3";
-
-  src = fetchPypi {
-    inherit pname version;
-    sha256 = "1kl5saaicjbdqq4zksh82ia6mwb81al167n4ai1d23qrav5gcyfi";
-  };
-
-  buildInputs = [ jupyter_client metakernel ipykernel ghostscript fontconfig ];
-  propagatedBuildInputs = [ metakernel ipykernel octaveWithBinaries ];
-
-  # Tests failing because jupyter_kernel_test not available
-  doCheck = false;
-
-  meta = {
-    description = "A Jupyter kernel for Octave.";
-    homepage = https://github.com/Calysto/octave_kernel;
+jupyter-kernel.create {
+  definitions = {
+    octave = {
+      displayName = "Octave";
+      argv = [
+        "${python}/bin/python"
+        "-m"
+        "octave_kernel"
+        "-f"
+        "{connection_file}"
+      ];
+      language = "octave";
+      logo32 = ./logo-32x32.png;
+      logo64 = ./logo-64x64.png;
+      metadata = {
+        codedown = {
+          priority = 1;
+        };
+      };
+    };
   };
 }

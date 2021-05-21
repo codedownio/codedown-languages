@@ -24,20 +24,22 @@ let
   # (For some reason these don't seem to be included by the default Octave derivation)
   octaveBinaries = [epstool fig2dev pstoedit fontconfig ghostscript gnuplot graphicsmagick texinfo];
 
-  in stdenv.mkDerivation {
-    name = "octave-with-binaries";
+in
 
-    unpackPhase = "true";
+stdenv.mkDerivation {
+  name = "octave-with-binaries";
 
-    buildInputs = [makeWrapper octaveComplete] ++ octaveBinaries;
-    propagatedBuildInputs = [octaveComplete] ++ octaveBinaries;
+  unpackPhase = "true";
 
-    buildPhase = ''
-      mkdir -p $out/bin
-      echo "fonts conf: $fontsConf"
-      makeWrapper ${octaveComplete}/bin/octave $out/bin/octave --set FONTCONFIG_FILE ${fontsConf} ${lib.concatStringsSep " " (map (x: "--suffix PATH ':' ${x}/bin") octaveBinaries)}
-      makeWrapper ${octaveComplete}/bin/octave-cli $out/bin/octave-cli --set FONTCONFIG_FILE ${fontsConf} ${lib.concatStringsSep " " (map (x: "--suffix PATH ':' ${x}/bin") octaveBinaries)}
-    '';
+  buildInputs = [makeWrapper octaveComplete] ++ octaveBinaries;
+  propagatedBuildInputs = [octaveComplete] ++ octaveBinaries;
 
-    installPhase = "true";
-  }
+  buildPhase = ''
+    mkdir -p $out/bin
+    echo "fonts conf: $fontsConf"
+    makeWrapper ${octaveComplete}/bin/octave $out/bin/octave --set FONTCONFIG_FILE ${fontsConf} ${lib.concatStringsSep " " (map (x: "--suffix PATH ':' ${x}/bin") octaveBinaries)}
+    makeWrapper ${octaveComplete}/bin/octave-cli $out/bin/octave-cli --set FONTCONFIG_FILE ${fontsConf} ${lib.concatStringsSep " " (map (x: "--suffix PATH ':' ${x}/bin") octaveBinaries)}
+  '';
+
+  installPhase = "true";
+}
