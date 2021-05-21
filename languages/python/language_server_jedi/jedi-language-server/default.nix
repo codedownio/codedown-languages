@@ -1,7 +1,7 @@
 {stdenv, pkgs, python}:
 
 with python.pkgs;
-with stdenv.lib;
+with pkgs.lib;
 
 let
   pygls = buildPythonPackage rec {
@@ -43,7 +43,7 @@ buildPythonPackage rec {
 
   doCheck = false;
 
-  meta = with stdenv.lib; {
+  meta = with pkgs.lib; {
     homepage = https://github.com/pappasam/jedi-language-server;
     description = "A language server exclusively for Jedi. If Jedi supports it well, this language server should too.";
     license = licenses.mit;

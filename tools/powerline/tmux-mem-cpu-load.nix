@@ -1,5 +1,5 @@
 with import <nixpkgs> {};
-with stdenv.lib;
+with pkgs.lib;
 with python3Packages;
 
 stdenv.mkDerivation {

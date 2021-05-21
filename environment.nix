@@ -44,11 +44,11 @@ nixpkgs.codedown.mkCodeDownEnvironment {
       languageServers = choices: [];
     })
 
-    # (channels.nixpkgs-unstable.codedown.languages.rust.build {
-    #   baseName = "rust_1_52";
-    #   packages = ps: [];
-    #   languageServers = choices: [];
-    # })
+    (channels.nixpkgs-unstable.codedown.languages.rust.build {
+      baseName = "rust_1_45";
+      packages = ps: [];
+      languageServers = choices: [];
+    })
   ];
 
   notebookLanguageServers = [

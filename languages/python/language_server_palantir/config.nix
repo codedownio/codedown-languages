@@ -1,6 +1,6 @@
 {stdenv, pkgs, python, packages ? []}:
 
-with stdenv.lib;
+with pkgs.lib;
 
 let
   # This is slightly different than how the kernel is configured. For the language server,

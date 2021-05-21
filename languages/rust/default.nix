@@ -23,8 +23,8 @@ rec {
       binaries = [rustPackages.rustc rustPackages.cargo pkgs.gcc];
       kernel = callPackage ./kernel.nix {
         evcxr = pkgs.evcxr.override {
-          rustPlatform = rustPackages.rustPlatform;
-          cargo = rustPackages.cargo;
+          # rustPlatform = rustPackages.rustPlatform;
+          # cargo = rustPackages.cargo;
         };
       };
       languageServer = null;

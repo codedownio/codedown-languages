@@ -1,5 +1,5 @@
 with import <nixpkgs> {};
-with stdenv.lib;
+with pkgs.lib;
 
 fetchgit {
   url = "http://root.cern.ch/git/clang.git";

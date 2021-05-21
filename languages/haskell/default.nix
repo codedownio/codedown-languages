@@ -19,8 +19,8 @@ rec {
   hls = callPackage ./hls.nix {};
 
   kernel = callPackage ./kernel.nix {};
-  languageServer = writeText "language_servers.yaml" (stdenv.lib.generators.toYAML {} [hls]);
-  modeInfo = writeText "mode_config.yaml" (stdenv.lib.generators.toYAML {} [{
+  languageServer = writeText "language_servers.yaml" (pkgs.lib.generators.toYAML {} [hls]);
+  modeInfo = writeText "mode_config.yaml" (pkgs.lib.generators.toYAML {} [{
     attrName = "haskell";
     codeMirrorMode = "haskell";
     extensionsToHighlight = ["hs"];

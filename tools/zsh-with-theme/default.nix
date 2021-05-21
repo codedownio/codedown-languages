@@ -1,5 +1,5 @@
 with import <nixpkgs> {};
-with stdenv.lib;
+with pkgs.lib;
 
 runCommand "zsh-with-theme" { buildInputs = [makeWrapper]; } ''
   mkdir -p $out

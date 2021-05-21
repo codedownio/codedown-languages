@@ -13,7 +13,7 @@ let
   juliaWithPackages = runCommand "julia-wrapped" { buildInputs = [makeWrapper]; } ''
     mkdir -p $out/bin
     makeWrapper ${julia}/bin/julia $out/bin/julia \
-                --suffix LD_LIBRARY_PATH : "${stdenv.lib.makeLibraryPath extraLibs}" \
+                --suffix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath extraLibs}" \
                 --set PYTHON ${pythonWithPackages}/bin/python \
                 --set JUPYTER ${jupyter}/bin/jupyter \
                 --set GRDIR ${gr}

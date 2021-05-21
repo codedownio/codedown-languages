@@ -1,6 +1,6 @@
 {stdenv, pkgs, python, packages ? []}:
 
-with stdenv.lib;
+with pkgs.lib;
 
 let
   initialization_options = {

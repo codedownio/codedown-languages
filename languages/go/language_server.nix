@@ -16,7 +16,7 @@ buildGoPackage rec {
     sha256 = "09n29z7pz8wpl67f3w4v0m899yy10k80wdnb861plrqakvw8m1sn";
   };
 
-  meta = with stdenv.lib; {
+  meta = with pkgs.lib; {
     description = "A Go language server protocol server";
     homepage = https://github.com/sourcegraph/go-langserver;
     license = licenses.mit;

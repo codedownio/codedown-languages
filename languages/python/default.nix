@@ -11,7 +11,7 @@ rec {
     otherLanguageKeys ? []
   }:
     let
-      base = stdenv.lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
+      base = pkgs.lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
       python = base.python.withPackages (ps: [ps.ipykernel ps.ipywidgets] ++ (packages ps));
       availableLanguageServers = metadata.languageServerOptions base python.pkgs;
     in {
@@ -28,7 +28,7 @@ rec {
       };
       modeInfo = callPackage ./mode_info.nix {};
       packageManager = null; # callPackage ./package_manager/package_manager.nix { inherit python name displayName; };
-      languageServer = writeText "language_servers.yaml" (stdenv.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
+      languageServer = writeText "language_servers.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
       extraGitIgnoreLines = [".ipython"];
     };
 }

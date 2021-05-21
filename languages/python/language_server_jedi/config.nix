@@ -1,7 +1,7 @@
 {stdenv, pkgs, python}:
 
 with pkgs;
-with stdenv.lib;
+with pkgs.lib;
 
 let
   jediLanguageServer = callPackage ./jedi-language-server {python=python;};

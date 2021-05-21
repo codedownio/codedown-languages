@@ -1,7 +1,7 @@
 {stdenv, pkgs, python, name, displayName}:
 
 with pkgs;
-with stdenv.lib;
+with pkgs.lib;
 
 let
   shared = callPackage ../shared.nix { inherit python; pythonPackages = python.pkgs; };

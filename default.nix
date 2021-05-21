@@ -1,7 +1,7 @@
 {pkgs}:
 
 with pkgs;
-with stdenv.lib;
+with pkgs.lib;
 
 let
   folderBuilder = language: runCommand ("codedown-" + language.name) {

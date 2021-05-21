@@ -4,7 +4,7 @@
   python, displayName, codeDownAttr, otherLanguageKeys
 }:
 
-with stdenv.lib;
+with pkgs.lib;
 
 pkgs.jupyter-kernel.create {
   definitions = listToAttrs [{

@@ -1,7 +1,7 @@
 {stdenv, pkgs, python, packages ? []}:
 
 with pkgs;
-with stdenv.lib;
+with pkgs.lib;
 
 let
   diagnostic-languageserver = (callPackage ../../../language_servers/diagnostic-languageserver/default.nix {})."diagnostic-languageserver-git+https://github.com/codedownio/diagnostic-languageserver.git#c8aeacf80d3be95581441b9d3e62ce040cfa41f4";

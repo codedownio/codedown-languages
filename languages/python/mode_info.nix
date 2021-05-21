@@ -2,7 +2,7 @@
 
 with pkgs;
 
-writeText "mode_config.yaml" (stdenv.lib.generators.toYAML {} [{
+writeText "mode_config.yaml" (pkgs.lib.generators.toYAML {} [{
   attrName = "python";
   codeMirrorMode = "python";
   extensionsToHighlight = [];

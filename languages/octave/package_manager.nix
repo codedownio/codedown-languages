@@ -1,7 +1,7 @@
 {stdenv, pkgs}:
 
 with pkgs;
-with stdenv.lib;
+with pkgs.lib;
 
 let
   writePy = writers.makeScriptWriter {

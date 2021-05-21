@@ -1,5 +1,5 @@
 with import <nixpkgs> {};
-with stdenv.lib;
+with pkgs.lib;
 
 rec {
   name = "bash";

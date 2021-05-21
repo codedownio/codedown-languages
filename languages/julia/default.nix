@@ -11,7 +11,7 @@ rec {
     otherLanguageKeys ? []
   }:
     let
-      base = stdenv.lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
+      base = pkgs.lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
       julia = callPackage ./depot {
         julia = base.julia;
         python = pkgs.python3;
@@ -31,13 +31,13 @@ rec {
         echo 'Pkg.activate("/home/user")' >> $out/home/.julia/config/startup.jl
       '';
       kernel = callPackage ./kernel.nix {inherit julia python;};
-      modeInfo = writeText "mode_config.yaml" (stdenv.lib.generators.toYAML {} [{
+      modeInfo = writeText "mode_config.yaml" (pkgs.lib.generators.toYAML {} [{
         attrName = "julia";
         codeMirrorMode = "julia";
         extensionsToHighlight = ["jl"];
         extensionsToRun = ["jl"];
       }]);
-      languageServer = writeText "language_servers.yaml" (stdenv.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
+      languageServer = writeText "language_servers.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
       extraGitIgnoreLines = [".julia"];
     };
 }

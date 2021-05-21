@@ -1,7 +1,7 @@
 {stdenv, pkgs}:
 
 with pkgs;
-with stdenv.lib;
+with pkgs.lib;
 
 let
   bashLanguageServer = (callPackage ../bash-language-server {})."bash-language-server-1.16.1";
