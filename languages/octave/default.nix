@@ -16,13 +16,18 @@ rec {
       availableLanguageServers = metadata.languageServerOptions base python.pkgs;
     in rec {
       name = "octave";
-      octaveWithBinaries = import ./octave.nix;
-      binaries = [octaveWithBinaries];
-      kernel = callPackage ./kernel.nix {
-        octave = octaveWithBinaries;
+      octave = pkgs.octave.override {
+        overridePlatforms = ["x86_64-linux" "x86_64-darwin"];
+        gnuplot = pkgs.gnuplot;
+        ghostscript = pkgs.ghostscript;
+        graphicsmagick = pkgs.graphicsmagick;
+        python = pkgs.python3;
       };
-      packageManager = callPackage ./package_manager.nix {};
-      homeFolderPaths = (import ../../util.nix).folderBuilder ./home_folder;
+      octaveWithPackages = octave; #.withPackages (packages octave.pkgs);
+      binaries = [octaveWithPackages];
+      kernel = callPackage ./kernel.nix { octave = octaveWithPackages; };
+      # packageManager = callPackage ./package_manager.nix {};
+      # homeFolderPaths = (import ../../util.nix).folderBuilder ./home_folder;
       extraGitIgnoreLines = [
         ".octaverc"
         ".octave_hist"

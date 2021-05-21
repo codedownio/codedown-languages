@@ -17,7 +17,7 @@ rec {
     }
   ) (filter (x: hasAttr x pkgs) baseCandidates);
 
-  packageOptions = base@{octave, ...}: {};
+  packageOptions = base@{octave, ...}: octave.pkgs;
 
   languageServerOptions = base@{octave, ...}: {};
 }
