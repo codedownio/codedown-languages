@@ -21,8 +21,6 @@ let
 
   pythonWithPowerline = python3.withPackages (ps: [ps.powerline powerlineMemSegment python3Packages.psutil]);
 
-  # tmcl = import ./tmux-mem-cpu-load.nix;
-
 in
 
 runCommand "codedown-powerline" { buildInputs = [makeWrapper]; } ''

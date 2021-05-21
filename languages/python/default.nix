@@ -16,7 +16,6 @@ rec {
       availableLanguageServers = metadata.languageServerOptions base python.pkgs;
     in {
       name = baseName;
-
       binaries = [
         python
         python.pkgs.ipython

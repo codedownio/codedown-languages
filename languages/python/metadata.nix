@@ -4,8 +4,6 @@ with pkgs;
 with stdenv.lib;
 
 rec {
-  name = "python";
-
   baseCandidates = [
     "python"
     "python2" "python27"

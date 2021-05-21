@@ -40,7 +40,7 @@ let
 
 in
 
-{
+rec {
   # Languages
   bashPack = folderBuilder (import ./languages/bash);
   cPack = folderBuilder (import ./languages/c);
@@ -56,15 +56,20 @@ in
   goPack = folderBuilder (import ./languages/go);
   haskellPack = folderBuilder (import ./languages/haskell);
   javascriptPack = folderBuilder (import ./languages/javascript);
-  juliaPack = import ./languages/julia;
   octavePack = folderBuilder (import ./languages/octave);
-  pythonCorePack = folderBuilder ((import ./languages/python {}) // { languageServer = null; });
-  pythonPack = callPackage ./languages/python {};
   rPack = folderBuilder (import ./languages/r);
   rubyPack = folderBuilder (import ./languages/ruby);
   rustPack = folderBuilder (import ./languages/rust);
   schemePack = folderBuilder (import ./languages/scheme);
   sqlPack = folderBuilder (import ./languages/sql);
+
+  # Languages
+  languages = {
+    julia = callPackage ./languages/julia {};
+    python = callPackage ./languages/python {};
+    ruby = callPackage ./languages/ruby {};
+  };
+  allBaseOptions = mapAttrs (name: value: value.metadata.baseOptions) languages;
 
   # Tools
   nixPackageManager = import ./package_managers/nix_package_manager;
@@ -77,7 +82,6 @@ in
   powerline = import ./tools/powerline;
 
   # Build tools
-  folderBuilder = folderBuilder;
   mkCodeDownEnvironment = args: let
     paths = (listToAttrs (map (x: { name = x.name; value = folderBuilder x; }) args.kernels))
           // (listToAttrs (map (x: { name = "asdf"; value = x; }) args.notebookLanguageServers));

@@ -1,54 +1,42 @@
-with import <nixpkgs> {};
-with bundlerApp;
+{pkgs, callPackage, stdenv, writeText}:
 
 rec {
-  name = "ruby";
+  metadata = callPackage ./metadata.nix {};
 
-  binaries = [kernel ruby];
-
-  # Env = [
-  #   "GEM_PATH=/home/user/gems"
-  #   "GEM_HOME=/home/user/gems"
-  #   "BUNDLE_PATH=/home/user/gems"
-  # ];
-
-  # extraEnvFlags = ''--suffix PATH ":" /home/user/gems/bin'';
-
-  kernel = jupyter-kernel.create {
-    definitions = {
-      ruby = {
-        displayName = "Ruby";
-        argv = [
-          "${import ./iruby}/bin/iruby"
-          "kernel"
-          "{connection_file}"
-        ];
-        language = "ruby";
-        logo32 = ./logo-32x32.png;
-        logo64 = ./logo-64x64.png;
-        metadata = {
-          codedown = {
-            priority = 1;
-          };
-        };
-      };
+  build = {
+    baseName,
+    packages ? (_: []),
+    languageServers ? (_: []),
+    codeDownAttr ? baseName,
+    otherLanguageKeys ? []
+  }:
+    let
+      base = pkgs.lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
+      ruby = base.ruby;
+      availableLanguageServers = metadata.languageServerOptions base [];
+    in {
+      name = "ruby";
+      binaries = []; # ruby
+      # Env = [
+      #   "GEM_PATH=/home/user/gems"
+      #   "GEM_HOME=/home/user/gems"
+      #   "BUNDLE_PATH=/home/user/gems"
+      # ];
+      # extraEnvFlags = ''--suffix PATH ":" /home/user/gems/bin'';
+      kernel = callPackage ./kernel.nix {};
+      modeInfo = writeText "mode_config.yaml" (pkgs.lib.generators.toYAML {} [{
+        attrName = "ruby";
+        codeMirrorMode = "ruby";
+        extensionsToHighlight = ["rb"];
+        extensionsToRun = ["rb"];
+      }]);
+      packageManager = (import ./package_manager.nix).packageManager;
+      languageServer = null; # writeText "language_servers.yaml" (pkgs.lib.generators.toYAML {} [{
+      #   name = "ruby";
+      #   extensions = ["rb"];
+      #   attrs = ["ruby"];
+      #   type = "stream";
+      #   args = ["${solargraph}/bin/solargraph" "stdio"];
+      # }]);
     };
-  };
-
-  modeInfo = writeText "mode_config.yaml" (lib.generators.toYAML {} [{
-    attrName = "ruby";
-    codeMirrorMode = "ruby";
-    extensionsToHighlight = ["rb"];
-    extensionsToRun = ["rb"];
-  }]);
-
-  packageManager = (import ./package_manager.nix).packageManager;
-
-  languageServer = writeText "language_servers.yaml" (lib.generators.toYAML {} [{
-    name = "ruby";
-    extensions = ["rb"];
-    attrs = ["ruby"];
-    type = "stream";
-    args = ["${solargraph}/bin/solargraph" "stdio"];
-  }]);
 }
