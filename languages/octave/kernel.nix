@@ -5,9 +5,6 @@
   makeWrapper,
   python3,
   bashInteractive,
-  ghostscript,
-  gnuplot,
-  fontconfig,
   octave,
   extraJupyterConfig
 }:
@@ -72,7 +69,7 @@ let
       ''--suffix JUPYTER_CONFIG_PATH ":" ${jupyterConfigFolder}'';
 
   python = runCommand "python" {
-    inherit octave ghostscript gnuplot fontconfig;
+    inherit octave;
     python = python3.withPackages (ps: [metakernel octaveKernel] ++ (with ps; [traitlets jupyter_core ipykernel]));
     bash = bashInteractive;
     buildInputs = [makeWrapper];
@@ -81,11 +78,9 @@ let
     # Also, make sure a reasonable bash (not the non-interactive one) is available or else the shell magic
     # startup will hang.
     mkdir -p $out/bin/
-    makeWrapper $python/bin/python $out/bin/python \
+    makeWrapper $python/bin/python $out/bin/python ${extraJupyterConfigArgs} \
       --prefix PATH ":" $bash/bin \
-      --suffix PATH ":" $octave/bin \
-      --suffix PATH ":" $ghostscript/bin \
-      --suffix PATH ":" $gnuplot/bin ${extraJupyterConfigArgs}
+      --suffix PATH ":" $octave/bin
   '';
 
 in
