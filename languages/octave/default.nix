@@ -12,37 +12,25 @@ rec {
   }:
     let
       base = lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
-      python = base.python.withPackages (ps: [ps.ipykernel ps.ipywidgets] ++ (packages ps));
-      availableLanguageServers = metadata.languageServerOptions base python.pkgs;
+
+      # baseOctave = if lib.hasAttr "withPackages" base.octave
+      #              then base.octave.withPackages (ps: packages ps)
+      #              else base.octave;
+      baseOctave = base.octave;
+
+      packages = if lib.hasAttr "pkgs" base.octave
+                 then base.octave.pkgs
+                 else [];
+      availableLanguageServers = metadata.languageServerOptions base packages;
     in rec {
       name = "octave";
-      octave = pkgs.octave.override {
-        overridePlatforms = ["x86_64-linux" "x86_64-darwin"];
-        gnuplot = pkgs.gnuplot;
-        ghostscript = pkgs.ghostscript;
-        graphicsmagick = pkgs.graphicsmagick;
-        python = pkgs.python3;
-      };
-      octaveWithPackages = if lib.hasAttr "withPackages" octave
-                           then octave.withPackages (ps: packages ps)
-                           else octave;
-      octaveSymlinks = runCommand "octave-symlinks" {inherit octaveWithPackages;} ''
-        mkdir -p $out/bin
 
-        if [[ ! -f $octaveWithPackages/bin/octave ]]; then
-          source=$octaveWithPackages/bin/octave-6.2.0 # TODO: find the file matching octave-
-          ln -s $source $out/bin/octave;
-        fi
+      # Wrapper derivation that only has "octave" and "octave-cli" binaries,
+      # perfect for including in binaries and passing to the kernel
+      octave = callPackage ./octave.nix { octave = baseOctave; };
 
-        if [[ ! -f $octaveWithPackages/bin/octave-cli ]]; then
-          source=$octaveWithPackages/bin/octave-cli-6.2.0 # TODO: find the file matching octave-cli-
-          ln -s $source $out/bin/octave
-        fi
-      '';
-      binaries = [octaveWithPackages octaveSymlinks];
-      kernel = callPackage ./kernel.nix { octave = octaveWithPackages; };
-      # packageManager = callPackage ./package_manager.nix {};
-      # homeFolderPaths = (import ../../util.nix).folderBuilder ./home_folder;
+      binaries = [octave];
+      kernel = callPackage ./kernel.nix { inherit octave; };
       extraGitIgnoreLines = [
         ".octaverc"
         ".octave_hist"

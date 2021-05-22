@@ -1,5 +1,6 @@
-with import <nixpkgs> {};
-with python3Packages;
+{pkgs, octave}:
+
+with pkgs;
 
 let
   octaveComplete = octave.override {
@@ -8,7 +9,7 @@ let
     gnuplot = gnuplot;
     ghostscript = ghostscript;
     graphicsmagick = graphicsmagick;
-    python = python;
+    python = python3;
   };
 
   fontsConf = makeFontsConf {
@@ -26,20 +27,17 @@ let
 
 in
 
-stdenv.mkDerivation {
-  name = "octave-with-binaries";
-
-  unpackPhase = "true";
-
+runCommand "octave-with-binaries" {
   buildInputs = [makeWrapper octaveComplete] ++ octaveBinaries;
   propagatedBuildInputs = [octaveComplete] ++ octaveBinaries;
+} ''
+  mkdir -p $out/bin
 
-  buildPhase = ''
-    mkdir -p $out/bin
-    echo "fonts conf: $fontsConf"
-    makeWrapper ${octaveComplete}/bin/octave $out/bin/octave --set FONTCONFIG_FILE ${fontsConf} ${lib.concatStringsSep " " (map (x: "--suffix PATH ':' ${x}/bin") octaveBinaries)}
-    makeWrapper ${octaveComplete}/bin/octave-cli $out/bin/octave-cli --set FONTCONFIG_FILE ${fontsConf} ${lib.concatStringsSep " " (map (x: "--suffix PATH ':' ${x}/bin") octaveBinaries)}
-  '';
+  makeWrapper ${octaveComplete}/bin/octave $out/bin/octave \
+    --set FONTCONFIG_FILE ${fontsConf} \
+    ${lib.concatStringsSep " " (map (x: "--suffix PATH ':' ${x}/bin") octaveBinaries)}
 
-  installPhase = "true";
-}
+  makeWrapper ${octaveComplete}/bin/octave-cli $out/bin/octave-cli \
+    --set FONTCONFIG_FILE ${fontsConf} \
+    ${lib.concatStringsSep " " (map (x: "--suffix PATH ':' ${x}/bin") octaveBinaries)}
+''
