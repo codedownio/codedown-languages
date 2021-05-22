@@ -30,7 +30,7 @@ let
 
     for binary in $binaries; do
       echo "Processing binary source: $binary"
-      for file in $(find $binary/bin -executable -type f); do
+      for file in $(find $binary/bin -executable -type f,l); do
         [ -f $(basename "$file") ] && continue;
         ln -s "$file" $(basename "$file")
       done

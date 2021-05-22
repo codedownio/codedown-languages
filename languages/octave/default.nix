@@ -1,4 +1,4 @@
-{pkgs, lib, callPackage, writeText}:
+{pkgs, lib, callPackage, runCommand, writeText}:
 
 rec {
   metadata = callPackage ./metadata.nix {};
@@ -23,8 +23,23 @@ rec {
         graphicsmagick = pkgs.graphicsmagick;
         python = pkgs.python3;
       };
-      octaveWithPackages = octave; #.withPackages (packages octave.pkgs);
-      binaries = [octaveWithPackages];
+      octaveWithPackages = if lib.hasAttr "withPackages" octave
+                           then octave.withPackages (ps: packages ps)
+                           else octave;
+      octaveSymlinks = runCommand "octave-symlinks" {inherit octaveWithPackages;} ''
+        mkdir -p $out/bin
+
+        if [[ ! -f $octaveWithPackages/bin/octave ]]; then
+          source=$octaveWithPackages/bin/octave-6.2.0 # TODO: find the file matching octave-
+          ln -s $source $out/bin/octave;
+        fi
+
+        if [[ ! -f $octaveWithPackages/bin/octave-cli ]]; then
+          source=$octaveWithPackages/bin/octave-cli-6.2.0 # TODO: find the file matching octave-cli-
+          ln -s $source $out/bin/octave
+        fi
+      '';
+      binaries = [octaveWithPackages octaveSymlinks];
       kernel = callPackage ./kernel.nix { octave = octaveWithPackages; };
       # packageManager = callPackage ./package_manager.nix {};
       # homeFolderPaths = (import ../../util.nix).folderBuilder ./home_folder;

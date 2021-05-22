@@ -1,4 +1,4 @@
-{lib, jupyter-kernel, runCommand, makeWrapper, python3, ghostscript, fontconfig, octave}:
+{lib, jupyter-kernel, runCommand, makeWrapper, python3, bashInteractive, ghostscript, gnuplot, fontconfig, octave}:
 
 let
   fetchPypi = python3.pkgs.fetchPypi;
@@ -48,7 +48,19 @@ let
     };
   };
 
-  python = python3.withPackages (ps: [metakernel octaveKernel] ++ (with ps; [traitlets jupyter_core ipykernel]));
+  python = runCommand "python" {
+    inherit octave ghostscript gnuplot fontconfig;
+    python = python3.withPackages (ps: [metakernel octaveKernel] ++ (with ps; [traitlets jupyter_core ipykernel]));
+    bash = bashInteractive;
+    buildInputs = [makeWrapper];
+  } ''
+    mkdir -p $out/bin/
+    makeWrapper $python/bin/python $out/bin/python \
+      --prefix PATH ":" $bash/bin \
+      --suffix PATH ":" $octave/bin \
+      --suffix PATH ":" $ghostscript/bin \
+      --suffix PATH ":" $gnuplot/bin
+  '';
 
 in
 
