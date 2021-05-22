@@ -1,4 +1,14 @@
-{pkgs, lib, callPackage, runCommand, writeText}:
+{ pkgs,
+  lib,
+  jupyter-kernel,
+  runCommand,
+  callPackage,
+  writeText,
+  python3,
+  ghostscript,
+  gnuplot,
+  graphicsmagick
+}:
 
 rec {
   metadata = callPackage ./metadata.nix {};
@@ -14,23 +24,31 @@ rec {
     let
       base = lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
 
-      baseOctave = if lib.hasAttr "withPackages" base.octave
-                   then
-                     let chosenPackages = packages base.octave.pkgs; in
-                       if packages == [] then base.octave else base.octave.withPackages chosenPackages
-                   else base.octave;
-      # baseOctave = base.octave;
+      octaveComplete = base.octave.override {
+        qscintilla = null;
+        overridePlatforms = ["x86_64-linux" "x86_64-darwin"];
+        gnuplot = gnuplot;
+        ghostscript = ghostscript;
+        graphicsmagick = graphicsmagick;
+        python = python3;
+      };
 
-      packages = if lib.hasAttr "pkgs" base.octave
-                 then base.octave.pkgs
-                 else [];
-      availableLanguageServers = metadata.languageServerOptions base packages;
+      octaveWithPackages = if lib.hasAttr "withPackages" octaveComplete
+                           then
+                             let chosenPackages = packages octaveComplete.pkgs; in
+                               if chosenPackages == [] then octaveComplete else octaveComplete.withPackages (ps: chosenPackages)
+                           else octaveComplete;
+
+      chosenPackages = if lib.hasAttr "pkgs" base.octave
+                       then base.octave.pkgs
+                       else [];
+      availableLanguageServers = metadata.languageServerOptions base chosenPackages;
     in rec {
       name = "octave";
 
       # Wrapper derivation that only has "octave" and "octave-cli" binaries,
       # perfect for including in binaries and passing to the kernel
-      octave = callPackage ./octave.nix { octave = baseOctave; };
+      octave = callPackage ./octave.nix { octaveComplete = octaveWithPackages; };
 
       binaries = [octave];
       kernel = callPackage ./kernel.nix { inherit octave extraJupyterConfig; };

@@ -77,6 +77,9 @@ let
     bash = bashInteractive;
     buildInputs = [makeWrapper];
   } ''
+    # Important: make sure octave is on the PATH so that the kernel can find it.
+    # Also, make sure a reasonable bash (not the non-interactive one) is available or else the shell magic
+    # startup will hang.
     mkdir -p $out/bin/
     makeWrapper $python/bin/python $out/bin/python \
       --prefix PATH ":" $bash/bin \

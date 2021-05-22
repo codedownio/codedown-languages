@@ -1,17 +1,8 @@
-{pkgs, octave}:
+{pkgs, octaveComplete}:
 
 with pkgs;
 
 let
-  octaveComplete = octave.override {
-    qscintilla = null;
-    overridePlatforms = ["x86_64-linux" "x86_64-darwin"];
-    gnuplot = gnuplot;
-    ghostscript = ghostscript;
-    graphicsmagick = graphicsmagick;
-    python = python3;
-  };
-
   fontsConf = makeFontsConf {
     fontDirectories = [
       carlito dejavu_fonts
