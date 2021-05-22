@@ -8,15 +8,18 @@ rec {
     packages ? (_: []),
     languageServers ? (_: []),
     codeDownAttr ? baseName,
-    otherLanguageKeys ? []
-  }:
+    otherLanguageKeys ? [],
+    extraJupyterConfig ? null
+   }:
     let
       base = lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
 
-      # baseOctave = if lib.hasAttr "withPackages" base.octave
-      #              then base.octave.withPackages (ps: packages ps)
-      #              else base.octave;
-      baseOctave = base.octave;
+      baseOctave = if lib.hasAttr "withPackages" base.octave
+                   then
+                     let chosenPackages = packages base.octave.pkgs; in
+                       if packages == [] then base.octave else base.octave.withPackages chosenPackages
+                   else base.octave;
+      # baseOctave = base.octave;
 
       packages = if lib.hasAttr "pkgs" base.octave
                  then base.octave.pkgs
@@ -30,7 +33,7 @@ rec {
       octave = callPackage ./octave.nix { octave = baseOctave; };
 
       binaries = [octave];
-      kernel = callPackage ./kernel.nix { inherit octave; };
+      kernel = callPackage ./kernel.nix { inherit octave extraJupyterConfig; };
       extraGitIgnoreLines = [
         ".octaverc"
         ".octave_hist"

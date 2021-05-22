@@ -42,6 +42,9 @@ nixpkgs.codedown.mkCodeDownEnvironment {
       baseName = "octave";
       packages = ps: [ps.arduino];
       languageServers = choices: [];
+      extraJupyterConfig = ''
+        c.OctaveKernel.plot_settings = dict(format='svg')
+      '';
     })
 
     (nixpkgs.codedown.languages.python.build {

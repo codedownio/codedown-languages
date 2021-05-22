@@ -1,4 +1,16 @@
-{lib, jupyter-kernel, runCommand, makeWrapper, python3, bashInteractive, ghostscript, gnuplot, fontconfig, octave}:
+{ lib,
+  jupyter-kernel,
+  runCommand,
+  writeText,
+  makeWrapper,
+  python3,
+  bashInteractive,
+  ghostscript,
+  gnuplot,
+  fontconfig,
+  octave,
+  extraJupyterConfig
+}:
 
 let
   fetchPypi = python3.pkgs.fetchPypi;
@@ -48,6 +60,17 @@ let
     };
   };
 
+  extraJupyterConfigArgs = if extraJupyterConfig == null then "" else
+    let
+      octaveKernelConfig = writeText "octave_kernel_config.py" extraJupyterConfig;
+
+      jupyterConfigFolder = runCommand "octave-jupyter-config" {} ''
+        mkdir -p $out
+        cp ${octaveKernelConfig} $out/octave_kernel_config.py
+      '';
+    in
+      ''--suffix JUPYTER_CONFIG_PATH ":" ${jupyterConfigFolder}'';
+
   python = runCommand "python" {
     inherit octave ghostscript gnuplot fontconfig;
     python = python3.withPackages (ps: [metakernel octaveKernel] ++ (with ps; [traitlets jupyter_core ipykernel]));
@@ -59,7 +82,7 @@ let
       --prefix PATH ":" $bash/bin \
       --suffix PATH ":" $octave/bin \
       --suffix PATH ":" $ghostscript/bin \
-      --suffix PATH ":" $gnuplot/bin
+      --suffix PATH ":" $gnuplot/bin ${extraJupyterConfigArgs}
   '';
 
 in
