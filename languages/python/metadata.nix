@@ -14,12 +14,12 @@ rec {
   ];
   baseOptions = map (x:
     let python = getAttr x pkgs; in {
-      inherit python;
-      name = x;
-      displayName = "Python " + python.version;
-      meta = python.meta;
-      logo = ./logo-64x64.png;
-    }
+          inherit python;
+          name = x;
+          displayName = "Python " + python.version;
+          meta = python.meta;
+          logo = ./logo-64x64.png;
+        }
   ) (filter (x: hasAttr x pkgs) baseCandidates);
 
   packageOptions = base@{python, ...}: python.pkgs.override {
@@ -28,7 +28,7 @@ rec {
     };
   };
 
-  languageServerOptions = base@{python, ...}: packages: {
+  languageServers = base@{python, ...}: packages: {
     # Primary language server
     jedi = (callPackage ./language_server_jedi/config.nix {
       python = python;
@@ -56,4 +56,6 @@ rec {
       packages = packages;
     });
   };
+
+  languageServerOptions = base@{python, ...}: packages: [];
 }

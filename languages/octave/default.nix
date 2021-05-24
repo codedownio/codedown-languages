@@ -1,26 +1,34 @@
-{ pkgs,
-  lib,
-  jupyter-kernel,
-  runCommand,
-  callPackage,
-  writeText,
-  python3,
-  ghostscript,
-  gnuplot,
-  graphicsmagick
+{ pkgs
+, lib
+, jupyter-kernel
+, runCommand
+, callPackage
+, writeTextDir
+, python3
+, ghostscript
+, gnuplot
+, graphicsmagick
+, symlinkJoin
 }:
 
 rec {
   metadata = callPackage ./metadata.nix {};
 
+  modeInfo = writeTextDir "lib/octave-mode-config.yaml" (lib.generators.toYAML {} [{
+    attrName = "octave";
+    codeMirrorMode = "octave";
+    extensionsToHighlight = ["m"];
+    extensionsToRun = ["m"];
+  }]);
+
   build = {
-    baseName,
-    packages ? (_: []),
-    languageServers ? (_: []),
-    codeDownAttr ? baseName,
-    otherLanguageKeys ? [],
-    extraJupyterConfig ? null
-   }:
+    baseName
+    , packages ? (_: [])
+    , languageServers ? (_: [])
+    , codeDownAttr ? baseName
+    , otherLanguageKeys ? []
+    , extraJupyterConfig ? null
+  }:
     let
       base = lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
 
@@ -36,35 +44,32 @@ rec {
       octaveWithPackages = if lib.hasAttr "withPackages" octaveComplete
                            then
                              let chosenPackages = packages octaveComplete.pkgs; in
-                               if chosenPackages == [] then octaveComplete else octaveComplete.withPackages (ps: chosenPackages)
+                             if chosenPackages == [] then octaveComplete else octaveComplete.withPackages (ps: chosenPackages)
                            else octaveComplete;
 
       chosenPackages = if lib.hasAttr "pkgs" base.octave
                        then base.octave.pkgs
                        else [];
-      availableLanguageServers = metadata.languageServerOptions base chosenPackages;
-    in rec {
-      name = "octave";
 
       # Wrapper derivation that only has "octave" and "octave-cli" binaries,
       # perfect for including in binaries and passing to the kernel
       octave = callPackage ./octave.nix { octaveComplete = octaveWithPackages; };
 
-      binaries = [octave];
-      kernel = callPackage ./kernel.nix { inherit octave extraJupyterConfig; };
-      extraGitIgnoreLines = [
-        ".octaverc"
-        ".octave_hist"
+      availableLanguageServers = metadata.languageServerOptions base chosenPackages;
+
+    in symlinkJoin {
+      name = "octave";
+      paths = [
+        (callPackage ./kernel.nix { inherit octave extraJupyterConfig; })
+        octave
       ];
-      modeInfo = writeText "mode_config.yaml" (lib.generators.toYAML {} [{
-        attrName = "octave";
-        codeMirrorMode = "octave";
-        extensionsToHighlight = ["m"];
-        extensionsToRun = ["m"];
-      }]);
     };
 }
 
+  # extraGitIgnoreLines = [
+  #   ".octaverc"
+  #   ".octave_hist"
+  # ];
 
 
   # Solution for problem that was arising when Octave calls makeinfo from the texinfo

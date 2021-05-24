@@ -1,29 +1,32 @@
-{pkgs, lib, callPackage, writeText}:
+{pkgs, lib, callPackage, writeTextDir, symlinkJoin}:
 
 rec {
   metadata = callPackage ./metadata.nix {};
 
+  modeInfo = writeTextDir "lib/bash-mode-config.yaml" (lib.generators.toYAML {} [{
+    attrName = "bash";
+    codeMirrorMode = "shell";
+    extensionsToHighlight = ["sh" "bash"];
+    extensionsToRun = ["sh" "bash"];
+  }]);
+
   build = {
-    baseName,
-    packages ? (_: []),
-    languageServers ? (_: []),
-    codeDownAttr ? "bash",
-    otherLanguageKeys ? []
+    baseName
+    , packages ? (_: [])
+    , languageServers ? (_: [])
+    , codeDownAttr ? "bash"
+    , otherLanguageKeys ? []
   }:
     let
       base = pkgs.lib.findSingle (x: x.name == baseName) null "multiple" metadata.baseOptions;
       bash = base.bash;
-    in {
+    in symlinkJoin {
       name = "bash";
-      binaries = [(callPackage ./man-with-pages.nix {})];
-      kernel = callPackage ./kernel.nix {};
-      languageServer = null;
-      modeInfo = writeText "mode_config.yaml" (lib.generators.toYAML {} [{
-        attrName = "bash";
-        codeMirrorMode = "shell";
-        extensionsToHighlight = ["sh" "bash"];
-        extensionsToRun = ["sh" "bash"];
-      }]);
+      paths = [
+        (callPackage ./kernel.nix {})
+        (callPackage ./man-with-pages.nix {})
+        modeInfo
+      ];
     };
 }
 

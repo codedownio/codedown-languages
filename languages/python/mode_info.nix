@@ -1,8 +1,6 @@
-{stdenv, pkgs}:
+{lib, writeTextDir}:
 
-with pkgs;
-
-writeText "mode_config.yaml" (pkgs.lib.generators.toYAML {} [{
+writeTextDir "lib/python-mode-config.yaml" (lib.generators.toYAML {} [{
   attrName = "python";
   codeMirrorMode = "python";
   extensionsToHighlight = [];

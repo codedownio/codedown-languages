@@ -1,6 +1,6 @@
-{ lib, writeText }:
+{ lib, writeTextDir }:
 
-writeText "mode_config.yaml" (lib.generators.toYAML {} [{
+writeTextDir "lib/r-mode-config.yaml" (lib.generators.toYAML {} [{
   attrName = "r";
   codeMirrorMode = "r";
   extensionsToHighlight = ["r"];

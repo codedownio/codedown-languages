@@ -37,6 +37,9 @@ let
 in
 
 nixpkgs.codedown.mkCodeDownEnvironment {
+  specHash = nixpkgs.lib.fakeSha256;
+  spec = "THIS IS THE SPEC";
+
   kernels = [
     (nixpkgsUnstable.codedown.languages.bash.build {
       baseName = "bashInteractive";
@@ -44,18 +47,18 @@ nixpkgs.codedown.mkCodeDownEnvironment {
       languageServers = choices: [];
     })
 
-    (nixpkgsUnstable.codedown.languages.dot.build {
-      baseName = "graphviz";
-      packages = ps: [];
-      languageServers = choices: [];
-    })
-
-    # (nixpkgsUnstable.codedown.languages.cpp.build {
-    #   baseName = "cpp11";
+    # (nixpkgsUnstable.codedown.languages.dot.build {
+    #   baseName = "graphviz";
     #   packages = ps: [];
     #   languageServers = choices: [];
-    #   codeDownAttr = "cpp";
     # })
+
+    (nixpkgsUnstable.codedown.languages.cpp.build {
+      baseName = "cpp11";
+      packages = ps: [];
+      languageServers = choices: [];
+      codeDownAttr = "cpp";
+    })
 
     (nixpkgs.codedown.languages.r.build {
       baseName = "r";
@@ -79,7 +82,7 @@ nixpkgs.codedown.mkCodeDownEnvironment {
     })
 
     (nixpkgs.codedown.languages.ruby.build {
-      baseName = "ruby_3_0";
+      baseName = "ruby_2_7";
       packages = ps: [];
       languageServers = choices: [];
     })

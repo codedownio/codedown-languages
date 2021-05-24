@@ -3,55 +3,18 @@
 with pkgs;
 with pkgs.lib;
 
-let
-  folderBuilder = language: runCommand ("codedown-" + language.name) {
-    name = "codedown-" + language.name;
-    baseName = language.name;
-    kernel = language.kernel;
-    packageManager = language.packageManager or "";
-    languageServer = language.languageServer or "";
-    modeInfo = language.modeInfo or "";
-    binaries = language.binaries or [];
-  } ''
-  mkdir -p $out
-  cd $out
-
-  mkdir -p lib/codedown-$baseName-pack
-  cd lib/codedown-$baseName-pack
-  if [ -n "$kernel" ]; then ln -s "$kernel" ./kernels; fi
-  if [ -n "$packageManager" ]; then ln -s "$packageManager" ./package_managers.yaml; fi
-  if [ -n "$modeInfo" ]; then ln -s "$modeInfo" ./mode_infos.yaml; fi
-  if [ -n "$languageServer" ]; then ln -s "$languageServer" ./language_servers.yaml; fi
-
-  if [ -n "$binaries" ]; then
-    cd $out
-    mkdir -p bin
-    cd bin
-
-    for binary in $binaries; do
-      echo "Processing binary source: $binary"
-      for file in $(find $binary/bin -executable -type f,l); do
-        [ -f $(basename "$file") ] && continue;
-        ln -s "$file" $(basename "$file")
-      done
-    done
-  fi
-'';
-
-in
-
 rec {
   # Languages
-  cPack = folderBuilder (import ./languages/c);
-  clojurePack = folderBuilder (import ./languages/clojure);
-  # csharpPack = folderBuilder (import ./languages/csharp);
-  elixirPack = folderBuilder (import ./languages/elixir);
-  erlangPack = folderBuilder (import ./languages/erlang);
-  goPack = folderBuilder (import ./languages/go);
-  haskellPack = folderBuilder (import ./languages/haskell);
-  javascriptPack = folderBuilder (import ./languages/javascript);
-  schemePack = folderBuilder (import ./languages/scheme);
-  sqlPack = folderBuilder (import ./languages/sql);
+  cPack = callPackage ./languages/c {};
+  clojurePack = callPackage ./languages/clojure {};
+  # csharpPack = callPackage ./languages/csharp {};
+  elixirPack = callPackage ./languages/elixir {};
+  erlangPack = callPackage ./languages/erlang {};
+  goPack = callPackage ./languages/go {};
+  haskellPack = callPackage ./languages/haskell {};
+  javascriptPack = callPackage ./languages/javascript {};
+  schemePack = callPackage ./languages/scheme {};
+  sqlPack = callPackage ./languages/sql {};
 
   # Languages
   languages = {
@@ -83,23 +46,18 @@ rec {
     , specHash ? null
     , kernels
     , notebookLanguageServers
-  }: let
-    paths = (listToAttrs (map (x: { name = x.name; value = folderBuilder x; }) kernels))
-          // (listToAttrs (map (x: { name = "asdf"; value = x; }) notebookLanguageServers));
-  in
-    runCommand "codedown-environment" { buildInputs = [jq];  } ''
-      mkdir -p $out/lib/
-      mkdir -p $out/bin/
+  }: symlinkJoin {
+    name = "codedown-environment";
+    paths = kernels ++ notebookLanguageServers;
+    postBuild = ''
+      cd $out
+      mkdir -p lib
 
-      cat ${writeText "paths.txt" (lib.generators.toJSON {} paths)} | jq -r '. | to_entries[] | [.key, .value] | @tsv' |
-        while IFS=$'\t' read -r name path; do
-          for file in $path/lib/*; do
-            ln -s "$file" $out/lib/$(basename "$file")
-          done
+      specHash='${toString specHash}'
+      if [[ -n "$specHash" ]]; then echo "$specHash" > lib/hash; fi
 
-          for file in $path/bin/*; do
-            ln -s "$file" $out/bin/$(basename "$file")
-          done
-        done
+      spec='${toString spec}'
+      if [[ -n "$spec" ]]; then echo "$spec" > lib/spec.yaml; fi
     '';
+  };
 }

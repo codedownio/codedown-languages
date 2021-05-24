@@ -1,4 +1,4 @@
-{lib, callPackage, writeText, cling}:
+{lib, callPackage, writeTextDir, symlinkJoin, cling}:
 
 let
   modeInfoBase = {
@@ -15,22 +15,26 @@ rec {
   metadata = callPackage ./metadata.nix {};
 
   build = {
-    baseName,
-    packages ? (_: []),
-    languageServers ? (_: []),
-    codeDownAttr,
-    otherLanguageKeys ? []
+    baseName
+    , packages ? (_: [])
+    , languageServers ? (_: [])
+    , codeDownAttr
+    , otherLanguageKeys ? []
   }:
     let
       base = lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
-    in {
-      name = base.name;
-      binaries = [cling]; # TODO: get cling set up with library paths
-      kernel = (callPackage ./kernel.nix {}) base.displayName base.std base.name base.logo;
-      languageServer = null; # callPackage ./ccls.nix {};
-      modeInfo = writeText "mode_config.yaml" (lib.generators.toYAML {} [
+
+      modeInfo = writeTextDir "lib/cpp-mode-config.yaml" (lib.generators.toYAML {} [
         modeInfoBase
         (modeInfoBase // { attrName = base.name; })
       ]);
+
+    in symlinkJoin {
+      name = base.name;
+      paths = [
+        cling
+        ((callPackage ./kernel.nix {}) base.displayName base.std base.name base.logo)
+        modeInfo
+      ];
     };
 }

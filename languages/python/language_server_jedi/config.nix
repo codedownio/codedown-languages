@@ -1,4 +1,4 @@
-{stdenv, pkgs, python}:
+{lib, pkgs, python, writeTextDir}:
 
 with pkgs;
 with pkgs.lib;
@@ -14,22 +14,18 @@ let
 
 in
 
-{
-  server = jediLanguageServer;
-
-  config = {
-    name = "python";
-    extensions = ["py"];
-    attrs = ["python"];
-    type = "stream";
-    primary = true;
-    args = ["${jediLanguageServer}/bin/jedi-language-server"];
-    # Not sure whether to do this using an environment variable or initialization option
-    env = {
-      JEDI_LANGUAGE_SERVER_EXTRA_PATHS = lib.concatStringsSep ":" [
-        "${pythonEnv}/lib/python3.8/site-packages"
-        "/home/user/.local/lib/python3.8/site-packages"
-      ];
-    };
+writeTextDir "lib/codedown/jedi-language-server-configs.yaml" (lib.generators.toYAML {} {
+  name = "python";
+  extensions = ["py"];
+  attrs = ["python"];
+  type = "stream";
+  primary = true;
+  args = ["${jediLanguageServer}/bin/jedi-language-server"];
+  # Not sure whether to do this using an environment variable or initialization option
+  env = {
+    JEDI_LANGUAGE_SERVER_EXTRA_PATHS = lib.concatStringsSep ":" [
+      "${pythonEnv}/lib/python3.8/site-packages"
+      "/home/user/.local/lib/python3.8/site-packages"
+    ];
   };
-}
+})
