@@ -78,9 +78,14 @@ rec {
   powerline = import ./tools/powerline;
 
   # Build tools
-  mkCodeDownEnvironment = args: let
-    paths = (listToAttrs (map (x: { name = x.name; value = folderBuilder x; }) args.kernels))
-          // (listToAttrs (map (x: { name = "asdf"; value = x; }) args.notebookLanguageServers));
+  mkCodeDownEnvironment = {
+    spec ? null
+    , specHash ? null
+    , kernels
+    , notebookLanguageServers
+  }: let
+    paths = (listToAttrs (map (x: { name = x.name; value = folderBuilder x; }) kernels))
+          // (listToAttrs (map (x: { name = "asdf"; value = x; }) notebookLanguageServers));
   in
     runCommand "codedown-environment" { buildInputs = [jq];  } ''
       mkdir -p $out/lib/
