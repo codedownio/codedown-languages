@@ -38,6 +38,12 @@ in
 
 nixpkgs.codedown.mkCodeDownEnvironment {
   kernels = [
+    (nixpkgsUnstable.codedown.languages.bash.build {
+      baseName = "bashInteractive";
+      packages = ps: [];
+      languageServers = choices: [];
+    })
+
     (nixpkgsUnstable.codedown.languages.cpp.build {
       baseName = "cpp11";
       packages = ps: [];

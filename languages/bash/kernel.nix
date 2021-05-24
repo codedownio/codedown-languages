@@ -1,39 +1,31 @@
-with import <nixpkgs> {};
-with python3Packages;
+{ jupyter-kernel, python3, bash }:
 
-buildPythonApplication rec {
-  pname = "bash_kernel";
-  version = "0.7.1";
+let
+  python = python3.withPackages (ps: [
+    (ps.bash_kernel.override { inherit bash; })
+  ]);
 
-  src = fetchPypi {
-    inherit pname version;
-    sha256 = "1s2kc7m52kq28b4j1q3456g5ani6nmq4n0rpbqi3yvh7ks0rby19";
-  };
+in
 
-  buildInputs = [ jupyter_client ipykernel pexpect ];
-  propagatedBuildInputs = [ ipykernel pexpect (import ./shared.nix).manWithPages ];
-
-  installPhase = ''
-      pp=$out/lib/${python.libPrefix}/site-packages
-
-      mkdir -p $out/bin
-      mkdir -p $pp
-
-      cat > $out/bin/bash_kernel <<EOF
-      #!${python}/bin/python
-      from ipykernel.kernelapp import IPKernelApp
-      from bash_kernel.kernel import BashKernel
-      IPKernelApp.launch_instance(kernel_class=BashKernel)
-      EOF
-      chmod 755 $out/bin/bash_kernel
-
-      cp -rv bash_kernel $pp/
-    '';
-
-  doCheck = false;
-
-  meta = {
-    description = "A bash kernel for Jupyter";
-    homepage = https://github.com/takluyver/bash_kernel;
+jupyter-kernel.create {
+  definitions = {
+    bash = {
+      displayName = "Bash";
+      argv = [
+        "${python}/bin/python"
+        "-m"
+        "bash_kernel"
+        "-f"
+        "{connection_file}"
+      ];
+      language = "bash";
+      logo32 = ./bash.png;
+      logo64 = ./bash.png;
+      metadata = {
+        codedown = {
+          priority = 10;
+        };
+      };
+    };
   };
 }

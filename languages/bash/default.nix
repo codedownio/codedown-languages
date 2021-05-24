@@ -1,43 +1,37 @@
-with import <nixpkgs> {};
-with pkgs.lib;
+{pkgs, lib, callPackage, writeText}:
 
 rec {
-  name = "bash";
-  binaries = [(import ./shared.nix).manWithPages];
+  metadata = callPackage ./metadata.nix {};
 
-  kernel = jupyter-kernel.create {
-    definitions = {
-      bash = {
-        displayName = "Bash";
-        argv = [
-          "${import ./kernel.nix}/bin/bash_kernel"
-          "-f"
-          "{connection_file}"
-        ];
-        language = "bash";
-        logo32 = ./bash.png;
-        logo64 = ./bash.png;
-        metadata = {
-          codedown = {
-            priority = 10;
-          };
-        };
-      };
+  build = {
+    baseName,
+    packages ? (_: []),
+    languageServers ? (_: []),
+    codeDownAttr ? "bash",
+    otherLanguageKeys ? []
+  }:
+    let
+      base = pkgs.lib.findSingle (x: x.name == baseName) null "multiple" metadata.baseOptions;
+      bash = base.bash;
+    in {
+      name = "bash";
+      binaries = [(callPackage ./man-with-pages.nix {})];
+      kernel = callPackage ./kernel.nix {};
+      languageServer = null;
+      modeInfo = writeText "mode_config.yaml" (lib.generators.toYAML {} [{
+        attrName = "bash";
+        codeMirrorMode = "shell";
+        extensionsToHighlight = ["sh" "bash"];
+        extensionsToRun = ["sh" "bash"];
+      }]);
     };
-  };
-
-  languageServer = pkgs.writeText "language_servers.yaml" (generators.toYAML {} [
-    # Primary language server
-    (callPackage ./language_server_bash/config.nix {}).config
-
-    # Secondary language servers (for diagnostics, formatting, etc.)
-    (callPackage ./language_server_shellcheck/config.nix {}).config
-  ]);
-
-  modeInfo = writeText "mode_config.yaml" (lib.generators.toYAML {} [{
-    attrName = "bash";
-    codeMirrorMode = "shell";
-    extensionsToHighlight = ["sh" "bash"];
-    extensionsToRun = ["sh" "bash"];
-  }]);
 }
+
+
+  # pkgs.writeText "language_servers.yaml" (lib.generators.toYAML {} [
+  #   # Primary language server
+  #   (callPackage ./language_server_bash/config.nix {}).config
+
+  #   # Secondary language servers (for diagnostics, formatting, etc.)
+  #   (callPackage ./language_server_shellcheck/config.nix {}).config
+  # ])

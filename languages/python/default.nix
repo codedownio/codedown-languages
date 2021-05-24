@@ -11,7 +11,7 @@ rec {
     otherLanguageKeys ? []
   }:
     let
-      base = pkgs.lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
+      base = pkgs.lib.findSingle (x: x.name == baseName) null "multiple" metadata.baseOptions;
       python = base.python.withPackages (ps: [ps.ipykernel ps.ipywidgets] ++ (packages ps));
       availableLanguageServers = metadata.languageServerOptions base python.pkgs;
     in {

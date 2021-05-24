@@ -42,7 +42,6 @@ in
 
 rec {
   # Languages
-  bashPack = folderBuilder (import ./languages/bash);
   cPack = folderBuilder (import ./languages/c);
   clojurePack = folderBuilder (import ./languages/clojure);
   # csharpPack = folderBuilder (import ./languages/csharp);
@@ -57,6 +56,7 @@ rec {
 
   # Languages
   languages = {
+    bash = callPackage ./languages/bash {};
     cpp = callPackage ./languages/cpp {};
     julia = callPackage ./languages/julia {};
     octave = callPackage ./languages/octave {};
