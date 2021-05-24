@@ -44,12 +44,18 @@ nixpkgs.codedown.mkCodeDownEnvironment {
       languageServers = choices: [];
     })
 
-    (nixpkgsUnstable.codedown.languages.cpp.build {
-      baseName = "cpp11";
+    (nixpkgsUnstable.codedown.languages.dot.build {
+      baseName = "graphviz";
       packages = ps: [];
       languageServers = choices: [];
-      codeDownAttr = "cpp";
     })
+
+    # (nixpkgsUnstable.codedown.languages.cpp.build {
+    #   baseName = "cpp11";
+    #   packages = ps: [];
+    #   languageServers = choices: [];
+    #   codeDownAttr = "cpp";
+    # })
 
     (nixpkgs.codedown.languages.r.build {
       baseName = "r";

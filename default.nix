@@ -45,7 +45,6 @@ rec {
   cPack = folderBuilder (import ./languages/c);
   clojurePack = folderBuilder (import ./languages/clojure);
   # csharpPack = folderBuilder (import ./languages/csharp);
-  dotPack = folderBuilder (import ./languages/dot);
   elixirPack = folderBuilder (import ./languages/elixir);
   erlangPack = folderBuilder (import ./languages/erlang);
   goPack = folderBuilder (import ./languages/go);
@@ -57,6 +56,7 @@ rec {
   # Languages
   languages = {
     bash = callPackage ./languages/bash {};
+    dot = callPackage ./languages/dot {};
     cpp = callPackage ./languages/cpp {};
     julia = callPackage ./languages/julia {};
     octave = callPackage ./languages/octave {};

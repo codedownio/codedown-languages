@@ -1,8 +1,7 @@
-with import <nixpkgs> {};
-with python3Packages;
+{python3, graphviz, jupyter-kernel, fetchFromGitHub, makeFontsConf, fontconfig, carlito, dejavu_fonts, freefont_ttf, xorg}:
 
 let
-  dotKernel = buildPythonPackage rec {
+  dotKernel = python3.pkgs.buildPythonPackage rec {
     name = "dot_kernel";
 
     src = fetchFromGitHub {
@@ -12,9 +11,9 @@ let
       sha256 = "1gmvybwfj6m1sjk1h6350446z3wfnai2062sfs0zgs3lczhflxsc";
     };
 
-    buildInputs = [ jupyter_client ipykernel ];
+    buildInputs = with python3.pkgs; [ jupyter_client ipykernel ];
 
-    propagatedBuildInputs = [ graphviz fontconfig ipykernel ];
+    propagatedBuildInputs = with python3.pkgs; [ graphviz fontconfig ipykernel ];
 
     patchPhase = ''
       sed -i 's|, "jupyter"||g' setup.py
@@ -28,6 +27,39 @@ let
     };
   };
 
+  fontsConf = makeFontsConf {
+    fontDirectories = [
+      carlito dejavu_fonts
+      freefont_ttf xorg.fontmiscmisc
+      # liberation_ttf_v1_binary
+      # liberation_ttf_v2_binary
+    ];
+  };
+
+  pythonWithPackages = python3.withPackages (ps: [dotKernel]);
+
 in
 
-python.withPackages (ps: [dotKernel])
+jupyter-kernel.create {
+  definitions = {
+    dot = {
+      displayName = "Dot (Graphviz)";
+      argv = [
+        "${pythonWithPackages}/bin/python"
+        "-m"
+        "dot_kernel"
+        "-f"
+        "{connection_file}"
+      ];
+      language = "dot";
+      logo32 = ./logo-32x32.png;
+      logo64 = ./logo-64x64.png;
+      env = { FONTCONFIG_FILE = "${fontsConf}"; };
+      metadata = {
+        codedown = {
+          priority = 10;
+        };
+      };
+    };
+  };
+}
