@@ -14,7 +14,7 @@
 rec {
   metadata = callPackage ./metadata.nix {};
 
-  modeInfo = writeTextDir "lib/octave-mode-config.yaml" (lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/octave-mode-config.yaml" (lib.generators.toYAML {} [{
     attrName = "octave";
     codeMirrorMode = "octave";
     extensionsToHighlight = ["m"];

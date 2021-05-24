@@ -50,14 +50,14 @@ rec {
     name = "codedown-environment";
     paths = kernels ++ notebookLanguageServers;
     postBuild = ''
-      cd $out
-      mkdir -p lib
+      mkdir -p $out/lib/codedown
+      cd $out/lib/codedown
 
       specHash='${toString specHash}'
-      if [[ -n "$specHash" ]]; then echo "$specHash" > lib/hash; fi
+      if [[ -n "$specHash" ]]; then echo "$specHash" > hash; fi
 
       spec='${toString spec}'
-      if [[ -n "$spec" ]]; then echo "$spec" > lib/spec.yaml; fi
+      if [[ -n "$spec" ]]; then echo "$spec" > spec.yaml; fi
     '';
   };
 }

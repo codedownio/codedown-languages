@@ -3,7 +3,7 @@
 rec {
   metadata = callPackage ./metadata.nix {};
 
-  modeInfo = writeTextDir "lib/ruby-mode-config.yaml" (pkgs.lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/ruby-mode-config.yaml" (pkgs.lib.generators.toYAML {} [{
     attrName = "ruby";
     codeMirrorMode = "ruby";
     extensionsToHighlight = ["rb"];

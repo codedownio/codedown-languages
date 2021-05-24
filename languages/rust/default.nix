@@ -5,7 +5,7 @@ with pkgs.lib;
 rec {
   metadata = callPackage ./metadata.nix {};
 
-  modeInfo = writeTextDir "lib/rust-mode-config.yaml" (generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/rust-mode-config.yaml" (generators.toYAML {} [{
     attrName = "rust";
     codeMirrorMode = "rust";
     extensionsToHighlight = ["rs" "rc"];

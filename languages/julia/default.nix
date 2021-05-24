@@ -31,7 +31,7 @@ rec {
         echo 'Pkg.activate("/home/user")' >> $out/home/.julia/config/startup.jl
       '';
       kernel = callPackage ./kernel.nix {inherit julia python;};
-      modeInfo = writeText "mode_config.yaml" (pkgs.lib.generators.toYAML {} [{
+      modeInfo = writeTextDir "lib/codedown/julia-mode-config.yaml" (pkgs.lib.generators.toYAML {} [{
         attrName = "julia";
         codeMirrorMode = "julia";
         extensionsToHighlight = ["jl"];

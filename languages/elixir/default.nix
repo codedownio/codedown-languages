@@ -32,7 +32,7 @@ rec {
       args = [];
     }]);
 
-  modeInfo = writeText "mode_config.yaml" (lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/elixir-mode-config.yaml" (lib.generators.toYAML {} [{
     attrName = "elixir";
     codeMirrorMode = "erlang";
     extensionsToHighlight = ["exs"];

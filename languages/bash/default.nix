@@ -3,7 +3,7 @@
 rec {
   metadata = callPackage ./metadata.nix {};
 
-  modeInfo = writeTextDir "lib/bash-mode-config.yaml" (lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/bash-mode-config.yaml" (lib.generators.toYAML {} [{
     attrName = "bash";
     codeMirrorMode = "shell";
     extensionsToHighlight = ["sh" "bash"];

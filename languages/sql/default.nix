@@ -26,7 +26,7 @@ rec {
     };
   };
 
-  modeInfo = writeText "mode_config.yaml" (lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/sql-mode-config.yaml" (lib.generators.toYAML {} [{
     attrName = "sql";
     codeMirrorMode = "sql";
     extensionsToHighlight = ["sql"];

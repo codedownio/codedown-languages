@@ -3,7 +3,7 @@
 rec {
   metadata = callPackage ./metadata.nix {};
 
-  modeInfo = writeText "dot-mode-config.yaml" (lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/dot-mode-config.yaml" (lib.generators.toYAML {} [{
     attrName = "dot";
     codeMirrorMode = "";
     codeMirrorMimeType = "text/plain";

@@ -33,6 +33,6 @@ in
 runCommand "codedown-spellchecker" {
   meta = hunspell.meta;
 } ''
-  mkdir -p $out/lib
-  cp ${config} $out/lib/hunspell-spellchecker-language-servers.yaml
+  mkdir -p $out/lib/codedown
+  cp ${config} $out/lib/codedown/hunspell-spellchecker-language-servers.yaml
 ''

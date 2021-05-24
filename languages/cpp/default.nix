@@ -24,7 +24,7 @@ rec {
     let
       base = lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
 
-      modeInfo = writeTextDir "lib/cpp-mode-config.yaml" (lib.generators.toYAML {} [
+      modeInfo = writeTextDir "lib/codedown/cpp-mode-config.yaml" (lib.generators.toYAML {} [
         modeInfoBase
         (modeInfoBase // { attrName = base.name; })
       ]);

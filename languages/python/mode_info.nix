@@ -1,6 +1,6 @@
 {lib, writeTextDir}:
 
-writeTextDir "lib/python-mode-config.yaml" (lib.generators.toYAML {} [{
+writeTextDir "lib/codedown/python-mode-config.yaml" (lib.generators.toYAML {} [{
   attrName = "python";
   codeMirrorMode = "python";
   extensionsToHighlight = [];

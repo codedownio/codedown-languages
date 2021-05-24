@@ -49,7 +49,7 @@ rec {
     ".ccls"
   ];
 
-  modeInfo = writeText "mode_config.yaml" (lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/c-mode-config.yaml" (lib.generators.toYAML {} [{
     attrName = "c";
     codeMirrorMode = "clike";
     codeMirrorMimeType = "text/x-csrc";

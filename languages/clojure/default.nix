@@ -42,7 +42,7 @@ rec {
     notebook_suffix = ".clj";
   }]);
 
-  modeInfo = writeText "mode_config.yaml" (lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/clojure-mode-config.yaml" (lib.generators.toYAML {} [{
     attrName = "clojure";
     codeMirrorMode = "clojure";
     extensionsToHighlight = ["clj"];
