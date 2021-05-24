@@ -20,29 +20,41 @@ stdenv.mkDerivation {
   };
 
   configurePhase = ''
-      runHook preConfigure
-      export R_LIBS_SITE="$R_LIBS_SITE''${R_LIBS_SITE:+:}$out/library"
-      runHook postConfigure
-    '';
+    runHook preConfigure
+    export R_LIBS_SITE="$R_LIBS_SITE''${R_LIBS_SITE:+:}$out/library"
+    runHook postConfigure
+  '';
 
   buildInputs = [R] ++ languageserver_dependencies;
   propagatedBuildInputs = [R] ++ languageserver_dependencies;
 
   buildPhase = ''
-      runHook preBuild
-      runHook postBuild
-    '';
+    runHook preBuild
+    runHook postBuild
+  '';
 
   installPhase = ''
-      runHook preInstall
-      mkdir -p $out/library
-      R CMD INSTALL $installFlags --configure-args="$configureFlags" -l $out/library .
-      runHook postInstall
-    '';
+    runHook preInstall
+    mkdir -p $out/library
+    R CMD INSTALL $installFlags --configure-args="$configureFlags" -l $out/library .
+    runHook postInstall
+  '';
 
   postFixup = ''
-      if test -e $out/nix-support/propagated-build-inputs; then
-      ln -s $out/nix-support/propagated-build-inputs $out/nix-support/propagated-user-env-packages
-      fi
-    '';
+    if test -e $out/nix-support/propagated-build-inputs; then
+    ln -s $out/nix-support/propagated-build-inputs $out/nix-support/propagated-user-env-packages
+    fi
+  '';
 }
+
+
+  # writeText "language_servers.yaml" (lib.generators.toYAML {} [{
+  #   name = "r";
+  #   extensions = ["r"];
+  #   attrs = ["r"];
+  #   type = "stream";
+
+  #   # Run the language server via an intermediary process, since it refuses to run as a child of PID 1
+  #   # See https://github.com/REditorSupport/languageserver/issues/25
+  #   args = ["${rWithPackages}/bin/R" "--slave" "-e" "languageserver::run()"];
+  # }])

@@ -38,6 +38,12 @@ in
 
 nixpkgs.codedown.mkCodeDownEnvironment {
   kernels = [
+    (nixpkgs.codedown.languages.r.build {
+      baseName = "r";
+      packages = ps: [ps.ggplot2];
+      languageServers = choices: [];
+    })
+
     (nixpkgsUnstable.codedown.languages.octave.build {
       baseName = "octave";
       packages = ps: [ps.arduino];
