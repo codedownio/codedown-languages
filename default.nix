@@ -45,10 +45,6 @@ rec {
   bashPack = folderBuilder (import ./languages/bash);
   cPack = folderBuilder (import ./languages/c);
   clojurePack = folderBuilder (import ./languages/clojure);
-  cpp11Pack = folderBuilder (import ./languages/cpp/cpp11.nix);
-  cpp14Pack = folderBuilder (import ./languages/cpp/cpp14.nix);
-  cpp17Pack = folderBuilder (import ./languages/cpp/cpp17.nix);
-  cpp2aPack = folderBuilder (import ./languages/cpp/cpp2a.nix);
   # csharpPack = folderBuilder (import ./languages/csharp);
   dotPack = folderBuilder (import ./languages/dot);
   elixirPack = folderBuilder (import ./languages/elixir);
@@ -61,6 +57,7 @@ rec {
 
   # Languages
   languages = {
+    cpp = callPackage ./languages/cpp {};
     julia = callPackage ./languages/julia {};
     octave = callPackage ./languages/octave {};
     python = callPackage ./languages/python {};

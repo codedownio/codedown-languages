@@ -38,6 +38,13 @@ in
 
 nixpkgs.codedown.mkCodeDownEnvironment {
   kernels = [
+    (nixpkgsUnstable.codedown.languages.cpp.build {
+      baseName = "cpp11";
+      packages = ps: [];
+      languageServers = choices: [];
+      codeDownAttr = "cpp";
+    })
+
     (nixpkgs.codedown.languages.r.build {
       baseName = "r";
       packages = ps: [ps.ggplot2];
