@@ -32,5 +32,5 @@ rec {
 }
 
 
-  # languageServer = writeText "language_servers.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
+  # languageServer = writeTextDir "lib/codedown/python-language-servers.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
   # extraGitIgnoreLines = [".ipython"];

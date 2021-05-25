@@ -4,7 +4,7 @@ with makeWrapper;
 with stdenv;
 
 
-writeText "language_servers.yaml" (lib.generators.toYAML {} [{
+writeTextDir "language-servers.yaml" (lib.generators.toYAML {} [{
   name = "c";
   extensions = ["c" "h"];
   attrs = ["c"];

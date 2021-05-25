@@ -1,6 +1,6 @@
 { lib, writeText }:
 
-writeText "language_servers.yaml" (lib.generators.toYAML {} [{
+writeTextDir "language-servers.yaml" (lib.generators.toYAML {} [{
   name = "ccls";
   extensions = ["cpp" "hpp" "c" "h" "cxx" "hxx"];
   attrs = []; # attrName

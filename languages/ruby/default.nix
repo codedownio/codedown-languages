@@ -3,7 +3,7 @@
 rec {
   metadata = callPackage ./metadata.nix {};
 
-  modeInfo = writeTextDir "lib/codedown/ruby-mode-config.yaml" (pkgs.lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/ruby-modes.yaml" (pkgs.lib.generators.toYAML {} [{
     attrName = "ruby";
     codeMirrorMode = "ruby";
     extensionsToHighlight = ["rb"];
@@ -39,7 +39,7 @@ rec {
   # extraEnvFlags = ''--suffix PATH ":" /home/user/gems/bin'';
 
 
-  # writeText "language_servers.yaml" (pkgs.lib.generators.toYAML {} [{
+  # writeTextDir "language-servers.yaml" (pkgs.lib.generators.toYAML {} [{
   #   name = "ruby";
   #   extensions = ["rb"];
   #   attrs = ["ruby"];

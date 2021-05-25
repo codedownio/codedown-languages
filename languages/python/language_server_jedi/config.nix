@@ -14,7 +14,7 @@ let
 
 in
 
-writeTextDir "lib/codedown/jedi-language-server-configs.yaml" (lib.generators.toYAML {} {
+writeTextDir "lib/codedown/python-jedi-language-servers.yaml" (lib.generators.toYAML {} {
   name = "python";
   extensions = ["py"];
   attrs = ["python"];

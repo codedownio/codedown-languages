@@ -30,7 +30,7 @@ rec {
 
   packageManager = (import ./package_manager.nix).packageManager;
 
-  languageServer = writeText "language_servers.yaml" (lib.generators.toYAML {} [{
+  languageServer = writeTextDir "lib/codedown/clojure-language-servers.yaml" (lib.generators.toYAML {} [{
     name = "clojure";
     extensions = ["clj"];
     attrs = ["clojure"];
@@ -42,7 +42,7 @@ rec {
     notebook_suffix = ".clj";
   }]);
 
-  modeInfo = writeTextDir "lib/codedown/clojure-mode-config.yaml" (lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/clojure-modes.yaml" (lib.generators.toYAML {} [{
     attrName = "clojure";
     codeMirrorMode = "clojure";
     extensionsToHighlight = ["clj"];

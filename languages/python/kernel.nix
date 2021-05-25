@@ -1,13 +1,21 @@
-{
-  stdenv, pkgs,
-
-  python, displayName, codeDownAttr, otherLanguageKeys
+{ stdenv
+, pkgs
+, callPackage
+, python
+, displayName
+, codeDownAttr
+, otherLanguageKeys
 }:
 
 with pkgs.lib;
 
-pkgs.jupyter-kernel.create {
-  definitions = listToAttrs [{
+let
+  common = callPackage ../common.nix {};
+
+in
+
+common.makeJupyterKernel (
+  listToAttrs [{
     name = codeDownAttr;
     value = {
       displayName = displayName;
@@ -29,5 +37,5 @@ pkgs.jupyter-kernel.create {
         };
       };
     };
-  }];
-}
+  }]
+)

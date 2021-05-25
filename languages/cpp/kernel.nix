@@ -1,8 +1,10 @@
-{ lib, callPackage, blas, jupyter-kernel, cling }:
+{ lib, callPackage, blas, cling }:
 
 with lib;
 
 let
+  common = callPackage ../common.nix {};
+
   # cling = callPackage ./cling.nix {};
   xeusStuff = callPackage ./xeusCling.nix { cling = cling.unwrapped; };
   xeusMisc = callPackage ./xeusMisc.nix {xtl = xeusStuff.xtl;};
@@ -16,8 +18,8 @@ let
 
 in
 
-displayName: std: attrName: logo64: jupyter-kernel.create {
-  definitions = listToAttrs [{
+displayName: std: attrName: logo64: common.makeJupyterKernel (
+  listToAttrs [{
     name = attrName;
     value = {
       displayName = displayName;
@@ -51,5 +53,5 @@ displayName: std: attrName: logo64: jupyter-kernel.create {
         };
       };
     };
-  }];
-}
+  }]
+)

@@ -31,13 +31,13 @@ rec {
         echo 'Pkg.activate("/home/user")' >> $out/home/.julia/config/startup.jl
       '';
       kernel = callPackage ./kernel.nix {inherit julia python;};
-      modeInfo = writeTextDir "lib/codedown/julia-mode-config.yaml" (pkgs.lib.generators.toYAML {} [{
+      modeInfo = writeTextDir "lib/codedown/julia-modes.yaml" (pkgs.lib.generators.toYAML {} [{
         attrName = "julia";
         codeMirrorMode = "julia";
         extensionsToHighlight = ["jl"];
         extensionsToRun = ["jl"];
       }]);
-      languageServer = writeText "language_servers.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
+      languageServer = writeTextDir "lib/codedown/julia-language-servers.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
       extraGitIgnoreLines = [".julia"];
     };
 }

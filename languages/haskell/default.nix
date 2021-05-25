@@ -19,8 +19,8 @@ rec {
   hls = callPackage ./hls.nix {};
 
   kernel = callPackage ./kernel.nix {};
-  languageServer = writeText "language_servers.yaml" (pkgs.lib.generators.toYAML {} [hls]);
-  modeInfo = writeTextDir "lib/codedown/haskell-mode-config.yaml" (pkgs.lib.generators.toYAML {} [{
+  languageServer = writeTextDir "lib/codedown/haskell-language-servers.yaml" (pkgs.lib.generators.toYAML {} [hls]);
+  modeInfo = writeTextDir "lib/codedown/haskell-modes.yaml" (pkgs.lib.generators.toYAML {} [{
     attrName = "haskell";
     codeMirrorMode = "haskell";
     extensionsToHighlight = ["hs"];

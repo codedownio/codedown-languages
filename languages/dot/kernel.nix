@@ -1,6 +1,17 @@
-{python3, graphviz, jupyter-kernel, fetchFromGitHub, makeFontsConf, fontconfig, carlito, dejavu_fonts, freefont_ttf, xorg}:
+{ python3
+, graphviz
+, fetchFromGitHub
+, makeFontsConf
+, fontconfig
+, carlito
+, dejavu_fonts
+, freefont_ttf
+, xorg
+}:
 
 let
+  common = callPackage ../common.nix {};
+
   dotKernel = python3.pkgs.buildPythonPackage rec {
     name = "dot_kernel";
 
@@ -40,25 +51,23 @@ let
 
 in
 
-jupyter-kernel.create {
-  definitions = {
-    dot = {
-      displayName = "Dot (Graphviz)";
-      argv = [
-        "${pythonWithPackages}/bin/python"
-        "-m"
-        "dot_kernel"
-        "-f"
-        "{connection_file}"
-      ];
-      language = "dot";
-      logo32 = ./logo-32x32.png;
-      logo64 = ./logo-64x64.png;
-      env = { FONTCONFIG_FILE = "${fontsConf}"; };
-      metadata = {
-        codedown = {
-          priority = 10;
-        };
+common.makeJupyterKernel {
+  dot = {
+    displayName = "Dot (Graphviz)";
+    argv = [
+      "${pythonWithPackages}/bin/python"
+      "-m"
+      "dot_kernel"
+      "-f"
+      "{connection_file}"
+    ];
+    language = "dot";
+    logo32 = ./logo-32x32.png;
+    logo64 = ./logo-64x64.png;
+    env = { FONTCONFIG_FILE = "${fontsConf}"; };
+    metadata = {
+      codedown = {
+        priority = 10;
       };
     };
   };

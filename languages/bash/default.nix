@@ -3,7 +3,7 @@
 rec {
   metadata = callPackage ./metadata.nix {};
 
-  modeInfo = writeTextDir "lib/codedown/bash-mode-config.yaml" (lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/bash-modes.yaml" (lib.generators.toYAML {} [{
     attrName = "bash";
     codeMirrorMode = "shell";
     extensionsToHighlight = ["sh" "bash"];
@@ -31,7 +31,7 @@ rec {
 }
 
 
-  # pkgs.writeText "language_servers.yaml" (lib.generators.toYAML {} [
+  # pkgs.writeTextDir "language-servers.yaml" (lib/codedown/bash-lib.generators.toYAML {} [
   #   # Primary language server
   #   (callPackage ./language_server_bash/config.nix {}).config
 

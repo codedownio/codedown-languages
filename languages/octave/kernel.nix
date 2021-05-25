@@ -1,15 +1,17 @@
-{ lib,
-  jupyter-kernel,
-  runCommand,
-  writeText,
-  makeWrapper,
-  python3,
-  bashInteractive,
-  octave,
-  extraJupyterConfig
+{ lib
+, callPackage
+, runCommand
+, writeText
+, makeWrapper
+, python3
+, bashInteractive
+, octave
+, extraJupyterConfig
 }:
 
 let
+  common = callPackage ../common.nix {};
+
   fetchPypi = python3.pkgs.fetchPypi;
   buildPythonPackage = python3.pkgs.buildPythonPackage;
 
@@ -85,24 +87,22 @@ let
 
 in
 
-jupyter-kernel.create {
-  definitions = {
-    octave = {
-      displayName = "Octave";
-      argv = [
-        "${python}/bin/python"
-        "-m"
-        "octave_kernel"
-        "-f"
-        "{connection_file}"
-      ];
-      language = "octave";
-      logo32 = ./logo-32x32.png;
-      logo64 = ./logo-64x64.png;
-      metadata = {
-        codedown = {
-          priority = 1;
-        };
+common.makeJupyterKernel {
+  octave = {
+    displayName = "Octave";
+    argv = [
+      "${python}/bin/python"
+      "-m"
+      "octave_kernel"
+      "-f"
+      "{connection_file}"
+    ];
+    language = "octave";
+    logo32 = ./logo-32x32.png;
+    logo64 = ./logo-64x64.png;
+    metadata = {
+      codedown = {
+        priority = 1;
       };
     };
   };
