@@ -45,8 +45,8 @@ with final.lib;
     mkCodeDownEnvironment = {
       spec ? null
       , specHash ? null
-      , kernels
-      , notebookLanguageServers
+      , kernels ? []
+      , notebookLanguageServers ? []
     }: symlinkJoin {
       name = "codedown-environment";
       paths = kernels ++ notebookLanguageServers;
