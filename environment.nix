@@ -11,9 +11,7 @@ let
   #   ref = "main";
   # });
 
-  overlays = [(final: prev: {
-    codedown = codedownSrc {pkgs = final;};
-  })];
+  overlays = [codedownSrc];
 
   channels = rec {
     nixpkgs-20-09 = import (fetchgit {
@@ -78,7 +76,7 @@ nixpkgs.codedown.mkCodeDownEnvironment {
     (nixpkgs.codedown.languages.python.build {
       baseName = "python38";
       packages = ps: [ps.matplotlib ps.scipy];
-      languageServers = choices: [choices.jedi];
+      languageServers = choices: []; # choices.jedi
     })
 
     (nixpkgs.codedown.languages.ruby.build {
@@ -87,11 +85,11 @@ nixpkgs.codedown.mkCodeDownEnvironment {
       languageServers = choices: [];
     })
 
-    (channels.nixpkgs-unstable.codedown.languages.rust.build {
-      baseName = "rust_1_45";
-      packages = ps: [];
-      languageServers = choices: [];
-    })
+    # (channels.nixpkgs-unstable.codedown.languages.rust.build {
+    #   baseName = "rust_1_45";
+    #   packages = ps: [];
+    #   languageServers = choices: [];
+    # })
   ];
 
   notebookLanguageServers = [
