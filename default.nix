@@ -50,9 +50,6 @@ with final.lib;
       mkdir -p $out/lib/codedown
       cd $out/lib/codedown
 
-      specHash='${toString specHash}'
-      if [[ -n "$specHash" ]]; then echo "$specHash" > hash; fi
-
       spec='${toString spec}'
       if [[ -n "$spec" ]]; then echo "$spec" > spec.yaml; fi
     '';

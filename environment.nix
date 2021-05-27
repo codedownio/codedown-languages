@@ -35,7 +35,6 @@ let
 in
 
 nixpkgs.codedown.mkCodeDownEnvironment {
-  specHash = nixpkgs.lib.fakeSha256;
   spec = "THIS IS THE SPEC";
 
   kernels = [
