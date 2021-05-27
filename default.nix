@@ -31,20 +31,16 @@ with final.lib;
     };
     allBaseOptions = mapAttrs (name: value: value.metadata.baseOptions) languages;
 
-    # Tools
-    nixPackageManager = import ./package_managers/nix_package_manager;
-
     # Notebook language servers
     spellchecker = import ./language_servers/markdown-spellcheck-lsp.nix;
 
     # Tools
-    zshWithTheme = import ./tools/zsh-with-theme;
-    powerline = import ./tools/powerline;
+    zshWithTheme = callPackage ./tools/zsh-with-theme {};
+    powerline = callPackage ./tools/powerline {};
 
     # Build tools
     mkCodeDownEnvironment = {
       spec ? null
-      , specHash ? null
       , kernels ? []
       , notebookLanguageServers ? []
     }: symlinkJoin {

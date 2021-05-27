@@ -1,6 +1,10 @@
-with import <nixpkgs> {};
-with pkgs.lib;
-with python3Packages;
+{ runCommand
+, makeWrapper
+, python3
+, sysstat
+}:
+
+with python3.pkgs;
 
 let
   powerlineMemSegment = buildPythonPackage rec {
@@ -12,14 +16,14 @@ let
       sha256 = "0jfnpajpymqwa2yimnha2f5k3w5f797jsx7p63isp3idxpwgbs7v";
     };
 
-    buildInputs = [ python3Packages.psutil ];
+    propagatedBuildInputs = [ python3.pkgs.psutil ];
 
     meta = {
       homepage = https://github.com/mKaloer/powerline_mem_segment;
     };
   };
 
-  pythonWithPowerline = python3.withPackages (ps: [ps.powerline powerlineMemSegment python3Packages.psutil]);
+  pythonWithPowerline = python3.withPackages (ps: [ps.powerline powerlineMemSegment ps.psutil]);
 
 in
 
