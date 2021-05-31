@@ -3,18 +3,19 @@
 rec {
   metadata = callPackage ./metadata.nix {};
 
-  build = {
+  build = args@{
     baseName ? "python3"
-    , packages ? (_: [])
-    , languageServers ? (_: [])
+    , packages ? []
+    , languageServers ? []
     , codeDownAttr ? "python"
     , otherLanguageKeys ? []
   }:
     let
       base = pkgs.lib.findSingle (x: x.name == baseName) null "multiple" metadata.baseOptions;
-      python = base.python.withPackages (ps: [ps.ipykernel ps.ipywidgets] ++ (packages ps));
+      python = base.python.withPackages (ps: [ps.ipykernel ps.ipywidgets] ++ (map (x: builtins.getAttr x ps) packages));
     in symlinkJoin {
       name = baseName;
+
       paths = [
         python
         python.pkgs.ipython
@@ -27,7 +28,13 @@ rec {
 
         (callPackage ./mode_info.nix {})
       ]
-      ++ (languageServers (metadata.languageServers base python.pkgs));
+      ++ (map (x: builtins.getAttr x (metadata.languageServers base python.pkgs)) languageServers);
+
+      passthru = {
+        inherit args metadata;
+        icon = ./logo-64x64.png;
+        meta = base.meta;
+      };
     };
 }
 

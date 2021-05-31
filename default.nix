@@ -3,7 +3,7 @@ final: prev:
 with final;
 with final.lib;
 
-{
+rec {
   codedown = {
     # Languages
     cPack = callPackage ./languages/c {};
@@ -39,20 +39,56 @@ with final.lib;
     powerline = callPackage ./tools/powerline {};
 
     # Build tools
-    mkCodeDownEnvironment = {
-      spec ? null
+    mkCodeDownEnvironment = args@{
+      channels
+      , overlays
       , kernels ? []
       , notebookLanguageServers ? []
     }: symlinkJoin {
       name = "codedown-environment";
-      paths = kernels ++ notebookLanguageServers;
-      postBuild = ''
-      mkdir -p $out/lib/codedown
-      cd $out/lib/codedown
-
-      spec='${toString spec}'
-      if [[ -n "$spec" ]]; then echo "$spec" > spec.yaml; fi
-    '';
+      paths = kernels ++ notebookLanguageServers ++ [(specYaml args)];
     };
   };
+
+  specYaml = {
+    channels
+    , overlays
+    , kernels ? []
+    , notebookLanguageServers ? []
+  }: writeTextDir "lib/codedown/spec.yaml" (lib.generators.toYAML {} [{
+    channels = mapAttrsToList (name: value: {
+      name = name;
+      url = value.url;
+      rev = value.rev;
+      branchName = value.branchName;
+      sha256 = value.outputHash;
+    }) channels;
+
+    overlays = mapAttrsToList (name: value: if builtins.typeOf value == "path" then
+      {
+        name = name;
+        path = value;
+      } else {
+        name = name;
+        url = value.url;
+        rev = value.rev;
+        branch_name = value.branchName;
+        sha256 = value.outputHash;
+      }) overlays;
+
+    kernels = map (x: {
+      # channel_name = x.;
+      language = x.metadata.language;
+      name = x.passthru.args.baseName;
+      icon = attrByPath ["icon"] null x.passthru;
+      meta = attrByPath ["meta"] null x.passthru;
+      packages = let
+        base = x.metadata.baseByName x.passthru.args.baseName;
+        packageOptions = x.passthru.metadata.packageOptions base;
+      in map (name: {
+        inherit name;
+        meta = attrByPath [name "meta"] null packageOptions;
+      }) x.passthru.args.packages;
+    }) kernels;
+  }]);
 }

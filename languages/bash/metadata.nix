@@ -4,6 +4,8 @@ with pkgs;
 with pkgs.lib;
 
 rec {
+  language = "bash";
+
   baseCandidates = [
     "bashInteractive"
     "bashInteractive_5"

@@ -10,10 +10,10 @@ rec {
     extensionsToRun = ["sh" "bash"];
   }]);
 
-  build = {
+  build = args@{
     baseName
-    , packages ? (_: [])
-    , languageServers ? (_: [])
+    , packages ? []
+    , languageServers ? []
     , codeDownAttr ? "bash"
     , otherLanguageKeys ? []
   }:
@@ -27,6 +27,7 @@ rec {
         (callPackage ./man-with-pages.nix {})
         modeInfo
       ];
+      passthru = { inherit args metadata; meta = base.meta; };
     };
 }
 

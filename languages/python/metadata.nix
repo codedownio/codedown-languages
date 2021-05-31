@@ -4,23 +4,29 @@ with pkgs;
 with pkgs.lib;
 
 rec {
-  baseCandidates = [
-    "python"
-    "python2" "python27"
-    "python3" "python36" "python37" "python38" "python39"
-    "pypy"
-    "pypy2" "pypy27"
-    "pypy3" "pypy36" "pypy37" "pypy38" "pypy39"
-  ];
-  baseOptions = map (x:
-    let python = getAttr x pkgs; in {
-          inherit python;
-          name = x;
-          displayName = "Python " + python.version;
-          meta = python.meta;
-          logo = ./logo-64x64.png;
-        }
-  ) (filter (x: hasAttr x pkgs) baseCandidates);
+  language = "python";
+
+  baseOptions = let
+    baseCandidates = [
+      "python"
+      "python2" "python27"
+      "python3" "python36" "python37" "python38" "python39"
+      "pypy"
+      "pypy2" "pypy27"
+      "pypy3" "pypy36" "pypy37" "pypy38" "pypy39"
+    ];
+  in
+    map (x:
+      let python = getAttr x pkgs; in {
+            inherit python;
+            name = x;
+            displayName = "Python " + python.version;
+            meta = python.meta;
+            logo = ./logo-64x64.png;
+          }
+    ) (filter (x: hasAttr x pkgs) baseCandidates);
+
+  baseByName = name: lib.findSingle (x: x.name == name) null "multiple" baseOptions;
 
   packageOptions = base@{python, ...}: python.pkgs.override {
     overrides = self: super: {

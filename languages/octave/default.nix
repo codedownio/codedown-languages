@@ -30,7 +30,7 @@ rec {
     , extraJupyterConfig ? null
   }:
     let
-      base = lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
+      base = metadata.baseByName baseName;
 
       octaveComplete = base.octave.override {
         qscintilla = null;
