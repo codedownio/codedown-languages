@@ -27,7 +27,11 @@ rec {
         (callPackage ./man-with-pages.nix {})
         modeInfo
       ];
-      passthru = { inherit args metadata; meta = base.meta; };
+      passthru = {
+        inherit args metadata;
+        icon = ./bash.png;
+        meta = base.meta;
+      };
     };
 }
 
