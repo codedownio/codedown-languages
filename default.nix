@@ -47,7 +47,7 @@ rec {
       , otherPackages ? []
     }: symlinkJoin {
       name = "codedown-environment";
-      paths = kernels ++ notebookLanguageServers ++ [(specYaml args)] ++ otherPackages;
+      paths = kernels ++ notebookLanguageServers ++ [(specYaml args)] ++ (map (x: x.contents) otherPackages);
     };
   };
 
@@ -107,8 +107,10 @@ rec {
     notebook_language_servers = []; # TODO
 
     other_packages = map (x: {
-      name = x.name;
-      meta = attrByPath ["meta"] null x;
+      channel = x.channel;
+      attr = x.attr;
+      name = x.contents.name;
+      meta = x.contents.meta;
     }) otherPackages;
   });
 }

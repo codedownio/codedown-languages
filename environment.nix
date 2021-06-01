@@ -32,41 +32,43 @@ let
     };
   };
 
-  nixpkgs = import channels.nixpkgs-20-09 { overlays = map (x: import x) (lib.attrValues overlays); };
-  nixpkgsUnstable = import channels.nixpkgs-unstable { overlays = map (x: import x) (lib.attrValues overlays); };
+  importedChannels = rec {
+    nixpkgs = import channels.nixpkgs-20-09 { overlays = map (x: import x) (lib.attrValues overlays); };
+    nixpkgs-unstable = import channels.nixpkgs-unstable { overlays = map (x: import x) (lib.attrValues overlays); };
+  };
 
 in
 
-nixpkgs.codedown.mkCodeDownEnvironment {
+importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
   inherit channels overlays;
 
   kernels = [
-    (nixpkgsUnstable.codedown.languages.bash.build {
+    (importedChannels.nixpkgs-unstable.codedown.languages.bash.build {
       baseName = "bashInteractive";
       packages = [];
       languageServers = [];
     })
 
-    # (nixpkgsUnstable.codedown.languages.dot.build {
+    # (importedChannels.nixpkgs-unstable.codedown.languages.dot.build {
     #   baseName = "graphviz";
     #   packages = [];
     #   languageServers = [];
     # })
 
-    # (nixpkgsUnstable.codedown.languages.cpp.build {
+    # (importedChannels.nixpkgs-unstable.codedown.languages.cpp.build {
     #   baseName = "cpp11";
     #   packages = [];
     #   languageServers = [];
     #   codeDownAttr = "cpp";
     # })
 
-    # (nixpkgs.codedown.languages.r.build {
+    # (importedChannels.nixpkgs.codedown.languages.r.build {
     #   baseName = "r";
     #   packages = ["ggplot2"];
     #   languageServers = [];
     # })
 
-    # (nixpkgsUnstable.codedown.languages.octave.build {
+    # (importedChannels.nixpkgs-unstable.codedown.languages.octave.build {
     #   baseName = "octave";
     #   packages = ["arduino"];
     #   languageServers = [];
@@ -75,19 +77,19 @@ nixpkgs.codedown.mkCodeDownEnvironment {
     #   '';
     # })
 
-    (nixpkgs.codedown.languages.python.build {
+    (importedChannels.nixpkgs.codedown.languages.python.build {
       baseName = "python38";
       packages = ["matplotlib" "scipy"];
       languageServers = ["jedi"];
     })
 
-    # (nixpkgs.codedown.languages.ruby.build {
+    # (importedChannels.nixpkgs.codedown.languages.ruby.build {
     #   baseName = "ruby_2_7";
     #   packages = [];
     #   languageServers = [];
     # })
 
-    # (channels.nixpkgs-unstable.codedown.languages.rust.build {
+    # (importedChannels.nixpkgs-unstable.codedown.languages.rust.build {
     #   baseName = "rust_1_45";
     #   packages = [];
     #   languageServers = [];
@@ -95,11 +97,11 @@ nixpkgs.codedown.mkCodeDownEnvironment {
   ];
 
   notebookLanguageServers = [
-    nixpkgs.codedown.spellchecker
+    importedChannels.nixpkgs.codedown.spellchecker
   ];
 
   otherPackages = [
-    nixpkgs.ncdu
-    nixpkgs.tree
+    { channel = "nixpkgs"; attr = "ncdu"; contents = importedChannels.nixpkgs.ncdu; }
+    { channel = "nixpkgs"; attr = "tree"; contents = importedChannels.nixpkgs.tree; }
   ];
 }
