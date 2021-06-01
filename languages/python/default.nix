@@ -28,7 +28,7 @@ rec {
 
         (callPackage ./mode_info.nix {})
       ]
-      ++ (map (x: builtins.getAttr x (metadata.languageServers base python.pkgs)) languageServers);
+      ++ (map (x: builtins.getAttr x (metadata.languageServerOptions base python.pkgs)) languageServers);
 
       passthru = {
         inherit args metadata;

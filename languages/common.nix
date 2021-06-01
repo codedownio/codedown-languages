@@ -1,5 +1,6 @@
 { lib
 , runCommand
+, writeTextDir
 }:
 
 {
@@ -34,4 +35,8 @@
       mkdir $out
       cp -r lib $out
     '';
+
+  writeTextDirWithMeta = meta: path: text: (writeTextDir path text).overrideAttrs (old: {
+    inherit meta;
+  });
 }

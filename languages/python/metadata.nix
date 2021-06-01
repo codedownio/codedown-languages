@@ -34,7 +34,7 @@ rec {
     };
   };
 
-  languageServers = base@{python, ...}: packages: {
+  languageServerOptions = base@{python, ...}: packages: {
     # Primary language server
     jedi = (callPackage ./language_server_jedi/config.nix {
       python = python;
@@ -62,6 +62,4 @@ rec {
       packages = packages;
     });
   };
-
-  languageServerOptions = base@{python, ...}: packages: [];
 }

@@ -4,6 +4,8 @@ with pkgs;
 with pkgs.lib;
 
 let
+  common = callPackage ../../common.nix {};
+
   jediLanguageServer = callPackage ./jedi-language-server {python=python;};
 
   # Make a special Python environment with all the default packages, so we can get a site-packages
@@ -14,7 +16,7 @@ let
 
 in
 
-writeTextDir "lib/codedown/python-jedi-language-servers.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta jediLanguageServer.meta "lib/codedown/python-jedi-language-servers.yaml" (lib.generators.toYAML {} [{
   name = "python";
   extensions = ["py"];
   attrs = ["python"];
