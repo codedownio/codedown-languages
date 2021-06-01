@@ -85,6 +85,7 @@ rec {
       let
         base = x.metadata.baseByName x.passthru.args.baseName;
         packageOptions = x.passthru.metadata.packageOptions base;
+        languageServerOptions = x.passthru.metadata.languageServerOptions base packageOptions;
       in
         {
           channel_name = "nixpkgs"; # TODO
@@ -97,7 +98,10 @@ rec {
             inherit name;
             meta = attrByPath [name "meta"] null packageOptions;
           }) x.passthru.args.packages;
-          language_servers = []; # TODO
+          language_servers = map (name: {
+            inherit name;
+            meta = attrByPath [name "meta"] null languageServerOptions;
+          }) x.passthru.args.languageServers;
         }) kernels;
 
     notebook_language_servers = []; # TODO

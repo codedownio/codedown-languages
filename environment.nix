@@ -78,7 +78,7 @@ nixpkgs.codedown.mkCodeDownEnvironment {
     (nixpkgs.codedown.languages.python.build {
       baseName = "python38";
       packages = ["matplotlib" "scipy"];
-      languageServers = []; # choices.jedi
+      languageServers = ["jedi"];
     })
 
     # (nixpkgs.codedown.languages.ruby.build {
