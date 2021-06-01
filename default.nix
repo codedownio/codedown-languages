@@ -44,9 +44,10 @@ rec {
       , overlays
       , kernels ? []
       , notebookLanguageServers ? []
+      , otherPackages ? []
     }: symlinkJoin {
       name = "codedown-environment";
-      paths = kernels ++ notebookLanguageServers ++ [(specYaml args)];
+      paths = kernels ++ notebookLanguageServers ++ [(specYaml args)] ++ otherPackages;
     };
   };
 
@@ -55,8 +56,10 @@ rec {
     , overlays
     , kernels ? []
     , notebookLanguageServers ? []
-  }: writeTextDir "lib/codedown/spec.yaml" (lib.generators.toYAML {} [{
+    , otherPackages ? []
+  }: writeTextDir "lib/codedown/spec.yaml" (lib.generators.toYAML {} {
     channels = mapAttrsToList (name: value: {
+      tag = "fetch_git";
       name = name;
       url = value.url;
       rev = value.rev;
@@ -66,9 +69,11 @@ rec {
 
     overlays = mapAttrsToList (name: value: if builtins.typeOf value == "path" then
       {
+        tag = "path";
         name = name;
         path = value;
       } else {
+        tag = "fetch_git";
         name = name;
         url = value.url;
         rev = value.rev;
@@ -76,19 +81,30 @@ rec {
         sha256 = value.outputHash;
       }) overlays;
 
-    kernels = map (x: {
-      # channel_name = x.;
-      language = x.metadata.language;
-      name = x.passthru.args.baseName;
-      icon = attrByPath ["icon"] null x.passthru;
-      meta = attrByPath ["meta"] null x.passthru;
-      packages = let
+    kernels = map (x:
+      let
         base = x.metadata.baseByName x.passthru.args.baseName;
         packageOptions = x.passthru.metadata.packageOptions base;
-      in map (name: {
-        inherit name;
-        meta = attrByPath [name "meta"] null packageOptions;
-      }) x.passthru.args.packages;
-    }) kernels;
-  }]);
+      in
+        {
+          channel_name = "nixpkgs"; # TODO
+          language = x.metadata.language;
+          base_name = x.passthru.args.baseName;
+          display_name = base.displayName;
+          icon = attrByPath ["icon"] null x.passthru;
+          meta = attrByPath ["meta"] null x.passthru;
+          packages = map (name: {
+            inherit name;
+            meta = attrByPath [name "meta"] null packageOptions;
+          }) x.passthru.args.packages;
+          language_servers = []; # TODO
+        }) kernels;
+
+    notebook_language_servers = []; # TODO
+
+    other_packages = map (x: {
+      name = x.name;
+      meta = attrByPath ["meta"] null x;
+    }) otherPackages;
+  });
 }

@@ -44,32 +44,32 @@ nixpkgs.codedown.mkCodeDownEnvironment {
     (nixpkgsUnstable.codedown.languages.bash.build {
       baseName = "bashInteractive";
       packages = [];
-      languageServers = choices: [];
+      languageServers = [];
     })
 
     # (nixpkgsUnstable.codedown.languages.dot.build {
     #   baseName = "graphviz";
     #   packages = [];
-    #   languageServers = choices: [];
+    #   languageServers = [];
     # })
 
     # (nixpkgsUnstable.codedown.languages.cpp.build {
     #   baseName = "cpp11";
     #   packages = [];
-    #   languageServers = choices: [];
+    #   languageServers = [];
     #   codeDownAttr = "cpp";
     # })
 
     # (nixpkgs.codedown.languages.r.build {
     #   baseName = "r";
     #   packages = ["ggplot2"];
-    #   languageServers = choices: [];
+    #   languageServers = [];
     # })
 
     # (nixpkgsUnstable.codedown.languages.octave.build {
     #   baseName = "octave";
     #   packages = ["arduino"];
-    #   languageServers = choices: [];
+    #   languageServers = [];
     #   extraJupyterConfig = ''
     #     c.OctaveKernel.plot_settings = dict(format='svg')
     #   '';
@@ -78,23 +78,28 @@ nixpkgs.codedown.mkCodeDownEnvironment {
     (nixpkgs.codedown.languages.python.build {
       baseName = "python38";
       packages = ["matplotlib" "scipy"];
-      languageServers = choices: []; # choices.jedi
+      languageServers = []; # choices.jedi
     })
 
     # (nixpkgs.codedown.languages.ruby.build {
     #   baseName = "ruby_2_7";
     #   packages = [];
-    #   languageServers = choices: [];
+    #   languageServers = [];
     # })
 
     # (channels.nixpkgs-unstable.codedown.languages.rust.build {
     #   baseName = "rust_1_45";
     #   packages = [];
-    #   languageServers = choices: [];
+    #   languageServers = [];
     # })
   ];
 
   notebookLanguageServers = [
     nixpkgs.codedown.spellchecker
+  ];
+
+  otherPackages = [
+    nixpkgs.ncdu
+    nixpkgs.tree
   ];
 }
