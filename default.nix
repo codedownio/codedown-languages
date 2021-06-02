@@ -61,7 +61,7 @@ rec {
       name = name;
       url = value.url;
       rev = value.rev;
-      branchName = value.branchName;
+      branchName = attrByPath ["branchName"] null value;
       sha256 = value.outputHash;
     }) channels;
 
@@ -75,7 +75,7 @@ rec {
         name = name;
         url = value.url;
         rev = value.rev;
-        branch_name = value.branchName;
+        branch_name = attrByPath ["branchName"] null value;
         sha256 = value.outputHash;
       }) overlays;
 

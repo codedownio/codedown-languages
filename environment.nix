@@ -4,7 +4,6 @@ let
   fetchgit = bootstrapNixpkgs.fetchgit;
   lib = bootstrapNixpkgs.lib;
 
-  codedownSrc = ./.;
   # codedownSrc = /home/tom/tools/codedown-languages;
   # codedownSrc = builtins.fetchGit {
   #   url = https://github.com/codedownio/codedown-languages.git;
@@ -13,11 +12,11 @@ let
   # };
 
   overlays = {
-    codedown = codedownSrc;
+    codedown = ./.;
   };
 
   channels = rec {
-    nixpkgs-20-09 = fetchgit {
+    nixpkgs = fetchgit {
       url = https://github.com/NixOS/nixpkgs.git;
       rev = "33824cdf8e4fec30c5b9ddc91b18991c3c375227";
       branchName = "release-20.09";
@@ -33,7 +32,7 @@ let
   };
 
   importedChannels = rec {
-    nixpkgs = import channels.nixpkgs-20-09 { overlays = map (x: import x) (lib.attrValues overlays); };
+    nixpkgs = import channels.nixpkgs { overlays = map (x: import x) (lib.attrValues overlays); };
     nixpkgs-unstable = import channels.nixpkgs-unstable { overlays = map (x: import x) (lib.attrValues overlays); };
   };
 
