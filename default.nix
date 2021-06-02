@@ -43,11 +43,10 @@ rec {
       channels
       , overlays
       , kernels ? []
-      , notebookLanguageServers ? []
       , otherPackages ? []
     }: symlinkJoin {
       name = "codedown-environment";
-      paths = kernels ++ notebookLanguageServers ++ [(specYaml args)] ++ (map (x: x.contents) otherPackages);
+      paths = kernels ++ [(specYaml args)] ++ (map (x: x.contents) otherPackages);
     };
   };
 
@@ -55,7 +54,6 @@ rec {
     channels
     , overlays
     , kernels ? []
-    , notebookLanguageServers ? []
     , otherPackages ? []
   }: writeTextDir "lib/codedown/spec.yaml" (lib.generators.toYAML {} {
     channels = mapAttrsToList (name: value: {
@@ -103,8 +101,6 @@ rec {
             meta = attrByPath [name "meta"] null languageServerOptions;
           }) x.passthru.args.languageServers;
         }) kernels;
-
-    notebook_language_servers = []; # TODO
 
     other_packages = map (x: {
       channel = x.channel;

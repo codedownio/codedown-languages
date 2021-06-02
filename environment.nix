@@ -96,11 +96,8 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
     # })
   ];
 
-  notebookLanguageServers = [
-    importedChannels.nixpkgs.codedown.spellchecker
-  ];
-
   otherPackages = [
+    { channel = "nixpkgs"; attr = "codedown.spellchecker"; contents = importedChannels.nixpkgs.codedown.spellchecker; }
     { channel = "nixpkgs"; attr = "ncdu"; contents = importedChannels.nixpkgs.ncdu; }
     { channel = "nixpkgs"; attr = "tree"; contents = importedChannels.nixpkgs.tree; }
   ];
