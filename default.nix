@@ -5,6 +5,8 @@ with final.lib;
 
 rec {
   codedown = {
+    nixpkgsSearcher = let common = callPackage ./languages/common.nix {}; in common.searcher prev;
+
     # Languages
     cPack = callPackage ./languages/c {};
     clojurePack = callPackage ./languages/clojure {};

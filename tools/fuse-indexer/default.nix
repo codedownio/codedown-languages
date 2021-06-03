@@ -1,9 +1,9 @@
 { lib
 , stdenv
 , runCommand
+, writeScript
 , fetchFromGitHub
 , writeText
-, makeWrapper
 , nodejs
 , packages
 }:
@@ -54,15 +54,12 @@ rec {
     EOF
   '';
 
-  searcher = runCommand "searcher" { buildInputs = [nodejs fuse makeWrapper]; inherit fuse json index; } ''
-    mkdir -p $out/bin
-
-    cat > $out/bin/searcher << EOF
+  searcher = writeScript "searcher" ''
     #!${nodejs}/bin/node
     const fs = require("fs");
-    const Fuse = require('fuse.min');
-    const list = require("$json");
-    const index = require("$index");
+    const Fuse = require('${fuse}/fuse.min');
+    const list = require("${json}");
+    const index = require("${index}");
     const fuse = new Fuse(list, {
       keys: ["attr", "name", "description"],
       includeScore: true,
@@ -82,9 +79,5 @@ rec {
     }).on("close", function() {
       process.exit(0);
     });
-    EOF
-
-    chmod u+x $out/bin/searcher
-    wrapProgram $out/bin/searcher --suffix NODE_PATH ":" $fuse
   '';
 }
