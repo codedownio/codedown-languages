@@ -1,6 +1,7 @@
 { lib
 , runCommand
 , writeTextDir
+, callPackage
 }:
 
 {
@@ -39,4 +40,6 @@
   writeTextDirWithMeta = meta: path: text: (writeTextDir path text).overrideAttrs (old: {
     inherit meta;
   });
+
+  searcher = packages: (callPackage ../tools/fuse-indexer { inherit packages; }).searcher;
 }

@@ -3,6 +3,11 @@
 with pkgs;
 with pkgs.lib;
 
+let
+  common = callPackage ../common.nix {};
+
+in
+
 rec {
   language = "python";
 
@@ -33,6 +38,8 @@ rec {
       ipython = python.pkgs.ipython.overridePythonAttrs (old: { permitUserSite = true; });
     };
   };
+
+  packageSearch = base@{python, ...}: common.searcher python.pkgs;
 
   languageServerOptions = base@{python, ...}: packages: {
     # Primary language server

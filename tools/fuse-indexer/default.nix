@@ -76,7 +76,8 @@ rec {
     rl.prompt();
 
     rl.on("line", function(query) {
-      process.stdout.write(JSON.stringify(fuse.search(query).slice(0, 10)))
+      process.stdout.write(JSON.stringify(fuse.search(query).slice(0, 10)));
+      process.stdout.write("\n");
       rl.prompt();
     }).on("close", function() {
       process.exit(0);

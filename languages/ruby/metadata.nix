@@ -22,6 +22,8 @@ rec {
 
   packageOptions = base@{ruby, ...}: [];
 
+  packageSearch = base@{ruby, ...}: common.searcher ruby.gems;
+
   languageServerOptions = base@{ruby, ...}: packages: {
 
   };

@@ -1,5 +1,10 @@
 {pkgs, callPackage, stdenv, writeTextDir, symlinkJoin}:
 
+let
+  common = callPackage ../common.nix {};
+
+in
+
 rec {
   metadata = callPackage ./metadata.nix {};
 
