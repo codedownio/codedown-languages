@@ -36,7 +36,11 @@ rec {
       ruby = callPackage ./languages/ruby {};
       rust = callPackage ./languages/rust {};
     };
-    allBaseOptions = listToAttrs (flatten (mapAttrsToList (name: value: map (x: { name = x.name; value = getAttrs ["name" "displayName" "meta" "logo"] x; }) value.metadata.baseOptions) languages));
+    allBaseOptions = listToAttrs (flatten (mapAttrsToList (name: value: map (x: {
+      name = x.name;
+      value = getAttrs ["name" "meta"] x;
+    }) value.metadata.baseOptions) languages));
+
     languagesSearcher = common.searcher allBaseOptions;
 
     # Notebook language servers

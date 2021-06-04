@@ -11,9 +11,10 @@ rec {
     let octave = getAttr x pkgs; in {
       inherit octave;
       name = x;
-      displayName = "Octave " + octave.version;
-      meta = octave.meta;
-      logo = ./logo-64x64.png;
+      meta = octave.meta // {
+        displayName = "Octave " + octave.version;
+        logo = ./logo-64x64.png;
+      };
     }
   ) (filter (x: hasAttr x pkgs) baseCandidates);
 

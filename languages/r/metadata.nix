@@ -7,9 +7,10 @@ rec {
   baseOptions = [{
     inherit R rWrapper rPackages;
     name = R.meta.name;
-    displayName = "R " + R.version;
-    meta = R.meta;
-    logo = ./logo-64x64.png;
+    meta = R.meta // {
+      displayName = "R " + R.version;
+      logo = ./logo-64x64.png;
+    };
   }];
 
   packageOptions = base@{python, ...}: {};

@@ -14,9 +14,10 @@ rec {
     let ruby = getAttr x pkgs; in {
       inherit ruby;
       name = x;
-      displayName = "Ruby " + julia.version;
-      meta = ruby.meta;
-      logo = ./logo-64x64.png;
+      meta = ruby.meta // {
+        displayName = "Ruby " + julia.version;
+        logo = ./logo-64x64.png;
+      };
     }
   ) (filter (x: (hasAttr x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates);
 

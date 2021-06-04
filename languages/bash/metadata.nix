@@ -16,9 +16,10 @@ rec {
       let bash = getAttr x pkgs; in {
             inherit bash;
             name = x;
-            displayName = "Bash " + bash.version;
-            meta = bash.meta;
-            logo = ./bash.png;
+            meta = bash.meta // {
+              displayName = "Bash " + bash.version;
+              logo = ./bash.png;
+            };
           }
     ) (filter (x: hasAttr x pkgs) baseCandidates);
 

@@ -32,9 +32,10 @@ rec {
       # rust = rust.packages.stable.rustc;
       inherit rust;
       name = x;
-      displayName = "Rust " ;
-      meta = {}; # rust.meta;
-      logo = ./logo-64x64.png;
+      meta = {
+        displayName = "Rust" ;
+        logo = ./logo-64x64.png;
+      }; # rust.meta;
     }
   ) (filter (x: hasAttr x pkgs) baseCandidates);
 

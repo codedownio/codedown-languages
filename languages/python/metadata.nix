@@ -25,9 +25,10 @@ rec {
       let python = getAttr x pkgs; in {
             inherit python;
             name = x;
-            displayName = "Python " + python.version;
-            meta = python.meta;
-            logo = ./logo-64x64.png;
+            meta = python.meta // {
+              displayName = "Python " + python.version;
+              logo = ./logo-64x64.png;
+            };
           }
     ) (filter (x: hasAttr x pkgs) baseCandidates);
 
@@ -36,6 +37,15 @@ rec {
   packageOptions = base@{python, ...}: python.pkgs.override {
     overrides = self: super: {
       ipython = python.pkgs.ipython.overridePythonAttrs (old: { permitUserSite = true; });
+    };
+  };
+
+  settingsSchema = {
+    permitUserSite = {
+      title = "Show execution count";
+      description = "Show the execution counter next to each code cell";
+      type = "boolean";
+      defaultValue = false;
     };
   };
 
