@@ -24,7 +24,9 @@ rec {
 
   baseByName = name: lib.findSingle (x: x.name == name) null "multiple" baseOptions;
 
-  packageOptions = base@{python, ...}: {};
+  packageOptions = base@{...}: {};
+
+  packageSearch = base@{...}: common.searcher {};
 
   languageServerOptions = base@{python, ...}: packages: {};
 }

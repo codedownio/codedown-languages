@@ -3,9 +3,14 @@ final: prev:
 with final;
 with final.lib;
 
+let
+  common = callPackage ./languages/common.nix {};
+
+in
+
 rec {
-  codedown = {
-    nixpkgsSearcher = let common = callPackage ./languages/common.nix {}; in common.searcher prev;
+  codedown = rec {
+    nixpkgsSearcher = common.searcher prev;
 
     # Languages
     cPack = callPackage ./languages/c {};
@@ -31,7 +36,8 @@ rec {
       ruby = callPackage ./languages/ruby {};
       rust = callPackage ./languages/rust {};
     };
-    allBaseOptions = mapAttrs (name: value: value.metadata.baseOptions) languages;
+    allBaseOptions = listToAttrs (flatten (mapAttrsToList (name: value: map (x: { name = x.name; value = getAttrs ["name" "displayName" "meta" "logo"] x; }) value.metadata.baseOptions) languages));
+    languagesSearcher = common.searcher allBaseOptions;
 
     # Notebook language servers
     spellchecker = import ./language_servers/markdown-spellcheck-lsp.nix;
