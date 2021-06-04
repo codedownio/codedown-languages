@@ -101,7 +101,7 @@ rec {
           channel_name = "nixpkgs"; # TODO
           language = x.metadata.language;
           base_name = x.passthru.args.baseName;
-          display_name = base.displayName;
+          display_name = attrByPath ["meta" "displayName"] null x.passthru;
           icon = attrByPath ["icon"] null x.passthru;
           meta = attrByPath ["meta"] null x.passthru;
           packages = map (name: {
