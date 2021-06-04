@@ -3,6 +3,11 @@
 with pkgs;
 with pkgs.lib;
 
+let
+  common = callPackage ../common.nix {};
+
+in
+
 rec {
   language = "bash";
 
