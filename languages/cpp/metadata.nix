@@ -1,5 +1,5 @@
 { pkgs
-, cling
+, cling ? null
 }:
 
 with pkgs;

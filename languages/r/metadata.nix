@@ -8,7 +8,7 @@ rec {
     inherit R rWrapper rPackages;
     name = R.meta.name;
     meta = R.meta // {
-      displayName = "R " + R.version;
+      displayName = if hasAttr "version" R then "R " + R.version else "R";
       icon = ./logo-64x64.png;
     };
   }];
