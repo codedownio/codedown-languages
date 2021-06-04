@@ -16,7 +16,7 @@ rec {
       name = x;
       meta = julia.meta // {
         displayName = "Julia " + julia.version;
-        logo = ./logo-64x64.png;
+        icon = ./logo-64x64.png;
       };
     }
   ) (filter (x: (hasAttr x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates);

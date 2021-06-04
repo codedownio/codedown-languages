@@ -27,7 +27,7 @@ rec {
             name = x;
             meta = python.meta // {
               displayName = "Python " + python.version;
-              logo = ./logo-64x64.png;
+              icon = ./logo-64x64.png;
             };
           }
     ) (filter (x: hasAttr x pkgs) baseCandidates);

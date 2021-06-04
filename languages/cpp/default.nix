@@ -33,7 +33,7 @@ rec {
       name = base.name;
       paths = [
         cling
-        ((callPackage ./kernel.nix {}) base.meta.displayName base.std base.name base.logo)
+        ((callPackage ./kernel.nix {}) base.meta.displayName base.std base.name base.icon)
         modeInfo
       ];
     };

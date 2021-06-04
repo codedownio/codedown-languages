@@ -32,7 +32,6 @@ rec {
 
       passthru = {
         inherit args metadata;
-        icon = ./logo-64x64.png;
         meta = base.meta;
       };
     };

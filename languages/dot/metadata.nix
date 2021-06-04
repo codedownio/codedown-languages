@@ -13,7 +13,7 @@ rec {
       name = x;
       meta = graphviz.meta // {
         displayName = "Graphviz " + graphviz.version;
-        logo = ./logo-64x64.png;
+        icon = ./logo-64x64.png;
       };
     }
   ) (filter (x: hasAttr x pkgs) baseCandidates);

@@ -18,7 +18,7 @@ rec {
             name = x;
             meta = bash.meta // {
               displayName = "Bash " + bash.version;
-              logo = ./bash.png;
+              icon = ./bash.png;
             };
           }
     ) (filter (x: hasAttr x pkgs) baseCandidates);

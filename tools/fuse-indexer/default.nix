@@ -39,7 +39,7 @@ let
     name = safeEval (lib.attrByPath ["meta" "name"] "" v);
     description = safeEval (lib.attrByPath ["meta" "description"] "" v);
     displayName = safeEval (lib.attrByPath ["meta" "displayName"] "" v);
-    logo = safeEval (lib.attrByPath ["meta" "logo"] "" v);
+    icon = safeEval (lib.attrByPath ["meta" "icon"] "" v);
   }) packages));
 
 in
@@ -63,7 +63,7 @@ rec {
     const list = require("${json}");
     const index = require("${index}");
     const fuse = new Fuse(list, {
-      keys: ["attr", "name", "description", "displayName", "logo"],
+      keys: ["attr", "name", "description", "displayName", "icon"],
       includeScore: true,
       includeMatches: true,
       minMatchCharLength: true

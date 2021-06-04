@@ -13,7 +13,7 @@ rec {
       name = x;
       meta = octave.meta // {
         displayName = "Octave " + octave.version;
-        logo = ./logo-64x64.png;
+        icon = ./logo-64x64.png;
       };
     }
   ) (filter (x: hasAttr x pkgs) baseCandidates);

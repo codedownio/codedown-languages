@@ -16,7 +16,7 @@ rec {
       name = x;
       meta = ruby.meta // {
         displayName = "Ruby " + julia.version;
-        logo = ./logo-64x64.png;
+        icon = ./logo-64x64.png;
       };
     }
   ) (filter (x: (hasAttr x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates);

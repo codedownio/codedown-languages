@@ -9,7 +9,7 @@ rec {
     name = R.meta.name;
     meta = R.meta // {
       displayName = "R " + R.version;
-      logo = ./logo-64x64.png;
+      icon = ./logo-64x64.png;
     };
   }];
 

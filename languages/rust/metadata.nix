@@ -34,7 +34,7 @@ rec {
       name = x;
       meta = {
         displayName = "Rust" ;
-        logo = ./logo-64x64.png;
+        icon = ./logo-64x64.png;
       }; # rust.meta;
     }
   ) (filter (x: hasAttr x pkgs) baseCandidates);

@@ -102,7 +102,7 @@ rec {
           language = x.metadata.language;
           base_name = x.passthru.args.baseName;
           display_name = attrByPath ["meta" "displayName"] null x.passthru;
-          icon = attrByPath ["icon"] null x.passthru;
+          icon = attrByPath ["meta" "icon"] null x.passthru;
           meta = attrByPath ["meta"] null x.passthru;
           packages = map (name: {
             inherit name;
