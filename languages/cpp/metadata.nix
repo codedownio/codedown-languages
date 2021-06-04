@@ -6,7 +6,7 @@ with pkgs.lib;
 rec {
   baseCandidates = [
     "cpp11"
-    "cpp13"
+    "cpp14"
     "cpp17"
     "cpp2a"
   ];
@@ -17,11 +17,11 @@ rec {
     meta = clang.meta;
     logo = ./cpp11.png;
   } {
-    name = "cpp13";
-    std = "c++13";
-    displayName = "C++ 13";
+    name = "cpp14";
+    std = "c++14";
+    displayName = "C++ 14";
     meta = clang.meta;
-    logo = ./cpp13.png;
+    logo = ./cpp14.png;
   } {
     name = "cpp17";
     std = "c++17";

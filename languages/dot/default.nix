@@ -1,4 +1,10 @@
-{pkgs, lib, callPackage, writeText, graphviz, symlinkJoin}:
+{ pkgs
+, lib
+, callPackage
+, writeTextDir
+, graphviz
+, symlinkJoin
+}:
 
 rec {
   metadata = callPackage ./metadata.nix {};

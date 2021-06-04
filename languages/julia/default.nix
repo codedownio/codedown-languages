@@ -1,4 +1,9 @@
-{pkgs, callPackage, writeText, stdenv, runCommand}:
+{ pkgs
+, callPackage
+, writeTextDir
+, stdenv
+, runCommand
+}:
 
 rec {
   metadata = callPackage ./metadata.nix {};
