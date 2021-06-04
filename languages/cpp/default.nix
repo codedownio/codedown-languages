@@ -1,4 +1,9 @@
-{lib, callPackage, writeTextDir, symlinkJoin, cling}:
+{ lib
+, callPackage
+, writeTextDir
+, symlinkJoin
+, cling ? null
+}:
 
 let
   modeInfoBase = {
