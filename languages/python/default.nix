@@ -21,7 +21,7 @@ rec {
         python.pkgs.ipython
 
         (callPackage ./kernel.nix {
-          displayName = base.displayName;
+          displayName = base.meta.displayName;
           inherit python otherLanguageKeys;
           codeDownAttr = codeDownAttr;
         })
