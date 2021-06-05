@@ -63,33 +63,33 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       languageServers = [];
     })
 
-    # (importedChannels.nixpkgs.codedown.languages.R-4.0.2.build {
-    #   packages = ["ggplot2"];
-    #   languageServers = [];
-    # })
+    (importedChannels.nixpkgs.codedown.languages.R.build {
+      packages = ["ggplot2"];
+      languageServers = [];
+    })
 
-    # (importedChannels.nixpkgs-unstable.codedown.languages.octave.build {
-    #   packages = ["arduino"];
-    #   languageServers = [];
-    #   extraJupyterConfig = ''
-    #     c.OctaveKernel.plot_settings = dict(format='svg')
-    #   '';
-    # })
+    (importedChannels.nixpkgs-unstable.codedown.languages.octave.build {
+      packages = ["arduino"];
+      languageServers = [];
+      extraJupyterConfig = ''
+        c.OctaveKernel.plot_settings = dict(format='svg')
+      '';
+    })
 
     (importedChannels.nixpkgs.codedown.languages.python38.build {
       packages = ["matplotlib" "scipy"];
       languageServers = ["jedi"];
     })
 
-    # (importedChannels.nixpkgs.codedown.languages.ruby_2_7.build {
-    #   packages = [];
-    #   languageServers = [];
-    # })
+    (importedChannels.nixpkgs.codedown.languages.ruby_2_7.build {
+      packages = [];
+      languageServers = [];
+    })
 
-    # (importedChannels.nixpkgs-unstable.codedown.languages.rust_1_45.build {
-    #   packages = [];
-    #   languageServers = [];
-    # })
+    (importedChannels.nixpkgs-unstable.codedown.languages.rust_1_51.build {
+      packages = [];
+      languageServers = [];
+    })
   ];
 
   otherPackages = [

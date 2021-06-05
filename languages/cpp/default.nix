@@ -53,9 +53,9 @@ if cling == null then {} else
   listToAttrs (map (x:
     {
       name = x;
-      value = {
+      value = rec {
         packageOptions = {};
-        packageSearch = common.searcher {};
+        packageSearch = common.searcher packageOptions;
 
         languageServerOptions = {};
 
@@ -81,6 +81,7 @@ if cling == null then {} else
             passthru = {
               args = args // { baseName = x; };
               meta = clang.meta;
+              inherit packageOptions languageServerOptions;
             };
           };
 

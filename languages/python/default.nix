@@ -42,7 +42,7 @@ lib.listToAttrs (map (x:
           ipython = basePython.pkgs.ipython.overridePythonAttrs (old: { permitUserSite = true; });
         };
       };
-      packageSearch = base@{python, ...}: common.searcher packageOptions;
+      packageSearch = common.searcher packageOptions;
 
       languageServerOptions = allLanguageServerOptions basePython;
 

@@ -1,12 +1,20 @@
-{pkgs, callPackage, stdenv, writeTextDir, symlinkJoin}:
+{ lib
+, pkgs
+, callPackage
+, stdenv
+, writeTextDir
+, symlinkJoin
+}:
 
 let
   common = callPackage ../common.nix {};
 
-in
-
-rec {
-  metadata = callPackage ./metadata.nix {};
+  baseCandidates = [
+    "ruby"
+    "ruby_2_6"
+    "ruby_2_7"
+    "ruby_3_0"
+  ];
 
   modeInfo = writeTextDir "lib/codedown/ruby-modes.yaml" (pkgs.lib.generators.toYAML {} [{
     attrName = "ruby";
@@ -15,30 +23,50 @@ rec {
     extensionsToRun = ["rb"];
   }]);
 
-  build = args@{
-    baseName
-    , packages ? (_: [])
-    , languageServers ? (_: [])
-    , codeDownAttr ? baseName
-    , otherLanguageKeys ? []
-  }:
-    let
-      base = pkgs.lib.findSingle (x: x.name == baseName) null "multiple" metadata.baseOptions;
-      ruby = base.ruby;
-      availableLanguageServers = metadata.languageServerOptions base [];
-    in symlinkJoin {
-      name = "ruby";
-      paths = [
-        ruby
-        (callPackage ./kernel.nix {})
-        modeInfo
-      ];
-      passthru = {
-        inherit args metadata;
-        meta = base.meta;
+in
+
+with lib;
+
+listToAttrs (map (x:
+  let
+    ruby = getAttr x pkgs;
+  in {
+    name = x;
+    value = rec {
+      packageOptions = {};
+      packageSearch = common.searcher packageOptions;
+
+      languageServerOptions = {};
+
+      build = args@{
+        packages ? []
+        , languageServers ? []
+        , codeDownAttr ? "ruby"
+        , otherLanguageKeys ? []
+      }:
+        symlinkJoin {
+          name = "ruby";
+          paths = [
+            ruby
+            (callPackage ./kernel.nix {})
+            modeInfo
+          ];
+          passthru = {
+            args = args // { baseName = x; };
+            meta = ruby.meta;
+            inherit packageOptions languageServerOptions;
+          };
+        };
+
+      meta = ruby.meta // {
+        baseName = x;
+        displayName = "Ruby " + julia.version;
+        icon = ./logo-64x64.png;
       };
     };
-}
+  }
+
+) (filter (x: (hasAttr x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates))
 
   # Env = [
   #   "GEM_PATH=/home/user/gems"

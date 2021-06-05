@@ -14,25 +14,17 @@ rec {
 
     # Languages
     languages = zipAttrsWith (n: v: head v) [
-      (callPackage ./languages/python {})
       (callPackage ./languages/bash {})
-      (callPackage ./languages/dot {})
       (callPackage ./languages/cpp {})
+      (callPackage ./languages/dot {})
       (callPackage ./languages/julia {})
+      (callPackage ./languages/octave {})
+      (callPackage ./languages/python {})
+      (callPackage ./languages/r {})
+      (callPackage ./languages/ruby {})
+      (callPackage ./languages/rust {})
     ];
     languagesSearcher = common.searcher languages;
-
-    # languages = {
-    #   octave = callPackage ./languages/octave {};
-    #   python = callPackage ./languages/python {};
-    #   r = callPackage ./languages/r {};
-    #   ruby = callPackage ./languages/ruby {};
-    #   rust = callPackage ./languages/rust {};
-    # };
-    # allBaseOptions = listToAttrs (flatten (mapAttrsToList (name: value: map (x: {
-    #   name = x.name;
-    #   value = getAttrs ["name" "meta"] x;
-    # }) value.metadata.baseOptions) languages));
 
     # Notebook language servers
     spellchecker = import ./language_servers/markdown-spellcheck-lsp.nix;

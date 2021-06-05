@@ -2,34 +2,54 @@
 , lib
 , callPackage
 , symlinkJoin
+, R
+, rPackages
+, rWrapper
 }:
 
-rec {
-  metadata = callPackage ./metadata.nix {};
+let
+  common = callPackage ../common.nix {};
 
-  build = args@{
-    baseName
-    , packages ? []
-    , languageServers ? []
-    , codeDownAttr ? "r"
-    , otherLanguageKeys ? []
-  }:
-    let
-      base = lib.head metadata.baseOptions;
+in
 
-      rWithPackages = base.rWrapper.override {
-        packages = [base.rPackages.IRkernel] ++ (map (x: lib.getAttr x base.rPackages) packages);
+with lib;
+
+listToAttrs [{
+  name = "R";
+  value = rec {
+    packageOptions = rPackages;
+    packageSearch = common.searcher packageOptions;
+
+    languageServerOptions = {};
+
+    build = args@{
+      packages ? []
+      , languageServers ? []
+      , codeDownAttr ? "r"
+      , otherLanguageKeys ? []
+    }:
+      let
+        rWithPackages = rWrapper.override {
+          packages = [rPackages.IRkernel] ++ (map (x: lib.getAttr x rPackages) packages);
+        };
+      in symlinkJoin {
+        name = "r";
+        paths = [
+          rWithPackages
+          (callPackage ./kernel.nix { inherit rWithPackages; })
+          (callPackage ./mode_info.nix {})
+        ];
+        passthru = {
+          args = args // { baseName = "R"; };
+          meta = R.meta;
+          inherit packageOptions languageServerOptions;
+        };
       };
-    in symlinkJoin {
-      name = "r";
-      paths = [
-        rWithPackages
-        (callPackage ./kernel.nix { inherit rWithPackages; })
-        (callPackage ./mode_info.nix {})
-      ];
-      passthru = {
-        inherit args metadata;
-        meta = base.meta;
-      };
+
+    meta = R.meta // {
+      baseName = "R";
+      displayName = if hasAttr "version" R then "R " + R.version else "R";
+      icon = ./logo-64x64.png;
     };
-}
+  };
+}]

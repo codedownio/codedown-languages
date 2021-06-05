@@ -11,8 +11,12 @@
 , symlinkJoin
 }:
 
-rec {
-  metadata = callPackage ./metadata.nix {};
+let
+  common = callPackage ../common.nix {};
+
+  baseCandidates = [
+    "octave"
+  ];
 
   modeInfo = writeTextDir "lib/codedown/octave-modes.yaml" (lib.generators.toYAML {} [{
     attrName = "octave";
@@ -21,54 +25,73 @@ rec {
     extensionsToRun = ["m"];
   }]);
 
-  build = args@{
-    baseName
-    , packages ? []
-    , languageServers ? []
-    , codeDownAttr ? baseName
-    , otherLanguageKeys ? []
-    , extraJupyterConfig ? null
-  }:
-    let
-      base = metadata.baseByName baseName;
+in
 
-      octaveComplete = base.octave.override {
-        qscintilla = null;
-        overridePlatforms = ["x86_64-linux" "x86_64-darwin"];
-        gnuplot = gnuplot;
-        ghostscript = ghostscript;
-        graphicsmagick = graphicsmagick;
-        python = python3;
-      };
+with lib;
 
-      octaveWithPackages = if lib.hasAttr "withPackages" octaveComplete
-                           then
-                             let chosenPackages = map (x: lib.getAttr x octaveComplete.pkgs) packages; in
-                             if chosenPackages == [] then octaveComplete else octaveComplete.withPackages (ps: chosenPackages)
-                           else octaveComplete;
+listToAttrs (map (x:
+  let
+    baseOctave = getAttr x pkgs;
+  in {
+    name = x;
+    value = rec {
+      packageOptions = baseOctave.pkgs;
+      packageSearch = common.searcher packageOptions;
 
-      chosenPackages = if lib.hasAttr "pkgs" base.octave
-                       then base.octave.pkgs
-                       else [];
+      languageServerOptions = {};
 
-      # Wrapper derivation that only has "octave" and "octave-cli" binaries,
-      # perfect for including in binaries and passing to the kernel
-      octave = callPackage ./octave.nix { octaveComplete = octaveWithPackages; };
+      build = args@{
+        packages ? []
+        , languageServers ? []
+        , codeDownAttr ? "octave"
+        , otherLanguageKeys ? []
+        , extraJupyterConfig ? null
+      }:
+        let
+          octaveComplete = baseOctave.override {
+            qscintilla = null;
+            overridePlatforms = ["x86_64-linux" "x86_64-darwin"];
+            gnuplot = gnuplot;
+            ghostscript = ghostscript;
+            graphicsmagick = graphicsmagick;
+            python = python3;
+          };
 
-      availableLanguageServers = metadata.languageServerOptions base chosenPackages;
+          octaveWithPackages = if lib.hasAttr "withPackages" octaveComplete
+                               then
+                                 let chosenPackages = map (x: lib.getAttr x octaveComplete.pkgs) packages; in
+                                 if chosenPackages == [] then octaveComplete else octaveComplete.withPackages (ps: chosenPackages)
+                               else octaveComplete;
 
-    in symlinkJoin {
-      name = "octave";
-      paths = [
-        (callPackage ./kernel.nix { inherit octave extraJupyterConfig; })
-        octave
-      ];
-      passthru = {
-        inherit args metadata;
-        meta = base.meta;
+          chosenPackages = if lib.hasAttr "pkgs" baseOctave
+                           then baseOctave.pkgs
+                           else [];
+
+          # Wrapper derivation that only has "octave" and "octave-cli" binaries,
+          # perfect for including in binaries and passing to the kernel
+          octave = callPackage ./octave.nix { octaveComplete = octaveWithPackages; };
+
+        in symlinkJoin {
+          name = "octave";
+          paths = [
+            (callPackage ./kernel.nix { inherit octave extraJupyterConfig; })
+            octave
+          ];
+          passthru = {
+            args = args // { baseName = x; };
+            meta = baseOctave.meta;
+            inherit packageOptions languageServerOptions;
+          };
+        };
+
+      meta = baseOctave.meta // {
+        baseName = x;
+        displayName = "Octave " + octave.version;
+        icon = ./logo-64x64.png;
       };
     };
-}
+  }
+) (filter (x: hasAttr x pkgs) baseCandidates))
 
   # extraGitIgnoreLines = [
   #   ".octaverc"
