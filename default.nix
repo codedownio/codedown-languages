@@ -13,35 +13,27 @@ rec {
     nixpkgsSearcher = common.searcher prev;
 
     # Languages
-    cPack = callPackage ./languages/c {};
-    clojurePack = callPackage ./languages/clojure {};
-    # csharpPack = callPackage ./languages/csharp {};
-    elixirPack = callPackage ./languages/elixir {};
-    erlangPack = callPackage ./languages/erlang {};
-    goPack = callPackage ./languages/go {};
-    haskellPack = callPackage ./languages/haskell {};
-    javascriptPack = callPackage ./languages/javascript {};
-    schemePack = callPackage ./languages/scheme {};
-    sqlPack = callPackage ./languages/sql {};
+    languages = zipAttrsWith (n: v: head v) [
+      (callPackage ./languages/python {})
+      (callPackage ./languages/bash {})
+    ];
+    languagesSearcher = common.searcher languages;
 
-    # Languages
-    languages = {
-      bash = callPackage ./languages/bash {};
-      dot = callPackage ./languages/dot {};
-      cpp = callPackage ./languages/cpp {};
-      julia = callPackage ./languages/julia {};
-      octave = callPackage ./languages/octave {};
-      python = callPackage ./languages/python {};
-      r = callPackage ./languages/r {};
-      ruby = callPackage ./languages/ruby {};
-      rust = callPackage ./languages/rust {};
-    };
-    allBaseOptions = listToAttrs (flatten (mapAttrsToList (name: value: map (x: {
-      name = x.name;
-      value = getAttrs ["name" "meta"] x;
-    }) value.metadata.baseOptions) languages));
-
-    languagesSearcher = common.searcher allBaseOptions;
+    # languages = {
+    #   bash = ;
+    #   dot = callPackage ./languages/dot {};
+    #   cpp = callPackage ./languages/cpp {};
+    #   julia = callPackage ./languages/julia {};
+    #   octave = callPackage ./languages/octave {};
+    #   python = callPackage ./languages/python {};
+    #   r = callPackage ./languages/r {};
+    #   ruby = callPackage ./languages/ruby {};
+    #   rust = callPackage ./languages/rust {};
+    # };
+    # allBaseOptions = listToAttrs (flatten (mapAttrsToList (name: value: map (x: {
+    #   name = x.name;
+    #   value = getAttrs ["name" "meta"] x;
+    # }) value.metadata.baseOptions) languages));
 
     # Notebook language servers
     spellchecker = import ./language_servers/markdown-spellcheck-lsp.nix;
@@ -91,28 +83,22 @@ rec {
         sha256 = value.outputHash;
       }) overlays;
 
-    kernels = map (x:
-      let
-        base = x.metadata.baseByName x.passthru.args.baseName;
-        packageOptions = x.passthru.metadata.packageOptions base;
-        languageServerOptions = x.passthru.metadata.languageServerOptions base packageOptions;
-      in
-        {
-          channel_name = "nixpkgs"; # TODO
-          language = x.metadata.language;
-          base_name = x.passthru.args.baseName;
-          display_name = attrByPath ["meta" "displayName"] null x.passthru;
-          icon = attrByPath ["meta" "icon"] null x.passthru;
-          meta = attrByPath ["meta"] null x.passthru;
-          packages = map (name: {
-            inherit name;
-            meta = attrByPath [name "meta"] null packageOptions;
-          }) x.passthru.args.packages;
-          language_servers = map (name: {
-            inherit name;
-            meta = attrByPath [name "meta"] null languageServerOptions;
-          }) x.passthru.args.languageServers;
-        }) kernels;
+    kernels = map (x: {
+      channel_name = "nixpkgs"; # TODO
+      language = x.passthru.args.baseName;
+      base_name = x.passthru.args.baseName;
+      display_name = attrByPath ["meta" "displayName"] null x.passthru;
+      icon = attrByPath ["meta" "icon"] null x.passthru;
+      meta = attrByPath ["meta"] null x.passthru;
+      packages = map (name: {
+        inherit name;
+        meta = attrByPath [name "meta"] null x.passthru.packageOptions;
+      }) x.passthru.args.packages;
+      language_servers = map (name: {
+        inherit name;
+        meta = attrByPath [name "meta"] null x.passthru.languageServerOptions;
+      }) x.passthru.args.languageServers;
+    }) kernels;
 
     other_packages = map (x: {
       channel = x.channel;

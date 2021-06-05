@@ -1,4 +1,7 @@
-{stdenv, pkgs, python, packages ? []}:
+{ stdenv
+, pkgs
+, python
+}:
 
 with pkgs;
 with pkgs.lib;
@@ -9,7 +12,7 @@ let
   # Make a special Python environment with all the default packages, so we can get a site-packages
   # path containing them all to pass to the language server
   pythonEnv = python.buildEnv.override {
-    extraLibs = [python.pkgs.pylint] ++ packages;
+    extraLibs = [python.pkgs.pylint];
   };
 
 in

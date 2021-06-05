@@ -1,4 +1,7 @@
-{stdenv, pkgs, python, packages ? []}:
+{ stdenv
+, pkgs
+, python
+}:
 
 with pkgs.lib;
 
@@ -18,7 +21,7 @@ let
   manylinux1 = callPackage ./manylinux1.nix { inherit python; };
 
   pythonEnv = python.buildEnv.override {
-    extraLibs = [python.pkgs.python-language-server] ++ packages;
+    extraLibs = [python.pkgs.python-language-server];
     permitUserSite = false;
     makeWrapperArgs = [
       # Append libs needed at runtime for manylinux1 compliance

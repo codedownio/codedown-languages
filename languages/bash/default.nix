@@ -1,7 +1,15 @@
-{pkgs, lib, callPackage, writeTextDir, symlinkJoin}:
+{ pkgs
+, lib
+, callPackage
+, writeTextDir
+, symlinkJoin
+}:
 
-rec {
-  metadata = callPackage ./metadata.nix {};
+let
+  baseCandidates = [
+    "bashInteractive"
+    "bashInteractive_5"
+  ];
 
   modeInfo = writeTextDir "lib/codedown/bash-modes.yaml" (lib.generators.toYAML {} [{
     attrName = "bash";
@@ -10,31 +18,45 @@ rec {
     extensionsToRun = ["sh" "bash"];
   }]);
 
-  build = args@{
-    baseName
-    , packages ? []
-    , languageServers ? []
-    , codeDownAttr ? "bash"
-    , otherLanguageKeys ? []
-  }:
-    let
-      base = pkgs.lib.findSingle (x: x.name == baseName) null "multiple" metadata.baseOptions;
-      bash = base.bash;
-    in symlinkJoin {
-      name = "bash";
+in
 
-      paths = [
-        (callPackage ./kernel.nix {})
-        (callPackage ./man-with-pages.nix {})
-        modeInfo
-      ];
+lib.listToAttrs (map (x:
+  let
+    bash = lib.getAttr x pkgs;
+  in
+    {
+      name = x;
+      value = {
+        packageOptions = {};
+        languageServerOptions = {};
+        build = args@{
+          packages ? []
+          , languageServers ? []
+          , codeDownAttr ? "bash"
+          , otherLanguageKeys ? []
+        }:
+          symlinkJoin {
+            name = "bash";
 
-      passthru = {
-        inherit args metadata;
-        meta = base.meta;
+            paths = [
+              (callPackage ./kernel.nix {})
+              (callPackage ./man-with-pages.nix {})
+              modeInfo
+            ];
+
+            passthru = {
+              args = args // { baseName = x; };
+              meta = bash.meta;
+            };
+          };
       };
-    };
-}
+      meta = bash.meta // {
+        baseName = x;
+        displayName = "Bash " + bash.version;
+        icon = ./bash.png;
+      };
+    }
+) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))
 
 
   # pkgs.writeTextDir "language-servers.yaml" (lib/codedown/bash-lib.generators.toYAML {} [

@@ -42,57 +42,49 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
   inherit channels overlays;
 
   kernels = [
-    (importedChannels.nixpkgs-unstable.codedown.languages.bash.build {
-      baseName = "bashInteractive";
+    (importedChannels.nixpkgs-unstable.codedown.languages.bashInteractive.build {
       packages = [];
       languageServers = [];
     })
 
     # (importedChannels.nixpkgs-unstable.codedown.languages.dot.build {
-    #   baseName = "graphviz";
     #   packages = [];
     #   languageServers = [];
     # })
 
-    (importedChannels.nixpkgs-unstable.codedown.languages.cpp.build {
-      baseName = "cpp11";
-      packages = [];
-      languageServers = [];
-      codeDownAttr = "cpp";
-    })
+    # (importedChannels.nixpkgs-unstable.codedown.languages.cpp11.build {
+    #   packages = [];
+    #   languageServers = [];
+    #   codeDownAttr = "cpp";
+    # })
 
-    (importedChannels.nixpkgs.codedown.languages.r.build {
-      baseName = "R-4.0.2";
-      packages = ["ggplot2"];
-      languageServers = [];
-    })
+    # (importedChannels.nixpkgs.codedown.languages.R-4.0.2.build {
+    #   packages = ["ggplot2"];
+    #   languageServers = [];
+    # })
 
-    (importedChannels.nixpkgs-unstable.codedown.languages.octave.build {
-      baseName = "octave";
-      packages = ["arduino"];
-      languageServers = [];
-      extraJupyterConfig = ''
-        c.OctaveKernel.plot_settings = dict(format='svg')
-      '';
-    })
+    # (importedChannels.nixpkgs-unstable.codedown.languages.octave.build {
+    #   packages = ["arduino"];
+    #   languageServers = [];
+    #   extraJupyterConfig = ''
+    #     c.OctaveKernel.plot_settings = dict(format='svg')
+    #   '';
+    # })
 
-    (importedChannels.nixpkgs.codedown.languages.python.build {
-      baseName = "python38";
+    (importedChannels.nixpkgs.codedown.languages.python38.build {
       packages = ["matplotlib" "scipy"];
       languageServers = ["jedi"];
     })
 
-    (importedChannels.nixpkgs.codedown.languages.ruby.build {
-      baseName = "ruby_2_7";
-      packages = [];
-      languageServers = [];
-    })
+    # (importedChannels.nixpkgs.codedown.languages.ruby_2_7.build {
+    #   packages = [];
+    #   languageServers = [];
+    # })
 
-    (importedChannels.nixpkgs-unstable.codedown.languages.rust.build {
-      baseName = "rust_1_45";
-      packages = [];
-      languageServers = [];
-    })
+    # (importedChannels.nixpkgs-unstable.codedown.languages.rust_1_45.build {
+    #   packages = [];
+    #   languageServers = [];
+    # })
   ];
 
   otherPackages = [
