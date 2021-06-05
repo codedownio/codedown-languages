@@ -1,48 +1,98 @@
-{ pkgs
+{ lib
+, pkgs
 , callPackage
 , writeTextDir
 , stdenv
 , runCommand
+, symlinkJoin
 }:
 
-rec {
-  metadata = callPackage ./metadata.nix {};
+let
+  common = callPackage ../common.nix {};
 
-  build = {
-    baseName,
-    packages ? (_: []),
-    languageServers ? (_: []),
-    codeDownAttr ? "julia",
-    otherLanguageKeys ? []
-  }:
-    let
-      base = pkgs.lib.findSingle (x: x.name  == baseName) null "multiple" metadata.baseOptions;
-      julia = callPackage ./depot {
-        julia = base.julia;
-        python = pkgs.python3;
+  modeInfo = writeTextDir "lib/codedown/julia-modes.yaml" (pkgs.lib.generators.toYAML {} [{
+    attrName = "julia";
+    codeMirrorMode = "julia";
+    extensionsToHighlight = ["jl"];
+    extensionsToRun = ["jl"];
+  }]);
+
+  baseCandidates = [
+    "julia"
+    "julia-stable"
+    "julia-stable-bin"
+    "julia_10"
+    "julia_10-bin"
+    # "julia_11"
+    # "julia_13"
+    "julia_15"
+    "julia_16"
+    "julia_16-bin"
+  ];
+
+in
+
+with lib;
+
+listToAttrs (map (x:
+  let
+    baseJulia = getAttr x pkgs;
+  in {
+    name = x;
+    value = {
+      packageOptions = {};
+      packageSearch = common.searcher {};
+
+      languageServerOptions = {};
+
+      build = args@{
+        packages ? []
+        , languageServers ? []
+        , codeDownAttr ? "julia"
+        , otherLanguageKeys ? []
+      }:
+        let
+          julia = callPackage ./depot {
+            julia = baseJulia;
+            python = pkgs.python3;
+          };
+          python = julia.python;
+          availableLanguageServers = metadata.languageServerOptions base python.pkgs;
+        in
+          symlinkJoin {
+            name = "julia";
+
+            paths = [
+              julia
+              (callPackage ./kernel.nix {inherit julia python;})
+              (writeTextDir "lib/codedown/julia-language-servers.yaml" (
+                pkgs.lib.generators.toYAML {} (map (x: x.config) (map (x: getAttr x availableLanguageServers) languageServers))
+              ))
+            ];
+
+            passthru = {
+              args = args // { baseName = x; };
+              meta = julia.meta;
+            };
+          };
+
+      meta = baseJulia.meta // {
+        baseName = x;
+        displayName = "Julia " + julia.version;
+        icon = ./logo-64x64.png;
       };
-      python = julia.python;
-      availableLanguageServers = metadata.languageServerOptions base python.pkgs;
-    in {
-      name = "julia";
-      binaries = [julia];
-      homeFolderPaths = runCommand "julia-home-folder" {inherit julia python;} ''
-        mkdir -p $out/home
-        cp ${./depot/Manifest.toml} $out/home/Manifest.toml
-        cp ${./depot/Project.toml} $out/home/Project.toml
-
-        mkdir -p $out/home/.julia/config
-        echo "using Pkg" >> $out/home/.julia/config/startup.jl
-        echo 'Pkg.activate("/home/user")' >> $out/home/.julia/config/startup.jl
-      '';
-      kernel = callPackage ./kernel.nix {inherit julia python;};
-      modeInfo = writeTextDir "lib/codedown/julia-modes.yaml" (pkgs.lib.generators.toYAML {} [{
-        attrName = "julia";
-        codeMirrorMode = "julia";
-        extensionsToHighlight = ["jl"];
-        extensionsToRun = ["jl"];
-      }]);
-      languageServer = writeTextDir "lib/codedown/julia-language-servers.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
-      extraGitIgnoreLines = [".julia"];
     };
-}
+  }
+) (filter (x: (hasAttr x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates))
+
+  # homeFolderPaths = runCommand "julia-home-folder" {inherit julia python;} ''
+  #   mkdir -p $out/home
+  #   cp ${./depot/Manifest.toml} $out/home/Manifest.toml
+  #   cp ${./depot/Project.toml} $out/home/Project.toml
+
+  #   mkdir -p $out/home/.julia/config
+  #   echo "using Pkg" >> $out/home/.julia/config/startup.jl
+  #   echo 'Pkg.activate("/home/user")' >> $out/home/.julia/config/startup.jl
+  # '';
+
+# extraGitIgnoreLines = [".julia"];

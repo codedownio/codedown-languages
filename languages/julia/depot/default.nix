@@ -1,4 +1,4 @@
-{julia, python, jupyter, runCommand, makeWrapper, stdenv, callPackage}:
+{pkgs, julia, python, jupyter, runCommand, makeWrapper, stdenv, callPackage}:
 
 let
   gr = import ./gr_binary.nix;

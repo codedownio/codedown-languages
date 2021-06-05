@@ -47,16 +47,21 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       languageServers = [];
     })
 
-    # (importedChannels.nixpkgs-unstable.codedown.languages.dot.build {
+    # (importedChannels.nixpkgs-unstable.codedown.languages.graphviz.build {
     #   packages = [];
     #   languageServers = [];
     # })
 
-    # (importedChannels.nixpkgs-unstable.codedown.languages.cpp11.build {
-    #   packages = [];
-    #   languageServers = [];
-    #   codeDownAttr = "cpp";
-    # })
+    (importedChannels.nixpkgs-unstable.codedown.languages.cpp11.build {
+      packages = [];
+      languageServers = [];
+      codeDownAttr = "cpp";
+    })
+
+    (importedChannels.nixpkgs-unstable.codedown.languages.julia_15.build {
+      packages = [];
+      languageServers = [];
+    })
 
     # (importedChannels.nixpkgs.codedown.languages.R-4.0.2.build {
     #   packages = ["ggplot2"];

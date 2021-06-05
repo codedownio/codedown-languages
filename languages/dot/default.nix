@@ -6,8 +6,8 @@
 , symlinkJoin
 }:
 
-rec {
-  metadata = callPackage ./metadata.nix {};
+let
+  common = callPackage ../common.nix {};
 
   modeInfo = writeTextDir "lib/codedown/dot-modes.yaml" (lib.generators.toYAML {} [{
     attrName = "dot";
@@ -17,27 +17,47 @@ rec {
     extensionsToRun = ["dot" "gv"];
   }]);
 
-  build = args@{
-    baseName
-    , packages ? (_: [])
-    , languageServers ? (_: [])
-    , codeDownAttr ? "dot"
-    , otherLanguageKeys ? []
-  }:
-    let
-      base = pkgs.lib.findSingle (x: x.name == baseName) null "multiple" metadata.baseOptions;
-      graphviz = base.graphviz;
+  baseCandidates = [
+    "graphviz"
+  ];
 
-    in symlinkJoin {
-      name = "dot";
-      paths = [
-        (callPackage ./kernel.nix { inherit graphviz; })
-        graphviz
-        modeInfo
-      ];
-      passthru = {
-        inherit args metadata;
-        meta = base.meta;
+in
+
+lib.listToAttrs (map (x:
+  let
+    graphviz = lib.getAttr x pkgs;
+  in {
+    name = x;
+    value = {
+      packageOptions = {};
+      packageSearch = common.searcher {};
+
+      languageServerOptions = {};
+
+      build = args@{
+        packages ? []
+        , languageServers ? []
+        , codeDownAttr ? "dot"
+        , otherLanguageKeys ? []
+      }:
+        symlinkJoin {
+          name = "dot";
+          paths = [
+            (callPackage ./kernel.nix { inherit graphviz; })
+            graphviz
+            modeInfo
+          ];
+          passthru = {
+            args = args // { baseName = x; };
+            meta = graphviz.meta;
+          };
+        };
+
+      meta = graphviz.meta // {
+        baseName = "cpp11";
+        displayName = "Graphviz " + graphviz.version;
+        icon = ./logo-64x64.png;
       };
     };
-}
+  }
+) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))

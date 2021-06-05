@@ -16,14 +16,13 @@ rec {
     languages = zipAttrsWith (n: v: head v) [
       (callPackage ./languages/python {})
       (callPackage ./languages/bash {})
+      (callPackage ./languages/dot {})
+      (callPackage ./languages/cpp {})
+      (callPackage ./languages/julia {})
     ];
     languagesSearcher = common.searcher languages;
 
     # languages = {
-    #   bash = ;
-    #   dot = callPackage ./languages/dot {};
-    #   cpp = callPackage ./languages/cpp {};
-    #   julia = callPackage ./languages/julia {};
     #   octave = callPackage ./languages/octave {};
     #   python = callPackage ./languages/python {};
     #   r = callPackage ./languages/r {};
