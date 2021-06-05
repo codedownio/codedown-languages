@@ -51,7 +51,14 @@ with lib;
 
 if cling == null then {} else
   listToAttrs (map (x:
-    {
+    let
+      meta = clang.meta // {
+        baseName = x;
+        displayName = getAttr x displayNames;
+        icon = getAttr x icons;
+      };
+
+    in {
       name = x;
       value = rec {
         packageOptions = {};
@@ -80,16 +87,11 @@ if cling == null then {} else
             ];
             passthru = {
               args = args // { baseName = x; };
-              meta = clang.meta;
-              inherit packageOptions languageServerOptions;
+              inherit meta packageOptions languageServerOptions;
             };
           };
 
-        meta = clang.meta // {
-          baseName = x;
-          displayName = getAttr x displayNames;
-          icon = getAttr x icons;
-        };
+        inherit meta;
       };
     }
   ) baseCandidates)

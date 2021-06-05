@@ -6,6 +6,8 @@
 }:
 
 let
+  common = callPackage ../common.nix {};
+
   baseCandidates = [
     "bashInteractive"
     "bashInteractive_5"
@@ -23,12 +25,20 @@ in
 lib.listToAttrs (map (x:
   let
     bash = lib.getAttr x pkgs;
+    meta = bash.meta // {
+      baseName = x;
+      displayName = "Bash " + bash.version;
+      icon = ./bash.png;
+    };
   in
     {
       name = x;
-      value = {
+      value = rec {
         packageOptions = {};
+        packageSearch = common.searcher packageOptions;
+
         languageServerOptions = {};
+
         build = args@{
           packages ? []
           , languageServers ? []
@@ -46,15 +56,12 @@ lib.listToAttrs (map (x:
 
             passthru = {
               args = args // { baseName = x; };
-              meta = bash.meta;
+              inherit meta packageOptions languageServerOptions;
             };
           };
       };
-      meta = bash.meta // {
-        baseName = x;
-        displayName = "Bash " + bash.version;
-        icon = ./bash.png;
-      };
+
+      inherit meta;
     }
 ) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))
 

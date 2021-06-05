@@ -49,6 +49,13 @@ listToAttrs (map (x:
   let
     rust = getAttr x pkgs;
     rustPackages = rust.packages.stable;
+
+    meta = rustPackages.rustc.meta // {
+      baseName = x;
+      displayName = "Rust";
+      icon = ./logo-64x64.png;
+    };
+
   in {
     name = x;
     value = rec {
@@ -78,16 +85,11 @@ listToAttrs (map (x:
         ];
         passthru = {
           args = args // { baseName = x; };
-          meta = rustPackages.rustc.meta;
-          inherit packageOptions languageServerOptions;
+          inherit meta packageOptions languageServerOptions;
         };
       };
 
-      meta = rustPackages.rustc.meta // {
-        baseName = x;
-        displayName = "Rust";
-        icon = ./logo-64x64.png;
-      };
+      inherit meta;
     };
   }
 ) (filter (x: hasAttr x pkgs) baseCandidates))

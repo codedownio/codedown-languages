@@ -32,6 +32,13 @@ with lib;
 listToAttrs (map (x:
   let
     baseOctave = getAttr x pkgs;
+
+    meta = baseOctave.meta // {
+      baseName = x;
+      displayName = "Octave " + baseOctave.version;
+      icon = ./logo-64x64.png;
+    };
+
   in {
     name = x;
     value = rec {
@@ -79,16 +86,11 @@ listToAttrs (map (x:
           ];
           passthru = {
             args = args // { baseName = x; };
-            meta = baseOctave.meta;
-            inherit packageOptions languageServerOptions;
+            inherit meta packageOptions languageServerOptions;
           };
         };
 
-      meta = baseOctave.meta // {
-        baseName = x;
-        displayName = "Octave " + octave.version;
-        icon = ./logo-64x64.png;
-      };
+      inherit meta;
     };
   }
 ) (filter (x: hasAttr x pkgs) baseCandidates))

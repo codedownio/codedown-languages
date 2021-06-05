@@ -76,9 +76,8 @@ rec {
 
     kernels = map (x: {
       channel_name = "nixpkgs"; # TODO
-      language = x.passthru.args.baseName;
-      base_name = x.passthru.args.baseName;
-      display_name = attrByPath ["meta" "displayName"] null x.passthru;
+      language = x.meta.baseName;
+      display_name = attrByPath ["meta" "displayName"] null x;
       icon = attrByPath ["meta" "icon"] null x.passthru;
       meta = attrByPath ["meta"] null x.passthru;
       packages = map (name: {

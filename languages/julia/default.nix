@@ -37,9 +37,16 @@ with lib;
 listToAttrs (map (x:
   let
     baseJulia = getAttr x pkgs;
+
+    meta = baseJulia.meta // {
+      baseName = x;
+      displayName = "Julia " + baseJulia.version;
+      icon = ./logo-64x64.png;
+    };
+
   in {
     name = x;
-    value = {
+    value = rec {
       packageOptions = {};
       packageSearch = common.searcher {};
 
@@ -72,15 +79,11 @@ listToAttrs (map (x:
 
             passthru = {
               args = args // { baseName = x; };
-              meta = julia.meta;
+              inherit meta packageOptions languageServerOptions;
             };
           };
 
-      meta = baseJulia.meta // {
-        baseName = x;
-        displayName = "Julia " + julia.version;
-        icon = ./logo-64x64.png;
-      };
+      inherit meta;
     };
   }
 ) (filter (x: (hasAttr x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates))

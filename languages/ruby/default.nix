@@ -30,6 +30,13 @@ with lib;
 listToAttrs (map (x:
   let
     ruby = getAttr x pkgs;
+
+    meta = ruby.meta // {
+      baseName = x;
+      displayName = "Ruby " + ruby.version;
+      icon = ./logo-64x64.png;
+    };
+
   in {
     name = x;
     value = rec {
@@ -53,16 +60,11 @@ listToAttrs (map (x:
           ];
           passthru = {
             args = args // { baseName = x; };
-            meta = ruby.meta;
-            inherit packageOptions languageServerOptions;
+            inherit meta packageOptions languageServerOptions;
           };
         };
 
-      meta = ruby.meta // {
-        baseName = x;
-        displayName = "Ruby " + julia.version;
-        icon = ./logo-64x64.png;
-      };
+      inherit meta;
     };
   }
 

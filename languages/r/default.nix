@@ -10,6 +10,12 @@
 let
   common = callPackage ../common.nix {};
 
+  meta = R.meta // {
+    baseName = "R";
+    displayName = if lib.hasAttr "version" R then "R " + R.version else "R";
+    icon = ./logo-64x64.png;
+  };
+
 in
 
 with lib;
@@ -41,15 +47,10 @@ listToAttrs [{
         ];
         passthru = {
           args = args // { baseName = "R"; };
-          meta = R.meta;
-          inherit packageOptions languageServerOptions;
+          inherit meta packageOptions languageServerOptions;
         };
       };
 
-    meta = R.meta // {
-      baseName = "R";
-      displayName = if hasAttr "version" R then "R " + R.version else "R";
-      icon = ./logo-64x64.png;
-    };
+    inherit meta;
   };
 }]

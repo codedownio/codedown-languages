@@ -34,6 +34,12 @@ in
 lib.listToAttrs (map (x:
   let basePython = lib.getAttr x pkgs;
       displayName = "Python " + basePython.version;
+      meta = basePython.meta // {
+        baseName = x;
+        inherit displayName;
+        icon = ./logo-64x64.png;
+      };
+
   in {
     name = x;
     value = rec {
@@ -72,16 +78,11 @@ lib.listToAttrs (map (x:
 
           passthru = {
             args = args // { baseName = x; };
-            meta = python.meta;
-            inherit languageServerOptions packageOptions;
+            inherit meta languageServerOptions packageOptions;
           };
         };
 
-      meta = basePython.meta // {
-        baseName = x;
-        inherit displayName;
-        icon = ./logo-64x64.png;
-      };
+      inherit meta;
     };
   }
 ) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))

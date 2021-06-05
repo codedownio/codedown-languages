@@ -26,9 +26,16 @@ in
 lib.listToAttrs (map (x:
   let
     graphviz = lib.getAttr x pkgs;
+
+    meta = graphviz.meta // {
+      baseName = "cpp11";
+      displayName = "Graphviz " + graphviz.version;
+      icon = ./logo-64x64.png;
+    };
+
   in {
     name = x;
-    value = {
+    value = rec {
       packageOptions = {};
       packageSearch = common.searcher {};
 
@@ -49,15 +56,11 @@ lib.listToAttrs (map (x:
           ];
           passthru = {
             args = args // { baseName = x; };
-            meta = graphviz.meta;
+            inherit meta packageOptions languageServerOptions;
           };
         };
 
-      meta = graphviz.meta // {
-        baseName = "cpp11";
-        displayName = "Graphviz " + graphviz.version;
-        icon = ./logo-64x64.png;
-      };
+      inherit meta;
     };
   }
 ) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))
