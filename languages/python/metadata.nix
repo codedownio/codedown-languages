@@ -26,6 +26,8 @@ rec {
             inherit python;
             name = x;
             meta = python.meta // {
+              inherit language;
+              baseName = x;
               displayName = "Python " + python.version;
               icon = ./logo-64x64.png;
             };
@@ -42,8 +44,8 @@ rec {
 
   settingsSchema = {
     permitUserSite = {
-      title = "Show execution count";
-      description = "Show the execution counter next to each code cell";
+      title = "Permit user site-packages";
+      description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
       type = "boolean";
       defaultValue = false;
     };

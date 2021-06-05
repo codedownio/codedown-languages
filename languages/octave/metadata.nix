@@ -4,19 +4,25 @@ with pkgs;
 with pkgs.lib;
 
 rec {
-  baseCandidates = [
-    "octave"
-  ];
-  baseOptions = map (x:
-    let octave = getAttr x pkgs; in {
-      inherit octave;
-      name = x;
-      meta = octave.meta // {
-        displayName = "Octave " + octave.version;
-        icon = ./logo-64x64.png;
-      };
-    }
-  ) (filter (x: hasAttr x pkgs) baseCandidates);
+  language = "octave";
+
+  baseOptions = let
+    baseCandidates = [
+      "octave"
+    ];
+  in
+    map (x:
+      let octave = getAttr x pkgs; in {
+            inherit octave;
+            name = x;
+            meta = octave.meta // {
+              inherit language;
+              baseName = x;
+              displayName = "Octave " + octave.version;
+              icon = ./logo-64x64.png;
+            };
+          }
+    ) (filter (x: hasAttr x pkgs) baseCandidates);
 
   packageOptions = base@{octave, ...}: octave.pkgs;
 

@@ -19,6 +19,8 @@ rec {
         name = "cpp11";
         std = "c++11";
         meta = clang.meta // {
+          inherit language;
+          baseName = "cpp11";
           displayName = "C++ 11";
           icon = ./cpp11.png;
         };
@@ -26,6 +28,8 @@ rec {
         name = "cpp14";
         std = "c++14";
         meta = clang.meta // {
+          inherit language;
+          baseName = "cpp14";
           displayName = "C++ 14";
           icon = ./cpp14.png;
         };
@@ -33,6 +37,8 @@ rec {
         name = "cpp17";
         std = "c++17";
         meta = clang.meta // {
+          inherit language;
+          baseName = "cpp17";
           displayName = "C++ 17";
           icon = ./cpp17.png;
         };
@@ -40,6 +46,8 @@ rec {
         name = "cpp2a";
         std = "c++2a";
         meta = clang.meta // {
+          inherit language;
+          baseName = "cpp2a";
           displayName = "C++ 2a";
           icon = ./cpp2a.png;
         };

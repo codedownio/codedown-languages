@@ -22,6 +22,8 @@ rec {
             inherit bash;
             name = x;
             meta = bash.meta // {
+              inherit language;
+              baseName = x;
               displayName = "Bash " + bash.version;
               icon = ./bash.png;
             };
