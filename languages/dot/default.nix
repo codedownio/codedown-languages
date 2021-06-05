@@ -17,7 +17,7 @@ rec {
     extensionsToRun = ["dot" "gv"];
   }]);
 
-  build = {
+  build = args@{
     baseName
     , packages ? (_: [])
     , languageServers ? (_: [])
@@ -35,5 +35,9 @@ rec {
         graphviz
         modeInfo
       ];
+      passthru = {
+        inherit args metadata;
+        meta = base.meta;
+      };
     };
 }

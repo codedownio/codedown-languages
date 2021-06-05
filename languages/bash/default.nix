@@ -22,14 +22,15 @@ rec {
       bash = base.bash;
     in symlinkJoin {
       name = "bash";
+
       paths = [
         (callPackage ./kernel.nix {})
         (callPackage ./man-with-pages.nix {})
         modeInfo
       ];
+
       passthru = {
         inherit args metadata;
-        icon = ./bash.png;
         meta = base.meta;
       };
     };

@@ -6,6 +6,8 @@ with pkgs;
 with pkgs.lib;
 
 rec {
+  language = "cpp";
+
   baseOptions = let
     baseCandidates = [
       "cpp11"

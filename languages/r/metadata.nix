@@ -4,6 +4,8 @@ with pkgs;
 with pkgs.lib;
 
 rec {
+  language = "r";
+
   baseOptions = [{
     inherit R rWrapper rPackages;
     name = R.meta.name;
@@ -15,7 +17,9 @@ rec {
     };
   }];
 
-  packageOptions = base@{python, ...}: {};
+  baseByName = name: lib.findSingle (x: x.name == name) null "multiple" baseOptions;
 
-  languageServerOptions = base@{python, ...}: packages: {};
+  packageOptions = base@{...}: {};
+
+  languageServerOptions = base@{...}: packages: {};
 }

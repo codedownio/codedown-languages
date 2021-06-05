@@ -15,7 +15,7 @@ rec {
     extensionsToRun = ["rb"];
   }]);
 
-  build = {
+  build = args@{
     baseName
     , packages ? (_: [])
     , languageServers ? (_: [])
@@ -33,6 +33,10 @@ rec {
         (callPackage ./kernel.nix {})
         modeInfo
       ];
+      passthru = {
+        inherit args metadata;
+        meta = base.meta;
+      };
     };
 }
 

@@ -12,7 +12,7 @@ rec {
     extensionsToRun = ["rs"];
   }]);
 
-  build = {
+  build = args@{
     baseName
     , packages ? (_: [])
     , languageServers ? (_: [])
@@ -39,5 +39,9 @@ rec {
 
         modeInfo
       ];
+      passthru = {
+        inherit args metadata;
+        meta = base.meta;
+      };
     };
 }

@@ -24,6 +24,8 @@ rec {
           }
     ) (filter (x: hasAttr x pkgs) baseCandidates);
 
+  baseByName = name: lib.findSingle (x: x.name == name) null "multiple" baseOptions;
+
   packageOptions = base@{octave, ...}: octave.pkgs;
 
   languageServerOptions = base@{octave, ...}: {};

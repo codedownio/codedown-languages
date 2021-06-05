@@ -4,6 +4,8 @@ with pkgs;
 with pkgs.lib;
 
 rec {
+  language = "rust";
+
   baseOptions = let
     baseCandidates = [
       "rust_1_40"

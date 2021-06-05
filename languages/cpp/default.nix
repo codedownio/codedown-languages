@@ -19,7 +19,7 @@ in
 rec {
   metadata = callPackage ./metadata.nix {};
 
-  build = {
+  build = args@{
     baseName
     , packages ? (_: [])
     , languageServers ? (_: [])
@@ -38,8 +38,12 @@ rec {
       name = base.name;
       paths = [
         cling
-        ((callPackage ./kernel.nix {}) base.meta.displayName base.std base.name base.icon)
+        ((callPackage ./kernel.nix {}) base.meta.displayName base.std base.name base.meta.icon)
         modeInfo
       ];
+      passthru = {
+        inherit args metadata;
+        meta = base.meta;
+      };
     };
 }

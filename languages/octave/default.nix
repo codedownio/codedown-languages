@@ -21,10 +21,10 @@ rec {
     extensionsToRun = ["m"];
   }]);
 
-  build = {
+  build = args@{
     baseName
-    , packages ? (_: [])
-    , languageServers ? (_: [])
+    , packages ? []
+    , languageServers ? []
     , codeDownAttr ? baseName
     , otherLanguageKeys ? []
     , extraJupyterConfig ? null
@@ -43,7 +43,7 @@ rec {
 
       octaveWithPackages = if lib.hasAttr "withPackages" octaveComplete
                            then
-                             let chosenPackages = packages octaveComplete.pkgs; in
+                             let chosenPackages = map (x: lib.getAttr x octaveComplete.pkgs) packages; in
                              if chosenPackages == [] then octaveComplete else octaveComplete.withPackages (ps: chosenPackages)
                            else octaveComplete;
 
@@ -63,6 +63,10 @@ rec {
         (callPackage ./kernel.nix { inherit octave extraJupyterConfig; })
         octave
       ];
+      passthru = {
+        inherit args metadata;
+        meta = base.meta;
+      };
     };
 }
 

@@ -1,4 +1,5 @@
 { python3
+, callPackage
 , graphviz
 , fetchFromGitHub
 , makeFontsConf

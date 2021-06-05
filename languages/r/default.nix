@@ -1,12 +1,16 @@
-{pkgs, lib, callPackage, symlinkJoin}:
+{pkgs
+, lib
+, callPackage
+, symlinkJoin
+}:
 
 rec {
   metadata = callPackage ./metadata.nix {};
 
-  build = {
+  build = args@{
     baseName
-    , packages ? (_: [])
-    , languageServers ? (_: [])
+    , packages ? []
+    , languageServers ? []
     , codeDownAttr ? "r"
     , otherLanguageKeys ? []
   }:
@@ -14,7 +18,7 @@ rec {
       base = lib.head metadata.baseOptions;
 
       rWithPackages = base.rWrapper.override {
-        packages = [base.rPackages.IRkernel] ++ packages base.rPackages;
+        packages = [base.rPackages.IRkernel] ++ (map (x: lib.getAttr x base.rPackages) packages);
       };
     in symlinkJoin {
       name = "r";
@@ -23,5 +27,9 @@ rec {
         (callPackage ./kernel.nix { inherit rWithPackages; })
         (callPackage ./mode_info.nix {})
       ];
+      passthru = {
+        inherit args metadata;
+        meta = base.meta;
+      };
     };
 }

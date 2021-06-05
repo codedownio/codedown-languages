@@ -4,6 +4,8 @@ with pkgs;
 with pkgs.lib;
 
 rec {
+  language = "ruby";
+
   baseOptions = let
     baseCandidates = [
       "ruby"
