@@ -104,7 +104,7 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       channel = "nixpkgs";
       language = "python38";
       args = {
-        packages = ["matplotlib" "scipy"];
+        packages = ["matplotlib" "scipy" "rope"];
         languageServers = [];
         settings = {
           permitUserSite = false;
