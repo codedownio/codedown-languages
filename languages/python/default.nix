@@ -43,29 +43,44 @@ lib.listToAttrs (map (x:
   in {
     name = x;
     value = rec {
-      packageOptions = basePython.pkgs.override {
-        overrides = self: super: {
-          ipython = basePython.pkgs.ipython.overridePythonAttrs (old: { permitUserSite = true; });
-        };
-      };
+      packageOptions = basePython.pkgs;
       packageSearch = common.searcher packageOptions;
 
       languageServerOptions = allLanguageServerOptions basePython;
+
+      settingsSchema = {
+        permitUserSite = {
+          title = "Permit user site-packages";
+          description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
+          type = "boolean";
+          defaultValue = false;
+        };
+      };
+      defaultSettings = {
+        permitUserSite = false;
+      };
 
       build = args@{
         packages ? []
         , languageServers ? []
         , codeDownAttr ? "python"
         , otherLanguageKeys ? []
+        , settings ? defaultSettings
       }:
         let
-          python = basePython.withPackages (ps: [ps.ipykernel ps.ipywidgets] ++ (map (x: builtins.getAttr x ps) packages));
+          ps = packageOptions.override {
+            overrides = self: super: {
+              ipython = basePython.pkgs.ipython.overridePythonAttrs (old: { permitUserSite = settings.permitUserSite; });
+            };
+          };
+          python = basePython.withPackages (_: [ps.ipykernel ps.ipywidgets] ++ (map (x: builtins.getAttr x ps) packages));
+
         in symlinkJoin {
           name = x;
 
           paths = [
             python
-            python.pkgs.ipython
+            ps.ipython
 
             (callPackage ./kernel.nix {
               inherit python otherLanguageKeys displayName;
@@ -90,12 +105,3 @@ lib.listToAttrs (map (x:
 
   # languageServer = writeTextDir "lib/codedown/python-language-servers.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
   # extraGitIgnoreLines = [".ipython"];
-
-  # settingsSchema = {
-  #   permitUserSite = {
-  #     title = "Permit user site-packages";
-  #     description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
-  #     type = "boolean";
-  #     defaultValue = false;
-  #   };
-  # };
