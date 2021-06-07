@@ -36,12 +36,22 @@ rec {
     # Build tools
     mkCodeDownEnvironment = args@{
       channels
+      , importedChannels
       , overlays
       , kernels ? []
       , otherPackages ? []
-    }: symlinkJoin {
+    }: let
+      builtKernels = map (x: let kernel = (getAttr x.language (getAttr x.channel importedChannels).codedown.languages).build x.args; in
+                             kernel.overrideAttrs (old: {
+                               passthru = old.passthru // {
+                                 language = x.language;
+                                 channel = x.channel;
+                               };
+                             })) kernels;
+      in
+      symlinkJoin {
       name = "codedown-environment";
-      paths = kernels ++ [(specYaml args)] ++ (map (x: x.contents) otherPackages);
+      paths = builtKernels ++ [(specYaml (args //  { kernels = builtKernels; }))] ++ (map (x: x.contents) otherPackages);
     };
   };
 
@@ -50,6 +60,7 @@ rec {
     , overlays
     , kernels ? []
     , otherPackages ? []
+    , ...
   }: writeTextDir "lib/codedown/spec.yaml" (lib.generators.toYAML {} {
     channels = mapAttrsToList (name: value: {
       tag = "fetch_git";
@@ -75,8 +86,8 @@ rec {
       }) overlays;
 
     kernels = map (x: {
-      channel_name = "nixpkgs"; # TODO
-      language = x.meta.baseName;
+      channel = x.channel;
+      language = x.language;
       display_name = attrByPath ["meta" "displayName"] null x;
       icon = attrByPath ["meta" "icon"] null x.passthru;
       meta = attrByPath ["meta"] null x.passthru;

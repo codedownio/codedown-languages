@@ -39,56 +39,95 @@ let
 in
 
 importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
-  inherit channels overlays;
+  inherit channels importedChannels overlays;
 
   kernels = [
-    (importedChannels.nixpkgs-unstable.codedown.languages.bashInteractive.build {
-      packages = [];
-      languageServers = [];
+    ({
+      channel = "nixpkgs-unstable";
+      language = "bashInteractive";
+      args = {
+        packages = [];
+        languageServers = [];
+      };
     })
 
-    # (importedChannels.nixpkgs-unstable.codedown.languages.graphviz.build {
-    #   packages = [];
-    #   languageServers = [];
+    # ({
+    #   channel = "nixpkgs-unstable";
+    #   language = "graphviz";
+    #   args = {
+    #     packages = [];
+    #     languageServers = [];
+    #   };
     # })
 
-    (importedChannels.nixpkgs-unstable.codedown.languages.cpp11.build {
-      packages = [];
-      languageServers = [];
-      codeDownAttr = "cpp";
+    ({
+      channel = "nixpkgs-unstable";
+      language = "cpp11";
+      args = {
+        packages = [];
+        languageServers = [];
+        codeDownAttr = "cpp";
+      };
     })
 
-    (importedChannels.nixpkgs-unstable.codedown.languages.julia_15.build {
-      packages = [];
-      languageServers = [];
+    ({
+      channel = "nixpkgs-unstable";
+      language = "julia_15";
+      args = {
+        packages = [];
+        languageServers = [];
+      };
     })
 
-    (importedChannels.nixpkgs.codedown.languages.R.build {
-      packages = ["ggplot2"];
-      languageServers = [];
+    ({
+      channel = "nixpkgs";
+      language = "R";
+      args = {
+        packages = ["ggplot2"];
+        languageServers = [];
+      };
     })
 
-    (importedChannels.nixpkgs-unstable.codedown.languages.octave.build {
-      packages = ["arduino"];
-      languageServers = [];
-      extraJupyterConfig = ''
-        c.OctaveKernel.plot_settings = dict(format='svg')
-      '';
+    ({
+      channel = "nixpkgs-unstable";
+      language = "octave";
+      args = {
+        packages = ["arduino"];
+        languageServers = [];
+        extraJupyterConfig = ''
+          c.OctaveKernel.plot_settings = dict(format='svg')
+        '';
+      };
     })
 
-    (importedChannels.nixpkgs.codedown.languages.python38.build {
-      packages = ["matplotlib" "scipy"];
-      languageServers = ["jedi"];
+    ({
+      channel = "nixpkgs";
+      language = "python38";
+      args = {
+        packages = ["matplotlib" "scipy"];
+        languageServers = [];
+        settings = {
+          permitUserSite = false;
+        };
+      };
     })
 
-    (importedChannels.nixpkgs.codedown.languages.ruby_2_7.build {
-      packages = [];
-      languageServers = [];
+    ({
+      channel = "nixpkgs";
+      language = "ruby_2_7";
+      args = {
+        packages = [];
+        languageServers = [];
+      };
     })
 
-    (importedChannels.nixpkgs-unstable.codedown.languages.rust_1_51.build {
-      packages = [];
-      languageServers = [];
+    ({
+      channel = "nixpkgs-unstable";
+      language = "rust_1_51";
+      args = {
+        packages = [];
+        languageServers = [];
+      };
     })
   ];
 
