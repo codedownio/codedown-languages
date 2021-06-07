@@ -42,4 +42,9 @@
   });
 
   searcher = packages: (callPackage ../tools/fuse-indexer { inherit packages; }).searcher;
+
+  hasAttrSafe =  x: set: lib.hasAttr x set && (let
+    evaluated = builtins.tryEval (lib.getAttr x set);
+  in
+    if evaluated.success then true else false);
 }
