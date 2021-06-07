@@ -10,12 +10,11 @@
     let dir = "lib/codedown/kernels"; in runCommand "jupyter-kernels" { inherit dir; } ''
       mkdir -p $dir
 
-      ${concatStringsSep "\n" (mapAttrsToList (kernelName: unfilteredKernel:
+      ${concatStringsSep "\n" (mapAttrsToList (kernelName: kernel:
         let
-          allowedKernelKeys = ["argv" "displayName" "language" "interruptMode" "env" "metadata" "logo32" "logo64"];
-          kernel = filterAttrs (n: v: (any (x: x == n) allowedKernelKeys)) unfilteredKernel;
+          allowedKernelKeys = ["argv" "display_name" "language" "interrupt_mode" "env" "metadata" "logo32" "logo64"];
           config = builtins.toJSON (
-            kernel
+            (filterAttrs (n: v: (any (x: x == n) allowedKernelKeys)) kernel)
             // {display_name = if (kernel.displayName != "") then kernel.displayName else kernelName;}
             // (optionalAttrs (kernel ? interruptMode) { interrupt_mode = kernel.interruptMode; })
           );
