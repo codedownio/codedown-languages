@@ -11,10 +11,35 @@ let
 
   baseCandidates = [
     "ruby"
+    "ruby_2_0"
+    "ruby_2_1_0"
+    "ruby_2_2_9"
+    "ruby_2_3"
+    "ruby_2_3_6"
+    "ruby_2_4"
+    "ruby_2_4_3"
+    "ruby_2_5"
+    "ruby_2_5_0"
     "ruby_2_6"
     "ruby_2_7"
     "ruby_3_0"
   ];
+
+  packagesLookup = {
+    ruby = pkgs.rubyPackages;
+    ruby_2_0 = {};
+    ruby_2_1_0 = {};
+    ruby_2_2_9 = {};
+    ruby_2_3 = {};
+    ruby_2_3_6 = {};
+    ruby_2_4 = pkgs.rubyPackages_2_4;
+    ruby_2_4_3 = pkgs.rubyPackages_2_4;
+    ruby_2_5 = pkgs.rubyPackages_2_5;
+    ruby_2_5_0 = pkgs.rubyPackages_2_5;
+    ruby_2_6 = pkgs.rubyPackages_2_6;
+    ruby_2_7 = pkgs.rubyPackages_2_7;
+    ruby_3_0 = pkgs.rubyPackages_3_0;
+  };
 
   modeInfo = writeTextDir "lib/codedown/ruby-modes.yaml" (pkgs.lib.generators.toYAML {} [{
     attrName = "ruby";
@@ -40,7 +65,7 @@ listToAttrs (map (x:
   in {
     name = x;
     value = rec {
-      packageOptions = {};
+      packageOptions = getAttr x packagesLookup;
       packageSearch = common.searcher packageOptions;
 
       languageServerOptions = {};
@@ -68,7 +93,7 @@ listToAttrs (map (x:
     };
   }
 
-) (filter (x: (hasAttr x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates))
+) (filter (x: (common.hasAttrSafe x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates))
 
   # Env = [
   #   "GEM_PATH=/home/user/gems"
