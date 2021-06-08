@@ -33,6 +33,13 @@ rec {
     zshWithTheme = callPackage ./tools/zsh-with-theme {};
     powerline = callPackage ./tools/powerline {};
 
+    # Shells
+    shells = {
+      zshWithTheme = callPackage ./tools/zsh-with-theme {};
+      fish = callPackage ./shells/fish {};
+      bash = nixpkgs.bashInteractive;
+    };
+
     # Build tools
     mkCodeDownEnvironment = args@{
       channels
