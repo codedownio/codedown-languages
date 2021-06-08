@@ -46,6 +46,7 @@ listToAttrs (map (x:
       packageSearch = common.searcher packageOptions;
 
       languageServerOptions = {};
+      languageServerSearch = common.searcher languageServerOptions;
 
       build = args@{
         packages ? []

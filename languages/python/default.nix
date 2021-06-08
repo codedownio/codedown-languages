@@ -47,6 +47,7 @@ lib.listToAttrs (map (x:
       packageSearch = common.searcher packageOptions;
 
       languageServerOptions = allLanguageServerOptions basePython;
+      languageServerSearch = common.searcher languageServerOptions;
 
       settingsSchema = {
         permitUserSite = {

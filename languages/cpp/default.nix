@@ -65,6 +65,7 @@ if cling == null then {} else
         packageSearch = common.searcher packageOptions;
 
         languageServerOptions = {};
+        languageServerSearch = common.searcher languageServerOptions;
 
         build = args@{
           packages ? []
