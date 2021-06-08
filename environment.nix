@@ -121,14 +121,14 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       };
     })
 
-    ({
-      channel = "nixpkgs-unstable";
-      language = "rust_1_51";
-      args = {
-        packages = [];
-        languageServers = [];
-      };
-    })
+    # ({
+    #   channel = "nixpkgs-unstable";
+    #   language = "rust_1_51";
+    #   args = {
+    #     packages = [];
+    #     languageServers = [];
+    #   };
+    # })
   ];
 
   otherPackages = [
