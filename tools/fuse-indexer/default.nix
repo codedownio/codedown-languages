@@ -66,7 +66,7 @@ rec {
       keys: ["attr", "name", "description", "displayName", "icon"],
       includeScore: true,
       includeMatches: true,
-      minMatchCharLength: true
+      minMatchCharLength: 2
     }, Fuse.parseIndex(index));
 
     const rl = require("readline").createInterface(process.stdin, process.stdout);
@@ -75,8 +75,29 @@ rec {
     rl.prompt();
 
     rl.on("line", function(query) {
-      process.stdout.write(JSON.stringify(fuse.search(query).slice(0, 10)));
-      process.stdout.write("\n");
+      if (query.length === 0) {
+        const results = [];
+        const toReturn = list.slice(0, 100);
+        for (let x of toReturn) {
+          results.push({
+            score: 0.0,
+            matches: [],
+            item: {
+              attr: x.attr,
+              name: x.name,
+              description: x.description,
+              displayName: x.displayName,
+              icon: x.icon
+            }
+          });
+        }
+        process.stdout.write(JSON.stringify(results));
+        process.stdout.write("\n");
+      } else {
+        process.stdout.write(JSON.stringify(fuse.search(query).slice(0, 10)));
+        process.stdout.write("\n");
+      }
+
       rl.prompt();
     }).on("close", function() {
       process.exit(0);
