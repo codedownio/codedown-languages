@@ -51,7 +51,7 @@ lib.listToAttrs (map (x:
 
       settingsSchema = [
         {
-          name = "permitUserSite";
+          target = "permitUserSite";
           title = "Permit user site-packages";
           description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
           type = "boolean";
