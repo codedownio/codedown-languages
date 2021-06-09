@@ -94,7 +94,7 @@ lib.listToAttrs (map (x:
 
           passthru = {
             args = args // { baseName = x; };
-            inherit meta languageServerOptions packageOptions;
+            inherit meta languageServerOptions packageOptions settingsSchema settings;
           };
         };
 

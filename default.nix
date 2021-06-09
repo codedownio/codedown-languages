@@ -106,6 +106,8 @@ rec {
         inherit name;
         meta = attrByPath [name "meta"] null x.passthru.languageServerOptions;
       }) x.passthru.args.languageServers;
+      settings_schema = attrByPath ["passthru" "settingsSchema"] null x;
+      settings = attrByPath ["passthru" "settings"] null x;
     }) kernels;
 
     other_packages = map (x: {
