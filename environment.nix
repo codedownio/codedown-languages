@@ -105,21 +105,21 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       language = "python38";
       args = {
         packages = ["matplotlib" "scipy" "rope"];
-        languageServers = [];
+        languageServers = ["jedi" "pylint"];
         settings = {
           permitUserSite = false;
         };
       };
     })
 
-    ({
-      channel = "nixpkgs";
-      language = "ruby_2_7";
-      args = {
-        packages = [];
-        languageServers = [];
-      };
-    })
+    # ({
+    #   channel = "nixpkgs";
+    #   language = "ruby_2_7";
+    #   args = {
+    #     packages = [];
+    #     languageServers = [];
+    #   };
+    # })
 
     # ({
     #   channel = "nixpkgs-unstable";

@@ -42,10 +42,10 @@ let
   };
 
   modeInfo = writeTextDir "lib/codedown/ruby-modes.yaml" (pkgs.lib.generators.toYAML {} [{
-    attrName = "ruby";
-    codeMirrorMode = "ruby";
-    extensionsToHighlight = ["rb"];
-    extensionsToRun = ["rb"];
+    attr_name = "ruby";
+    code_mirror_mode = "ruby";
+    extensions_to_highlight = ["rb"];
+    extensions_to_run = ["rb"];
   }]);
 
 in

@@ -33,9 +33,9 @@ rec {
     }]);
 
   modeInfo = writeTextDir "lib/codedown/elixir-modes.yaml" (lib.generators.toYAML {} [{
-    attrName = "elixir";
-    codeMirrorMode = "erlang";
-    extensionsToHighlight = ["exs"];
-    extensionsToRun = ["exs"];
+    attr_name = "elixir";
+    code_mirror_mode = "erlang";
+    extensions_to_highlight = ["exs"];
+    extensions_to_run = ["exs"];
   }]);
 }

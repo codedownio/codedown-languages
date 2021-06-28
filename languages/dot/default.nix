@@ -10,11 +10,11 @@ let
   common = callPackage ../common.nix {};
 
   modeInfo = writeTextDir "lib/codedown/dot-modes.yaml" (lib.generators.toYAML {} [{
-    attrName = "dot";
-    codeMirrorMode = "";
+    attr_name = "dot";
+    code_mirror_mode = "";
     codeMirrorMimeType = "text/plain";
-    extensionsToHighlight = ["dot" "gv"];
-    extensionsToRun = ["dot" "gv"];
+    extensions_to_highlight = ["dot" "gv"];
+    extensions_to_run = ["dot" "gv"];
   }]);
 
   baseCandidates = [

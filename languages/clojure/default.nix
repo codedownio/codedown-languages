@@ -43,9 +43,9 @@ rec {
   }]);
 
   modeInfo = writeTextDir "lib/codedown/clojure-modes.yaml" (lib.generators.toYAML {} [{
-    attrName = "clojure";
-    codeMirrorMode = "clojure";
-    extensionsToHighlight = ["clj"];
-    extensionsToRun = ["clj"];
+    attr_name = "clojure";
+    code_mirror_mode = "clojure";
+    extensions_to_highlight = ["clj"];
+    extensions_to_run = ["clj"];
   }]);
 }

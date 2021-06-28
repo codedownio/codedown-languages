@@ -11,10 +11,10 @@ let
   common = callPackage ../common.nix {};
 
   modeInfo = writeTextDir "lib/codedown/julia-modes.yaml" (pkgs.lib.generators.toYAML {} [{
-    attrName = "julia";
-    codeMirrorMode = "julia";
-    extensionsToHighlight = ["jl"];
-    extensionsToRun = ["jl"];
+    attr_name = "julia";
+    code_mirror_mode = "julia";
+    extensions_to_highlight = ["jl"];
+    extensions_to_run = ["jl"];
   }]);
 
   baseCandidates = [

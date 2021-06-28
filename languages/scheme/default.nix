@@ -27,9 +27,9 @@ rec {
   };
 
   modeInfo = writeTextDir "lib/codedown/scheme-modes.yaml" (lib.generators.toYAML {} [{
-    attrName = "scheme";
-    codeMirrorMode = "scheme";
-    extensionsToHighlight = ["scm" "ss"];
-    extensionsToRun = ["scm" "ss"];
+    attr_name = "scheme";
+    code_mirror_mode = "scheme";
+    extensions_to_highlight = ["scm" "ss"];
+    extensions_to_run = ["scm" "ss"];
   }]);
 }

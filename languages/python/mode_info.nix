@@ -1,18 +1,18 @@
 {lib, writeTextDir}:
 
 writeTextDir "lib/codedown/python-modes.yaml" (lib.generators.toYAML {} [{
-  attrName = "python";
-  codeMirrorMode = "python";
-  extensionsToHighlight = [];
-  extensionsToRun = [];
+  attr_name = "python";
+  code_mirror_mode = "python";
+  extensions_to_highlight = [];
+  extensions_to_run = [];
 } {
-  attrName = "python2";
-  codeMirrorMode = "python";
-  extensionsToHighlight = [];
-  extensionsToRun = [];
+  attr_name = "python2";
+  code_mirror_mode = "python";
+  extensions_to_highlight = [];
+  extensions_to_run = [];
 } {
-  attrName = "python3";
-  codeMirrorMode = "python";
-  extensionsToHighlight = ["py"];
-  extensionsToRun = ["py"];
+  attr_name = "python3";
+  code_mirror_mode = "python";
+  extensions_to_highlight = ["py"];
+  extensions_to_run = ["py"];
 }])

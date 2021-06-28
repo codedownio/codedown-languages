@@ -35,10 +35,10 @@ let
   ];
 
   modeInfo = writeTextDir "lib/codedown/rust-modes.yaml" (generators.toYAML {} [{
-    attrName = "rust";
-    codeMirrorMode = "rust";
-    extensionsToHighlight = ["rs" "rc"];
-    extensionsToRun = ["rs"];
+    attr_name = "rust";
+    code_mirror_mode = "rust";
+    extensions_to_highlight = ["rs" "rc"];
+    extensions_to_run = ["rs"];
   }]);
 
 in

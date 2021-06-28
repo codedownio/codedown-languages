@@ -10,11 +10,11 @@ let
   common = callPackage ../common.nix {};
 
   modeInfoBase = {
-    attrName = "cpp";
-    codeMirrorMode = "clike";
+    attr_name = "cpp";
+    code_mirror_mode = "clike";
     codeMirrorMimeType = "text/x-c++src";
-    extensionsToHighlight = ["cpp" "hpp" "cxx" "hxx" "c" "h"];
-    extensionsToRun = ["cpp" "cxx" "c"];
+    extensions_to_highlight = ["cpp" "hpp" "cxx" "hxx" "c" "h"];
+    extensions_to_run = ["cpp" "cxx" "c"];
   };
 
   baseCandidates = [
@@ -76,7 +76,7 @@ if cling == null then {} else
           let
             modeInfo = writeTextDir "lib/codedown/cpp-modes.yaml" (generators.toYAML {} [
               modeInfoBase
-              (modeInfoBase // { attrName = x; })
+              (modeInfoBase // { attr_name = x; })
             ]);
 
           in symlinkJoin {

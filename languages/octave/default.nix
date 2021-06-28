@@ -19,10 +19,10 @@ let
   ];
 
   modeInfo = writeTextDir "lib/codedown/octave-modes.yaml" (lib.generators.toYAML {} [{
-    attrName = "octave";
-    codeMirrorMode = "octave";
-    extensionsToHighlight = ["m"];
-    extensionsToRun = ["m"];
+    attr_name = "octave";
+    code_mirror_mode = "octave";
+    extensions_to_highlight = ["m"];
+    extensions_to_run = ["m"];
   }]);
 
 in

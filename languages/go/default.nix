@@ -28,10 +28,10 @@ rec {
   };
 
   modeInfo = writeTextDir "lib/codedown/go-modes.yaml" (lib.generators.toYAML {} [{
-    attrName = "go";
-    codeMirrorMode = "go";
-    extensionsToHighlight = ["go"];
-    extensionsToRun = ["go"];
+    attr_name = "go";
+    code_mirror_mode = "go";
+    extensions_to_highlight = ["go"];
+    extensions_to_run = ["go"];
   }]);
 
   languageServer = writeTextDir "lib/codedown/go-language-servers.yaml" (lib.generators.toYAML {} [{

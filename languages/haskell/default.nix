@@ -21,10 +21,10 @@ rec {
   kernel = callPackage ./kernel.nix {};
   languageServer = writeTextDir "lib/codedown/haskell-language-servers.yaml" (pkgs.lib.generators.toYAML {} [hls]);
   modeInfo = writeTextDir "lib/codedown/haskell-modes.yaml" (pkgs.lib.generators.toYAML {} [{
-    attrName = "haskell";
-    codeMirrorMode = "haskell";
-    extensionsToHighlight = ["hs"];
-    extensionsToRun = ["hs"];
+    attr_name = "haskell";
+    code_mirror_mode = "haskell";
+    extensions_to_highlight = ["hs"];
+    extensions_to_run = ["hs"];
   }]);
   extraGitIgnoreLines = [".stack"];
 }

@@ -14,10 +14,10 @@ let
   ];
 
   modeInfo = writeTextDir "lib/codedown/bash-modes.yaml" (lib.generators.toYAML {} [{
-    attrName = "bash";
-    codeMirrorMode = "shell";
-    extensionsToHighlight = ["sh" "bash"];
-    extensionsToRun = ["sh" "bash"];
+    attr_name = "bash";
+    code_mirror_mode = "shell";
+    extensions_to_highlight = ["sh" "bash"];
+    extensions_to_run = ["sh" "bash"];
   }]);
 
 in

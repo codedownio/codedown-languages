@@ -50,10 +50,10 @@ rec {
   ];
 
   modeInfo = writeTextDir "lib/codedown/c-modes.yaml" (lib.generators.toYAML {} [{
-    attrName = "c";
-    codeMirrorMode = "clike";
+    attr_name = "c";
+    code_mirror_mode = "clike";
     codeMirrorMimeType = "text/x-csrc";
-    extensionsToHighlight = ["c" "h"];
-    extensionsToRun = ["c"];
+    extensions_to_highlight = ["c" "h"];
+    extensions_to_run = ["c"];
   }]);
 }
