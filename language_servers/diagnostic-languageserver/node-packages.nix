@@ -601,14 +601,14 @@ let
   };
 in
 {
-  "diagnostic-languageserver-git+https://github.com/iamcco/diagnostic-languageserver.git#c3e98620f1a8ba7f06aa881a70554a6ae99991b0" = nodeEnv.buildNodePackage {
+  "diagnostic-languageserver-git+https://github.com/codedownio/diagnostic-languageserver.git#0171e0867e0c340c287bfd60c348425585e21eeb" = nodeEnv.buildNodePackage {
     name = "diagnostic-languageserver";
     packageName = "diagnostic-languageserver";
     version = "1.11.0";
     src = fetchgit {
-      url = "https://github.com/iamcco/diagnostic-languageserver.git";
-      rev = "c3e98620f1a8ba7f06aa881a70554a6ae99991b0";
-      sha256 = "eff4c6c2517aa4443a44e167fa22f00603d3232b544ee364f8296156dd996155";
+      url = "https://github.com/codedownio/diagnostic-languageserver.git";
+      rev = "0171e0867e0c340c287bfd60c348425585e21eeb";
+      sha256 = "1a578cdded1196b14e06a9e0c5d524ffb68568295193c580ce48bd9cdd1ab1b5";
     };
     dependencies = [
       sources."@nodelib/fs.scandir-2.1.5"

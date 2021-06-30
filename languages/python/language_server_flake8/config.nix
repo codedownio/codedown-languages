@@ -7,7 +7,7 @@ with pkgs;
 with pkgs.lib;
 
 let
-  diagnostic-languageserver = (callPackage ../../../language_servers/diagnostic-languageserver/default.nix {})."diagnostic-languageserver-git+https://github.com/iamcco/diagnostic-languageserver.git#c3e98620f1a8ba7f06aa881a70554a6ae99991b0";
+  diagnostic-languageserver = (callPackage ../../../language_servers/diagnostic-languageserver/default.nix {})."diagnostic-languageserver-git+https://github.com/codedownio/diagnostic-languageserver.git#0171e0867e0c340c287bfd60c348425585e21eeb";
 
   # Make a special Python environment with all the default packages, so we can get a site-packages
   # path containing them all to pass to the language server

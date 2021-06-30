@@ -6,7 +6,7 @@ with pkgs.lib;
 let
   shared = callPackage ../shared.nix { inherit python; pythonPackages = python.pkgs; };
 
-  diagnostic-languageserver = (callPackage ../../../language_servers/diagnostic-languageserver/default.nix {})."diagnostic-languageserver-git+https://github.com/iamcco/diagnostic-languageserver.git#c3e98620f1a8ba7f06aa881a70554a6ae99991b0";
+  diagnostic-languageserver = (callPackage ../../../language_servers/diagnostic-languageserver/default.nix {})."diagnostic-languageserver-git+https://github.com/codedownio/diagnostic-languageserver.git#0171e0867e0c340c287bfd60c348425585e21eeb";
 
 in
 
