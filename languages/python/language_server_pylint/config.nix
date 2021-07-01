@@ -45,7 +45,8 @@ common.writeTextDirWithMeta python.pkgs.pylint.meta "lib/codedown/python-pylint-
             "no"
             "--msg-template"
             "'{line}:{column}:{category}:{msg} ({msg_id}:{symbol})'"
-            "%file"
+            "--from-stdin"
+            "myfile"
           ];
           formatPattern = [
             "^(\\d+?):(\\d+?):([a-z]+?):(.*)$"
