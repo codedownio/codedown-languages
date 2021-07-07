@@ -23,6 +23,7 @@ common.writeTextDirWithMeta python.pkgs.pylint.meta "lib/codedown/python-pylint-
   (lib.generators.toYAML {} [{
     name = "pylint";
     extensions = ["py"];
+    notebook_suffix = ".py";
     attrs = ["python"];
     type = "stream";
     args = ["${diagnostic-languageserver}/bin/diagnostic-languageserver" "--stdio" "--log-level" "1"];

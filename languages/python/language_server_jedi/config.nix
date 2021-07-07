@@ -19,6 +19,7 @@ in
 common.writeTextDirWithMeta jediLanguageServer.meta "lib/codedown/python-jedi-language-servers.yaml" (lib.generators.toYAML {} [{
   name = "jedi";
   extensions = ["py"];
+  notebook_suffix = ".py";
   attrs = ["python"];
   type = "stream";
   primary = true;
