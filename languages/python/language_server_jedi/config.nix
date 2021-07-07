@@ -17,7 +17,7 @@ let
 in
 
 common.writeTextDirWithMeta jediLanguageServer.meta "lib/codedown/python-jedi-language-servers.yaml" (lib.generators.toYAML {} [{
-  name = "python";
+  name = "jedi";
   extensions = ["py"];
   attrs = ["python"];
   type = "stream";

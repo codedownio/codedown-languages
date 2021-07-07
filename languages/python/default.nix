@@ -90,11 +90,8 @@ lib.listToAttrs (map (x:
             })
 
             (callPackage ./mode_info.nix {})
-
-            (allLanguageServerOptions python).jedi
-            (allLanguageServerOptions python).pylint
-          ];
-          # ++ (map (x: builtins.getAttr x (allLanguageServerOptions python)) languageServers);
+          ]
+          ++ (map (x: builtins.getAttr x (allLanguageServerOptions python)) languageServers);
 
           passthru = {
             args = args // { baseName = x; };
