@@ -22,6 +22,8 @@ in
 common.writeTextDirWithMeta python.pkgs.pylint.meta "lib/codedown/python-pylint-language-servers.yaml"
   (lib.generators.toYAML {} [{
     name = "pylint";
+    display_name = "Pylint";
+    icon = ./logo.png;
     extensions = ["py"];
     notebook_suffix = ".py";
     attrs = ["python"];
