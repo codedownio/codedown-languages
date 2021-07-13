@@ -57,9 +57,17 @@ lib.listToAttrs (map (x:
           type = "boolean";
           defaultValue = false;
         }
+        {
+          target = "enableVariableInspector";
+          title = "Enable variable inspector";
+          description = "Enable the variable inspector, which will fetch runtime values of variables to show in the variables list.";
+          type = "boolean";
+          defaultValue = true;
+        }
       ];
       defaultSettings = {
         permitUserSite = false;
+        enableVariableInspector = true;
       };
 
       build = args@{
@@ -70,9 +78,11 @@ lib.listToAttrs (map (x:
         , settings ? defaultSettings
       }:
         let
+          settingsToUse = defaultSettings // settings;
+
           ps = packageOptions.override {
             overrides = self: super: {
-              ipython = basePython.pkgs.ipython.overridePythonAttrs (old: { permitUserSite = settings.permitUserSite; });
+              ipython = basePython.pkgs.ipython.overridePythonAttrs (old: { permitUserSite = settingsToUse.permitUserSite; });
             };
           };
           python = basePython.withPackages (_: [ps.ipykernel ps.ipywidgets] ++ (map (x: builtins.getAttr x ps) packages));
@@ -87,6 +97,7 @@ lib.listToAttrs (map (x:
             (callPackage ./kernel.nix {
               inherit python otherLanguageKeys displayName;
               codeDownAttr = codeDownAttr;
+              enableVariableInspector = settingsToUse.enableVariableInspector;
             })
 
             (callPackage ./mode_info.nix {})
@@ -95,7 +106,8 @@ lib.listToAttrs (map (x:
 
           passthru = {
             args = args // { baseName = x; };
-            inherit meta languageServerOptions packageOptions settingsSchema settings;
+            settings = settingsToUse;
+            inherit meta languageServerOptions packageOptions settingsSchema;
           };
         };
 
