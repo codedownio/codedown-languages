@@ -1,3 +1,6 @@
+# Derived from https://github.com/lckr/jupyterlab-variableInspector/blob/master/src/inspectorscripts.ts
+# BSD 3-Clause "New" or "Revised" License
+# https://github.com/lckr/jupyterlab-variableInspector/blob/ffff68edcd8f0912a4af7951cbe58b307afe920d/LICENSE
 
 import json
 import sys
@@ -52,9 +55,9 @@ def _codedown_variableinspector_getsizeof(x):
     if type(x).__name__ in ['ndarray', 'Series']:
         return x.nbytes
     elif __pyspark and isinstance(x, __pyspark.sql.DataFrame):
-        return "?"
+        return None
     elif __tf and isinstance(x, __tf.Variable):
-        return "?"
+        return None
     elif __torch and isinstance(x, __torch.Tensor):
         return x.element_size() * x.nelement()
     elif __pd and type(x).__name__ == 'DataFrame':
@@ -153,19 +156,15 @@ def _codedown_variableinspector_dict_list():
         except:
             return False
     values = _codedown_variableinspector_nms.who_ls()
-    vardic = [
-        {
-            'name': _v,
-            'type': type(eval(_v)).__name__,
-            'size': str(_codedown_variableinspector_getsizeof(eval(_v))),
-            'shape': str(_codedown_variableinspector_getshapeof(eval(_v))) if _codedown_variableinspector_getshapeof(eval(_v)) else '',
-            'content': str(_codedown_variableinspector_getcontentof(eval(_v))),
-            'isMatrix': _codedown_variableinspector_is_matrix(eval(_v)),
-            'isWidget': _codedown_variableinspector_is_widget(type(eval(_v)))
-        }
-        for _v in values if keep_cond(_v)
-    ]
-    return json.dumps(vardic, ensure_ascii=False)
+    print(json.dumps([{
+        "name": _v,
+        'type': type(eval(_v)).__name__,
+        'size': int(_codedown_variableinspector_getsizeof(eval(_v))),
+        'shape': str(_codedown_variableinspector_getshapeof(eval(_v))) if _codedown_variableinspector_getshapeof(eval(_v)) else '',
+        'content': str(_codedown_variableinspector_getcontentof(eval(_v))),
+        'isMatrix': _codedown_variableinspector_is_matrix(eval(_v)),
+        'isWidget': _codedown_variableinspector_is_widget(type(eval(_v)))
+    } for _v in values if keep_cond(_v)], ensure_ascii=False))
 
 def _codedown_variableinspector_getmatrixcontent(x, max_rows=10000):
     # to do: add something to handle this in the future
