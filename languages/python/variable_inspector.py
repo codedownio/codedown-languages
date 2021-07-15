@@ -67,27 +67,23 @@ def _codedown_variableinspector_getsizeof(x):
 
 def _codedown_variableinspector_getshapeof(x):
     if __pd and isinstance(x, __pd.DataFrame):
-        return "%d rows x %d cols" % x.shape
+        return x.shape
     if __pd and isinstance(x, __pd.Series):
-        return "%d rows" % x.shape
+        return x.shape
     if __np and isinstance(x, __np.ndarray):
-        shape = " x ".join([str(i) for i in x.shape])
-        return "%s" % shape
+        return x.shape
     if __pyspark and isinstance(x, __pyspark.sql.DataFrame):
-        return "? rows x %d cols" % len(x.columns)
+        return ["?", len(x.columns)]
     if __tf and isinstance(x, __tf.Variable):
-        shape = " x ".join([str(int(i)) for i in x.shape])
-        return "%s" % shape
+        return x.shape
     if __tf and isinstance(x, __tf.Tensor):
-        shape = " x ".join([str(int(i)) for i in x.shape])
-        return "%s" % shape
+        return x.shape
     if __torch and isinstance(x, __torch.Tensor):
-        shape = " x ".join([str(int(i)) for i in x.shape])
-        return "%s" % shape
+        return x.shape
     if isinstance(x, list):
-        return "%s" % len(x)
+        return [len(x)]
     if isinstance(x, dict):
-        return "%s keys" % len(x)
+        return [len(x)]
     return None
 
 def _codedown_variableinspector_getcontentof(x):
@@ -156,15 +152,16 @@ def _codedown_variableinspector_dict_list():
         except:
             return False
     values = _codedown_variableinspector_nms.who_ls()
-    print(json.dumps([{
-        "name": _v,
-        'type': type(eval(_v)).__name__,
-        'size': int(_codedown_variableinspector_getsizeof(eval(_v))),
-        'shape': str(_codedown_variableinspector_getshapeof(eval(_v))) if _codedown_variableinspector_getshapeof(eval(_v)) else '',
-        'content': str(_codedown_variableinspector_getcontentof(eval(_v))),
-        'isMatrix': _codedown_variableinspector_is_matrix(eval(_v)),
-        'isWidget': _codedown_variableinspector_is_widget(type(eval(_v)))
-    } for _v in values if keep_cond(_v)], ensure_ascii=False))
+    print(json.dumps({
+        _v: {
+            "type": type(eval(_v)).__name__,
+            "size": int(_codedown_variableinspector_getsizeof(eval(_v))),
+            "shape": _codedown_variableinspector_getshapeof(eval(_v)),
+            "content": str(_codedown_variableinspector_getcontentof(eval(_v))),
+            "isMatrix": _codedown_variableinspector_is_matrix(eval(_v)),
+            "isWidget": _codedown_variableinspector_is_widget(type(eval(_v)))
+        } for _v in values if keep_cond(_v)
+    }, ensure_ascii=False))
 
 def _codedown_variableinspector_getmatrixcontent(x, max_rows=10000):
     # to do: add something to handle this in the future
