@@ -61,6 +61,15 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
     # })
 
     ({
+      channel = "nixpkgs";
+      language = "clojure";
+      args = {
+        packages = [];
+        languageServers = [];
+      };
+    })
+
+    ({
       channel = "nixpkgs-unstable";
       language = "cpp11";
       args = {

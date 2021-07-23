@@ -15,6 +15,7 @@ rec {
     # Languages
     languages = zipAttrsWith (n: v: head v) [
       (callPackage ./languages/bash {})
+      (callPackage ./languages/clojure {})
       (callPackage ./languages/cpp {})
       (callPackage ./languages/dot {})
       (callPackage ./languages/julia {})
