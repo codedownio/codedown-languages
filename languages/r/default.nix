@@ -10,6 +10,10 @@
 let
   common = callPackage ../common.nix {};
 
+  allLanguageServerOptions = rPackages: rWrapper: basePackages: {
+    languageserver = (callPackage ./language_server.nix { inherit rPackages rWrapper basePackages; });
+  };
+
   meta = R.meta // {
     baseName = "R";
     displayName = if lib.hasAttr "version" R then "R " + R.version else "R";
@@ -26,7 +30,7 @@ listToAttrs [{
     packageOptions = rPackages;
     packageSearch = common.searcher packageOptions;
 
-    languageServerOptions = {};
+    languageServerOptions = allLanguageServerOptions rPackages rWrapper [];
     languageServerSearch = common.searcher languageServerOptions;
 
     build = args@{
@@ -36,16 +40,21 @@ listToAttrs [{
       , otherLanguageKeys ? []
     }:
       let
+        basePackages = [rPackages.IRkernel] ++ (map (x: lib.getAttr x rPackages) packages);
+
         rWithPackages = rWrapper.override {
-          packages = [rPackages.IRkernel] ++ (map (x: lib.getAttr x rPackages) packages);
+          packages = basePackages;
         };
       in symlinkJoin {
         name = "r";
+
         paths = [
           rWithPackages
           (callPackage ./kernel.nix { inherit rWithPackages; })
           (callPackage ./mode_info.nix {})
-        ];
+        ]
+        ++ (map (x: builtins.getAttr x (allLanguageServerOptions rPackages rWrapper basePackages)) languageServers);
+
         passthru = {
           args = args // { baseName = "R"; };
           inherit meta packageOptions languageServerOptions;

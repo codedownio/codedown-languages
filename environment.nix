@@ -93,7 +93,7 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       language = "R";
       args = {
         packages = ["ggplot2"];
-        languageServers = [];
+        languageServers = ["languageserver"];
       };
     })
 
