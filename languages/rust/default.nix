@@ -34,13 +34,6 @@ let
     "rust_1_60"
   ];
 
-  modeInfo = writeTextDir "lib/codedown/rust-modes.yaml" (generators.toYAML {} [{
-    attr_name = "rust";
-    code_mirror_mode = "rust";
-    extensions_to_highlight = ["rs" "rc"];
-    extensions_to_run = ["rs"];
-  }]);
-
 in
 
 with lib;
@@ -69,16 +62,19 @@ listToAttrs (map (x:
         packages ? []
         , languageServers ? []
         , attrs ? ["rust"]
+        , extensions ? ["rs" "rc"]
       }: symlinkJoin {
         name = "rust";
         paths = [
           (callPackage ./kernel.nix {
-            inherit attrs;
+            inherit attrs extensions;
             evcxr = pkgs.evcxr.override {
               # rustPlatform = rustPackages.rustPlatform;
               # cargo = rustPackages.cargo;
             };
           })
+
+          (callPackage ./mode_info.nix { inherit attrs extensions; })
 
           rustPackages.rustc rustPackages.cargo pkgs.gcc
 

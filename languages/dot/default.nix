@@ -9,14 +9,6 @@
 let
   common = callPackage ../common.nix {};
 
-  modeInfo = writeTextDir "lib/codedown/dot-modes.yaml" (lib.generators.toYAML {} [{
-    attr_name = "dot";
-    code_mirror_mode = "";
-    codeMirrorMimeType = "text/plain";
-    extensions_to_highlight = ["dot" "gv"];
-    extensions_to_run = ["dot" "gv"];
-  }]);
-
   baseCandidates = [
     "graphviz"
   ];
@@ -46,13 +38,14 @@ lib.listToAttrs (map (x:
         packages ? []
         , languageServers ? []
         , attrs ? ["dot" "graphviz"]
+        , extensions ? ["dot" "gv"]
       }:
         symlinkJoin {
           name = "dot";
           paths = [
-            (callPackage ./kernel.nix { inherit graphviz attrs; })
+            (callPackage ./kernel.nix { inherit graphviz attrs extensions; })
+            (callPackage ./mode_info.nix { inherit attrs extensions; })
             graphviz
-            modeInfo
           ];
           passthru = {
             args = args // { baseName = x; };

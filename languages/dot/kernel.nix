@@ -9,6 +9,7 @@
 , freefont_ttf
 , xorg
 , attrs
+, extensions
 }:
 
 let
@@ -69,7 +70,7 @@ common.makeJupyterKernel {
     env = { FONTCONFIG_FILE = "${fontsConf}"; };
     metadata = {
       codedown = {
-        inherit attrs;
+        inherit attrs extensions;
         priority = 10;
       };
     };

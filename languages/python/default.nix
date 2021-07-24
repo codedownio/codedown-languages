@@ -74,6 +74,7 @@ lib.listToAttrs (map (x:
         packages ? []
         , languageServers ? []
         , attrs ? [x "python"]
+        , extensions ? ["py"]
         , settings ? defaultSettings
       }:
         let
@@ -94,11 +95,11 @@ lib.listToAttrs (map (x:
             ps.ipython
 
             (callPackage ./kernel.nix {
-              inherit python displayName attrs;
+              inherit python displayName attrs extensions;
               enableVariableInspector = settingsToUse.enableVariableInspector;
             })
 
-            (callPackage ./mode_info.nix {})
+            (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (map (x: builtins.getAttr x (allLanguageServerOptions python)) languageServers);
 

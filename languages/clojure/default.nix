@@ -17,13 +17,6 @@ let
     clojure = {};
   };
 
-  modeInfo = writeTextDir "lib/codedown/clojure-modes.yaml" (lib.generators.toYAML {} [{
-    attr_name = "clojure";
-    code_mirror_mode = "clojure";
-    extensions_to_highlight = ["clj"];
-    extensions_to_run = ["clj"];
-  }]);
-
 in
 
 with lib;
@@ -51,13 +44,14 @@ listToAttrs (map (x:
         packages ? []
         , languageServers ? []
         , attrs ? ["clojure"]
+        , extensions ? ["clj"]
       }:
         symlinkJoin {
           name = "clojure";
           paths = [
             clojure
-            (callPackage ./kernel.nix { inherit attrs; })
-            modeInfo
+            (callPackage ./kernel.nix { inherit attrs extensions; })
+            (callPackage ./mode_info.nix { inherit attrs extensions; })
           ];
           passthru = {
             args = args // { baseName = x; };

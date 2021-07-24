@@ -2,6 +2,7 @@
 , python3
 , bash
 , attrs
+, extensions
 }:
 
 let
@@ -28,7 +29,7 @@ common.makeJupyterKernel {
     logo64 = ./bash.png;
     metadata = {
       codedown = {
-        inherit attrs;
+        inherit attrs extensions;
         priority = 10;
       };
     };

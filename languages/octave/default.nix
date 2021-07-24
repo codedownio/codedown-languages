@@ -18,13 +18,6 @@ let
     "octave"
   ];
 
-  modeInfo = writeTextDir "lib/codedown/octave-modes.yaml" (lib.generators.toYAML {} [{
-    attr_name = "octave";
-    code_mirror_mode = "octave";
-    extensions_to_highlight = ["m"];
-    extensions_to_run = ["m"];
-  }]);
-
 in
 
 with lib;
@@ -53,6 +46,7 @@ listToAttrs (map (x:
         , languageServers ? []
         , extraJupyterConfig ? null
         , attrs ? ["octave"]
+        , extensions ? ["m"]
       }:
         let
           octaveComplete = baseOctave.override {
@@ -81,7 +75,8 @@ listToAttrs (map (x:
         in symlinkJoin {
           name = "octave";
           paths = [
-            (callPackage ./kernel.nix { inherit octave extraJupyterConfig attrs; })
+            (callPackage ./kernel.nix { inherit octave extraJupyterConfig attrs extensions; })
+            (callPackage ./mode_info.nix { inherit attrs extensions; })
             octave
           ];
           passthru = {

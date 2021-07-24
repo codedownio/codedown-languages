@@ -3,6 +3,7 @@
 , julia
 , writeShellScriptBin
 , attrs
+, extensions
 }:
 
 let
@@ -32,7 +33,7 @@ common.makeJupyterKernel {
     };
     metadata = {
       codedown = {
-        inherit attrs;
+        inherit attrs extensions;
         priority = 1;
       };
     };

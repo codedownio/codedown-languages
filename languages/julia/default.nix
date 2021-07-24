@@ -10,13 +10,6 @@
 let
   common = callPackage ../common.nix {};
 
-  modeInfo = writeTextDir "lib/codedown/julia-modes.yaml" (pkgs.lib.generators.toYAML {} [{
-    attr_name = "julia";
-    code_mirror_mode = "julia";
-    extensions_to_highlight = ["jl"];
-    extensions_to_run = ["jl"];
-  }]);
-
   baseCandidates = [
     "julia"
     "julia-stable"
@@ -57,6 +50,7 @@ listToAttrs (map (x:
         packages ? []
         , languageServers ? []
         , attrs ? ["julia"]
+        , extensions ? ["jl"]
       }:
         let
           julia = callPackage ./depot {
@@ -71,7 +65,8 @@ listToAttrs (map (x:
 
             paths = [
               julia
-              (callPackage ./kernel.nix {inherit julia python attrs;})
+              (callPackage ./kernel.nix { inherit julia python attrs extensions; })
+              (callPackage ./mode_info.nix { inherit attrs extensions; })
               (writeTextDir "lib/codedown/julia-language-servers.yaml" (
                 pkgs.lib.generators.toYAML {} (map (x: x.config) (map (x: getAttr x availableLanguageServers) languageServers))
               ))

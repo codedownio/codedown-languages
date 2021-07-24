@@ -9,14 +9,6 @@
 let
   common = callPackage ../common.nix {};
 
-  modeInfoBase = {
-    attr_name = "cpp";
-    code_mirror_mode = "clike";
-    codeMirrorMimeType = "text/x-c++src";
-    extensions_to_highlight = ["cpp" "hpp" "cxx" "hxx" "c" "h"];
-    extensions_to_run = ["cpp" "cxx" "c"];
-  };
-
   baseCandidates = [
     "cpp11"
     "cpp14"
@@ -71,19 +63,14 @@ if cling == null then {} else
           packages ? []
           , languageServers ? []
           , attrs ? [baseName "cpp"]
+          , extensions ? ["cpp" "hpp" "cxx" "hxx" "c" "h"]
         }:
-          let
-            modeInfo = writeTextDir "lib/codedown/cpp-modes.yaml" (generators.toYAML {} [
-              modeInfoBase
-              (modeInfoBase // { attr_name = x; })
-            ]);
-
-          in symlinkJoin {
+          symlinkJoin {
             name = x;
             paths = [
               cling
-              ((callPackage ./kernel.nix { inherit attrs; }) (getAttr x displayNames) (getAttr x stds) x (getAttr x icons)) # TODO: pass the other args normally
-              modeInfo
+              ((callPackage ./kernel.nix { inherit attrs extensions; }) (getAttr x displayNames) (getAttr x stds) x (getAttr x icons)) # TODO: pass the other args normally
+              (callPackage ./mode_info.nix { inherit attrs extensions; })
             ];
             passthru = {
               args = args // { baseName = x; };

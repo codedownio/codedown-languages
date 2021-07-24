@@ -5,6 +5,7 @@
 , displayName
 , enableVariableInspector
 , attrs
+, extensions
 }:
 
 with pkgs.lib;
@@ -38,7 +39,7 @@ common.makeJupyterKernel (
       env = { COLUMNS = "80"; };
       metadata = {
         codedown = {
-          inherit attrs;
+          inherit attrs extensions;
           variable_inspector = if enableVariableInspector then variableInspector else null;
           priority = 1;
         };

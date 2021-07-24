@@ -37,6 +37,7 @@ listToAttrs [{
       packages ? []
       , languageServers ? []
       , attrs ? ["r" "R"]
+      , extensions ? ["r"]
     }:
       let
         basePackages = [rPackages.IRkernel] ++ (map (x: lib.getAttr x rPackages) packages);
@@ -49,8 +50,8 @@ listToAttrs [{
 
         paths = [
           rWithPackages
-          (callPackage ./kernel.nix { inherit rWithPackages attrs; })
-          (callPackage ./mode_info.nix {})
+          (callPackage ./kernel.nix { inherit rWithPackages attrs extensions; })
+          (callPackage ./mode_info.nix { inherit attrs extensions; })
         ]
         ++ (map (x: builtins.getAttr x (allLanguageServerOptions rPackages rWrapper basePackages)) languageServers);
 

@@ -13,13 +13,6 @@ let
     "bashInteractive_5"
   ];
 
-  modeInfo = writeTextDir "lib/codedown/bash-modes.yaml" (lib.generators.toYAML {} [{
-    attr_name = "bash";
-    code_mirror_mode = "shell";
-    extensions_to_highlight = ["sh" "bash"];
-    extensions_to_run = ["sh" "bash"];
-  }]);
-
 in
 
 lib.listToAttrs (map (x:
@@ -44,14 +37,15 @@ lib.listToAttrs (map (x:
           packages ? []
           , languageServers ? []
           , attrs ? ["bash"]
+          , extensions ? ["sh" "bash"]
         }:
           symlinkJoin {
             name = "bash";
 
             paths = [
-              (callPackage ./kernel.nix { inherit attrs; })
+              (callPackage ./kernel.nix { inherit attrs extensions; })
+              (callPackage ./mode_info.nix { inherit attrs extensions; })
               (callPackage ./man-with-pages.nix {})
-              modeInfo
             ];
 
             passthru = {
