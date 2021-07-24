@@ -43,14 +43,13 @@ lib.listToAttrs (map (x:
         build = args@{
           packages ? []
           , languageServers ? []
-          , codeDownAttr ? "bash"
-          , otherLanguageKeys ? []
+          , attrs ? ["bash"]
         }:
           symlinkJoin {
             name = "bash";
 
             paths = [
-              (callPackage ./kernel.nix {})
+              (callPackage ./kernel.nix { inherit attrs; })
               (callPackage ./man-with-pages.nix {})
               modeInfo
             ];

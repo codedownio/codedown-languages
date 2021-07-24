@@ -73,8 +73,7 @@ lib.listToAttrs (map (x:
       build = args@{
         packages ? []
         , languageServers ? []
-        , codeDownAttr ? "python"
-        , otherLanguageKeys ? []
+        , attrs ? [x "python"]
         , settings ? defaultSettings
       }:
         let
@@ -95,8 +94,7 @@ lib.listToAttrs (map (x:
             ps.ipython
 
             (callPackage ./kernel.nix {
-              inherit python otherLanguageKeys displayName;
-              codeDownAttr = codeDownAttr;
+              inherit python displayName attrs;
               enableVariableInspector = settingsToUse.enableVariableInspector;
             })
 

@@ -1,5 +1,6 @@
 { callPackage
 , rWithPackages
+, attrs
 }:
 
 let
@@ -23,7 +24,7 @@ common.makeJupyterKernel {
     logo64 = ./logo-64x64.png;
     metadata = {
       codedown = {
-        other_language_keys = ["R"];
+        inherit attrs;
         priority = 1;
       };
     };

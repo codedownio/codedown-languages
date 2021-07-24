@@ -74,14 +74,13 @@ listToAttrs (map (x:
       build = args@{
         packages ? []
         , languageServers ? []
-        , codeDownAttr ? "ruby"
-        , otherLanguageKeys ? []
+        , attrs ? ["ruby"]
       }:
         symlinkJoin {
           name = "ruby";
           paths = [
             ruby
-            (callPackage ./kernel.nix {})
+            (callPackage ./kernel.nix { inherit attrs; })
             modeInfo
           ];
           passthru = {

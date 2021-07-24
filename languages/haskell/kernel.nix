@@ -1,4 +1,7 @@
-{jupyter-kernel, haskell}:
+{ jupyter-kernel
+, haskell
+, attrs
+}:
 
 jupyter-kernel.create {
   definitions = {
@@ -16,6 +19,7 @@ jupyter-kernel.create {
       logo64 = ./logo-64x64.svg;
       metadata = {
         codedown = {
+          inherit attrs;
           priority = 1;
         };
       };

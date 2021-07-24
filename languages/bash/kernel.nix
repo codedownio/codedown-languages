@@ -1,4 +1,8 @@
-{ callPackage, python3, bash }:
+{ callPackage
+, python3
+, bash
+, attrs
+}:
 
 let
   common = callPackage ../common.nix {};
@@ -24,6 +28,7 @@ common.makeJupyterKernel {
     logo64 = ./bash.png;
     metadata = {
       codedown = {
+        inherit attrs;
         priority = 10;
       };
     };

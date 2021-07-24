@@ -1,4 +1,6 @@
-{ callPackage }:
+{ callPackage
+, attrs
+}:
 
 let
   common = callPackage ../common.nix {};
@@ -18,6 +20,7 @@ common.makeJupyterKernel {
     logo64 = ./logo-64x64.png;
     metadata = {
       codedown = {
+        inherit attrs;
         priority = 1;
       };
     };

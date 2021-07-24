@@ -8,6 +8,7 @@
 , dejavu_fonts
 , freefont_ttf
 , xorg
+, attrs
 }:
 
 let
@@ -68,6 +69,7 @@ common.makeJupyterKernel {
     env = { FONTCONFIG_FILE = "${fontsConf}"; };
     metadata = {
       codedown = {
+        inherit attrs;
         priority = 10;
       };
     };

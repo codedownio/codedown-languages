@@ -3,9 +3,8 @@
 , callPackage
 , python
 , displayName
-, codeDownAttr
-, otherLanguageKeys
 , enableVariableInspector
+, attrs
 }:
 
 with pkgs.lib;
@@ -23,10 +22,10 @@ in
 
 common.makeJupyterKernel (
   listToAttrs [{
-    name = codeDownAttr;
+    name = head attrs;
     value = {
       displayName = displayName;
-      language = codeDownAttr;
+      language = head attrs;
       argv = [
         "${python}/bin/python"
         "-m"
@@ -39,7 +38,7 @@ common.makeJupyterKernel (
       env = { COLUMNS = "80"; };
       metadata = {
         codedown = {
-          other_language_keys = otherLanguageKeys;
+          inherit attrs;
           variable_inspector = if enableVariableInspector then variableInspector else null;
           priority = 1;
         };

@@ -51,9 +51,8 @@ listToAttrs (map (x:
       build = args@{
         packages ? []
         , languageServers ? []
-        , codeDownAttr ? "octave"
-        , otherLanguageKeys ? []
         , extraJupyterConfig ? null
+        , attrs ? ["octave"]
       }:
         let
           octaveComplete = baseOctave.override {
@@ -82,7 +81,7 @@ listToAttrs (map (x:
         in symlinkJoin {
           name = "octave";
           paths = [
-            (callPackage ./kernel.nix { inherit octave extraJupyterConfig; })
+            (callPackage ./kernel.nix { inherit octave extraJupyterConfig attrs; })
             octave
           ];
           passthru = {

@@ -1,4 +1,9 @@
-{ lib, callPackage, blas, cling }:
+{ lib
+, callPackage
+, blas
+, cling
+, attrs
+}:
 
 with lib;
 
@@ -49,6 +54,7 @@ displayName: std: attrName: logo64: common.makeJupyterKernel (
       logo64 = logo64;
       metadata = {
         codedown = {
+          inherit attrs;
           priority = 1;
         };
       };

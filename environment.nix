@@ -75,7 +75,7 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       args = {
         packages = [];
         languageServers = [];
-        codeDownAttr = "cpp";
+        attrs = ["cpp11" "cpp"];
       };
     })
 

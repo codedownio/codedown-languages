@@ -50,14 +50,13 @@ listToAttrs (map (x:
       build = args@{
         packages ? []
         , languageServers ? []
-        , codeDownAttr ? "clojure"
-        , otherLanguageKeys ? []
+        , attrs ? ["clojure"]
       }:
         symlinkJoin {
           name = "clojure";
           paths = [
             clojure
-            (callPackage ./kernel.nix {})
+            (callPackage ./kernel.nix { inherit attrs; })
             modeInfo
           ];
           passthru = {

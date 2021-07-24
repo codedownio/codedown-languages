@@ -70,8 +70,7 @@ if cling == null then {} else
         build = args@{
           packages ? []
           , languageServers ? []
-          , codeDownAttr ? "cpp"
-          , otherLanguageKeys ? []
+          , attrs ? [baseName "cpp"]
         }:
           let
             modeInfo = writeTextDir "lib/codedown/cpp-modes.yaml" (generators.toYAML {} [
@@ -83,7 +82,7 @@ if cling == null then {} else
             name = x;
             paths = [
               cling
-              ((callPackage ./kernel.nix {}) (getAttr x displayNames) (getAttr x stds) x (getAttr x icons))
+              ((callPackage ./kernel.nix { inherit attrs; }) (getAttr x displayNames) (getAttr x stds) x (getAttr x icons)) # TODO: pass the other args normally
               modeInfo
             ];
             passthru = {

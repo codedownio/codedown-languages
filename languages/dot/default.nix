@@ -45,13 +45,12 @@ lib.listToAttrs (map (x:
       build = args@{
         packages ? []
         , languageServers ? []
-        , codeDownAttr ? "dot"
-        , otherLanguageKeys ? []
+        , attrs ? ["dot" "graphviz"]
       }:
         symlinkJoin {
           name = "dot";
           paths = [
-            (callPackage ./kernel.nix { inherit graphviz; })
+            (callPackage ./kernel.nix { inherit graphviz attrs; })
             graphviz
             modeInfo
           ];

@@ -19,6 +19,7 @@ rec {
         logo64 = ./logo-64x64.png;
         metadata = {
           codedown = {
+            attrs = ["csharp"];
             priority = 1;
           };
         };

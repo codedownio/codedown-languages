@@ -68,12 +68,12 @@ listToAttrs (map (x:
       build = args@{
         packages ? []
         , languageServers ? []
-        , codeDownAttr ? "rust"
-        , otherLanguageKeys ? []
+        , attrs ? ["rust"]
       }: symlinkJoin {
         name = "rust";
         paths = [
           (callPackage ./kernel.nix {
+            inherit attrs;
             evcxr = pkgs.evcxr.override {
               # rustPlatform = rustPackages.rustPlatform;
               # cargo = rustPackages.cargo;

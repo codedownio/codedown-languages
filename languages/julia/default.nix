@@ -56,8 +56,7 @@ listToAttrs (map (x:
       build = args@{
         packages ? []
         , languageServers ? []
-        , codeDownAttr ? "julia"
-        , otherLanguageKeys ? []
+        , attrs ? ["julia"]
       }:
         let
           julia = callPackage ./depot {
@@ -72,7 +71,7 @@ listToAttrs (map (x:
 
             paths = [
               julia
-              (callPackage ./kernel.nix {inherit julia python;})
+              (callPackage ./kernel.nix {inherit julia python attrs;})
               (writeTextDir "lib/codedown/julia-language-servers.yaml" (
                 pkgs.lib.generators.toYAML {} (map (x: x.config) (map (x: getAttr x availableLanguageServers) languageServers))
               ))
