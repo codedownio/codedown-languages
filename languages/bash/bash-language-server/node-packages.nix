@@ -1033,13 +1033,13 @@ let
   };
 in
 {
-  "bash-language-server-1.16.1" = nodeEnv.buildNodePackage {
+  "bash-language-server-1.17.0" = nodeEnv.buildNodePackage {
     name = "bash-language-server";
     packageName = "bash-language-server";
-    version = "1.16.1";
+    version = "1.17.0";
     src = fetchurl {
-      url = "https://registry.npmjs.org/bash-language-server/-/bash-language-server-1.16.1.tgz";
-      sha512 = "IS1Ix7qyRq7GTMXqhHUF44yY89i/1Ucn5KFLimEfDpwU1f3GvbV9VnDpqpG6kedJsl2LigEthSnoVlzaOwgt0g==";
+      url = "https://registry.npmjs.org/bash-language-server/-/bash-language-server-1.17.0.tgz";
+      sha512 = "t80ktUFL9DPaTO7yydoNYXIDKINweWbFvvUXesltmWj7UaIyepIVRAWUp4+62udJtor1VxVFEAXnsVDA640flw==";
     };
     dependencies = [
       sources."abab-2.0.5"

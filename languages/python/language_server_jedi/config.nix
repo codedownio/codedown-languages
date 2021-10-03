@@ -1,4 +1,9 @@
-{lib, pkgs, python, writeTextDir}:
+{ lib
+, pkgs
+, python
+, writeTextDir
+, kernelName
+}:
 
 with pkgs;
 with pkgs.lib;
@@ -23,6 +28,7 @@ common.writeTextDirWithMeta jediLanguageServer.meta "lib/codedown/python-jedi-la
   icon = ./logo.png;
   extensions = ["py"];
   notebook_suffix = ".py";
+  kernel_name = kernelName;
   attrs = ["python"];
   type = "stream";
   primary = true;

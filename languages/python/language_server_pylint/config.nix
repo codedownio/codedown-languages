@@ -1,6 +1,7 @@
 { stdenv
 , pkgs
 , python
+, kernelName
 }:
 
 with pkgs;
@@ -26,6 +27,7 @@ common.writeTextDirWithMeta python.pkgs.pylint.meta "lib/codedown/python-pylint-
     icon = ./logo.png;
     extensions = ["py"];
     notebook_suffix = ".py";
+    kernel_name = kernelName;
     attrs = ["python"];
     type = "stream";
     args = ["${diagnostic-languageserver}/bin/diagnostic-languageserver" "--stdio" "--log-level" "1"];

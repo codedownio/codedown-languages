@@ -8,14 +8,14 @@
 let
   common = callPackage ../common.nix {};
 
-  allLanguageServerOptions = python: {
+  allLanguageServerOptions = python: kernelName: {
     # Primary language server
-    jedi = (callPackage ./language_server_jedi/config.nix { inherit python; });
+    jedi = (callPackage ./language_server_jedi/config.nix { inherit python kernelName; });
     palantir = (callPackage ./language_server_palantir/config.nix { inherit python; });
     microsoft = (callPackage ./language_server_microsoft/config.nix { inherit python; });
 
     # Secondary language servers (for diagnostics, formatting, etc.)
-    pylint = (callPackage ./language_server_pylint/config.nix { inherit python; });
+    pylint = (callPackage ./language_server_pylint/config.nix { inherit python kernelName; });
     flake8 = (callPackage ./language_server_flake8/config.nix { inherit python; });
     pycodestyle = (callPackage ./language_server_pycodestyle/config.nix { inherit python; });
   };
@@ -46,7 +46,7 @@ lib.listToAttrs (map (x:
       packageOptions = basePython.pkgs;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = allLanguageServerOptions basePython;
+      languageServerOptions = allLanguageServerOptions basePython "python";
       languageServerSearch = common.searcher languageServerOptions;
 
       settingsSchema = [
@@ -101,7 +101,7 @@ lib.listToAttrs (map (x:
 
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
-          ++ (map (x: builtins.getAttr x (allLanguageServerOptions python)) languageServers);
+          ++ (map (y: builtins.getAttr y (allLanguageServerOptions python x)) languageServers);
 
           passthru = {
             args = args // { baseName = x; };
