@@ -31,7 +31,7 @@ rec {
     spellchecker = import ./language_servers/markdown-spellcheck-lsp.nix;
 
     # Shells
-    shells = {
+    availableShells = {
       zshWithTheme = common.wrapShell "zsh-with-theme" (callPackage ./tools/zsh-with-theme {});
       fish = common.wrapShell "fish" (callPackage ./shells/fish {});
       bash = common.wrapShell "bash" (prev.bashInteractive);
@@ -42,7 +42,7 @@ rec {
       channels
       , importedChannels
       , overlays
-      , shell ? "zshWithTheme"
+      , shells ? "zshWithTheme"
       , kernels ? []
       , otherPackages ? []
     }: let
@@ -58,7 +58,7 @@ rec {
         name = "codedown-environment";
         paths = builtKernels
                 ++ [(specYaml (args //  { kernels = builtKernels; }))]
-                ++ [(getAttr shell shells)]
+                ++ [(common.wrapShells availableShells shells)]
                 ++ (map (x: x.contents) otherPackages);
       };
   };

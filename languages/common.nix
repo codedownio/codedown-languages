@@ -53,4 +53,16 @@
     mkdir -p $out/lib/codedown
     makeWrapper "$baseDerivation/bin/$executableName" $out/lib/codedown/shell
   '';
+
+  wrapShells = availableShells: shells: runCommand "codedown-shells" { shells = [(map (x: lib.getAttr x availableShells) shells)]; } ''
+    mkdir -p $out/lib/codedown/shells
+
+    COUNTER=1
+    for shell in $shells; do
+      ln -s $shell/lib/codedown/shell $out/lib/codedown/shells/shell$COUNTER
+      let COUNTER++
+    done
+
+    ln -s $out/lib/codedown/shells/shell1 $out/lib/codedown/shell
+  '';
 }

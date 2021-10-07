@@ -41,7 +41,7 @@ in
 importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
   inherit channels importedChannels overlays;
 
-  shell = "zshWithTheme";
+  shells = ["zshWithTheme" "fish"];
 
   kernels = [
     ({
