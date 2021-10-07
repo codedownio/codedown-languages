@@ -30,15 +30,11 @@ rec {
     # Notebook language servers
     spellchecker = import ./language_servers/markdown-spellcheck-lsp.nix;
 
-    # Tools
-    zshWithTheme = callPackage ./tools/zsh-with-theme {};
-    powerline = callPackage ./tools/powerline {};
-
     # Shells
     shells = {
-      zshWithTheme = callPackage ./tools/zsh-with-theme {};
-      fish = callPackage ./shells/fish {};
-      bash = nixpkgs.bashInteractive;
+      zshWithTheme = common.wrapShell "zsh-with-theme" (callPackage ./tools/zsh-with-theme {});
+      fish = common.wrapShell "fish" (callPackage ./shells/fish {});
+      bash = common.wrapShell "bash" (prev.bashInteractive);
     };
 
     # Build tools
@@ -46,6 +42,7 @@ rec {
       channels
       , importedChannels
       , overlays
+      , shell ? "zshWithTheme"
       , kernels ? []
       , otherPackages ? []
     }: let
@@ -58,9 +55,12 @@ rec {
                              })) kernels;
       in
       symlinkJoin {
-      name = "codedown-environment";
-      paths = builtKernels ++ [(specYaml (args //  { kernels = builtKernels; }))] ++ (map (x: x.contents) otherPackages);
-    };
+        name = "codedown-environment";
+        paths = builtKernels
+                ++ [(specYaml (args //  { kernels = builtKernels; }))]
+                ++ [(getAttr shell shells)]
+                ++ (map (x: x.contents) otherPackages);
+      };
   };
 
   specYaml = {

@@ -2,6 +2,7 @@
 , runCommand
 , writeTextDir
 , callPackage
+, makeWrapper
 }:
 
 {
@@ -46,4 +47,10 @@
     evaluated = builtins.tryEval (lib.getAttr x set);
   in
     if evaluated.success then true else false);
+
+  wrapShell = executableName: baseDerivation: runCommand "codedown-shell" { inherit baseDerivation executableName;
+                                                                            buildInputs = [makeWrapper]; } ''
+    mkdir -p $out/lib/codedown
+    makeWrapper "$baseDerivation/bin/$executableName" $out/lib/codedown/shell
+  '';
 }
