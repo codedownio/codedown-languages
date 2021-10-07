@@ -18,16 +18,16 @@ let
   channels = rec {
     nixpkgs = fetchgit {
       url = https://github.com/NixOS/nixpkgs.git;
-      rev = "33824cdf8e4fec30c5b9ddc91b18991c3c375227";
+      rev = "973910f5c31b9ba6c171c33a8bd7199990b14c72";
       branchName = "release-20.09";
-      sha256 = "1sad0x998k3iid2vp57kv4skvf90yh4gbs61dv3p45c2qi3sql46";
+      sha256 = "1n1kibmn1fcjazaxp8lydwdx646lknqksv5b2fm33fdq2dvafvj7";
     };
 
     nixpkgs-unstable = fetchgit {
       url = https://github.com/NixOS/nixpkgs.git;
-      rev = "7013a0f2791da4c38c7e6f56d48139aeb344991b";
+      rev = "ecaf3da9340231e5493eccc3db87604a3705da42";
       branchName = "nixpkgs-unstable";
-      sha256 = "1az617wpx535nfn0rz63cyvv8b5rlsp80cdq07da2dws8zzylnbm";
+      sha256 = "049dcpzklpjj0c7g172njfcqb9xvxkpyf7qjiwvaf8klgd5cippa";
     };
   };
 
@@ -40,6 +40,8 @@ in
 
 importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
   inherit channels importedChannels overlays;
+
+  shell = "zshWithTheme";
 
   kernels = [
     ({
