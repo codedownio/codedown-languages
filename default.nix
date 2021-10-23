@@ -42,7 +42,7 @@ rec {
       channels
       , importedChannels
       , overlays
-      , shells ? "zshWithTheme"
+      , shells ? ["zshWithTheme"]
       , kernels ? []
       , otherPackages ? []
     }: let
@@ -66,6 +66,7 @@ rec {
   specYaml = {
     channels
     , overlays
+    , shells
     , kernels ? []
     , otherPackages ? []
     , ...
@@ -92,6 +93,8 @@ rec {
         branch_name = attrByPath ["branchName"] null value;
         sha256 = value.outputHash;
       }) overlays;
+
+    inherit shells;
 
     kernels = map (x: {
       channel = x.channel;
