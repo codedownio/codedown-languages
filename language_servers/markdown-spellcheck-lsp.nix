@@ -4,7 +4,7 @@ with lib.lists;
 let
   config = writeText "language_servers.yaml" (lib.generators.toYAML {} [{
     name = "spellchecker";
-    extensions = [];
+    extensions = ["md" "ipynb"];
     attrs = ["markdown"];
     type = "stream";
     args = [
