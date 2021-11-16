@@ -45,6 +45,7 @@ rec {
       , shells ? ["zshWithTheme"]
       , kernels ? []
       , otherPackages ? []
+      , metaOnly ? false
     }: let
       builtKernels = map (x: let kernel = (getAttr x.language (getAttr x.channel importedChannels).codedown.languages).build x.args; in
                              kernel.overrideAttrs (old: {

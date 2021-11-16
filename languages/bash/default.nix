@@ -38,15 +38,17 @@ lib.listToAttrs (map (x:
           , languageServers ? []
           , attrs ? ["bash"]
           , extensions ? ["sh" "bash"]
+          , metaOnly ? false
         }:
           symlinkJoin {
             name = "bash";
 
             paths = [
-              (callPackage ./kernel.nix { inherit attrs extensions; })
+              (callPackage ./kernel.nix { inherit attrs extensions metaOnly; })
               (callPackage ./mode_info.nix { inherit attrs extensions; })
+            ] ++ (if metaOnly then [] else [
               (callPackage ./man-with-pages.nix {})
-            ];
+            ]);
 
             passthru = {
               args = args // { baseName = x; };

@@ -5,9 +5,11 @@
 , makeWrapper
 }:
 
-{
+rec {
+  makeJupyterKernel = makeJupyterKernelInner false;
+
   # Based on the version in Nixpkgs, but with different output path
-  makeJupyterKernel = definitions: with lib;
+  makeJupyterKernelInner = scrambleKernelJson: definitions: with lib;
     let dir = "lib/codedown/kernels"; in runCommand "jupyter-kernels" { inherit dir; } ''
       mkdir -p $dir
 
@@ -30,6 +32,11 @@
         in ''
           mkdir -p '${dir}/${kernelName}';
           echo '${config}' > '${dir}/${kernelName}/kernel.json';
+
+          if [[ -n "${if scrambleKernelJson then "t" else ""}" ]]; then
+            sed -i 's|/nix/store/[^-]*|/nixpath|g' '${dir}/${kernelName}/kernel.json'
+          fi
+
           ${logo32}
           ${logo64}
         '') definitions)}

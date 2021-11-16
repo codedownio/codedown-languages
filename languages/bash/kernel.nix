@@ -3,6 +3,7 @@
 , bash
 , attrs
 , extensions
+, metaOnly ? false
 }:
 
 let
@@ -14,7 +15,7 @@ let
 
 in
 
-common.makeJupyterKernel {
+common.makeJupyterKernelInner metaOnly {
   bash = {
     displayName = "Bash";
     argv = [
