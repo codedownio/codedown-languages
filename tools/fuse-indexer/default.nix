@@ -69,12 +69,7 @@ rec {
       minMatchCharLength: 2
     }, Fuse.parseIndex(index));
 
-    const rl = require("readline").createInterface(process.stdin, process.stdout);
-
-    rl.setPrompt("");
-    rl.prompt();
-
-    rl.on("line", function(query) {
+    function handleQuery(query) {
       if (query.length === 0) {
         const results = [];
         const toReturn = list.slice(0, 100);
@@ -97,7 +92,23 @@ rec {
         process.stdout.write(JSON.stringify(fuse.search(query).slice(0, 10)));
         process.stdout.write("\n");
       }
+    }
 
+    // If a --single flag is provided, take the query from that and exit
+    for (var i = 0; i < process.argv.length; i += 1) {
+      if (process.argv[i] === "--single") {
+        return handleQuery(process.argv[i + 1]);
+      }
+    }
+
+    // Otherwise, enter a REPL
+    const rl = require("readline").createInterface(process.stdin, process.stdout);
+
+    rl.setPrompt("");
+    rl.prompt();
+
+    rl.on("line", function(query) {
+      handleQuery(query);
       rl.prompt();
     }).on("close", function() {
       process.exit(0);
