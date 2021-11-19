@@ -38,7 +38,7 @@ let
     attr = k;
     name = safeEval (lib.attrByPath ["meta" "name"] "" v);
     description = safeEval (lib.attrByPath ["meta" "description"] "" v);
-    displayName = safeEval (lib.attrByPath ["meta" "displayName"] "" v);
+    display_name = safeEval (lib.attrByPath ["meta" "displayName"] "" v);
     icon = safeEval (lib.attrByPath ["meta" "icon"] "" v);
   }) packages));
 
@@ -52,7 +52,7 @@ rec {
       const fs = require("fs");
       const list = require("$json");
       const Fuse = require('fuse.min');
-      fs.writeFileSync("$out", JSON.stringify(Fuse.createIndex(["attr", "name", "description", "displayName"], list)));
+      fs.writeFileSync("$out", JSON.stringify(Fuse.createIndex(["attr", "name", "description", "display_name"], list)));
     EOF
   '';
 
@@ -63,7 +63,7 @@ rec {
     const list = require("${json}");
     const index = require("${index}");
     const fuse = new Fuse(list, {
-      keys: ["attr", "name", "description", "displayName", "icon"],
+      keys: ["attr", "name", "description", "display_name", "icon"],
       includeScore: true,
       includeMatches: true,
       minMatchCharLength: 2
@@ -81,7 +81,7 @@ rec {
               attr: x.attr,
               name: x.name,
               description: x.description,
-              display_name: x.displayName,
+              display_name: x.display_name,
               icon: x.icon
             }
           });
