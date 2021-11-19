@@ -55,9 +55,9 @@ lib.listToAttrs (map (x:
               inherit meta packageOptions languageServerOptions;
             };
           };
-      };
 
-      inherit meta;
+        inherit meta;
+      };
     }
 ) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))
 
