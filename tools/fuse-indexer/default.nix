@@ -81,7 +81,7 @@ rec {
               attr: x.attr,
               name: x.name,
               description: x.description,
-              displayName: x.displayName,
+              display_name: x.displayName,
               icon: x.icon
             }
           });
