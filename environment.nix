@@ -50,6 +50,7 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       args = {
         packages = [];
         languageServers = [];
+        # metaOnly = true;
       };
     })
 
@@ -120,6 +121,7 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
         settings = {
           permitUserSite = false;
         };
+        # metaOnly = true;
       };
     })
 
