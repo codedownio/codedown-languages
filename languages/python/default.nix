@@ -81,11 +81,16 @@ lib.listToAttrs (map (x:
         let
           settingsToUse = defaultSettings // settings;
 
-          ps = packageOptions.override {
-            overrides = self: super: {
-              ipython = basePython.pkgs.ipython.overridePythonAttrs (old: { permitUserSite = settingsToUse.permitUserSite; });
-            };
-          };
+          ps = packageOptions;
+
+          # Uncomment the following to set permitUserSite for ipython, but note it makes ipython and dependencies (like jupyter stuff)
+          # get built (and tested, which sometimes hangs!) instead of downloaded from cache
+          # ps = packageOptions.override {
+          #   overrides = self: super: {
+          #     ipython = basePython.pkgs.ipython.overridePythonAttrs (old: { permitUserSite = settingsToUse.permitUserSite; });
+          #   };
+          # };
+
           python = basePython.withPackages (_: [ps.ipykernel ps.ipywidgets] ++ (map (x: builtins.getAttr x ps) packages));
 
         in symlinkJoin {
