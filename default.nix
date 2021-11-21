@@ -72,9 +72,9 @@ rec {
     , otherPackages ? []
     , ...
   }: writeTextDir "lib/codedown/spec.yaml" (lib.generators.toYAML {} {
-    channels = channels;
+    channels = lib.mapAttrsToList (name: value: value // { inherit name; }) channels;
 
-    overlays = overlays;
+    overlays = lib.mapAttrsToList (name: value: value // { inherit name; }) overlays;
 
     inherit shells;
 

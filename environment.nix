@@ -14,7 +14,6 @@ let
 
   overlays = {
     codedown = {
-      name = "codedown";
       tag = "path";
       path = ./.;
     };
@@ -22,7 +21,6 @@ let
 
   channels = rec {
     nixpkgs = {
-      name = "nixpkgs";
       tag = "fetch_from_github";
       owner = "NixOS";
       repo = "nixpkgs";
@@ -31,7 +29,6 @@ let
     };
 
     nixpkgs-unstable = {
-      name = "nixpkgs-unstable";
       tag = "fetch_from_github";
       owner = "NixOS";
       repo = "nixpkgs";
