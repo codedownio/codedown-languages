@@ -2,6 +2,7 @@
 let
   bootstrapNixpkgs = import <nixpkgs> {};
   fetchgit = bootstrapNixpkgs.fetchgit;
+  fetchFromGitHub = bootstrapNixpkgs.fetchFromGitHub;
   lib = bootstrapNixpkgs.lib;
 
   # codedownSrc = /home/tom/tools/codedown-languages;
@@ -12,40 +13,52 @@ let
   # };
 
   overlays = {
-    codedown = ./.;
+    codedown = {
+      name = "codedown";
+      tag = "path";
+      path = ./.;
+    };
   };
 
   channels = rec {
-    nixpkgs = fetchgit {
-      url = https://github.com/NixOS/nixpkgs.git;
+    nixpkgs = {
+      name = "nixpkgs";
+      tag = "fetch_from_github";
+      owner = "NixOS";
+      repo = "nixpkgs";
       rev = "973910f5c31b9ba6c171c33a8bd7199990b14c72";
-      branchName = "release-20.09";
       sha256 = "1n1kibmn1fcjazaxp8lydwdx646lknqksv5b2fm33fdq2dvafvj7";
     };
 
-    nixpkgs-unstable = fetchgit {
-      url = https://github.com/NixOS/nixpkgs.git;
+    nixpkgs-unstable = {
+      name = "nixpkgs-unstable";
+      tag = "fetch_from_github";
+      owner = "NixOS";
+      repo = "nixpkgs";
       rev = "ecaf3da9340231e5493eccc3db87604a3705da42";
-      branchName = "nixpkgs-unstable";
       sha256 = "049dcpzklpjj0c7g172njfcqb9xvxkpyf7qjiwvaf8klgd5cippa";
     };
   };
 
-  importedChannels = rec {
-    nixpkgs = import channels.nixpkgs { overlays = map (x: import x) (lib.attrValues overlays); };
-    nixpkgs-unstable = import channels.nixpkgs-unstable { overlays = map (x: import x) (lib.attrValues overlays); };
-  };
+  channelSpecToChannel = name: channel:
+    if (channel.tag == "fetch_from_github") then fetchFromGitHub ((removeAttrs channel ["tag"]))
+    else if (channel.tag == "fetch_git") then fetchgit (removeAttrs channel ["tag"])
+    else if (channel.tag == "path") then channel.path else null;
+
+  importedOverlays = lib.mapAttrsToList (name: value: import (channelSpecToChannel name value)) overlays;
+  importedChannels = lib.mapAttrs (name: value: import (channelSpecToChannel name value) { overlays = importedOverlays; }) channels;
 
 in
 
 importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
   inherit channels importedChannels overlays;
 
-  shells = ["zshWithTheme" "fish"];
+  # shells = ["zshWithTheme" "fish"];
+  shells = [];
 
   kernels = [
     ({
-      channel = "nixpkgs-unstable";
+      channel = "nixpkgs";
       language = "bashInteractive";
       args = {
         packages = [];

@@ -72,28 +72,9 @@ rec {
     , otherPackages ? []
     , ...
   }: writeTextDir "lib/codedown/spec.yaml" (lib.generators.toYAML {} {
-    channels = mapAttrsToList (name: value: {
-      tag = "fetch_git";
-      name = name;
-      url = value.url;
-      rev = value.rev;
-      branchName = attrByPath ["branchName"] null value;
-      sha256 = value.outputHash;
-    }) channels;
+    channels = channels;
 
-    overlays = mapAttrsToList (name: value: if builtins.typeOf value == "path" then
-      {
-        tag = "path";
-        name = name;
-        path = value;
-      } else {
-        tag = "fetch_git";
-        name = name;
-        url = value.url;
-        rev = value.rev;
-        branch_name = attrByPath ["branchName"] null value;
-        sha256 = value.outputHash;
-      }) overlays;
+    overlays = overlays;
 
     inherit shells;
 
