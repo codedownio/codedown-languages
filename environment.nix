@@ -38,8 +38,8 @@ let
   };
 
   channelSpecToChannel = name: channel:
-    if (channel.tag == "fetch_from_github") then fetchFromGitHub ((removeAttrs channel ["tag"]))
-    else if (channel.tag == "fetch_git") then fetchgit (removeAttrs channel ["tag"])
+    if (channel.tag == "fetch_from_github") then fetchFromGitHub ((removeAttrs channel ["tag" "name"]))
+    else if (channel.tag == "fetch_git") then fetchgit (removeAttrs channel ["tag" "name"])
     else if (channel.tag == "path") then channel.path else null;
 
   importedOverlays = lib.mapAttrsToList (name: value: import (channelSpecToChannel name value)) overlays;
