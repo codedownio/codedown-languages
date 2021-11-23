@@ -70,6 +70,8 @@ rec {
       let COUNTER++
     done
 
-    ln -s $out/lib/codedown/shells/shell1 $out/lib/codedown/shell
+    if [[ -f "$out/lib/codedown/shells/shell1" ]]; then
+      ln -s $out/lib/codedown/shells/shell1 $out/lib/codedown/shell
+    fi
   '';
 }
