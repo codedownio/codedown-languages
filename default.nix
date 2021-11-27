@@ -47,7 +47,7 @@ rec {
       , otherPackages ? []
       , metaOnly ? false
     }: let
-      builtKernels = map (x: let kernel = (getAttr x.language (getAttr x.channel importedChannels).codedown.languages).build x.args; in
+      builtKernels = map (x: let kernel = (getAttr x.language (getAttr x.channel importedChannels).codedown.languages).build (x.args // { inherit metaOnly; }); in
                              kernel.overrideAttrs (old: {
                                passthru = old.passthru // {
                                  language = x.language;
@@ -59,8 +59,8 @@ rec {
         name = "codedown-environment";
         paths = builtKernels
                 ++ [(specYaml (args //  { kernels = builtKernels; }))]
-                ++ [(common.wrapShells availableShells shells)]
-                ++ (map (x: x.contents) otherPackages);
+                ++ (if metaOnly then [] else [(common.wrapShells availableShells shells)])
+                ++ (if metaOnly then [] else (map (x: x.contents) otherPackages));
       };
   };
 

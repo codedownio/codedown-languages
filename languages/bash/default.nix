@@ -3,6 +3,7 @@
 , callPackage
 , writeTextDir
 , symlinkJoin
+, metaOnly ? false
 }:
 
 let
