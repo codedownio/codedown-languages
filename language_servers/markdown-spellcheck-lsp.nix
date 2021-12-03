@@ -1,4 +1,13 @@
-with import <nixpkgs> {};
+{ lib
+, writeText
+, callPackage
+, hunspell
+, hunspellDicts
+, hunspellWithDicts
+, runCommand
+, makeWrapper
+, unixtools
+}:
 with lib.lists;
 
 let

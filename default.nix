@@ -28,7 +28,7 @@ rec {
     languagesSearcher = common.searcher languages;
 
     # Notebook language servers
-    spellchecker = import ./language_servers/markdown-spellcheck-lsp.nix;
+    spellchecker = callPackage ./language_servers/markdown-spellcheck-lsp.nix {};
 
     # Shells
     availableShells = {
