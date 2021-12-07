@@ -13,7 +13,9 @@ let
 
 in
 
-haskell
+(snapshot.ghcWithPackages (ps: with ps; [stm lens conduit]))
+
+# haskell
 
 # nixpkgs.mkShell {
 #   buildInputs = [

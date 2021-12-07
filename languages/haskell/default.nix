@@ -19,7 +19,7 @@ let
 
 in
 
-lib.mapAttrs (name: snapshot:
+lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
   let displayName = "Haskell (Stackage " + name + ")";
       meta = {
         baseName = "haskell-stackage-" + name;
@@ -29,65 +29,70 @@ lib.mapAttrs (name: snapshot:
         icon = ./logo-64x64.svg;
       };
 
-  in rec {
-    packageOptions = snapshot;
-    packageSearch = common.searcher packageOptions;
+  in {
+    name = meta.baseName;
+    value = rec {
+      packageOptions = snapshot;
+      packageSearch = common.searcher packageOptions;
 
-    languageServerOptions = allLanguageServerOptions snapshot "haskell";
-    languageServerSearch = common.searcher languageServerOptions;
+      languageServerOptions = allLanguageServerOptions snapshot "haskell";
+      languageServerSearch = common.searcher languageServerOptions;
 
-    settingsSchema = [];
-    defaultSettings = {};
+      settingsSchema = [];
+      defaultSettings = {};
 
-    build = args@{
-      packages ? []
-      , languageServers ? []
-      , attrs ? [meta.baseName "haskell"]
-      , extensions ? ["hs"]
-      , settings ? defaultSettings
-      , metaOnly ? false
-    }:
-      let
-        settingsToUse = defaultSettings // settings;
+      build = args@{
+        packages ? []
+        , languageServers ? []
+        , attrs ? [meta.baseName "haskell"]
+        , extensions ? ["hs"]
+        , settings ? defaultSettings
+        , metaOnly ? false
+      }:
+        let
+          settingsToUse = defaultSettings // settings;
 
-      in symlinkJoin {
-        name = meta.baseName;
+        in symlinkJoin {
+          name = meta.baseName;
 
-        paths = [
-          (callPackage ./kernel.nix {
-            inherit attrs extensions metaOnly;
-            # enableVariableInspector = settingsToUse.enableVariableInspector;
-          })
+          paths = [
+            # (callPackage ./kernel.nix {
+            #   inherit displayName attrs extensions metaOnly snapshot;
+            #   # enableVariableInspector = settingsToUse.enableVariableInspector;
+            # })
 
-          (callPackage ./mode_info.nix { inherit attrs extensions; })
-        ];
+            (snapshot.ghcWithPackages (ps: (map (x: builtins.getAttr x ps) packages)))
 
-        passthru = {
-          args = args // { baseName = meta.baseName; };
-          settings = settingsToUse;
-          inherit meta languageServerOptions packageOptions settingsSchema;
+            (callPackage ./mode_info.nix { inherit attrs extensions; })
+          ];
+
+          passthru = {
+            args = args // { baseName = meta.baseName; };
+            settings = settingsToUse;
+            inherit meta languageServerOptions packageOptions settingsSchema;
+          };
         };
-      };
 
-    inherit meta;
+      inherit meta;
+    };
   }
-) haskell.snapshots
+) haskell.snapshots)
 
 
   # languageServer = writeTextDir "lib/codedown/python-language-servers.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
   # extraGitIgnoreLines = [".ipython"];
 
 
-# rec {
-#   # ihaskellWithPackages = ihaskell.override {
-#   #   ghcWithPackages = haskell.haskellPackages.ghcWithPackages (ps: with ps;
-#   #     [ lens conduit conduit-extra aeson ]
-#   #   );
-#   # };
+  # rec {
+  #   # ihaskellWithPackages = ihaskell.override {
+  #   #   ghcWithPackages = haskell.haskellPackages.ghcWithPackages (ps: with ps;
+  #   #     [ lens conduit conduit-extra aeson ]
+  #   #   );
+  #   # };
 
-#   hls = callPackage ./hls.nix {};
+  #   hls = callPackage ./hls.nix {};
 
-#   languageServer = writeTextDir "lib/codedown/haskell-language-servers.yaml" (pkgs.lib.generators.toYAML {} [hls]);
+  #   languageServer = writeTextDir "lib/codedown/haskell-language-servers.yaml" (pkgs.lib.generators.toYAML {} [hls]);
 
-#   extraGitIgnoreLines = [".stack"];
-# }
+  #   extraGitIgnoreLines = [".stack"];
+  # }
