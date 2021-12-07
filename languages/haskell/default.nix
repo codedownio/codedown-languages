@@ -20,7 +20,16 @@ let
     rev = "d231ee71dc511806ff75a6d83c7481fa25bbf8fe";
     sha256 = "07jnklzcki5m2lz5bv4yllgmwkwyplcsvbhfr92dgv9g8dlnwbg1";
   }) {};
-  nixpkgs = import haskellNix.sources.nixpkgs haskellNix.nixpkgsArgs;
+
+  # This must be chosen to match haskellNix.sources.nixpkgs!
+  # We do it ourselves because we want to use fetchFromGitHub instead of fetchTarball.
+  nixpkgs = import (fetchFromGitHub {
+    owner = "NixOS";
+    repo = "nixpkgs";
+    rev = "110a2c9ebbf5d4a94486854f18a37a938cfacbbb";
+    sha256 = "0v12ylqxy1kl06dgln6h5k8vhlfzp8xvdymljj7bl0avr0nrgrcm";
+  }) haskellNix.nixpkgsArgs;
+
   haskell = nixpkgs.haskell-nix;
 
 in
