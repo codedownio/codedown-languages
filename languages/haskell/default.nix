@@ -4,6 +4,7 @@
 , writeTextDir
 , stdenv
 , symlinkJoin
+, fetchFromGitHub
 }:
 
 let
@@ -13,7 +14,12 @@ let
 
   };
 
-  haskellNix = import (builtins.fetchTarball https://github.com/input-output-hk/haskell.nix/archive/d231ee71dc511806ff75a6d83c7481fa25bbf8fe.tar.gz) {};
+  haskellNix = import (fetchFromGitHub {
+    owner = "input-output-hk";
+    repo = "haskell.nix";
+    rev = "d231ee71dc511806ff75a6d83c7481fa25bbf8fe";
+    sha256 = "07jnklzcki5m2lz5bv4yllgmwkwyplcsvbhfr92dgv9g8dlnwbg1";
+  }) {};
   nixpkgs = import haskellNix.sources.nixpkgs haskellNix.nixpkgsArgs;
   haskell = nixpkgs.haskell-nix;
 
