@@ -1,6 +1,8 @@
 { jupyter-kernel
 , haskell
 , attrs
+, extensions
+, metaOnly ? false
 }:
 
 jupyter-kernel.create {
@@ -25,4 +27,4 @@ jupyter-kernel.create {
       };
     };
   };
-};
+}

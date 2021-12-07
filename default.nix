@@ -18,6 +18,7 @@ rec {
       (callPackage ./languages/clojure {})
       (callPackage ./languages/cpp {})
       (callPackage ./languages/dot {})
+      (callPackage ./languages/haskell {})
       (callPackage ./languages/julia {})
       (callPackage ./languages/octave {})
       (callPackage ./languages/python {})
