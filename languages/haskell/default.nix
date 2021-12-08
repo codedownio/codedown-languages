@@ -48,7 +48,12 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
     name = meta.baseName;
     value = rec {
       packageOptions = snapshot;
-      packageSearch = common.searcher packageOptions;
+
+      # Grab the meta from the library component
+      # Could also search over other components?
+      packageSearch = common.searcher (lib.mapAttrs (name: value:
+        let meta = (lib.attrByPath ["components" "library" "meta"] null value); in
+        if meta == null then value else value // { inherit meta; }) packageOptions);
 
       languageServerOptions = allLanguageServerOptions snapshot "haskell";
       languageServerSearch = common.searcher languageServerOptions;
