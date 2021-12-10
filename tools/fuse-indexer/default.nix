@@ -6,6 +6,7 @@
 , writeText
 , nodejs
 , packages
+, attrPrefix ? ""
 }:
 
 let
@@ -35,7 +36,7 @@ let
     if evaluated.success then evaluated.value else "";
 
   json = writeText "packages-index-yaml.json" (lib.generators.toJSON {} (lib.mapAttrsToList (k: v: {
-    attr = k;
+    attr = attrPrefix + k;
     name = safeEval (lib.attrByPath ["meta" "name"] "" v);
     description = safeEval (lib.attrByPath ["meta" "description"] "" v);
     display_name = safeEval (lib.attrByPath ["meta" "displayName"] "" v);

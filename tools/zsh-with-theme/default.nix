@@ -7,7 +7,10 @@
 
 with lib;
 
-runCommand "zsh-with-theme" { buildInputs = [makeWrapper]; } ''
+runCommand "zsh-with-theme" {
+  buildInputs = [makeWrapper];
+  meta = zsh.meta;
+} ''
   mkdir -p $out
   cd $out
 

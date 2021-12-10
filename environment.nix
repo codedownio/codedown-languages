@@ -50,8 +50,11 @@ in
 importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
   inherit channels importedChannels overlays;
 
-  # shells = ["zshWithTheme" "fish"];
-  shells = [];
+  shells = [
+    { channel = "nixpkgs"; attr = "codedown.shells.zsh"; contents = importedChannels.nixpkgs.codedown.shells.zsh; }
+    { channel = "nixpkgs"; attr = "codedown.shells.fish"; contents = importedChannels.nixpkgs.codedown.shells.fish; }
+    { channel = "nixpkgs"; attr = "codedown.shells.bash"; contents = importedChannels.nixpkgs.codedown.shells.bash; }
+  ];
 
   # metaOnly = true;
 
@@ -155,8 +158,8 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
   ];
 
   otherPackages = [
-    { channel = "nixpkgs"; attr = "codedown.spellchecker"; contents = importedChannels.nixpkgs.codedown.spellchecker; }
-    { channel = "nixpkgs"; attr = "ncdu"; contents = importedChannels.nixpkgs.ncdu; }
-    { channel = "nixpkgs"; attr = "tree"; contents = importedChannels.nixpkgs.tree; }
+    { channel = "nixpkgs"; attr = "codedown.spellchecker"; contents = importedChannels.nixpkgs.codedownSpellchecker; }
+    # { channel = "nixpkgs"; attr = "ncdu"; contents = importedChannels.nixpkgs.ncdu; }
+    # { channel = "nixpkgs"; attr = "tree"; contents = importedChannels.nixpkgs.tree; }
   ];
 }

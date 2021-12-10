@@ -3,6 +3,7 @@
 , writeTextDir
 , callPackage
 , makeWrapper
+, stdenv
 }:
 
 rec {
@@ -49,19 +50,34 @@ rec {
   });
 
   searcher = packages: (callPackage ../tools/fuse-indexer { inherit packages; }).searcher;
+  searcher' = attrPrefix: packages: (callPackage ../tools/fuse-indexer {
+    inherit packages attrPrefix;
+  }).searcher;
 
   hasAttrSafe =  x: set: lib.hasAttr x set && (let
     evaluated = builtins.tryEval (lib.getAttr x set);
   in
     if evaluated.success then true else false);
 
-  wrapShell = executableName: baseDerivation: runCommand "codedown-shell" { inherit baseDerivation executableName;
-                                                                            buildInputs = [makeWrapper]; } ''
-    mkdir -p $out/lib/codedown
-    makeWrapper "$baseDerivation/bin/$executableName" $out/lib/codedown/shell
-  '';
+  wrapShell = executableName: baseDerivation: stdenv.mkDerivation {
+    name = baseDerivation.name;
 
-  wrapShells = availableShells: shells: runCommand "codedown-shells" { shells = [(map (x: lib.getAttr x availableShells) shells)]; } ''
+    dontUnpack = true;
+
+    inherit baseDerivation executableName;
+    buildInputs = [makeWrapper];
+
+    buildPhase = ''
+      mkdir -p $out/lib/codedown
+      makeWrapper "$baseDerivation/bin/$executableName" $out/lib/codedown/shell
+    '';
+
+    dontInstall = true;
+
+    meta = baseDerivation.meta;
+  };
+
+  wrapShells = allShells: runCommand "codedown-shells" { shells = (map (x: x.contents) allShells); } ''
     mkdir -p $out/lib/codedown/shells
 
     COUNTER=1

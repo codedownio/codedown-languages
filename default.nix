@@ -9,8 +9,19 @@ let
 in
 
 rec {
+  # Notebook language servers
+  codedownSpellchecker = callPackage ./language_servers/markdown-spellcheck-lsp.nix {};
+
   codedown = rec {
-    nixpkgsSearcher = common.searcher prev;
+    nixpkgsSearcher = common.searcher final;
+
+    shells = {
+      zsh = common.wrapShell "zsh-with-theme" (callPackage ./tools/zsh-with-theme {});
+      fish = common.wrapShell "fish" (callPackage ./shells/fish {});
+      bash = common.wrapShell "bash" prev.bashInteractive;
+    };
+    availableShells = shells;
+    shellsSearcher = common.searcher' "codedown.shells." shells;
 
     # Languages
     languages = zipAttrsWith (n: v: head v) [
@@ -28,22 +39,12 @@ rec {
     ];
     languagesSearcher = common.searcher languages;
 
-    # Notebook language servers
-    spellchecker = callPackage ./language_servers/markdown-spellcheck-lsp.nix {};
-
-    # Shells
-    availableShells = {
-      zshWithTheme = common.wrapShell "zsh-with-theme" (callPackage ./tools/zsh-with-theme {});
-      fish = common.wrapShell "fish" (callPackage ./shells/fish {});
-      bash = common.wrapShell "bash" (prev.bashInteractive);
-    };
-
     # Build tools
     mkCodeDownEnvironment = args@{
       channels
       , importedChannels
       , overlays
-      , shells ? ["zshWithTheme"]
+      , shells ? []
       , kernels ? []
       , otherPackages ? []
       , metaOnly ? false
@@ -60,8 +61,9 @@ rec {
         name = "codedown-environment";
         paths = builtKernels
                 ++ [(specYaml (args //  { kernels = builtKernels; }))]
-                ++ (if metaOnly then [] else [(common.wrapShells availableShells shells)])
-                ++ (if metaOnly then [] else (map (x: x.contents) otherPackages));
+                ++ (if metaOnly then [] else [(common.wrapShells shells)])
+                ++ (if metaOnly then [] else (map (x: x.contents) otherPackages))
+        ;
       };
   };
 
@@ -77,7 +79,12 @@ rec {
 
     overlays = lib.mapAttrsToList (name: value: value // { inherit name; }) overlays;
 
-    inherit shells;
+    shells = map (x: {
+      channel = x.channel;
+      attr = x.attr;
+      name = x.contents.name;
+      meta = x.contents.meta;
+    }) shells;
 
     kernels = map (x: {
       channel = x.channel;

@@ -1,18 +1,29 @@
 { runCommand
 , makeWrapper
+, stdenv
 , fish
 }:
 
-runCommand "codedown-fish" { buildInputs = [makeWrapper]; } ''
-  mkdir -p $out
-  cd $out
+stdenv.mkDerivation {
+  pname = fish.pname;
+  version = fish.version;
 
-  # Colorful welcome message
-  # cat ${./color.sh} >> .zshrc
+  dontUnpack = true;
 
-  # Source the user's .zshrc if present
-  # echo "[ -f ~/.zshrc ] && source ~/.zshrc" >> .zshrc
+  buildInputs = [makeWrapper];
 
-  makeWrapper ${fish}/bin/fish $out/bin/fish \
-    --set __fish_sysconf_dir $out/lib/codedown/shells/fish_conf
-''
+  buildPhase = ''
+    mkdir -p $out
+    cd $out
+
+    # Colorful welcome message
+    # cat ${./color.sh} >> .zshrc
+
+    makeWrapper ${fish}/bin/fish $out/bin/fish \
+      --set __fish_sysconf_dir $out/lib/codedown/shells/fish_conf
+  '';
+
+  dontInstall = true;
+
+  meta = fish.meta;
+}
