@@ -96,9 +96,18 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       };
     })
 
+    # ({
+    #   channel = "nixpkgs-unstable";
+    #   language = "julia_15";
+    #   args = {
+    #     packages = [];
+    #     languageServers = [];
+    #   };
+    # })
+
     ({
-      channel = "nixpkgs-unstable";
-      language = "julia_15";
+      channel = "nixpkgs";
+      language = "haskell-stackage-lts-18.6";
       args = {
         packages = [];
         languageServers = [];

@@ -6,6 +6,7 @@
 , haskell
 , buildEnv
 , makeWrapper
+, runCommand
 , packages ? (_: [])
 , systemPackages ? (_: [])
 }:
@@ -42,14 +43,19 @@ let
     overrides = lib.composeExtensions (old.overrides or (_: _: {})) ihaskellOverlay;
   });
 
-  ihaskellEnv = haskellPackages.ghcWithPackages packages;
+  ihaskellEnv = haskellPackages.ghcWithPackages (ps: [ps.ihaskell] ++ (packages ps));
+
+  foo = runCommand "foo" {  } ''
+    mkdir -p $out/bin
+    touch $out/bin/foo
+  '';
 
 in
 
 buildEnv {
   name = "ihaskell-with-packages";
   nativeBuildInputs = [ makeWrapper ];
-  paths = [ ihaskellEnv ];
+  paths = [ ihaskellEnv foo ];
   postBuild = ''
     for prg in $out/bin"/"*;do
       if [[ -f $prg && -x $prg ]]; then
