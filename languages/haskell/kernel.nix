@@ -5,6 +5,7 @@
 , extensions
 , displayName
 , compiler
+, callPackage
 , metaOnly ? false
 }:
 
