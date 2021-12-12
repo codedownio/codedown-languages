@@ -9,14 +9,19 @@
 , metaOnly ? false
 }:
 
+with lib;
+
 let
+  common = callPackage ../common.nix {};
+
   ihaskell = callPackage ./ihaskell.nix { inherit compiler; };
 
 in
 
-jupyter-kernel.create {
-  definitions = {
-    haskell = {
+common.makeJupyterKernelInner metaOnly (
+  listToAttrs [{
+    name = head attrs;
+    value = {
       inherit displayName;
       argv = [
         "${ihaskell}/bin/ihaskell"
@@ -25,7 +30,7 @@ jupyter-kernel.create {
         "--stack"
         "+RTS" "-M3g" "-N2" "-RTS"
       ];
-      language = lib.head attrs;
+      language = head attrs;
       logo32 = null;
       logo64 = ./logo-64x64.svg;
       metadata = {
@@ -35,5 +40,5 @@ jupyter-kernel.create {
         };
       };
     };
-  };
-}
+  }]
+)
