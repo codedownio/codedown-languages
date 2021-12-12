@@ -45,6 +45,7 @@ listToAttrs (map (x:
         , languageServers ? []
         , attrs ? ["clojure"]
         , extensions ? ["clj"]
+        , metaOnly ? false
       }:
         symlinkJoin {
           name = "clojure";

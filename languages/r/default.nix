@@ -38,6 +38,7 @@ listToAttrs [{
       , languageServers ? []
       , attrs ? ["r" "R"]
       , extensions ? ["r"]
+      , metaOnly ? false
     }:
       let
         basePackages = [rPackages.IRkernel] ++ (map (x: lib.getAttr x rPackages) packages);

@@ -4,15 +4,21 @@
 , attrs
 , extensions
 , displayName
+, compiler
 , metaOnly ? false
 }:
+
+let
+  ihaskell = callPackage ./ihaskell.nix { inherit compiler; };
+
+in
 
 jupyter-kernel.create {
   definitions = {
     haskell = {
       inherit displayName;
       argv = [
-        "${snapshot.ihaskell.components.exes.ihaskell}/bin/ihaskell"
+        "${ihaskell}/bin/ihaskell"
         "kernel"
         "{connection_file}"
         "--stack"

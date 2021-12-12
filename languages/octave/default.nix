@@ -47,6 +47,7 @@ listToAttrs (map (x:
         , extraJupyterConfig ? null
         , attrs ? ["octave"]
         , extensions ? ["m"]
+        , metaOnly ? false
       }:
         let
           octaveComplete = baseOctave.override {

@@ -64,6 +64,7 @@ if cling == null then {} else
           , languageServers ? []
           , attrs ? [baseName "cpp"]
           , extensions ? ["cpp" "hpp" "cxx" "hxx" "c" "h"]
+          , metaOnly ? false
         }:
           symlinkJoin {
             name = x;

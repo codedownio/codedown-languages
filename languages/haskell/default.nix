@@ -78,10 +78,11 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
           name = meta.baseName;
 
           paths = [
-            # (callPackage ./kernel.nix {
-            #   inherit displayName attrs extensions metaOnly snapshot;
-            #   # enableVariableInspector = settingsToUse.enableVariableInspector;
-            # })
+            (callPackage ./kernel.nix {
+              inherit displayName attrs extensions metaOnly snapshot;
+              compiler = snapshot.ghc;
+              # enableVariableInspector = settingsToUse.enableVariableInspector;
+            })
 
             (snapshot.ghcWithPackages (ps: (map (x: builtins.getAttr x ps) packages)))
 
