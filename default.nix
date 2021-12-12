@@ -24,7 +24,7 @@ rec {
     shellsSearcher = common.searcher' "codedown.shells." shells;
 
     # Languages
-    languages = zipAttrsWith (n: v: head v) [
+    languagesUnsafe = zipAttrsWith (n: v: head v) [
       (callPackage ./languages/bash {})
       (callPackage ./languages/clojure {})
       (callPackage ./languages/cpp {})
@@ -37,6 +37,10 @@ rec {
       (callPackage ./languages/ruby {})
       (callPackage ./languages/rust {})
     ];
+
+    # Protect against e.g. aliases that throw due to deprecation
+    languages = filterAttrs (n: v: (builtins.tryEval v).success) languagesUnsafe;
+
     languagesSearcher = common.searcher languages;
 
     # Build tools
