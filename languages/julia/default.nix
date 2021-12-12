@@ -23,6 +23,11 @@ let
     "julia_16-bin"
   ];
 
+  validCandidate = x:
+    (lib.hasAttr x pkgs)
+    && (builtins.tryEval (pkgs."${x}".meta)).success
+    && !(lib.attrByPath [x "meta" "broken"] false pkgs);
+
 in
 
 with lib;
@@ -81,7 +86,7 @@ listToAttrs (map (x:
       inherit meta;
     };
   }
-) (filter (x: (hasAttr x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates))
+) (filter validCandidate baseCandidates))
 
   # homeFolderPaths = runCommand "julia-home-folder" {inherit julia python;} ''
   #   mkdir -p $out/home
