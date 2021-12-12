@@ -1,8 +1,13 @@
 { compiler
 , lib
+, pkgs
 , fetchFromGitHub
 , nix-gitignore
 , haskell
+, buildEnv
+, makeWrapper
+, packages ? (_: [])
+, systemPackages ? (_: [])
 }:
 
 let
@@ -37,6 +42,20 @@ let
     overrides = lib.composeExtensions (old.overrides or (_: _: {})) ihaskellOverlay;
   });
 
+  ihaskellEnv = haskellPackages.ghcWithPackages packages;
+
 in
 
-haskellPackages.ihaskell
+buildEnv {
+  name = "ihaskell-with-packages";
+  nativeBuildInputs = [ makeWrapper ];
+  paths = [ ihaskellEnv ];
+  postBuild = ''
+    for prg in $out/bin"/"*;do
+      if [[ -f $prg && -x $prg ]]; then
+        wrapProgram $prg \
+          --prefix PATH : "${lib.makeBinPath ([ihaskellEnv] ++ (systemPackages pkgs))}"
+      fi
+    done
+  '';
+}
