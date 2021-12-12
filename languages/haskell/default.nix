@@ -34,6 +34,10 @@ let
 
   haskell = nixpkgs.haskell-nix;
 
+  snapshotToCompiler = lib.mapAttrs (name: value: ((lib.getAttr name haskell.stackage) haskell.hackage).compiler.nix-name) haskell.snapshots;
+
+  validSnapshots = lib.filterAttrs (n: v: lib.hasAttr (lib.getAttr n snapshotToCompiler) nixpkgs.haskell.packages) haskell.snapshots;
+
 in
 
 lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
@@ -80,7 +84,7 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
           paths = [
             (callPackage ./kernel.nix {
               inherit displayName attrs extensions metaOnly snapshot;
-              compiler = snapshot.ghc;
+              compiler = lib.getAttr (lib.getAttr name snapshotToCompiler) nixpkgs.haskell.packages;
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })
 
@@ -99,7 +103,7 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
       inherit meta;
     };
   }
-) haskell.snapshots)
+) validSnapshots)
 
 
   # languageServer = writeTextDir "lib/codedown/python-language-servers.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
