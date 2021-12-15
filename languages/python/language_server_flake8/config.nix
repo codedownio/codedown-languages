@@ -7,6 +7,8 @@ with pkgs;
 with pkgs.lib;
 
 let
+  common = callPackage ../../common.nix {};
+
   diagnostic-languageserver = (callPackage ../../../language_servers/diagnostic-languageserver/default.nix {})."diagnostic-languageserver-git+https://github.com/codedownio/diagnostic-languageserver.git#0171e0867e0c340c287bfd60c348425585e21eeb";
 
   # Make a special Python environment with all the default packages, so we can get a site-packages
@@ -17,8 +19,8 @@ let
 
 in
 
-{
-  config = {
+common.writeTextDirWithMeta python.pkgs.flake8.meta "lib/codedown/python-flake8-language-servers.yaml"
+  (lib.generators.toYAML {} [{
     name = "flake8";
     extensions = ["py"];
     attrs = ["python"];
@@ -71,5 +73,4 @@ in
       formatters = {};
       formatFiletypes = {};
     };
-  };
-}
+  }])
