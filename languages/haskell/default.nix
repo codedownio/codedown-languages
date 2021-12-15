@@ -47,7 +47,7 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
         name = "haskell-stackage-" + name;
         description = "Haskell haskell haskell";
         inherit displayName;
-        icon = ./logo-64x64.svg;
+        icon = ./haskell-logo-64x64.png;
       };
 
   in {

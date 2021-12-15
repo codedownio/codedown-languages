@@ -31,8 +31,8 @@ common.makeJupyterKernelInner metaOnly (
         "+RTS" "-M3g" "-N2" "-RTS"
       ];
       language = head attrs;
-      logo32 = null;
-      logo64 = ./logo-64x64.svg;
+      logo32 = ./haskell-logo-32x32.png;
+      logo64 = ./haskell-logo-64x64.png;
       metadata = {
         codedown = {
           inherit attrs extensions;
