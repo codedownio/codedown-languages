@@ -45,7 +45,7 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
       meta = {
         baseName = "haskell-stackage-" + name;
         name = "haskell-stackage-" + name;
-        description = "Haskell haskell haskell";
+        description = "An advanced, purely functional programming language";
         inherit displayName;
         icon = ./haskell-logo-64x64.png;
       };
