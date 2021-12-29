@@ -5,6 +5,7 @@
 , stdenv
 , symlinkJoin
 , fetchFromGitHub
+, filterToValid ? false
 }:
 
 let
@@ -36,7 +37,7 @@ let
 
   snapshotToCompiler = lib.mapAttrs (name: value: ((lib.getAttr name haskell.stackage) haskell.hackage).compiler.nix-name) haskell.snapshots;
 
-  validSnapshots = lib.filterAttrs (n: v: lib.hasAttr (lib.getAttr n snapshotToCompiler) nixpkgs.haskell.packages) haskell.snapshots;
+  validSnapshots = if filterToValid then (lib.filterAttrs (n: v: lib.hasAttr (lib.getAttr n snapshotToCompiler) nixpkgs.haskell.packages) haskell.snapshots) else haskell.snapshots;
 
 in
 

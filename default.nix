@@ -24,12 +24,16 @@ rec {
     shellsSearcher = common.searcher' "codedown.shells." shells;
 
     # Languages
-    languagesUnsafe = zipAttrsWith (n: v: head v) [
+    # First argument controls whether attributes get filtered to the valid ones.
+    # This can be expensive to evaluate for languages like Haskell where there are tons of
+    # Stackage snapshots and one nix file for each. So, we don't bother with that when evaluating
+    # the languages attrset normally--only when building the languagesSearcher.
+    languagesFn = filterToValid: zipAttrsWith (n: v: head v) [
       (callPackage ./languages/bash {})
       (callPackage ./languages/clojure {})
       (callPackage ./languages/cpp {})
       (callPackage ./languages/dot {})
-      (callPackage ./languages/haskell {})
+      (callPackage ./languages/haskell { inherit filterToValid; })
       (callPackage ./languages/julia {})
       (callPackage ./languages/octave {})
       (callPackage ./languages/python {})
@@ -37,11 +41,9 @@ rec {
       (callPackage ./languages/ruby {})
       (callPackage ./languages/rust {})
     ];
+    languages = languagesFn false;
 
-    # Protect against e.g. aliases that throw due to deprecation
-    languages = filterAttrs (n: v: (builtins.tryEval v).success) languagesUnsafe;
-
-    languagesSearcher = common.searcher languages;
+    languagesSearcher = common.searcher (languagesFn true);
 
     # Build tools
     mkCodeDownEnvironment = args@{
