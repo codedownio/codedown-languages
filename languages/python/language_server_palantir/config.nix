@@ -1,9 +1,12 @@
 { stdenv
+, lib
 , pkgs
+, callPackage
 , python
+, bash
 }:
 
-with pkgs.lib;
+with lib;
 
 let
   # This is slightly different than how the kernel is configured. For the language server,
@@ -18,6 +21,8 @@ let
   # There doesn't seem to be any way to tell python-language-server to distinguish *its own*
   # imports from those of the code it's examining. This might be worth researching further.
 
+  common = callPackage ../../common.nix {};
+
   manylinux1 = callPackage ./manylinux1.nix { inherit python; };
 
   pythonEnv = python.buildEnv.override {
@@ -28,7 +33,7 @@ let
       "--set" "LD_LIBRARY_PATH" (makeLibraryPath manylinux1.libs)
 
       # Ensure that %%bash magic uses the Nix-provided bash rather than a system one
-      "--prefix" "PATH" ":" "${pkgs.bash}/bin"
+      "--prefix" "PATH" ":" "${bash}/bin"
 
       # "--suffix" "NIX_PYTHONPATH" ":" "/home/user/.local/lib/${pythonName}/site-packages"
     ];
@@ -37,12 +42,11 @@ let
 
 in
 
-{
-  config = {
+common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedown/python-palantir-language-servers.yaml"
+  (lib.generators.toYAML {} [{
     name = "python";
     extensions = ["py"];
     attrs = ["python"];
     type = "tcp";
     args = ["${pythonEnv}/bin/python" "-m" "pyls" "--tcp" "--host=localhost" "--port={port_number}"];
-  };
-}
+  }])

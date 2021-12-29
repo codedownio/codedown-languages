@@ -1,11 +1,16 @@
 { stdenv
-, pkgs
+, coreutils
 , python
+, python-language-server
+, callPackage
+, lib
 }:
 
-with pkgs.lib;
+with lib;
 
 let
+  common = callPackage ../../common.nix {};
+
   initialization_options = {
     interpreter = {
       properties = {
@@ -40,7 +45,7 @@ let
 
     dontUnpack = true;
 
-    buildInputs = [pkgs.coreutils python];
+    buildInputs = [coreutils python];
 
     buildPhase = ''
       mkdir -p $out/cache
@@ -48,7 +53,7 @@ let
       echo '${generators.toJSON {} initialization_options}' > initialization_options.json
       echo '${generators.toJSON {} (configuration_settings "FILLED_IN")}' > configuration_settings.json
 
-      python ${generate_cache} ${pkgs.python-language-server}/bin/python-language-server $out/cache ./initialization_options.json ./configuration_settings.json
+      python ${generate_cache} ${python-language-server}/bin/python-language-server $out/cache ./initialization_options.json ./configuration_settings.json
     '';
 
     dontInstall = true;
@@ -58,14 +63,15 @@ let
 
 in
 
-{
-  config = {
+common.writeTextDirWithMeta python-language-server.meta "lib/codedown/microsoft-python-language-server.yaml"
+  (lib.generators.toYAML {} [{
     name = "python";
     extensions = ["py"];
     attrs = ["python"];
     type = "stream";
-    args = ["${pkgs.python-language-server}/bin/python-language-server"];
-    configuration_settings = configuration_settings "${cache}/cache";
-    initialization_options = overrideExisting initialization_options { cacheFolderPath = "${cache}/cache"; };
-  };
-}
+    args = ["${python-language-server}/bin/python-language-server"];
+    # configuration_settings = configuration_settings "${cache}/cache";
+    initialization_options = overrideExisting initialization_options {
+      # cacheFolderPath = "${cache}/cache";
+    };
+  }])
