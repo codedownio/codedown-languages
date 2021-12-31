@@ -20,6 +20,11 @@ let
     inspect_variable_command = "print('TODO')";
   };
 
+  repls = [{
+    display_name = "IPython " + python.pkgs.ipython.version;
+    proc = "${python.pkgs.ipython}/bin/ipython";
+  }];
+
 in
 
 common.makeJupyterKernelInner metaOnly (
@@ -40,7 +45,7 @@ common.makeJupyterKernelInner metaOnly (
       env = { COLUMNS = "80"; };
       metadata = {
         codedown = {
-          inherit attrs extensions;
+          inherit attrs extensions repls;
           variable_inspector = if enableVariableInspector then variableInspector else null;
           priority = 1;
         };

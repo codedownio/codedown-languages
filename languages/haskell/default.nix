@@ -78,6 +78,7 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
       }:
         let
           settingsToUse = defaultSettings // settings;
+          ghc = snapshot.ghcWithPackages (ps: (map (x: builtins.getAttr x ps) packages));
 
         in symlinkJoin {
           name = meta.baseName;
@@ -86,10 +87,11 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
             (callPackage ./kernel.nix {
               inherit displayName attrs extensions metaOnly snapshot;
               compiler = lib.getAttr (lib.getAttr name snapshotToCompiler) nixpkgs.haskell.packages;
+              ghc = snapshot.ghcWithPackages (ps: (map (x: builtins.getAttr x ps) packages));
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })
 
-            (snapshot.ghcWithPackages (ps: (map (x: builtins.getAttr x ps) packages)))
+            ghc
 
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ];

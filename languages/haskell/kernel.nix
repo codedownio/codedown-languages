@@ -5,6 +5,7 @@
 , extensions
 , displayName
 , compiler
+, ghc
 , callPackage
 , metaOnly ? false
 }:
@@ -15,6 +16,11 @@ let
   common = callPackage ../common.nix {};
 
   ihaskell = callPackage ./ihaskell.nix { inherit compiler; };
+
+  repls = [{
+    display_name = "GHCi";
+    proc = "${ghc.out}/bin/ghci";
+  }];
 
 in
 
@@ -33,9 +39,10 @@ common.makeJupyterKernelInner metaOnly (
       language = head attrs;
       logo32 = ./haskell-logo-32x32.png;
       logo64 = ./haskell-logo-64x64.png;
+      inherit repls;
       metadata = {
         codedown = {
-          inherit attrs extensions;
+          inherit attrs extensions repls;
           priority = 1;
         };
       };
