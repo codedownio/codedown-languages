@@ -34,6 +34,7 @@ let
   } ''
     mkdir -p $out/bin
     makeWrapper ${server}/bin/markdown-spellcheck-lsp $out/bin/markdown-spellcheck-lsp \
+                --set LANG en_US.UTF-8 \
                 --suffix PATH ':' ${customHunspell}/bin
   '';
 
