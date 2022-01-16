@@ -14,6 +14,9 @@ let
     "bashInteractive_5"
   ];
 
+  packageOptions = {};
+  packageSearch = common.searcher packageOptions;
+
   languageServerOptions = {
     bashLanguageServer = callPackage ./language_server_bash {};
     shellcheck = callPackage ./language_server_shellcheck {};
@@ -34,8 +37,8 @@ lib.listToAttrs (map (x:
     {
       name = x;
       value = rec {
-        packageOptions = {};
-        packageSearch = common.searcher packageOptions;
+        inherit packageOptions packageSearch;
+        inherit languageServerOptions languageServerSearch;
 
         build = args@{
           packages ? []
