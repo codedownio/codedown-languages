@@ -64,7 +64,7 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       language = "bashInteractive";
       args = {
         packages = [];
-        languageServers = [];
+        languageServers = ["bashLanguageServer" "shellcheck"];
       };
     })
 
