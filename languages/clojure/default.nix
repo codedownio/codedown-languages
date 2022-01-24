@@ -17,6 +17,14 @@ let
     clojure = {};
   };
 
+  repls = clojure: {
+    clojure = {
+      display_name = "Clojure " + clojure.version;
+      args = ["${clojure}/bin/clojure"];
+      icon = ./logo-64x64.png;
+    };
+  };
+
 in
 
 with lib;
@@ -55,8 +63,9 @@ listToAttrs (map (x:
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ];
           passthru = {
-            args = args // { baseName = x; };
             inherit meta packageOptions languageServerOptions;
+            args = args // { baseName = x; };
+            repls = repls clojure;
           };
         };
 

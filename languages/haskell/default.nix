@@ -39,6 +39,14 @@ let
 
   validSnapshots = if filterToValid then (lib.filterAttrs (n: v: lib.hasAttr (lib.getAttr n snapshotToCompiler) nixpkgs.haskell.packages) haskell.snapshots) else haskell.snapshots;
 
+  repls = ghc: {
+    ghci = {
+      display_name = "GHCi " + ghc.version;
+      args = ["${ghc}/bin/ghci"];
+      icon = ./haskell-logo-64x64.png;
+    };
+  };
+
 in
 
 lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
@@ -100,6 +108,7 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
             args = args // { baseName = meta.baseName; };
             settings = settingsToUse;
             inherit meta languageServerOptions packageOptions settingsSchema;
+            repls = repls ghc;
           };
         };
 

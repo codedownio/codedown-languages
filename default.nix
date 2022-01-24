@@ -77,6 +77,7 @@ rec {
     channels
     , overlays
     , shells
+    , repls ? {}
     , kernels ? []
     , otherPackages ? []
     , ...
@@ -91,6 +92,8 @@ rec {
       name = x.contents.name;
       meta = x.contents.meta;
     }) shells;
+
+    repls = concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (if kernel.passthru ? "repls" then kernel.passthru.repls else {})) kernels;
 
     kernels = map (x: {
       channel = x.channel;

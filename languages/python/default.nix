@@ -21,6 +21,14 @@ let
   // (if (lib.hasAttr "python-language-server" pkgs) then {microsoft = callPackage ./language_server_microsoft/config.nix {};} else {})
   ;
 
+  repls = python: {
+    ipython = {
+      display_name = "IPython " + python.pkgs.ipython.version;
+      args = ["${python.pkgs.ipython}/bin/ipython"];
+      icon = ./logo-64x64.png;
+    };
+  };
+
   baseCandidates = [
     "python"
     "python2" "python27"
@@ -114,6 +122,7 @@ lib.listToAttrs (map (x:
           passthru = {
             args = args // { baseName = x; };
             settings = settingsToUse;
+            repls = repls python;
             inherit meta languageServerOptions packageOptions settingsSchema;
           };
         };

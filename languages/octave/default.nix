@@ -18,6 +18,14 @@ let
     "octave"
   ];
 
+  repls = octave: version: {
+    octave = {
+      display_name = "Octave " + version;
+      args = ["${octave}/bin/octave"];
+      icon = ./logo-64x64.png;
+    };
+  };
+
 in
 
 with lib;
@@ -81,8 +89,9 @@ listToAttrs (map (x:
             octave
           ];
           passthru = {
-            args = args // { baseName = x; };
             inherit meta packageOptions languageServerOptions;
+            args = args // { baseName = x; };
+            repls = repls octaveWithPackages baseOctave.version;
           };
         };
 

@@ -20,6 +20,14 @@ let
     icon = ./logo-64x64.png;
   };
 
+  repls = rWithPackages: version: {
+    r = {
+      display_name = "R " + version;
+      args = ["${rWithPackages}/bin/R"];
+      icon = ./logo-64x64.png;
+    };
+  };
+
 in
 
 with lib;
@@ -57,8 +65,9 @@ listToAttrs [{
         ++ (map (x: builtins.getAttr x (allLanguageServerOptions rPackages rWrapper basePackages)) languageServers);
 
         passthru = {
-          args = args // { baseName = "R"; };
           inherit meta packageOptions languageServerOptions;
+          args = args // { baseName = "R"; };
+          repls = repls rWithPackages R.version;
         };
       };
 

@@ -37,6 +37,14 @@ let
     cpp2a = "c++2a";
   };
 
+  repls = icon: {
+    cling = {
+      display_name = "Cling " + cling.unwrapped.version;
+      args = ["${cling}/bin/cling"];
+      icon = icon;
+    };
+  };
+
 in
 
 with lib;
@@ -74,8 +82,9 @@ if cling == null then {} else
               (callPackage ./mode_info.nix { inherit attrs extensions; })
             ];
             passthru = {
-              args = args // { baseName = x; };
               inherit meta packageOptions languageServerOptions;
+              args = args // { baseName = x; };
+              repls = repls (getAttr x icons);
             };
           };
 
