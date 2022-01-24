@@ -62,6 +62,9 @@ rec {
                                  channel = x.channel;
                                };
                              })) kernels;
+
+      repls = concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (if kernel.passthru ? "repls" then kernel.passthru.repls else {})) builtKernels;
+
       in
       symlinkJoin {
         name = "codedown-environment";
@@ -69,6 +72,7 @@ rec {
                 ++ [(specYaml (args //  { kernels = builtKernels; }))]
                 ++ (if metaOnly then [] else [(common.wrapShells shells)])
                 ++ (if metaOnly then [] else (map (x: x.contents) otherPackages))
+                ++ [(writeTextDir "lib/codedown/repls.yaml" (lib.generators.toYAML {} repls))]
         ;
       };
   };
@@ -92,8 +96,6 @@ rec {
       name = x.contents.name;
       meta = x.contents.meta;
     }) shells;
-
-    repls = concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (if kernel.passthru ? "repls" then kernel.passthru.repls else {})) kernels;
 
     kernels = map (x: {
       channel = x.channel;
