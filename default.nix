@@ -16,9 +16,11 @@ rec {
     nixpkgsSearcher = common.searcher final;
 
     shells = {
-      zsh = common.wrapShell "zsh-with-theme" (callPackage ./tools/zsh-with-theme {});
-      fish = common.wrapShell "fish" (callPackage ./shells/fish {});
-      bash = common.wrapShell "bash" prev.bashInteractive;
+      zsh = let baseDerivation = callPackage ./tools/zsh-with-theme {}; in
+            common.wrapShell "zsh-with-theme" baseDerivation ("ZSH " + baseDerivation.version) ./shells/default_icon.png;
+      fish = let baseDerivation = callPackage ./shells/fish {}; in
+             common.wrapShell "fish" baseDerivation ("Fish " + baseDerivation.version) ./shells/default_icon.png;
+      bash = common.wrapShell "bash" prev.bashInteractive ("Bash " + prev.bashInteractive.version) ./shells/default_icon.png;
     };
     availableShells = shells;
     shellsSearcher = common.searcher' "codedown.shells." shells;
@@ -63,7 +65,16 @@ rec {
                                };
                              })) kernels;
 
-      repls = concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (if kernel.passthru ? "repls" then kernel.passthru.repls else {})) builtKernels;
+      shellToReplInfo = shell: {
+        name = shell.contents.displayName;
+        args = ["${shell.contents}/lib/codedown/shell"];
+        icon = shell.contents.icon;
+      };
+
+      repls =
+        map shellToReplInfo shells
+        ++ concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (if kernel.passthru ? "repls" then kernel.passthru.repls else {})) builtKernels
+        ;
 
       in
       symlinkJoin {

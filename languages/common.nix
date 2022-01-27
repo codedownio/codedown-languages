@@ -59,7 +59,7 @@ rec {
   in
     if evaluated.success then true else false);
 
-  wrapShell = executableName: baseDerivation: stdenv.mkDerivation {
+  wrapShell = executableName: baseDerivation: displayName: icon: stdenv.mkDerivation {
     name = baseDerivation.name;
 
     dontUnpack = true;
@@ -75,6 +75,8 @@ rec {
     dontInstall = true;
 
     meta = baseDerivation.meta;
+
+    inherit icon displayName;
   };
 
   wrapShells = allShells: runCommand "codedown-shells" { shells = (map (x: x.contents) allShells); } ''
