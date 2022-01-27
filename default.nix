@@ -66,7 +66,8 @@ rec {
                              })) kernels;
 
       shellToReplInfo = shell: {
-        name = shell.contents.displayName;
+        name = shell.contents.name;
+        display_name = shell.contents.displayName;
         args = ["${shell.contents}/lib/codedown/shell"];
         icon = shell.contents.icon;
       };
