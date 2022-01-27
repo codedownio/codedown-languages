@@ -6,6 +6,7 @@
 , symlinkJoin
 , fetchFromGitHub
 , filterToValid ? false
+, ltsOnly ? true
 }:
 
 let
@@ -35,9 +36,12 @@ let
 
   haskell = nixpkgs.haskell-nix;
 
-  snapshotToCompiler = lib.mapAttrs (name: value: ((lib.getAttr name haskell.stackage) haskell.hackage).compiler.nix-name) haskell.snapshots;
+  # Filter to LTS only to speed up evaluation time
+  baseSnapshots = (lib.filterAttrs (n: v: lib.hasInfix "lts" n) haskell.snapshots);
 
-  validSnapshots = if filterToValid then (lib.filterAttrs (n: v: lib.hasAttr (lib.getAttr n snapshotToCompiler) nixpkgs.haskell.packages) haskell.snapshots) else haskell.snapshots;
+  snapshotToCompiler = lib.mapAttrs (name: value: ((lib.getAttr name haskell.stackage) haskell.hackage).compiler.nix-name) baseSnapshots;
+
+  validSnapshots = if filterToValid then (lib.filterAttrs (n: v: lib.hasAttr (lib.getAttr n snapshotToCompiler) nixpkgs.haskell.packages) baseSnapshots) else baseSnapshots;
 
   repls = ghc: {
     ghci = {
