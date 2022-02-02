@@ -16,6 +16,7 @@ let
     extensions = ["md" "ipynb"];
     attrs = ["markdown"];
     type = "stream";
+    notebook_suffix = ".spellchecker";
     args = [
       "${contents}/bin/markdown-spellcheck-lsp"
       "--stdio"
