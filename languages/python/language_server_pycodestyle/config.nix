@@ -31,7 +31,8 @@ common.writeTextDirWithMeta python.pkgs.pycodestyle.meta "lib/codedown/python-py
     # Not sure whether to do this using an environment variable or initialization option
     env = {
       PYTHONPATH = lib.concatStringsSep ":" [
-        "${pythonEnv}/lib/python3.8/site-packages"
+        "${pythonEnv}/${pythonEnv.sitePackages}"
+        "/home/user/.local/${pythonEnv.sitePackages}"
       ];
     };
     initialization_options = {

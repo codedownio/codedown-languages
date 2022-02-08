@@ -36,8 +36,8 @@ common.writeTextDirWithMeta jediLanguageServer.meta "lib/codedown/python-jedi-la
   # Not sure whether to do this using an environment variable or initialization option
   env = {
     JEDI_LANGUAGE_SERVER_EXTRA_PATHS = lib.concatStringsSep ":" [
-      "${pythonEnv}/lib/python3.8/site-packages"
-      "/home/user/.local/lib/python3.8/site-packages"
+      "${pythonEnv}/${pythonEnv.sitePackages}"
+      "/home/user/.local/${pythonEnv.sitePackages}"
     ];
   };
 }])

@@ -30,8 +30,8 @@ common.writeTextDirWithMeta python.pkgs.flake8.meta "lib/codedown/python-flake8-
     # Not sure whether to do this using an environment variable or initialization option
     env = {
       PYTHONPATH = lib.concatStringsSep ":" [
-        "${pythonEnv}/lib/python3.8/site-packages"
-        "/home/user/.local/lib/python3.8/site-packages"
+        "${pythonEnv}/${pythonEnv.sitePackages}"
+        "/home/user/.local/${pythonEnv.sitePackages}"
       ];
     };
     initialization_options = {
