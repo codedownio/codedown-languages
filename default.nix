@@ -19,7 +19,7 @@ rec {
       zsh = let baseDerivation = callPackage ./tools/zsh-with-theme {}; in
             common.wrapShell "zsh-with-theme" baseDerivation ("ZSH " + baseDerivation.version) ./shells/default_icon.png;
       fish = let baseDerivation = callPackage ./shells/fish {}; in
-             common.wrapShell "fish" baseDerivation ("Fish " + baseDerivation.version) ./shells/default_icon.png;
+             common.wrapShell "fish" baseDerivation ("Fish " + baseDerivation.version) ./shells/fish/icon-64x64.png;
       bash = common.wrapShell "bash" prev.bashInteractive ("Bash " + prev.bashInteractive.version) ./shells/default_icon.png;
     };
     availableShells = shells;
