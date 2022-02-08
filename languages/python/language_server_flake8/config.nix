@@ -22,6 +22,7 @@ in
 common.writeTextDirWithMeta python.pkgs.flake8.meta "lib/codedown/python-flake8-language-servers.yaml"
   (lib.generators.toYAML {} [{
     name = "flake8";
+    description = python.pkgs.flake8.meta.description;
     extensions = ["py"];
     attrs = ["python"];
     type = "stream";

@@ -24,7 +24,7 @@ in
 common.writeTextDirWithMeta jediLanguageServer.meta "lib/codedown/python-jedi-language-servers.yaml" (lib.generators.toYAML {} [{
   name = "jedi";
   display_name = "Jedi";
-  description = "A Python language server exclusively for Jedi. If Jedi supports it well, this language server should too.";
+  description = jediLanguageServer.meta.description;
   icon = ./logo.png;
   extensions = ["py"];
   notebook_suffix = ".py";

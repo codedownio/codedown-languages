@@ -23,6 +23,7 @@ in
 common.writeTextDirWithMeta python.pkgs.pycodestyle.meta "lib/codedown/python-pycodestyle-language-servers.yaml"
   (lib.generators.toYAML {} [{
     name = "pycodestyle";
+    description = python.pkgs.pycodestyle.meta.description;
     extensions = ["py"];
     attrs = ["python"];
     type = "stream";

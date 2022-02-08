@@ -23,14 +23,14 @@ let
 
   common = callPackage ../../common.nix {};
 
-  manylinux1 = callPackage ./manylinux1.nix { inherit python; };
+  # manylinux1 = callPackage ./manylinux1.nix { inherit python; };
 
   pythonEnv = python.buildEnv.override {
     extraLibs = [python.pkgs.python-language-server];
     permitUserSite = false;
     makeWrapperArgs = [
       # Append libs needed at runtime for manylinux1 compliance
-      "--set" "LD_LIBRARY_PATH" (makeLibraryPath manylinux1.libs)
+      # "--set" "LD_LIBRARY_PATH" (makeLibraryPath manylinux1.libs)
 
       # Ensure that %%bash magic uses the Nix-provided bash rather than a system one
       "--prefix" "PATH" ":" "${bash}/bin"
@@ -45,6 +45,7 @@ in
 common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedown/python-palantir-language-servers.yaml"
   (lib.generators.toYAML {} [{
     name = "python";
+    description = python.pkgs.python-language-server.meta.description;
     extensions = ["py"];
     attrs = ["python"];
     type = "tcp";

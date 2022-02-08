@@ -24,6 +24,7 @@ common.writeTextDirWithMeta python.pkgs.pylint.meta "lib/codedown/python-pylint-
   (lib.generators.toYAML {} [{
     name = "pylint";
     display_name = "Pylint";
+    description = python.pkgs.pylint.meta.description;
     icon = ./logo.png;
     extensions = ["py"];
     notebook_suffix = ".py";
