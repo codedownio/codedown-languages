@@ -25,6 +25,12 @@ rec {
     availableShells = shells;
     shellsSearcher = common.searcher' "codedown.shells." shells;
 
+    exporters = {
+      slidy = callPackage ./exporters/slidy.nix {};
+    };
+    availableExporters = exporters;
+    exportersSearcher = common.searcher' "codedown.exporters." exporters;
+
     # Languages
     # First argument controls whether attributes get filtered to the valid ones.
     # This can be expensive to evaluate for languages like Haskell where there are tons of
