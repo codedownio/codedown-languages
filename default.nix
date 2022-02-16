@@ -9,8 +9,9 @@ let
 in
 
 rec {
-  # Notebook language servers
-  codedownSpellchecker = callPackage ./language_servers/markdown-spellcheck-lsp.nix {};
+  "codedown.spellchecker" = callPackage ./language_servers/markdown-spellcheck-lsp.nix {};
+
+  "codedown.exporters.slidy" = callPackage ./exporters/slidy.nix {};
 
   codedown = rec {
     nixpkgsSearcher = common.searcher final;
@@ -24,12 +25,6 @@ rec {
     };
     availableShells = shells;
     shellsSearcher = common.searcher' "codedown.shells." shells;
-
-    exporters = {
-      slidy = callPackage ./exporters/slidy.nix {};
-    };
-    availableExporters = exporters;
-    exportersSearcher = common.searcher' "codedown.exporters." exporters;
 
     # Languages
     # First argument controls whether attributes get filtered to the valid ones.

@@ -49,6 +49,10 @@ rec {
     inherit meta;
   });
 
+  writeShellScriptBinWithMeta = meta: path: text: (writeTextDir path text).overrideAttrs (old: {
+    inherit meta;
+  });
+
   searcher = packages: (callPackage ../tools/fuse-indexer { inherit packages; }).searcher;
   searcher' = attrPrefix: packages: (callPackage ../tools/fuse-indexer {
     inherit packages attrPrefix;

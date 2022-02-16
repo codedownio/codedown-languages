@@ -167,8 +167,8 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
   ];
 
   otherPackages = [
-    { channel = "nixpkgs"; attr = "codedown.spellchecker"; contents = importedChannels.nixpkgs.codedownSpellchecker; }
-    # { channel = "nixpkgs"; attr = "ncdu"; contents = importedChannels.nixpkgs.ncdu; }
+    { channel = "nixpkgs"; attr = "codedown.spellchecker"; contents = importedChannels.nixpkgs."codedown.spellchecker"; }
+    { channel = "nixpkgs"; attr = "codedown.exporters.slidy"; contents = importedChannels.nixpkgs."codedown.exporters.slidy"; }
     # { channel = "nixpkgs"; attr = "tree"; contents = importedChannels.nixpkgs.tree; }
   ];
 }

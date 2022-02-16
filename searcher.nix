@@ -56,9 +56,9 @@ with bootstrapNixpkgs;
 
 # (callPackage ./languages/haskell/default.nix {})."haskell-stackage-lts-18.18".packageSearch
 
-# importedChannels.nixpkgs.codedown.nixpkgsSearcher
+importedChannels.nixpkgs.codedown.nixpkgsSearcher
 
-importedChannels.nixpkgs.codedown.shellsSearcher
+# importedChannels.nixpkgs.codedown.shellsSearcher
 
 # importedChannels.nixpkgs.availableShells
 
