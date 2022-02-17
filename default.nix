@@ -5,26 +5,29 @@ with final.lib;
 
 let
   common = callPackage ./languages/common.nix {};
+  shellsCommon = callPackage ./shells/common.nix {};
 
 in
 
 rec {
-  "codedown.spellchecker" = callPackage ./language_servers/markdown-spellcheck-lsp.nix {};
-
-  "codedown.exporters.slidy" = callPackage ./exporters/slidy.nix {};
-
   codedown = rec {
     nixpkgsSearcher = common.searcher final;
 
+    spellchecker = callPackage ./language_servers/markdown-spellcheck-lsp.nix {};
+
     shells = {
-      zsh = let baseDerivation = callPackage ./tools/zsh-with-theme {}; in
-            common.wrapShell "zsh-with-theme" baseDerivation ("ZSH " + baseDerivation.version) ./shells/default_icon.png;
-      fish = let baseDerivation = callPackage ./shells/fish {}; in
-             common.wrapShell "fish" baseDerivation ("Fish " + baseDerivation.version) ./shells/fish/icon-64x64.png;
-      bash = common.wrapShell "bash" prev.bashInteractive ("Bash " + prev.bashInteractive.version) ./shells/default_icon.png;
+      zsh = callPackage ./shells/zsh {};
+      fish = callPackage ./shells/fish {};
+      bash = callPackage ./shells/bash {};
     };
     availableShells = shells;
     shellsSearcher = common.searcher' "codedown.shells." shells;
+
+    exporters = {
+      slidy = callPackage ./exporters/slidy.nix {};
+    };
+    availableExporters = exporters;
+    exportersSearcher = common.searcher' "codedown.exporters." exporters;
 
     # Languages
     # First argument controls whether attributes get filtered to the valid ones.
@@ -53,7 +56,6 @@ rec {
       channels
       , importedChannels
       , overlays
-      , shells ? []
       , kernels ? []
       , otherPackages ? []
       , metaOnly ? false
@@ -73,6 +75,16 @@ rec {
         icon = shell.contents.icon;
       };
 
+      shells = filter (x: lib.hasPrefix "codedown.shells." x.attr) otherPackages;
+
+      exporters = filter (x: lib.hasPrefix "codedown.exporters." x.attr) otherPackages;
+      exporterInfos = map (exporter: {
+        name = exporter.contents.name;
+        display_name = exporter.contents.displayName;
+        args = [exporter.contents];
+        icon = exporter.contents.icon;
+      }) exporters;
+
       repls =
         map shellToReplInfo shells
         ++ concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (if kernel.passthru ? "repls" then kernel.passthru.repls else {})) builtKernels
@@ -82,10 +94,11 @@ rec {
       symlinkJoin {
         name = "codedown-environment";
         paths = builtKernels
-                ++ [(specYaml (args //  { kernels = builtKernels; }))]
-                ++ (if metaOnly then [] else [(common.wrapShells shells)])
+                ++ [(specYaml (args //  { inherit shells exporters; kernels = builtKernels; }))]
+                ++ (if metaOnly then [] else [(shellsCommon.wrapShells shells)])
                 ++ (if metaOnly then [] else (map (x: x.contents) otherPackages))
                 ++ [(writeTextDir "lib/codedown/repls.yaml" (lib.generators.toYAML {} repls))]
+                ++ [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporterInfos))]
         ;
       };
   };
@@ -94,6 +107,7 @@ rec {
     channels
     , overlays
     , shells
+    , exporters ? []
     , repls ? {}
     , kernels ? []
     , otherPackages ? []
@@ -109,6 +123,13 @@ rec {
       name = x.contents.name;
       meta = x.contents.meta;
     }) shells;
+
+    exporters = map (x: {
+      channel = x.channel;
+      attr = x.attr;
+      name = x.contents.name;
+      meta = x.contents.meta;
+    }) exporters;
 
     kernels = map (x: {
       channel = x.channel;

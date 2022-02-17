@@ -53,6 +53,8 @@ rec {
     inherit meta;
   });
 
+  writeShellScriptBinWithAttrs = attrs: path: text: (writeTextDir path text).overrideAttrs (old: attrs);
+
   searcher = packages: (callPackage ../tools/fuse-indexer { inherit packages; }).searcher;
   searcher' = attrPrefix: packages: (callPackage ../tools/fuse-indexer {
     inherit packages attrPrefix;
@@ -62,38 +64,4 @@ rec {
     evaluated = builtins.tryEval (lib.getAttr x set);
   in
     if evaluated.success then true else false);
-
-  wrapShell = executableName: baseDerivation: displayName: icon: stdenv.mkDerivation {
-    name = baseDerivation.name;
-
-    dontUnpack = true;
-
-    inherit baseDerivation executableName;
-    buildInputs = [makeWrapper];
-
-    buildPhase = ''
-      mkdir -p $out/lib/codedown
-      makeWrapper "$baseDerivation/bin/$executableName" $out/lib/codedown/shell
-    '';
-
-    dontInstall = true;
-
-    meta = baseDerivation.meta;
-
-    inherit icon displayName;
-  };
-
-  wrapShells = allShells: runCommand "codedown-shells" { shells = (map (x: x.contents) allShells); } ''
-    mkdir -p $out/lib/codedown/shells
-
-    COUNTER=1
-    for shell in $shells; do
-      ln -s $shell/lib/codedown/shell $out/lib/codedown/shells/shell$COUNTER
-      let COUNTER++
-    done
-
-    if [[ -f "$out/lib/codedown/shells/shell1" ]]; then
-      ln -s $out/lib/codedown/shells/shell1 $out/lib/codedown/shell
-    fi
-  '';
 }
