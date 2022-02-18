@@ -18,6 +18,6 @@ let
 in
 
 common.writeShellScriptBinWithAttrs attrs "export" ''
-  export PATH="''${PATH:+''${PATH}:}${pandoc}/bin/pandoc"
+  export PATH="''${PATH:+''${PATH}:}${pandoc}/bin"
   ${nbconvert}/bin/jupyter-nbconvert "$1" --to latex --stdout > "$2"
 ''
