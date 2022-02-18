@@ -1,13 +1,28 @@
 { callPackage
 , symlinkJoin
+, pandoc
 , python3
 }:
 
 let
   nbconvert = python3.pkgs.nbconvert;
 
+  common = callPackage ../languages/common.nix {};
+
+  makeNbconvertExporter = name: displayName: extension: to: common.writeShellScriptBinWithAttrs {
+    inherit name displayName extension;
+    meta = nbconvert.meta;
+    icon = null;
+  } "export" ''
+    export PATH="''${PATH:+''${PATH}:}${pandoc}/bin"
+    ${nbconvert}/bin/jupyter-nbconvert "$1" --to ${to} --stdout > "$2"
+  '';
+
   exporters = [
-    (callPackage ./nbconvert/latex.nix { inherit nbconvert; })
+    (makeNbconvertExporter "codedown-exporter-latex" "LaTeX (.tex)" "tex" "latex")
+    (makeNbconvertExporter "codedown-exporter-pdf" "PDF (.pdf)" "pdf" "pdf")
+    (makeNbconvertExporter "codedown-exporter-html" "HTML (.html)" "html" "html")
+    (makeNbconvertExporter "codedown-exporter-slides" "Slides (.html)" ".html" "slides")
   ];
 
 in

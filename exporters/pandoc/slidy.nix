@@ -7,9 +7,10 @@ let
 
   attrs = {
     name = "codedown-slidy";
-    displayName = "Slidy (.htm)";
+    displayName = "Slidy (.html)";
     meta = pandoc.meta;
     icon = null;
+    extension = "html";
   };
 
 in
