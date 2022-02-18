@@ -8,4 +8,4 @@ let
 
 in
 
-common.wrapShell "bash" bashInteractive ("Bash " + bashInteractive.version) ../default_icon.png
+common.wrapShell "bash" bashInteractive ("Bash " + bashInteractive.version) ../default_icon_64x64.png

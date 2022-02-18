@@ -1,5 +1,5 @@
 
-default_icon.png taken from https://github.com/posquit0/zshrc under the MIT License:
+default_icon_64x64.png taken from https://github.com/posquit0/zshrc under the MIT License:
 
 https://github.com/posquit0/zshrc/blob/main/LICENSE
 
