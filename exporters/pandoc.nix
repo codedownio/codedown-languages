@@ -17,9 +17,10 @@ symlinkJoin {
   meta = {
     exporterInfos = map (x: {
       name = x.name;
-      displayName = x.displayName;
+      display_name = x.displayName;
       meta = x.meta;
       icon = x.icon;
+      args = [x];
     }) exporters;
   };
 }
