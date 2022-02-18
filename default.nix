@@ -24,7 +24,8 @@ rec {
     shellsSearcher = common.searcher' "codedown.shells." shells;
 
     exporters = {
-      slidy = callPackage ./exporters/slidy.nix {};
+      pandoc = callPackage ./exporters/pandoc.nix {};
+      nbconvert = callPackage ./exporters/nbconvert.nix {};
     };
     availableExporters = exporters;
     exportersSearcher = common.searcher' "codedown.exporters." exporters;
@@ -78,12 +79,7 @@ rec {
       shells = filter (x: lib.hasPrefix "codedown.shells." x.attr) otherPackages;
 
       exporters = filter (x: lib.hasPrefix "codedown.exporters." x.attr) otherPackages;
-      exporterInfos = map (exporter: {
-        name = exporter.contents.name;
-        display_name = exporter.contents.displayName;
-        args = [exporter.contents];
-        icon = exporter.contents.icon;
-      }) exporters;
+      exporterInfos = concatMap (exporter: exporter.contents.meta.exporterInfos) exporters;
 
       repls =
         map shellToReplInfo shells

@@ -167,7 +167,8 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
     { channel = "nixpkgs"; attr = "codedown.shells.fish"; contents = importedChannels.nixpkgs.codedown.shells.fish; }
     { channel = "nixpkgs"; attr = "codedown.shells.bash"; contents = importedChannels.nixpkgs.codedown.shells.bash; }
 
-    { channel = "nixpkgs"; attr = "codedown.exporters.slidy"; contents = importedChannels.nixpkgs.codedown.exporters.slidy; }
+    { channel = "nixpkgs"; attr = "codedown.exporters.pandoc"; contents = importedChannels.nixpkgs.codedown.exporters.pandoc; }
+    { channel = "nixpkgs"; attr = "codedown.exporters.nbconvert"; contents = importedChannels.nixpkgs.codedown.exporters.nbconvert; }
 
     # { channel = "nixpkgs"; attr = "tree"; contents = importedChannels.nixpkgs.tree; }
   ];
