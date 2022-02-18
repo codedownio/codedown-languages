@@ -35,7 +35,7 @@ symlinkJoin {
   meta = {
     exporterInfos = map (x: {
       name = x.name;
-      display_name = x.displayName;
+      display_name = x.display_name;
       meta = x.meta;
       icon = x.icon;
       args = [(x + "/bin/export")];
