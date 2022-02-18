@@ -7,14 +7,14 @@ let
 
   attrs = {
     name = "codedown-slidy";
-    displayName = "CodeDown Slidy exporter";
+    displayName = "Slidy (.htm)";
     meta = pandoc.meta;
     icon = null;
   };
 
 in
 
-common.writeShellScriptBinWithAttrs attrs "lib/codedown/exporters/slidy" ''
+common.writeShellScriptBinWithAttrs attrs "export" ''
   ${pandoc}/bin/pandoc -f markdown+tex_math_dollars+tex_math_single_backslash+raw_html+smart \
     -t slidy \
     -V slidy-url=https://www.w3.org/Talks/Tools/Slidy2 \

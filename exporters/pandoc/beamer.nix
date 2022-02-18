@@ -8,7 +8,7 @@ let
 
   attrs = {
     name = "codedown-beamer";
-    displayName = "CodeDown Beamer exporter";
+    displayName = "Beamer (.htm)";
     meta = pandoc.meta;
     icon = null;
   };
@@ -30,7 +30,7 @@ let
 
 in
 
-common.writeShellScriptBinWithAttrs attrs "lib/codedown/exporters/beamer" ''
+common.writeShellScriptBinWithAttrs attrs "export" ''
   ${pandoc}/bin/pandoc -f markdown+tex_math_dollars+tex_math_single_backslash+raw_html+smart \
     -t beamer \
     --include-in-header ${customLatexHeader}

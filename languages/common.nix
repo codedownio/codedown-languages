@@ -1,6 +1,7 @@
 { lib
 , runCommand
 , writeTextDir
+, writeShellScriptBin
 , callPackage
 , makeWrapper
 , stdenv
@@ -53,7 +54,7 @@ rec {
     inherit meta;
   });
 
-  writeShellScriptBinWithAttrs = attrs: path: text: (writeTextDir path text).overrideAttrs (old: attrs);
+  writeShellScriptBinWithAttrs = attrs: path: text: (writeShellScriptBin path text).overrideAttrs (old: attrs);
 
   searcher = packages: (callPackage ../tools/fuse-indexer { inherit packages; }).searcher;
   searcher' = attrPrefix: packages: (callPackage ../tools/fuse-indexer {

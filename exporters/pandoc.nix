@@ -20,7 +20,7 @@ symlinkJoin {
       display_name = x.displayName;
       meta = x.meta;
       icon = x.icon;
-      args = [x];
+      args = [(x + "/bin/export")];
     }) exporters;
   };
 }
