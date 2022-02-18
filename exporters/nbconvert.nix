@@ -10,7 +10,8 @@ let
   common = callPackage ../languages/common.nix {};
 
   makeNbconvertExporter = name: displayName: extension: to: common.writeShellScriptBinWithAttrs {
-    inherit name displayName extension;
+    inherit name extension;
+    display_name = displayName;
     meta = nbconvert.meta;
     icon = null;
   } "export" ''
