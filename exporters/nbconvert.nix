@@ -19,8 +19,8 @@ let
     meta = nbconvert.meta;
     icon = null;
   } "export" ''
-    export PATH="''${PATH:+''${PATH}:}${pandoc}/bin"
-    export PATH="''${PATH:+''${PATH}:}${texliveToUse}/bin"
+    export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveToUse}/bin"
+    echo "export PATH=\"''${PATH:+''${PATH}:}${pandoc}/bin:${texliveToUse}/bin\""
     echo "${nbconvert}/bin/jupyter-nbconvert $1 --to ${to} --stdout > $2"
     ${nbconvert}/bin/jupyter-nbconvert "$1" --to ${to} --stdout > "$2"
   '';
