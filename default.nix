@@ -25,7 +25,8 @@ rec {
 
     exporters = {
       pandoc = callPackage ./exporters/pandoc.nix {};
-      nbconvert = callPackage ./exporters/nbconvert.nix {};
+      nbconvert-small = callPackage ./exporters/nbconvert.nix { size = "small"; };
+      nbconvert-large = callPackage ./exporters/nbconvert.nix { size = "large"; };
     };
     availableExporters = exporters;
     exportersSearcher = common.searcher' "codedown.exporters." exporters;
