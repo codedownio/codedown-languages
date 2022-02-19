@@ -21,6 +21,7 @@ let
   } "export" ''
     export PATH="''${PATH:+''${PATH}:}${pandoc}/bin"
     export PATH="''${PATH:+''${PATH}:}${texliveToUse}/bin"
+    echo "${nbconvert}/bin/jupyter-nbconvert $1 --to ${to} --stdout > $2"
     ${nbconvert}/bin/jupyter-nbconvert "$1" --to ${to} --stdout > "$2"
   '';
 
