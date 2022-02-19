@@ -2,12 +2,16 @@
 , symlinkJoin
 , pandoc
 , python3
+, texlive
+, size ? "small"
 }:
 
 let
   nbconvert = python3.pkgs.nbconvert;
 
   common = callPackage ../languages/common.nix {};
+
+  texliveToUse = if size == "small" then texlive.combined.scheme-small else texlive.combined.scheme-full;
 
   makeNbconvertExporter = name: displayName: extension: to: common.writeShellScriptBinWithAttrs {
     inherit name extension;
@@ -16,6 +20,7 @@ let
     icon = null;
   } "export" ''
     export PATH="''${PATH:+''${PATH}:}${pandoc}/bin"
+    export PATH="''${PATH:+''${PATH}:}${texliveToUse}/bin"
     ${nbconvert}/bin/jupyter-nbconvert "$1" --to ${to} --stdout > "$2"
   '';
 
