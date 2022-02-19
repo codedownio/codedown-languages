@@ -34,7 +34,7 @@ let
 in
 
 symlinkJoin {
-  name = "codedown-nbconvert-exporters";
+  name = "nbconvert-exporters-" + size;
   paths = exporters;
 
   meta = {
