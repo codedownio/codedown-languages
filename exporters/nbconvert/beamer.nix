@@ -39,7 +39,7 @@ common.writeShellScriptBinWithAttrs {
     --include-in-header ${customLatexHeader} \
     --include-in-before-body ${customLatexBody} \
     --table-of-contents \
-    -s \
+    --standalone \
     "$1" \
     "-o" "$2"
 ''
