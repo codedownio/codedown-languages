@@ -64,6 +64,9 @@ symlinkJoin {
   paths = exporters;
 
   meta = {
+    name = "nbconvert-exporters-" + size;
+    description = "CodeDown exporters using a ${size} TeX Live distribution";
+
     exporterInfos = map (x: {
       name = x.name;
       display_name = x.display_name;
