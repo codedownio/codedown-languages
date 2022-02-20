@@ -32,14 +32,13 @@ common.writeShellScriptBinWithAttrs {
   meta = pandoc.meta;
   icon = null;
 } "export" ''
-  echo "export PATH=\"''${PATH:+''${PATH}:}${texliveToUse}/bin\""
-  export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveToUse}/bin"
-
-  ${pandoc}/bin/pandoc -f markdown+tex_math_dollars+tex_math_single_backslash+raw_html+smart \
+  echo_and_run() { echo "$*" ; "$@" ; }
+  echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveToUse}/bin"
+  echo_and_run ${pandoc}/bin/pandoc -f markdown+tex_math_dollars+tex_math_single_backslash+raw_html+smart \
     -t beamer \
-    --include-in-header ${customLatexHeader}
-    --include-in-before-body ${customLatexBody}
-    --table-of-contents
+    --include-in-header ${customLatexHeader} \
+    --include-in-before-body ${customLatexBody} \
+    --table-of-contents \
     -s \
     "$1" \
     "-o" "$2"
