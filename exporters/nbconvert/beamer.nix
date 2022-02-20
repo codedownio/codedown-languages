@@ -27,8 +27,8 @@ in
 
 common.writeShellScriptBinWithAttrs {
   name = "codedown-exporter-beamer";
-  extension = "html";
-  display_name = "Beamer (.html)";
+  extension = "pdf";
+  display_name = "Beamer slides (.pdf)";
   meta = pandoc.meta;
   icon = null;
 } "export" ''
