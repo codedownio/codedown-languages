@@ -26,10 +26,13 @@ let
   '';
 
   exporters = [
+    (makeNbconvertExporter "codedown-exporter-asciidoc" "AsciiDoc (.asciidoc)" "asciidoc" "asciidoc")
     (makeNbconvertExporter "codedown-exporter-latex" "LaTeX (.tex)" "tex" "latex")
     (makeNbconvertExporter "codedown-exporter-pdf" "PDF (.pdf)" "pdf" "pdf")
     (makeNbconvertExporter "codedown-exporter-html" "HTML (.html)" "html" "html")
+    (makeNbconvertExporter "codedown-exporter-rst" "reStructuredText (.rst)" ".rst" "rst")
     (makeNbconvertExporter "codedown-exporter-slides" "Slides (.html)" ".html" "slides")
+    (makeNbconvertExporter "codedown-exporter-markdown" "Markdown (.md)" ".md" "markdown")
   ];
 
 in

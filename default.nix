@@ -24,7 +24,6 @@ rec {
     shellsSearcher = common.searcher' "codedown.shells." shells;
 
     exporters = {
-      pandoc = callPackage ./exporters/pandoc.nix {};
       nbconvert-small = callPackage ./exporters/nbconvert.nix { size = "small"; };
       nbconvert-large = callPackage ./exporters/nbconvert.nix { size = "large"; };
     };
