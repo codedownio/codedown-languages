@@ -1,17 +1,12 @@
 { callPackage
-, writeTextFile
 , pandoc
+, texliveToUse
+, writeTextFile
 }:
+
 
 let
   common = callPackage ../../languages/common.nix {};
-
-  attrs = {
-    name = "codedown-beamer";
-    displayName = "Beamer (.htm)";
-    meta = pandoc.meta;
-    icon = null;
-  };
 
   customLatexHeader = writeTextFile {
     name = "latex_header.tex";
@@ -30,7 +25,16 @@ let
 
 in
 
-common.writeShellScriptBinWithAttrs attrs "export" ''
+common.writeShellScriptBinWithAttrs {
+  name = "codedown-exporter-beamer";
+  extension = "html";
+  display_name = "Beamer (.html)";
+  meta = pandoc.meta;
+  icon = null;
+} "export" ''
+  echo "export PATH=\"''${PATH:+''${PATH}:}${texliveToUse}/bin\""
+  export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveToUse}/bin"
+
   ${pandoc}/bin/pandoc -f markdown+tex_math_dollars+tex_math_single_backslash+raw_html+smart \
     -t beamer \
     --include-in-header ${customLatexHeader}

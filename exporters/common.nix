@@ -1,5 +1,0 @@
-{ }:
-
-rec {
-  wrapExporter = name: displayName:
-}
