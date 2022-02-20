@@ -11,15 +11,15 @@ let
   customLatexHeader = writeTextFile {
     name = "latex_header.tex";
     text = ''
-      \\usepackage{graphicx}
-      \\usepackage{amssymb}
+      \usepackage{graphicx}
+      \usepackage{amssymb}
     '';
   };
 
   customLatexBody = writeTextFile {
     name = "latex_header.tex";
     text = ''
-      \\newcommand{\\hole}{\\square}
+      \newcommand{\hole}{\square}
     '';
   };
 
