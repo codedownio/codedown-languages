@@ -34,10 +34,10 @@ common.writeShellScriptBinWithAttrs {
 } "export" ''
   echo_and_run() { echo "$*" ; "$@" ; }
   echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveToUse}/bin"
-  echo_and_run ${pandoc}/bin/pandoc -f markdown+tex_math_dollars+tex_math_single_backslash+raw_html+smart \
+  echo_and_run ${pandoc}/bin/pandoc \
     -t beamer \
     --include-in-header ${customLatexHeader} \
-    --include-in-before-body ${customLatexBody} \
+    --include-before-body ${customLatexBody} \
     --table-of-contents \
     --standalone \
     "$1" \

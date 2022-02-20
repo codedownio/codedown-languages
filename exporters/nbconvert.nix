@@ -24,24 +24,6 @@ let
     echo_and_run ${nbconvert}/bin/jupyter-nbconvert "$1" --to ${to}
   '';
 
-  slidyExporter = common.writeShellScriptBinWithAttrs {
-    name = "codedown-exporter-slidy";
-    extension = "html";
-    display_name = "Slidy (.html)";
-    meta = nbconvert.meta;
-    icon = null;
-  } "export" ''
-    echo_and_run() { echo "$*" ; "$@" ; }
-    echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveToUse}/bin"
-    echo_and_run ${pandoc}/bin/pandoc -f markdown+tex_math_dollars+tex_math_single_backslash+raw_html+smart \
-      -t slidy \
-      -V slidy-url=https://www.w3.org/Talks/Tools/Slidy2 \
-      --standalone \
-      "--mathjax=https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML-full" \
-      "$1" \
-      "-o" "$2"
-  '';
-
   exporters = [
     (makeNbconvertExporter "codedown-exporter-asciidoc" "AsciiDoc (.asciidoc)" "asciidoc" "asciidoc")
     (makeNbconvertExporter "codedown-exporter-latex" "LaTeX (.tex)" "tex" "latex")
@@ -49,7 +31,7 @@ let
     (makeNbconvertExporter "codedown-exporter-html" "HTML (.html)" "html" "html")
     (makeNbconvertExporter "codedown-exporter-rst" "reStructuredText (.rst)" ".rst" "rst")
     (makeNbconvertExporter "codedown-exporter-slides" "Slides (.html)" ".html" "slides")
-    slidyExporter
+    (callPackage ./nbconvert/slidy.nix { inherit texliveToUse nbconvert; })
     (callPackage ./nbconvert/beamer.nix { inherit texliveToUse; })
     (makeNbconvertExporter "codedown-exporter-markdown" "Markdown (.md)" ".md" "markdown")
   ];
