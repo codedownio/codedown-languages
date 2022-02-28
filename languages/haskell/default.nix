@@ -28,8 +28,8 @@ let
   haskellNix = import (fetchFromGitHub {
     owner = "codedownio";
     repo = "haskell.nix";
-    rev = "64afe3586295954b6b00dd227c87525f0a2c2eb1";
-    sha256 = "1apr1rm6m5yvdjn17aihmpc1lafnbpdrxgi3ipny94d2aq2wr0pf";
+    rev = "d9f17eca28b3cb336aa33080773f8196f01f458a";
+    sha256 = "sha256-pZZO5tYsGDZTWIF20PeNgP1XeWZoLUY+TyIbeOEo4mY=";
   }) { inherit nixpkgsSrc; };
 
   nixpkgs = import nixpkgsSrc haskellNix.nixpkgsArgs;
