@@ -7,7 +7,7 @@
 , buildEnv
 , makeWrapper
 , runCommand
-, packages ? (_: [])
+, packages
 , systemPackages ? (_: [])
 }:
 
@@ -18,9 +18,6 @@ let
     rev = "7e69c7e176ba234d29a57fcdff8d1bba04e34ab4";
     sha256 = "0ry2l1g5z04n5l3991p361fs9andbr7disiwamx09sbx0cn7wwm2";
   };
-
-  # src = nix-gitignore.gitignoreSource
-  #   [ "**/*.ipynb" "**/*.nix" "**/*.yaml" "**/*.yml" "**/\.*" "/Dockerfile" "/README.md" "/cabal.project" "/images" "/notebooks" "/requirements.txt" ] src';
 
   displays = self: builtins.listToAttrs (
     map
@@ -43,22 +40,26 @@ let
     overrides = lib.composeExtensions (old.overrides or (_: _: {})) ihaskellOverlay;
   });
 
-  ihaskellEnv = haskellPackages.ghcWithPackages (ps: [ps.ihaskell] ++ (packages ps));
-
-  foo = runCommand "foo" {  } ''
-    mkdir -p $out/bin
-    touch $out/bin/foo
-  '';
+  ihaskellEnv = haskellPackages.ghcWithPackages (ps: [ps.ihaskell] ++ packages);
 
 in
 
 buildEnv {
   name = "ihaskell-with-packages";
   nativeBuildInputs = [ makeWrapper ];
-  paths = [ ihaskellEnv foo ];
+  paths = [ ihaskellEnv ];
   postBuild = ''
+    ls -lh $out/bin
+
+    if [[ -L "$out/bin" ]]; then
+      mv "$out/bin" $out/binlink
+      mkdir -p $out/bin
+      cp -r $out/binlink/* $out/bin
+    fi
+
     for prg in $out/bin"/"*;do
       if [[ -f $prg && -x $prg ]]; then
+        echo "TRYING TO WRAP PROGRAM: $prg"
         wrapProgram $prg \
           --prefix PATH : "${lib.makeBinPath ([ihaskellEnv] ++ (systemPackages pkgs))}"
       fi

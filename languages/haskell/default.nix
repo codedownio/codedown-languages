@@ -100,6 +100,7 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
               inherit displayName attrs extensions metaOnly snapshot;
               compiler = lib.getAttr (lib.getAttr name snapshotToCompiler) nixpkgs.haskell.packages;
               ghc = snapshot.ghcWithPackages (ps: (map (x: builtins.getAttr x ps) packages));
+              packages = packages;
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })
 
