@@ -13,7 +13,7 @@ let
   common = callPackage ../common.nix {};
 
   allLanguageServerOptions = snapshot: kernelName: {
-
+    haskell-language-server = callPackage ./language-server-hls/config.nix { inherit snapshot kernelName; };
   };
 
   # This must be chosen to match haskellNix.sources.nixpkgs!

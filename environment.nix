@@ -104,7 +104,7 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       language = "haskell-stackage-lts-18.6";
       args = {
         packages = [];
-        languageServers = [];
+        languageServers = ["haskell-language-server"];
       };
     })
 
