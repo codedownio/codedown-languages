@@ -26,11 +26,11 @@ let
   };
 
   haskellNix = import (fetchFromGitHub {
-    owner = "codedownio";
+    owner = "input-output-hk";
     repo = "haskell.nix";
-    rev = "d9f17eca28b3cb336aa33080773f8196f01f458a";
-    sha256 = "sha256-pZZO5tYsGDZTWIF20PeNgP1XeWZoLUY+TyIbeOEo4mY=";
-  }) { inherit nixpkgsSrc; };
+    rev = "4cda3aeea8acd0837f6ad4a18a793d3d5901862a";
+    sha256 = "sha256-D9xRMBhsjHi5Ox2SsnzlwgcMXZlAXWP5c/AqFY0kxl4=";
+  }) { pkgs = import nixpkgsSrc {}; };
 
   nixpkgs = import nixpkgsSrc haskellNix.nixpkgsArgs;
 
