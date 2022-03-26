@@ -7,7 +7,7 @@
 
   outputs = { self, nixpkgs }:
     let
-      codedown = nixpkgs.pkgs.callPackage ./codedown.nix {};
+      codedown = nixpkgs.packages.callPackage ./codedown.nix {};
       nixpkgs.overlays = [ codedown ];
     in
       {
