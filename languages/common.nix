@@ -61,6 +61,11 @@ rec {
     inherit packages attrPrefix;
   }).searcher;
 
+  searcherSqlite = packages: (callPackage ../tools/sqlite-indexer { inherit packages; }).searcher;
+  searcherSqlite' = attrPrefix: packages: (callPackage ../tools/sqlite-indexer {
+    inherit packages attrPrefix;
+  }).searcher;
+
   hasAttrSafe =  x: set: lib.hasAttr x set && (let
     evaluated = builtins.tryEval (lib.getAttr x set);
   in

@@ -32,6 +32,7 @@ rec {
   };
   availableExporters = exporters;
   exportersSearcher = common.searcher' "codedown.exporters." exporters;
+  exportersSearcherSqlite = common.searcherSqlite' "codedown.exporters." exporters;
 
   # Languages
   # First argument controls whether attributes get filtered to the valid ones.
@@ -54,6 +55,7 @@ rec {
   languages = languagesFn false;
 
   languagesSearcher = common.searcher (languagesFn true);
+  languagesSearcherSqlite = common.searcherSqlite (languagesFn true);
 
   # Build tools
   mkCodeDownEnvironment = args@{
