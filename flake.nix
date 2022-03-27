@@ -8,8 +8,7 @@
   outputs = { self, nixpkgs }:
     let
       codedown = nixpkgs.packages.callPackage ./codedown.nix {};
-      basePkgs = import nixpkgs { system = "x86_64-linux"; };
-      overlays = [ (basePkgs.callPackage ./codedown.nix {}) ];
+      overlays = [ (import ./default.nix) ];
       pkgs = import nixpkgs { system = "x86_64-linux"; inherit overlays; };
     in
       {
