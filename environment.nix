@@ -57,14 +57,14 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
     #   };
     # })
 
-    # ({
-    #   channel = "nixpkgs";
-    #   language = "haskell-stackage-lts-18.6";
-    #   args = {
-    #     packages = [];
-    #     languageServers = ["haskell-language-server"];
-    #   };
-    # })
+    ({
+      channel = "nixpkgs";
+      language = "haskell-stackage-lts-18.6";
+      args = {
+        packages = [];
+        languageServers = ["haskell-language-server"];
+      };
+    })
 
     ({
       channel = "nixpkgs";

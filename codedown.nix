@@ -2,6 +2,7 @@
 , callPackage
 , symlinkJoin
 , writeTextDir
+, pkgs
 }:
 
 with lib;
@@ -13,7 +14,7 @@ let
 in
 
 rec {
-  nixpkgsSearcher = common.searcher final;
+  nixpkgsSearcher = common.searcher pkgs;
 
   spellchecker = callPackage ./language_servers/markdown-spellcheck-lsp.nix {};
 
@@ -42,7 +43,7 @@ rec {
     (callPackage ./languages/clojure {})
     (callPackage ./languages/cpp {})
     (callPackage ./languages/dot {})
-    # (callPackage ./languages/haskell { inherit filterToValid; })
+    (callPackage ./languages/haskell { inherit filterToValid; })
     (callPackage ./languages/julia {})
     (callPackage ./languages/octave {})
     (callPackage ./languages/python {})

@@ -5,6 +5,9 @@
 , stdenv
 , symlinkJoin
 , fetchFromGitHub
+
+, haskell
+, haskell-nix
 , filterToValid ? false
 , ltsOnly ? true
 }:
@@ -18,16 +21,12 @@ let
     haskell-language-server = callPackage ./language-server-hls/config.nix { inherit snapshot kernelName; };
   };
 
-  nixpkgs = import nixpkgsSrc haskellNix.nixpkgsArgs;
-
-  haskell = nixpkgs.haskell-nix;
-
   # Filter to LTS only to speed up evaluation time
-  baseSnapshots = (lib.filterAttrs (n: v: lib.hasInfix "lts" n) haskell.snapshots);
+  baseSnapshots = (lib.filterAttrs (n: v: lib.hasInfix "lts" n) haskell-nix.snapshots);
 
-  snapshotToCompiler = lib.mapAttrs (name: value: ((lib.getAttr name haskell.stackage) haskell.hackage).compiler.nix-name) baseSnapshots;
+  snapshotToCompiler = lib.mapAttrs (name: value: ((lib.getAttr name haskell-nix.stackage) haskell-nix.hackage).compiler.nix-name) baseSnapshots;
 
-  validSnapshots = if filterToValid then (lib.filterAttrs (n: v: lib.hasAttr (lib.getAttr n snapshotToCompiler) nixpkgs.haskell.packages) baseSnapshots) else baseSnapshots;
+  validSnapshots = if filterToValid then (lib.filterAttrs (n: v: lib.hasAttr (lib.getAttr n snapshotToCompiler) haskell.packages) baseSnapshots) else baseSnapshots;
 
   repls = ghc: {
     ghci = {
@@ -84,7 +83,7 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
           paths = [
             (callPackage ./kernel.nix {
               inherit displayName attrs extensions metaOnly snapshot;
-              compiler = lib.getAttr (lib.getAttr name snapshotToCompiler) nixpkgs.haskell.packages;
+              compiler = lib.getAttr (lib.getAttr name snapshotToCompiler) haskell.packages;
               ghc = snapshot.ghcWithPackages (ps: (map (x: builtins.getAttr x ps) packages));
               packages = packages;
               # enableVariableInspector = settingsToUse.enableVariableInspector;
