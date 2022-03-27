@@ -1,23 +1,9 @@
+{ channels
+, importedChannels
+, overlays
+, importedOverlays
+}:
 
-let
-  bootstrapNixpkgs = import <nixpkgs> {};
-  fetchgit = bootstrapNixpkgs.fetchgit;
-  fetchFromGitHub = bootstrapNixpkgs.fetchFromGitHub;
-  lib = bootstrapNixpkgs.lib;
-
-  overlays = {
-    codedown = {
-      tag = "path";
-      path = ./.;
-    };
-  };
-
-  channelsAll = with bootstrapNixpkgs; callPackage ./channels.nix { inherit overlays; };
-  channels = channelsAll.channels;
-  importedChannels = channelsAll.importedChannels;
-  importedOverlays = channelsAll.importedOverlays;
-
-in
 
 importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
   inherit channels importedChannels overlays;
@@ -71,14 +57,14 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
     #   };
     # })
 
-    ({
-      channel = "nixpkgs";
-      language = "haskell-stackage-lts-18.6";
-      args = {
-        packages = [];
-        languageServers = ["haskell-language-server"];
-      };
-    })
+    # ({
+    #   channel = "nixpkgs";
+    #   language = "haskell-stackage-lts-18.6";
+    #   args = {
+    #     packages = [];
+    #     languageServers = ["haskell-language-server"];
+    #   };
+    # })
 
     ({
       channel = "nixpkgs";
