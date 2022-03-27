@@ -8,11 +8,12 @@
   outputs = { self, nixpkgs }:
     let
       codedown = nixpkgs.packages.callPackage ./codedown.nix {};
-      nixpkgs.overlays = [ codedown ];
+      basePkgs = import nixpkgs { system = "x86_64-linux"; };
+      overlays = [ (basePkgs.callPackage ./codedown.nix {}) ];
+      pkgs = import nixpkgs { system = "x86_64-linux"; inherit overlays; };
     in
       {
-
-        packages.x86_64-linux.languagesSearcher = codedown.languagesSearcher;
+        packages.x86_64-linux.languagesSearcher = pkgs.codedown.languagesSearcher;
 
         # defaultPackage.x86_64-linux = self.packages.x86_64-linux.languagesSearcher;
       };
