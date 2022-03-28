@@ -59,6 +59,7 @@ listToAttrs (map (x:
     meta = ruby.meta // {
       baseName = x;
       displayName = "Ruby " + ruby.version;
+      version = ruby.version;
       icon = ./logo-64x64.png;
     };
 

@@ -37,6 +37,7 @@ listToAttrs (map (x:
     meta = baseOctave.meta // {
       baseName = x;
       displayName = "Octave " + baseOctave.version;
+      version = baseOctave.version;
       icon = ./logo-64x64.png;
     };
 

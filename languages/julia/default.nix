@@ -39,6 +39,7 @@ listToAttrs (map (x:
     meta = baseJulia.meta // {
       baseName = x;
       displayName = "Julia " + baseJulia.version;
+      version = baseJulia.version;
       icon = ./logo-64x64.png;
     };
 

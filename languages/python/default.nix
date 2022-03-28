@@ -46,6 +46,7 @@ lib.listToAttrs (map (x:
       meta = basePython.meta // {
         baseName = x;
         inherit displayName;
+        version = basePython.version;
         icon = ./logo-64x64.png;
       };
 

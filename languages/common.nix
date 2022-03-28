@@ -7,6 +7,8 @@
 , stdenv
 }:
 
+with lib;
+
 rec {
   makeJupyterKernel = makeJupyterKernelInner false;
 
@@ -66,8 +68,22 @@ rec {
     inherit packages attrPrefix;
   }).searcher;
 
-  hasAttrSafe =  x: set: lib.hasAttr x set && (let
-    evaluated = builtins.tryEval (lib.getAttr x set);
+  lexicographyVersionNumber = lexicographyVersionNumber' 5 3;
+  lexicographyVersionNumber' = maxComponents: componentLength: s:
+    let
+      parts = splitString "." s;
+      componentsToAdd = maxComponents - length parts;
+      withMaxComponents = map padLeftZeros (parts ++ (replicate componentsToAdd "0"));
+
+      replicate = remaining: x: if remaining <= 0 then [] else [x] ++ (replicate (remaining - 1) x);
+
+      replicateStr = remaining: x: if remaining <= 0 then "" else x + (replicateStr (remaining - 1) x);
+      padLeftZeros = s: (replicateStr (componentLength - stringLength s) "0") + s;
+    in
+      concatStrings withMaxComponents;
+
+  hasAttrSafe =  x: set: hasAttr x set && (let
+    evaluated = builtins.tryEval (getAttr x set);
   in
     if evaluated.success then true else false);
 }

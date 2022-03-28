@@ -14,6 +14,8 @@
 
 with callPackage ./inputs.nix {};
 
+with lib;
+
 let
   common = callPackage ../common.nix {};
 
@@ -21,12 +23,17 @@ let
     haskell-language-server = callPackage ./language-server-hls/config.nix { inherit snapshot kernelName; };
   };
 
-  # Filter to LTS only to speed up evaluation time
-  baseSnapshots = (lib.filterAttrs (n: v: lib.hasInfix "lts" n) haskell-nix.snapshots);
+  snapshotToCompiler = mapAttrs (name: value: ((getAttr name haskell-nix.stackage) haskell-nix.hackage).compiler.nix-name) baseSnapshots;
 
-  snapshotToCompiler = lib.mapAttrs (name: value: ((lib.getAttr name haskell-nix.stackage) haskell-nix.hackage).compiler.nix-name) baseSnapshots;
+  applyVersionToSnapshot = name: snapshot: let
+    version = if hasPrefix "lts-" name then "b." + (removePrefix "lts-" name)
+              else if hasPrefix "nightly-" name then "a." + (removePrefix "nightly-" name)
+              else name; in snapshot // { inherit version; };
 
-  validSnapshots = if filterToValid then (lib.filterAttrs (n: v: lib.hasAttr (lib.getAttr n snapshotToCompiler) haskell.packages) baseSnapshots) else baseSnapshots;
+  baseSnapshots = haskell-nix.snapshots;
+
+  validSnapshots = mapAttrs applyVersionToSnapshot
+    (if filterToValid then (filterAttrs (n: v: hasAttr (getAttr n snapshotToCompiler) haskell.packages) baseSnapshots) else baseSnapshots);
 
   repls = ghc: {
     ghci = {
@@ -38,12 +45,13 @@ let
 
 in
 
-lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
+listToAttrs (mapAttrsToList (name: snapshot:
   let displayName = "Haskell (Stackage " + name + ")";
       meta = {
         baseName = "haskell-stackage-" + name;
         name = "haskell-stackage-" + name;
         description = "An advanced, purely functional programming language";
+        version = snapshot.version;
         inherit displayName;
         icon = ./haskell-logo-64x64.png;
       };
@@ -55,8 +63,8 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
 
       # Grab the meta from the library component
       # Could also search over other components?
-      packageSearch = common.searcher (lib.mapAttrs (name: value:
-        let meta = (lib.attrByPath ["components" "library" "meta"] null value); in
+      packageSearch = common.searcher (mapAttrs (name: value:
+        let meta = (attrByPath ["components" "library" "meta"] null value); in
         if meta == null then value else value // { inherit meta; }) packageOptions);
 
       languageServerOptions = allLanguageServerOptions snapshot "haskell";
@@ -83,7 +91,7 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
           paths = [
             (callPackage ./kernel.nix {
               inherit displayName attrs extensions metaOnly snapshot;
-              compiler = lib.getAttr (lib.getAttr name snapshotToCompiler) haskell.packages;
+              compiler = getAttr (getAttr name snapshotToCompiler) haskell.packages;
               ghc = snapshot.ghcWithPackages (ps: (map (x: builtins.getAttr x ps) packages));
               packages = packages;
               # enableVariableInspector = settingsToUse.enableVariableInspector;
@@ -108,7 +116,7 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
 ) validSnapshots)
 
 
-  # languageServer = writeTextDir "lib/codedown/python-language-servers.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
+  # languageServer = writeTextDir "lib/codedown/python-language-servers.yaml" (generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
   # extraGitIgnoreLines = [".ipython"];
 
 
@@ -121,7 +129,7 @@ lib.listToAttrs (lib.mapAttrsToList (name: snapshot:
 
   #   hls = callPackage ./hls.nix {};
 
-  #   languageServer = writeTextDir "lib/codedown/haskell-language-servers.yaml" (pkgs.lib.generators.toYAML {} [hls]);
+  #   languageServer = writeTextDir "lib/codedown/haskell-language-servers.yaml" (generators.toYAML {} [hls]);
 
   #   extraGitIgnoreLines = [".stack"];
   # }

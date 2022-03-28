@@ -36,6 +36,7 @@ listToAttrs (map (x:
     meta = clojure.meta // {
       baseName = x;
       displayName = "Clojure";
+      version = clojure.version;
       icon = ./logo-64x64.png;
     };
 

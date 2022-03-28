@@ -17,6 +17,7 @@ let
   meta = R.meta // {
     baseName = "R";
     displayName = if lib.hasAttr "version" R then "R " + R.version else "R";
+    version = R.version;
     icon = ./logo-64x64.png;
   };
 

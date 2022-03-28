@@ -55,6 +55,7 @@ if cling == null then {} else
       meta = clang.meta // {
         baseName = x;
         displayName = getAttr x displayNames;
+        version = clang.version;
         icon = getAttr x icons;
       };
 

@@ -31,6 +31,7 @@ lib.listToAttrs (map (x:
     meta = bash.meta // {
       baseName = x;
       displayName = "Bash " + bash.version;
+      version = bash.version;
       icon = ./bash.png;
     };
   in

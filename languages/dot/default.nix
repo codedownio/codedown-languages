@@ -22,6 +22,7 @@ lib.listToAttrs (map (x:
     meta = graphviz.meta // {
       baseName = "cpp11";
       displayName = "Graphviz " + graphviz.version;
+      version = graphviz.version;
       icon = ./logo-64x64.png;
     };
 
