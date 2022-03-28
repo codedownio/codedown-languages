@@ -60,14 +60,8 @@ rec {
   '';
 
   searcher = writeShellScript "searcher.sh" ''
-    PAGE_SIZE=50
-
-    for arg do
-      shift
-      [ "$arg" = "--page-size" ] && PAGE_SIZE="$1" && continue
-    done
-
     while true; do
+      read page_size
       read page
       read query
 
@@ -75,8 +69,8 @@ rec {
         filterClause = "WHERE main MATCH '$query'"
       fi
 
-      offset=$((PAGE_SIZE * page))
-      sqlite3 "${index}" "SELECT attr, name, description, display_name, icon, rank FROM main $filterClause ORDER BY rank, version DESC LIMIT $PAGE_SIZE OFFSET $offset;" -json
+      offset=$((page_size * page))
+      sqlite3 "${index}" "SELECT attr, name, description, display_name, icon, rank FROM main $filterClause ORDER BY rank, version DESC LIMIT $page_size OFFSET $offset;" -json
     done
   '';
 }
