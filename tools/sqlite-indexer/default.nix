@@ -8,6 +8,8 @@
 , packages
 , nodejs
 , callPackage
+, writeShellScript
+, name ? ""
 , attrPrefix ? ""
 }:
 
@@ -36,7 +38,7 @@ in
 rec {
   index = runCommand "search-index.db" { buildInputs = [nodejs sqlite]; inherit json; } ''
     echo | sqlite3 $out <<- EOF
-    CREATE VIRTUAL TABLE main using fts5(attr, name, version, description, displayName, icon);
+    CREATE VIRTUAL TABLE main using fts5(attr, name, version, description, display_name, icon);
 
     INSERT INTO main SELECT
       json_extract(value, '$.attr'),
@@ -57,5 +59,20 @@ rec {
     EOF
   '';
 
-  searcher = index;
+  searcher = writeShellScript "searcher.sh" ''
+    PAGE_SIZE=50
+
+    for arg do
+      shift
+      [ "$arg" = "--page-size" ] && PAGE_SIZE="$1" && continue
+    done
+
+    while true; do
+      read page
+      read query
+
+      offset=$((PAGE_SIZE * page))
+      sqlite3 "${index}" "SELECT attr, name, description, display_name, icon, rank FROM main WHERE main MATCH '$query' ORDER BY rank, version DESC LIMIT $PAGE_SIZE OFFSET $offset;" -json
+    done
+  '';
 }
