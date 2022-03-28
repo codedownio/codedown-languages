@@ -25,9 +25,8 @@
         {
           packages = rec {
             exportersSearcher = pkgs.codedown.exportersSearcher;
-            exportersSearcherSqlite = pkgs.codedown.exportersSearcherSqlite;
+            shellsSearcher = pkgs.codedown.shellsSearcher;
             languagesSearcher = pkgs.codedown.languagesSearcher;
-            languagesSearcherSqlite = pkgs.codedown.languagesSearcherSqlite;
 
             environment = pkgs.callPackage ./environment.nix (rec {
               channels = pkgs.lib.listToAttrs (map (x: {
