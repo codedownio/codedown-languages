@@ -65,12 +65,14 @@ rec {
       read page
       read query
 
+      filterClause=""
       if [[ -n "$query" ]]; then
         filterClause = "WHERE main MATCH '$query'"
       fi
 
       offset=$((page_size * page))
       sqlite3 "${index}" "SELECT attr, name, description, display_name, icon, rank FROM main $filterClause ORDER BY rank, version DESC LIMIT $page_size OFFSET $offset;" -json
+      echo ""
     done
   '';
 }
