@@ -71,7 +71,7 @@ rec {
       fi
 
       offset=$((page_size * page))
-      sqlite3 "${index}" "SELECT attr, name, description, display_name, icon, rank FROM main $filterClause ORDER BY rank, version DESC LIMIT $page_size OFFSET $offset;" -json
+      ${sqlite}/bin/sqlite3 "${index}" "SELECT attr, name, description, display_name, icon, rank FROM main $filterClause ORDER BY rank, version DESC LIMIT $page_size OFFSET $offset;" -json
       echo ""
     done
   '';
