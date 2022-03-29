@@ -67,7 +67,7 @@ rec {
 
       filterClause=""
       if [[ -n "$query" ]]; then
-        filterClause = "WHERE main MATCH '$query'"
+        filterClause="WHERE main MATCH '$query'"
       fi
 
       offset=$((page_size * page))
