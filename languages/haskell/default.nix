@@ -100,10 +100,11 @@ listToAttrs (mapAttrsToList (name: snapshot:
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })
 
-            ghc
-
             (callPackage ./mode_info.nix { inherit attrs extensions; })
-          ];
+          ]
+          ++ (if metaOnly then [] else [ghc])
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions snapshot meta.baseName)) languageServers))
+          ;
 
           passthru = {
             args = args // { baseName = meta.baseName; };

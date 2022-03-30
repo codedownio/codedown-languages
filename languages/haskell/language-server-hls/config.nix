@@ -18,7 +18,7 @@ common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/haskell-h
   name = "haskell-language-server";
   display_name = "Haskell Language Server";
   description = haskell-language-server.meta.description;
-  icon = ./logo-64x64.png;
+  icon = ./icon_64x64.png;
   extensions = ["hs"];
   notebook_suffix = ".hs";
   kernel_name = kernelName;
