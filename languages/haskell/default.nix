@@ -91,8 +91,10 @@ listToAttrs (mapAttrsToList (name: snapshot:
           paths = [
             (callPackage ./kernel.nix {
               inherit displayName attrs extensions metaOnly snapshot;
-              compiler = getAttr (getAttr name snapshotToCompiler) haskell.packages;
-              packages = packages;
+              ihaskell = callPackage ./ihaskell.nix {
+                inherit packages;
+                compiler = getAttr (getAttr name snapshotToCompiler) haskell.packages;
+              };
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })
 

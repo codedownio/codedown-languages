@@ -1,11 +1,8 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs
+, environment
+}:
 
 with pkgs;
-
-let
-  environment = import ./environment.nix;
-
-in
 
 mkShell {
   JUPYTER_PATH = "${environment}/lib/codedown";

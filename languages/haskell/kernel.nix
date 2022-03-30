@@ -4,8 +4,7 @@
 , attrs
 , extensions
 , displayName
-, compiler
-, packages
+, ihaskell
 , ghc
 , callPackage
 , metaOnly ? false
@@ -15,8 +14,6 @@ with lib;
 
 let
   common = callPackage ../common.nix {};
-
-  ihaskell = callPackage ./ihaskell.nix { inherit compiler packages; };
 
   repls = [{
     display_name = "GHCi";
