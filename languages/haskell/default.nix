@@ -1,12 +1,11 @@
 { lib
 , callPackage
-, writeText
-, writeTextDir
 , stdenv
 , symlinkJoin
-, fetchFromGitHub
+, makeWrapper
 
 , haskell
+, haskell-language-server
 , haskell-nix
 , filterToValid ? false
 , ltsOnly ? true
@@ -19,8 +18,27 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  allLanguageServerOptions = snapshot: kernelName: {
-    haskell-language-server = callPackage ./language-server-hls/config.nix { inherit snapshot kernelName; };
+  allLanguageServerOptions = ghc: kernelName: {
+    haskell-language-server = callPackage ./language-server-hls/config.nix {
+      inherit kernelName;
+      haskell-language-server = stdenv.mkDerivation {
+        pname = "haskell-language-server-wrapped";
+        version = haskell-language-server.version;
+
+        buildInputs = [makeWrapper];
+
+        dontUnpack = true;
+        dontConfigure = true;
+        buildPhase = ''
+          mkdir -p $out/bin
+          makeWrapper ${haskell-language-server}/bin/haskell-language-server $out/bin/haskell-language-server \
+                      --suffix PATH ':' ${ghc}/bin
+        '';
+        dontInstall = true;
+
+        inherit (haskell-language-server) meta;
+      };
+    };
   };
 
   snapshotToCompiler = mapAttrs (name: value: ((getAttr name haskell-nix.stackage) haskell-nix.hackage).compiler.nix-name) baseSnapshots;
@@ -69,7 +87,7 @@ listToAttrs (mapAttrsToList (name: snapshot:
         let meta = (attrByPath ["components" "library" "meta"] null value); in
         if meta == null then value else value // { inherit meta; }) packageOptions);
 
-      languageServerOptions = allLanguageServerOptions snapshot "haskell";
+      languageServerOptions = allLanguageServerOptions (snapshot.ghcWithPackages (ps: [])) "haskell";
       languageServerSearch = common.searcher languageServerOptions;
 
       settingsSchema = [];
@@ -103,7 +121,7 @@ listToAttrs (mapAttrsToList (name: snapshot:
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [ghc])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions snapshot meta.baseName)) languageServers))
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions ghc meta.baseName)) languageServers))
           ;
 
           passthru = {

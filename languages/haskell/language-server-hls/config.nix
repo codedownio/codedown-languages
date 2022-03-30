@@ -1,8 +1,6 @@
 { lib
 , pkgs
 , haskell-language-server
-, writeTextDir
-, snapshot
 , kernelName
 }:
 
