@@ -40,7 +40,7 @@ let
     overrides = lib.composeExtensions (old.overrides or (_: _: {})) ihaskellOverlay;
   });
 
-  ihaskellEnv = haskellPackages.ghcWithPackages (ps: [ps.ihaskell] ++ packages);
+  ihaskellEnv = haskellPackages.ghcWithPackages (ps: [ps.ihaskell] ++ (map (x: builtins.getAttr x ps) packages));
 
 in
 

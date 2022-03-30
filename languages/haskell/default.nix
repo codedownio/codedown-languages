@@ -92,7 +92,6 @@ listToAttrs (mapAttrsToList (name: snapshot:
             (callPackage ./kernel.nix {
               inherit displayName attrs extensions metaOnly snapshot;
               compiler = getAttr (getAttr name snapshotToCompiler) haskell.packages;
-              ghc = snapshot.ghcWithPackages (ps: (map (x: builtins.getAttr x ps) packages));
               packages = packages;
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })
