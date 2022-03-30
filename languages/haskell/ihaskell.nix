@@ -51,6 +51,8 @@ buildEnv {
   postBuild = ''
     ls -lh $out/bin
 
+    echo "Had packages: ${toString packages}"
+
     if [[ -L "$out/bin" ]]; then
       mv "$out/bin" $out/binlink
       mkdir -p $out/bin
@@ -59,7 +61,6 @@ buildEnv {
 
     for prg in $out/bin"/"*;do
       if [[ -f $prg && -x $prg ]]; then
-        echo "TRYING TO WRAP PROGRAM: $prg"
         wrapProgram $prg \
           --prefix PATH : "${lib.makeBinPath ([ihaskellEnv] ++ (systemPackages pkgs))}"
       fi
