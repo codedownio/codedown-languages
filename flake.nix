@@ -28,6 +28,8 @@
             shellsSearcher = pkgs.codedown.shellsSearcher;
             languagesSearcher = pkgs.codedown.languagesSearcher;
 
+            codedown = pkgs.codedown;
+
             environment = pkgs.callPackage ./environment.nix (rec {
               channels = pkgs.lib.listToAttrs (map (x: {
                 name = x;
