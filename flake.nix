@@ -33,16 +33,17 @@
             default = import ./shell.nix { inherit pkgs environment; };
             devShell = import ./shell.nix { inherit pkgs environment; };
 
-            haskellTest = with pkgs; callPackage ./languages/haskell/kernel.nix {
-              attrs = ["haskell"];
-              extensions = ["hs"];
-              displayName = "Haskell Test";
-              snapshot = pkgs.haskell-nix."lts-18.6";
-              ihaskell = callPackage ./languages/haskell/ihaskell.nix {
-                compiler = pkgs.haskell.packages.ghc8104;
-                packages = ["aeson"];
-              };
-            };
+            # ps = pkgs.codedown.languages."haskell-stackage-lts-18.27".packageSearch;
+            # haskellTest = with pkgs; callPackage ./languages/haskell/kernel.nix {
+            #   attrs = ["haskell"];
+            #   extensions = ["hs"];
+            #   displayName = "Haskell Test";
+            #   snapshot = pkgs.haskell-nix."lts-18.6";
+            #   ihaskell = callPackage ./languages/haskell/ihaskell.nix {
+            #     compiler = pkgs.haskell.packages.ghc8104;
+            #     packages = ["aeson"];
+            #   };
+            # };
 
             environment = pkgs.callPackage ./environment.nix (rec {
               channels = pkgs.lib.listToAttrs (map (x: {

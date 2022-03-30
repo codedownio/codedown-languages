@@ -49,10 +49,6 @@ buildEnv {
   nativeBuildInputs = [ makeWrapper ];
   paths = [ ihaskellEnv ];
   postBuild = ''
-    ls -lh $out/bin
-
-    echo "Had packages: ${toString packages}"
-
     if [[ -L "$out/bin" ]]; then
       mv "$out/bin" $out/binlink
       mkdir -p $out/bin
@@ -61,8 +57,14 @@ buildEnv {
 
     for prg in $out/bin"/"*;do
       if [[ -f $prg && -x $prg ]]; then
-        wrapProgram $prg \
-          --prefix PATH : "${lib.makeBinPath ([ihaskellEnv] ++ (systemPackages pkgs))}"
+        if [[ "$(basename $prg)" == "ihaskell" ]]; then
+          wrapProgram $prg \
+            --add-flags "-l $(${ihaskellEnv}/bin/ghc --print-libdir)" \
+            --prefix PATH : "${lib.makeBinPath ([ihaskellEnv] ++ (systemPackages pkgs))}"
+        else
+          wrapProgram $prg \
+            --prefix PATH : "${lib.makeBinPath ([ihaskellEnv] ++ (systemPackages pkgs))}"
+        fi
       fi
     done
   '';
