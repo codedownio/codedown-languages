@@ -30,7 +30,9 @@ let
               else if hasPrefix "nightly-" name then "a." + (removePrefix "nightly-" name)
               else name; in snapshot // { inherit version; };
 
-  baseSnapshots = haskell-nix.snapshots;
+  # Filter to LTS only to speed up evaluation time
+  baseSnapshots = (lib.filterAttrs (n: v: lib.hasInfix "lts" n) haskell-nix.snapshots);
+  # baseSnapshots = haskell-nix.snapshots;
 
   validSnapshots = mapAttrs applyVersionToSnapshot
     (if filterToValid then (filterAttrs (n: v: hasAttr (getAttr n snapshotToCompiler) haskell.packages) baseSnapshots) else baseSnapshots);
