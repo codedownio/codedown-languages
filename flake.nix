@@ -12,7 +12,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         baseNixpkgs = import nixpkgs { inherit system; };
-        overlays = [ haskellNixSrc.outputs.overlay (import ./default.nix) ];
+        overlays = [ haskellNixSrc.outputs.overlay (import ./default_old.nix) ];
 
         pkgs = import nixpkgs { inherit system overlays; };
         pkgsUnstable = import nixpkgs-unstable { inherit system overlays; };
@@ -50,7 +50,7 @@
               overlays = {
                 codedown = {
                   tag = "path";
-                  path = ./.;
+                  path = ./default_old.nix;
                 };
               };
               importedOverlays = pkgs.lib.mapAttrsToList (name: value: import (channelSpecToChannel name value)) overlays;

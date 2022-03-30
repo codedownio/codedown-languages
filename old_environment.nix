@@ -8,7 +8,7 @@ let
   overlays = {
     codedown = {
       tag = "path";
-      path = ./default_old.nix;
+      path = ./.;
     };
   };
 
