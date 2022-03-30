@@ -30,6 +30,8 @@
 
             codedown = pkgs.codedown;
 
+            default = import ./shell.nix { pkgs = nixpkgs; };
+
             environment = pkgs.callPackage ./environment.nix (rec {
               channels = pkgs.lib.listToAttrs (map (x: {
                 name = x;
