@@ -90,7 +90,7 @@ rec {
         process.stdout.write(JSON.stringify(results));
         process.stdout.write("\n");
       } else {
-        process.stdout.write(JSON.stringify(fuse.search(query).slice(0, 10)));
+        process.stdout.write(JSON.stringify(fuse.search(query)));
         process.stdout.write("\n");
       }
     }
