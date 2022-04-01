@@ -8,6 +8,7 @@
 , makeWrapper
 , runCommand
 , packages
+, snapshot
 , systemPackages ? (_: [])
 }:
 
@@ -36,11 +37,9 @@ let
     ipython-kernel = self.callCabal2nix "ipython-kernel" (src + /ipython-kernel) {};
   } // displays self);
 
-  haskellPackages = compiler.override (old: {
+  ihaskellEnv = ((lib.makeExtensible (_: snapshot)).extend (old: super: {
     overrides = lib.composeExtensions (old.overrides or (_: _: {})) ihaskellOverlay;
-  });
-
-  ihaskellEnv = haskellPackages.ghcWithPackages (ps: [ps.ihaskell] ++ (map (x: builtins.getAttr x ps) packages));
+  })).ghcWithPackages (ps: [ps.ihaskell] ++ (map (x: builtins.getAttr x ps) packages));
 
 in
 

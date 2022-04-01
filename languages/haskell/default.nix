@@ -112,7 +112,7 @@ listToAttrs (mapAttrsToList (name: snapshot:
             (callPackage ./kernel.nix {
               inherit displayName attrs extensions metaOnly snapshot;
               ihaskell = callPackage ./ihaskell.nix {
-                inherit packages;
+                inherit packages snapshot;
                 compiler = getAttr (getAttr name snapshotToCompiler) haskell.packages;
               };
               # enableVariableInspector = settingsToUse.enableVariableInspector;
@@ -136,22 +136,3 @@ listToAttrs (mapAttrsToList (name: snapshot:
     };
   }
 ) validSnapshots)
-
-
-  # languageServer = writeTextDir "lib/codedown/python-language-servers.yaml" (generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
-  # extraGitIgnoreLines = [".ipython"];
-
-
-  # rec {
-  #   # ihaskellWithPackages = ihaskell.override {
-  #   #   ghcWithPackages = haskell.haskellPackages.ghcWithPackages (ps: with ps;
-  #   #     [ lens conduit conduit-extra aeson ]
-  #   #   );
-  #   # };
-
-  #   hls = callPackage ./hls.nix {};
-
-  #   languageServer = writeTextDir "lib/codedown/haskell-language-servers.yaml" (generators.toYAML {} [hls]);
-
-  #   extraGitIgnoreLines = [".stack"];
-  # }
