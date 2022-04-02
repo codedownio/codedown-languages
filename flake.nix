@@ -4,6 +4,7 @@
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/973910f5c31b9ba6c171c33a8bd7199990b14c72";
   inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/ecaf3da9340231e5493eccc3db87604a3705da42";
 
+  # When updating this, make sure to run ./update.sh to generate the new compiler set!
   inputs.haskellNixSrc.url = "github:input-output-hk/haskell.nix/4cda3aeea8acd0837f6ad4a18a793d3d5901862a";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -33,7 +34,9 @@
             default = import ./shell.nix { inherit pkgs environment; };
             devShell = import ./shell.nix { inherit pkgs environment; };
 
-            # ps = pkgs.codedown.languages."haskell-stackage-lts-18.27".packageSearch;
+            haskellNix = pkgs.haskell-nix;
+            haskellCompilers = pkgs.callPackage ./languages/haskell/generate.nix {};
+
             # haskellTest = with pkgs; callPackage ./languages/haskell/kernel.nix {
             #   attrs = ["haskell"];
             #   extensions = ["hs"];
