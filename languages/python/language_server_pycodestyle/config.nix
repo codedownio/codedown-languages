@@ -1,6 +1,7 @@
 { stdenv
 , pkgs
 , python
+, kernelName
 , packages ? []
 }:
 
@@ -23,8 +24,11 @@ in
 common.writeTextDirWithMeta python.pkgs.pycodestyle.meta "lib/codedown/python-pycodestyle-language-servers.yaml"
   (lib.generators.toYAML {} [{
     name = "pycodestyle";
+    display_name = "pycodestyle";
     description = python.pkgs.pycodestyle.meta.description;
     extensions = ["py"];
+    notebook_suffix = ".py";
+    kernel_name = kernelName;
     attrs = ["python"];
     type = "stream";
     args = ["${diagnostic-languageserver}/bin/diagnostic-languageserver" "--stdio" "--log-level" "1"];

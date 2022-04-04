@@ -4,6 +4,7 @@
 , python-language-server
 , callPackage
 , lib
+, kernelName
 }:
 
 with lib;
@@ -14,7 +15,7 @@ let
   initialization_options = {
     interpreter = {
       properties = {
-        Version = python.version;
+        Version = python.python.version;
         InterpreterPath = "${python}/bin/python";
       };
     };
@@ -66,8 +67,11 @@ in
 common.writeTextDirWithMeta python-language-server.meta "lib/codedown/python-microsoft-language-server.yaml"
   (lib.generators.toYAML {} [{
     name = "python";
+    display_name = "Python Language Server";
     description = python-language-server.meta.description;
     extensions = ["py"];
+    notebook_suffix = ".py";
+    kernel_name = kernelName;
     attrs = ["python"];
     type = "stream";
     args = ["${python-language-server}/bin/python-language-server"];

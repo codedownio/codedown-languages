@@ -11,15 +11,15 @@ let
   allLanguageServerOptions = python: kernelName: {
     # Primary language server
     jedi = (callPackage ./language_server_jedi/config.nix { inherit python kernelName; });
-    palantir = (callPackage ./language_server_palantir/config.nix { inherit python; });
+    palantir = (callPackage ./language_server_palantir/config.nix { inherit python kernelName; });
 
     # Secondary language servers (for diagnostics, formatting, etc.)
     pylint = (callPackage ./language_server_pylint/config.nix { inherit python kernelName; });
-    flake8 = (callPackage ./language_server_flake8/config.nix { inherit python; });
-    pycodestyle = (callPackage ./language_server_pycodestyle/config.nix { inherit python; });
-  }
-  // (if (lib.hasAttr "python-language-server" pkgs) then {microsoft = callPackage ./language_server_microsoft/config.nix {};} else {})
-  ;
+    flake8 = (callPackage ./language_server_flake8/config.nix { inherit python kernelName; });
+    pycodestyle = (callPackage ./language_server_pycodestyle/config.nix { inherit python kernelName; });
+  } // (lib.optionalAttrs (lib.hasAttr "python-language-server" pkgs) {
+    microsoft = callPackage ./language_server_microsoft/config.nix { inherit python kernelName; };
+  });
 
   repls = python: {
     ipython = {

@@ -31,7 +31,6 @@ common.writeTextDirWithMeta jediLanguageServer.meta "lib/codedown/python-jedi-la
   kernel_name = kernelName;
   attrs = ["python"];
   type = "stream";
-  primary = true;
   args = ["${jediLanguageServer}/bin/jedi-language-server"];
   # Not sure whether to do this using an environment variable or initialization option
   env = {
