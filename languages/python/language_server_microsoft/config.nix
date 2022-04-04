@@ -64,7 +64,7 @@ let
 
 in
 
-common.writeTextDirWithMeta python-language-server.meta "lib/codedown/python-microsoft-language-server.yaml"
+common.writeTextDirWithMeta python-language-server.meta "lib/codedown/python-microsoft-language-servers.yaml"
   (lib.generators.toYAML {} [{
     name = "python";
     display_name = "Python Language Server";
