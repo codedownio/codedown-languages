@@ -41,10 +41,6 @@ let
     };
   };
 
-  # compilers = filterAttrs (n: v: (builtins.tryEval (builtins.deepSeq (getAttr v haskell-nix.snapshots))).success) (import ./compilers.nix);
-  # compilers = filterAttrs (n: v: (builtins.tryEval (getAttr v haskell-nix.snapshots)).success) (import ./compilers.nix);
-  # compilers = mapAttrs (n: v: (getAttr v haskell-nix.snapshots)) (import ./compilers.nix);
-  # compilers = import ./compilers.nix;
   compilers = filterAttrs (n: v: hasAttr n ghc-boot-packages) (import ./compilers.nix);
 
   repls = ghc: {
