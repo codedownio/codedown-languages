@@ -7,6 +7,7 @@
 , haskell
 , haskell-language-server
 , haskell-nix
+, ghc-boot-packages
 , filterToValid ? false
 , ltsOnly ? true
 }:
@@ -15,6 +16,7 @@ with lib;
 
 let
   common = callPackage ../common.nix {};
+  util = callPackage ./util.nix {};
 
   allLanguageServerOptions = ghc: kernelName: {
     haskell-language-server = callPackage ./language-server-hls/config.nix {
@@ -39,19 +41,11 @@ let
     };
   };
 
-  snapshotToCompiler = mapAttrs (name: value: ((getAttr name haskell-nix.stackage) haskell-nix.hackage).compiler.nix-name) baseSnapshots;
-
-  applyVersionToSnapshot = name: snapshot: let
-    version = if hasPrefix "lts-" name then "b." + (removePrefix "lts-" name)
-              else if hasPrefix "nightly-" name then "a." + (removePrefix "nightly-" name)
-              else name; in snapshot // { inherit version; };
-
-  # Filter to LTS only to speed up evaluation time
-  baseSnapshots = (lib.filterAttrs (n: v: lib.hasInfix "lts" n) haskell-nix.snapshots);
-  # baseSnapshots = haskell-nix.snapshots;
-
-  validSnapshots = mapAttrs applyVersionToSnapshot
-    (if filterToValid then (filterAttrs (n: v: hasAttr (getAttr n snapshotToCompiler) haskell.packages) baseSnapshots) else baseSnapshots);
+  # compilers = filterAttrs (n: v: (builtins.tryEval (builtins.deepSeq (getAttr v haskell-nix.snapshots))).success) (import ./compilers.nix);
+  # compilers = filterAttrs (n: v: (builtins.tryEval (getAttr v haskell-nix.snapshots)).success) (import ./compilers.nix);
+  # compilers = mapAttrs (n: v: (getAttr v haskell-nix.snapshots)) (import ./compilers.nix);
+  # compilers = import ./compilers.nix;
+  compilers = filterAttrs (n: v: hasAttr n ghc-boot-packages) (import ./compilers.nix);
 
   repls = ghc: {
     ghci = {
@@ -63,16 +57,20 @@ let
 
 in
 
-listToAttrs (mapAttrsToList (name: snapshot:
-  let displayName = "Haskell (Stackage " + name + ")";
-      meta = {
-        baseName = "haskell-stackage-" + name;
-        name = "haskell-stackage-" + name;
-        description = "An advanced, purely functional programming language";
-        version = snapshot.version;
-        inherit displayName;
-        icon = ./haskell-logo-64x64.png;
-      };
+listToAttrs (mapAttrsToList (compilerName: snapshotName:
+  let
+    snapshot = util.applyVersionToSnapshot snapshotName (getAttr snapshotName haskell-nix.snapshots);
+
+    displayName = "Haskell (GHC " + compilerName + ")";
+
+    meta = {
+      baseName = "haskell-" + compilerName;
+      name = "haskell-" + compilerName;
+      description = "An advanced, purely functional programming language (Stackage ${snapshotName})";
+      version = snapshot.version;
+      inherit displayName;
+      icon = ./haskell-logo-64x64.png;
+    };
 
   in {
     name = meta.baseName;
@@ -111,7 +109,6 @@ listToAttrs (mapAttrsToList (name: snapshot:
               inherit displayName attrs extensions metaOnly snapshot;
               ihaskell = callPackage ./ihaskell.nix {
                 inherit packages snapshot;
-                compiler = getAttr (getAttr name snapshotToCompiler) haskell.packages;
               };
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })
@@ -133,4 +130,4 @@ listToAttrs (mapAttrsToList (name: snapshot:
       inherit meta;
     };
   }
-) validSnapshots)
+) compilers)

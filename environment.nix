@@ -59,7 +59,7 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
 
     ({
       channel = "nixpkgs";
-      language = "haskell-stackage-lts-18.27";
+      language = "haskell-ghc8107";
       args = {
         packages = ["aeson" "aeson-typescript"];
         languageServers = ["haskell-language-server"];
