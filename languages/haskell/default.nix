@@ -11,8 +11,6 @@
 , ltsOnly ? true
 }:
 
-with callPackage ./inputs.nix {};
-
 with lib;
 
 let
