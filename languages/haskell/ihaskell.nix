@@ -1,5 +1,4 @@
-{ compiler
-, lib
+{ lib
 , pkgs
 , fetchFromGitHub
 , nix-gitignore
