@@ -88,11 +88,11 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
     })
 
     ({
-      channel = "nixpkgs";
+      channel = "nixpkgs-unstable";
       language = "python38";
       args = {
         packages = ["matplotlib" "scipy" "rope"];
-        languageServers = ["jedi" "pylint" "flake8" "pycodestyle" "microsoft" "palantir"];
+        languageServers = ["jedi" "palantir" "pylint" "flake8" "pycodestyle" "microsoft" "palantir" "pythonlsp"];
         settings = {
           permitUserSite = false;
         };
