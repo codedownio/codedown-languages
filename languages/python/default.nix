@@ -19,6 +19,8 @@ let
     pycodestyle = (callPackage ./language_server_pycodestyle/config.nix { inherit python kernelName; });
   } // (lib.optionalAttrs (lib.hasAttr "python-language-server" pkgs) {
     microsoft = callPackage ./language_server_microsoft/config.nix { inherit python kernelName; };
+  }) // (lib.optionalAttrs (lib.versionAtLeast python.pythonVersion "3.7") {
+    pythonlsp = callPackage ./language_server_pythonlsp/config.nix { inherit python kernelName; };
   });
 
   repls = python: {
