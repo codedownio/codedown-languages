@@ -9,9 +9,9 @@ let
   common = callPackage ../common.nix {};
 
   allLanguageServerOptions = python: kernelName: {
-    # Primary language server
+    # Primary language servers
     jedi = (callPackage ./language_server_jedi/config.nix { inherit python kernelName; });
-    palantir = (callPackage ./language_server_palantir/config.nix { inherit python kernelName; });
+    pyright = (callPackage ./language_server_pyright/config.nix { inherit python kernelName; });
 
     # Secondary language servers (for diagnostics, formatting, etc.)
     pylint = (callPackage ./language_server_pylint/config.nix { inherit python kernelName; });
