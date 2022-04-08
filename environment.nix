@@ -57,14 +57,15 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
     #   };
     # })
 
-    ({
-      channel = "nixpkgs";
-      language = "haskell-ghc8107";
-      args = {
-        packages = ["aeson" "aeson-typescript"];
-        languageServers = ["haskell-language-server"];
-      };
-    })
+    # ({
+    #   channel = "nixpkgs";
+    #   # language = "haskell-ghc8107";
+    #   language = "haskell-ghc902";
+    #   args = {
+    #     packages = ["aeson" "aeson-typescript"];
+    #     languageServers = ["haskell-language-server"];
+    #   };
+    # })
 
     ({
       channel = "nixpkgs";

@@ -5,7 +5,7 @@
   inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/ecaf3da9340231e5493eccc3db87604a3705da42";
 
   # When updating this, make sure to run ./update.sh to generate the new compiler set!
-  inputs.haskellNixSrc.url = "github:input-output-hk/haskell.nix/4cda3aeea8acd0837f6ad4a18a793d3d5901862a";
+  inputs.haskellNixSrc.url = "github:codedownio/haskell.nix/a3acfa49682870cc1db1120bd0c5f4a593de5884";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
