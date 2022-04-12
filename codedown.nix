@@ -3,6 +3,7 @@
 , symlinkJoin
 , writeTextDir
 , pkgs
+, requiredPackages ? [pkgs.nix-prefetch-git]
 }:
 
 with lib;
@@ -96,6 +97,7 @@ rec {
               ++ [((callPackage ./spec_yaml.nix {}) (args //  { inherit shells exporters; kernels = builtKernels; }))]
               ++ (if metaOnly then [] else [(shellsCommon.wrapShells shells)])
               ++ (if metaOnly then [] else (map (x: x.contents) otherPackages))
+              ++ (if metaOnly then [] else requiredPackages)
               ++ [(writeTextDir "lib/codedown/repls.yaml" (lib.generators.toYAML {} repls))]
               ++ [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporterInfos))]
       ;
