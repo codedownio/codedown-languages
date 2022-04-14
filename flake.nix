@@ -37,6 +37,11 @@
             haskellNix = pkgs.haskell-nix;
             haskellCompilers = pkgs.callPackage ./languages/haskell/generate.nix {};
 
+            pkgsTest = pkgs;
+            test = pkgs.callPackage ./languages/haskell {};
+            # generateHaskell = pkgs.callPackage ./languages/haskell/generate.nix {};
+            # ps = pkgs.codedown.languages."haskell-stackage-lts-18.27".packageSearch;
+            # ps2 = pkgs.codedown.languages.python3.packageSearch;
             # haskellTest = with pkgs; callPackage ./languages/haskell/kernel.nix {
             #   attrs = ["haskell"];
             #   extensions = ["hs"];

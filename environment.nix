@@ -57,15 +57,15 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
     #   };
     # })
 
-    # ({
-    #   channel = "nixpkgs";
-    #   # language = "haskell-ghc8107";
-    #   language = "haskell-ghc902";
-    #   args = {
-    #     packages = ["aeson" "aeson-typescript"];
-    #     languageServers = ["haskell-language-server"];
-    #   };
-    # })
+    ({
+      channel = "nixpkgs";
+      # language = "haskell-ghc8107";
+      language = "haskell-ghc902";
+      args = {
+        packages = ["aeson" "aeson-typescript"];
+        languageServers = ["haskell-language-server"];
+      };
+    })
 
     ({
       channel = "nixpkgs";
@@ -93,12 +93,24 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       language = "python38";
       args = {
         packages = ["matplotlib" "scipy" "rope"];
-        languageServers = ["jedi" "pyright" "pylint" "flake8" "pycodestyle" "microsoft" "pythonlsp"];
+        languageServers = ["jedi" "pyright" "pylint" "flake8" "pycodestyle" "microsoft" "python-lsp-server" "python-language-server"];
         settings = {
           permitUserSite = false;
         };
       };
     })
+
+    # ({
+    #   channel = "nixpkgs-unstable";
+    #   language = "pypy27";
+    #   args = {
+    #     packages = [];
+    #     languageServers = [];
+    #     settings = {
+    #       permitUserSite = false;
+    #     };
+    #   };
+    # })
 
     # ({
     #   channel = "nixpkgs";
