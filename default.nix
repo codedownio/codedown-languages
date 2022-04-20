@@ -14,10 +14,10 @@ let
   };
 
   haskellNix = import (fetchFromGitHub {
-    owner = "codedownio";
+    owner = "input-output-hk";
     repo = "haskell.nix";
-    rev = "a3acfa49682870cc1db1120bd0c5f4a593de5884";
-    sha256 = "1hxx57zcffi3ajibqrm9y3sssp8bwbdr0fyhr2lrvmzvv0k8n6ci";
+    rev = "f3ea06dcacc8a46b4a207a6a1fad14bc5ea41b19";
+    sha256 = "0fs3b52k8qcpqz4mlq970djnww16dcngwscsfn84h4n9j3ng4glr";
   }) { pkgs = import nixpkgsSrc {}; };
 
 in
