@@ -5,12 +5,11 @@ on:
   push:
     branches: [main]
 
-strategy:
-  fail-fast: false
-
 jobs:
-  test1:
+  tests:
+    name: kernels-and-packages-${{matrix.kernel}}
     runs-on: self-hosted
+
     strategy:
       fail-fast: false
       matrix:
@@ -29,4 +28,4 @@ jobs:
 
     - name: Test
       run: |
-        echo "TODO: test kernel ${{matrix.kernel}} with packages ${{matrix.packages}}"
+        echo "TODO: test kernel ${{matrix.kernel}} with packages ${{join(matrix.packages)}}"
