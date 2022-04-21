@@ -1,0 +1,32 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+strategy:
+  fail-fast: false
+
+jobs:
+  test1:
+    runs-on: self-hosted
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - kernel: python38
+            packages:
+              - numpy
+              - scipy
+              - matplotlib
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+        persist-credentials: false
+
+    - name: Test
+      run: |
+        echo "TODO: test kernel ${{matrix.kernel}} with packages ${{matrix.packages}}"
