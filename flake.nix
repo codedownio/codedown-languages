@@ -51,8 +51,17 @@
           else if (channel.tag == "path") then channel.path else null;
       in
         {
-          checks = let checks = import ./checks.nix; in (
-            pkgs.lib.mapAttrs (n: v: callEnvironment ./empty_environment.nix v) checks
+          checks = let checks = with pkgs.lib; import ./checks.nix; in (
+            pkgs.lib.listToAttrs (pkgs.lib.flatten ((pkgs.lib.mapAttrsToList (n: v: [{
+              name = n + "-build-environment";
+              value = callEnvironment ./empty_environment.nix { inherit (v) kernels; };
+            } {
+              name = n + "-run-code";
+              value = pkgs.callPackage ./checks/check_code.nix {
+                inherit (v) codeExecutions;
+                jupyter_path = "${callEnvironment ./empty_environment.nix { inherit (v) kernels; }}/lib/codedown";
+              };
+            }])) checks))
           );
 
           packages = rec {
