@@ -57,6 +57,7 @@ listToAttrs (map (x:
         , languageServers ? []
         , attrs ? ["julia"]
         , extensions ? ["jl"]
+        , metaOnly ? false
       }:
         let
           julia = callPackage ./depot {
@@ -70,13 +71,14 @@ listToAttrs (map (x:
             name = "julia";
 
             paths = [
-              julia
               (callPackage ./kernel.nix { inherit julia python attrs extensions; })
               (callPackage ./mode_info.nix { inherit attrs extensions; })
               (writeTextDir "lib/codedown/julia-language-servers.yaml" (
                 pkgs.lib.generators.toYAML {} (map (x: x.config) (map (x: getAttr x availableLanguageServers) languageServers))
               ))
-            ];
+            ]
+            ++ (if metaOnly then [] else [julia])
+            ;
 
             passthru = {
               args = args // { baseName = x; };

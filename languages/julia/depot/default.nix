@@ -1,7 +1,16 @@
-{pkgs, julia, python, jupyter, runCommand, makeWrapper, stdenv, callPackage}:
+{ lib
+, julia
+, python
+, jupyter
+, runCommand
+, makeWrapper
+, stdenv
+, callPackage
+, pkgs
+}:
 
 let
-  gr = import ./gr_binary.nix;
+  gr = callPackage ./gr_binary.nix {};
 
   extraLibs = [];
 
@@ -13,7 +22,7 @@ let
   juliaWithPackages = runCommand "julia-wrapped" { buildInputs = [makeWrapper]; } ''
     mkdir -p $out/bin
     makeWrapper ${julia}/bin/julia $out/bin/julia \
-                --suffix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath extraLibs}" \
+                --suffix LD_LIBRARY_PATH : "${lib.makeLibraryPath extraLibs}" \
                 --set PYTHON ${pythonWithPackages}/bin/python \
                 --set JUPYTER ${jupyter}/bin/jupyter \
                 --set GRDIR ${gr}
