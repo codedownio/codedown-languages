@@ -57,7 +57,7 @@
               value = callEnvironment ./empty_environment.nix { inherit (v) kernels; };
             } {
               name = n + "-run-code";
-              value = pkgs.callPackage ./checks/check_code.nix {
+              value = pkgs.callPackage ./check_code.nix {
                 inherit (v) codeExecutions;
                 jupyter_path = "${callEnvironment ./empty_environment.nix { inherit (v) kernels; }}/lib/codedown";
               };
