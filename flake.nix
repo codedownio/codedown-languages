@@ -51,21 +51,9 @@
           else if (channel.tag == "path") then channel.path else null;
       in
         {
-          checks = {
-            python = callEnvironment ./empty_environment.nix {
-              kernels = [({
-                channel = "nixpkgs-unstable";
-                language = "python38";
-                args = {
-                  packages = ["matplotlib" "scipy" "rope"];
-                  languageServers = ["jedi" "pyright" "pylint" "flake8" "pycodestyle" "microsoft" "python-lsp-server" "python-language-server"];
-                  settings = {
-                    permitUserSite = false;
-                  };
-                };
-              })];
-            };
-          };
+          checks = let checks = import ./checks.nix; in (
+            pkgs.lib.mapAttrs (n: v: callEnvironment ./empty_environment.nix v) checks
+          );
 
           packages = rec {
             exportersSearcher = pkgs.codedown.exportersSearcher;
