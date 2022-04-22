@@ -11,5 +11,12 @@
         };
       };
     })];
+
+    codeExecutions = {
+      python38 = [{
+        code = "print(42)";
+        output = "42";
+      }];
+    };
   };
 }
