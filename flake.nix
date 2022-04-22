@@ -50,7 +50,7 @@
           else if (channel.tag == "fetch_git") then pkgs.fetchgit (removeAttrs channel ["tag" "name"])
           else if (channel.tag == "path") then channel.path else null;
       in
-        {
+        rec {
           checks = let checks = with pkgs.lib; import ./checks.nix; in (
             pkgs.lib.listToAttrs (pkgs.lib.flatten ((pkgs.lib.mapAttrsToList (n: v: [{
               name = n + "-build-environment";
@@ -94,6 +94,8 @@
             # };
 
             environment = callEnvironment ./environment.nix {};
+
+            ci = pkgs.callPackage ./ci.nix { inherit checks; };
           };
         }
     );
