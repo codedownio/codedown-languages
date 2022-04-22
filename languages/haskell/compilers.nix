@@ -28,6 +28,6 @@
   ghc883 = "lts-16.11";
   ghc884 = "lts-16.31";
   ghc901 = "nightly-2022-01-06";
-  ghc902 = "lts-19.2";
-  ghc922 = "nightly-2022-04-04";
+  ghc902 = "lts-19.4";
+  ghc922 = "nightly-2022-04-19";
 }

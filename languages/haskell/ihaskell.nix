@@ -36,16 +36,18 @@ let
     ipython-kernel = self.callCabal2nix "ipython-kernel" (src + /ipython-kernel) {};
   } // displays self);
 
-  ihaskellEnv = ((lib.makeExtensible (_: snapshot)).extend (old: super: {
+  extendedSnapshot = (lib.makeExtensible (_: snapshot)).extend (old: super: {
     overrides = lib.composeExtensions (old.overrides or (_: _: {})) ihaskellOverlay;
-  })).ghcWithPackages (ps: [ps.ihaskell] ++ (map (x: builtins.getAttr x ps) packages));
+  });
+
+  ihaskellEnv = extendedSnapshot.ghcWithPackages (ps: [ps.ihaskell] ++ (map (x: builtins.getAttr x ps) packages));
 
 in
 
 buildEnv {
   name = "ihaskell-with-packages";
   nativeBuildInputs = [ makeWrapper ];
-  paths = [ ihaskellEnv ];
+  paths = [ ihaskellEnv extendedSnapshot.ihaskell.components.exes.ihaskell  ];
   postBuild = ''
     if [[ -L "$out/bin" ]]; then
       mv "$out/bin" $out/binlink
@@ -57,7 +59,7 @@ buildEnv {
       if [[ -f $prg && -x $prg ]]; then
         if [[ "$(basename $prg)" == "ihaskell" ]]; then
           wrapProgram $prg \
-            --add-flags "-l $(${ihaskellEnv}/bin/ghc --print-libdir)" \
+            --add-flags "kernel -l $(${ihaskellEnv}/bin/ghc --print-libdir)" \
             --prefix PATH : "${lib.makeBinPath ([ihaskellEnv] ++ (systemPackages pkgs))}"
         else
           wrapProgram $prg \

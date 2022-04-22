@@ -57,7 +57,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshotName:
   let
     snapshot = util.applyVersionToSnapshot snapshotName (getAttr snapshotName haskell-nix.snapshots);
 
-    displayName = "Haskell (GHC " + compilerName + ")";
+    displayName = "Haskell (GHC " + (snapshot.ghcWithPackages (ps: [])).version + ")";
 
     meta = {
       baseName = "haskell-" + compilerName;
@@ -95,7 +95,8 @@ listToAttrs (mapAttrsToList (compilerName: snapshotName:
       }:
         let
           settingsToUse = defaultSettings // settings;
-          ghc = snapshot.ghcWithPackages (ps: [ps.ihaskell] ++ (map (x: builtins.getAttr x ps) packages));
+          # ghc = snapshot.ghcWithPackages (ps: [ps.ihaskell] ++ (map (x: builtins.getAttr x ps) packages));
+          ghc = snapshot.ghcWithPackages (ps: map (x: builtins.getAttr x ps) packages);
 
         in symlinkJoin {
           name = meta.baseName;
@@ -103,7 +104,11 @@ listToAttrs (mapAttrsToList (compilerName: snapshotName:
           paths = [
             (callPackage ./kernel.nix {
               inherit displayName attrs extensions metaOnly snapshot;
-              ihaskell = ghc;
+              # ihaskell = ghc;
+              ihaskell = callPackage ./ihaskell.nix {
+                inherit packages snapshot;
+              };
+
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })
 
