@@ -68,7 +68,7 @@ writeTextFile {
             derivation=''${{matrix.derivation}}
             echo "Got derivation: $derivation"
 
-            output=$(nix build .#checks.x86_64-linux.''${derivation} --no-link --json --extra-experimental-features nix-command | jq -r '.[0].outputs.out')
+            output=$(nix build .#checks.x86_64-linux.''${derivation} --no-link --json --extra-experimental-features nix-command --extra-experimental-features flakes | jq -r '.[0].outputs.out')
             echo "Got output: $output"
 
             if [[ -f "$output" && -x $(realpath "$output") ]]; then
