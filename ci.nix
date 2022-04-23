@@ -40,6 +40,37 @@ writeTextFile {
       };
     };
 
-    jobs = listToAttrs (map buildJob names);
+    jobs = {
+      tests = {
+        name = "\${{matrix.derivation}}";
+        runs-on = "self-hosted";
+
+        strategy = {
+          fail-fast = false;
+          matrix = {
+            include = map (x: {
+              derivation = x;
+            }) names;
+          };
+        };
+
+        steps = [{
+          uses = "actions/checkout@v2";
+          "with" = {
+            submodules = "recursive";
+            persist-credentials = false;
+          };
+        } {
+          name = "Test";
+          run = ''
+            derivation=''${{matrix.derivation}}
+
+            echo "Got derivation: $derivation"
+
+            nix build .#checks.x86_64-linux.''${derivation} --no-link --json
+          '';
+        }];
+      };
+    };
   };
 }
