@@ -1,6 +1,6 @@
 {
   kernels = [({
-    channel = "nixpkgs";
+    channel = "nixpkgs-unstable";
     language = "haskell-ghc902";
     args = {
       packages = ["aeson"];
