@@ -63,11 +63,18 @@ writeTextFile {
         } {
           name = "Test";
           run = ''
-            derivation=''${{matrix.derivation}}
+            export PATH=$(nix-build -E 'with import ./nix/pinned-nixpkgs.nix { }; nix' --no-out-link)/bin:$PATH
 
+            derivation=''${{matrix.derivation}}
             echo "Got derivation: $derivation"
 
-            nix build .#checks.x86_64-linux.''${derivation} --no-link --json
+            output=$(nix build .#checks.x86_64-linux.''${derivation} --no-link --json --extra-experimental-features nix-command | jq -r '.[0].outputs.out')
+            echo "Got output: $output"
+
+            if [[ -f "$output" && -x $(realpath "$output") ]]; then
+              echo "Output is executable!"
+              $output
+            fi
           '';
         }];
       };
