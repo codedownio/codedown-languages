@@ -63,7 +63,7 @@ writeTextFile {
         } {
           name = "Test";
           run = ''
-            set -e
+            set -eo pipefail
             export PATH=$(nix-build -E 'with import ./nix/pinned-nixpkgs.nix { }; nix' --no-out-link)/bin:$PATH
 
             derivation=''${{matrix.derivation}}
