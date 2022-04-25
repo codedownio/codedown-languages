@@ -69,13 +69,14 @@
             shellsSearcher = pkgs.codedown.shellsSearcher;
             languagesSearcher = pkgs.codedown.languagesSearcher;
 
+            haskellCompilers = pkgs.callPackage ./languages/haskell/generate.nix {};
+
             # codedown = pkgs.codedown;
 
             # default = import ./shell.nix { inherit pkgs environment; };
             # devShell = import ./shell.nix { inherit pkgs environment; };
 
             # haskellNix = pkgs.haskell-nix;
-            # haskellCompilers = pkgs.callPackage ./languages/haskell/generate.nix {};
 
             # pkgsTest = pkgs;
             # test = pkgs.callPackage ./languages/haskell {};
