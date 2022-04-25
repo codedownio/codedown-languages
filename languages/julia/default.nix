@@ -21,6 +21,11 @@ let
     "julia_15"
     "julia_16"
     "julia_16-bin"
+    "julia_17-bin"
+
+    # Some future proofing...
+    "julia_18-bin"
+    "julia_19-bin"
   ];
 
   validCandidate = x:
