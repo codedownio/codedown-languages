@@ -13,7 +13,7 @@
         },
         {
           "name": "Test",
-          "run": "set -eo pipefail\nexport PATH=$(nix-build -E 'with import ./nix/pinned-nixpkgs.nix { }; nix' --no-out-link)/bin:$PATH\n\nderivation=${{matrix.derivation}}\necho \"Got derivation: $derivation\"\n\noutput=$(nix build .#checks.x86_64-linux.${derivation} --no-link --json --extra-experimental-features nix-command --extra-experimental-features flakes | jq -r '.[0].outputs.out')\necho \"Got output: $output\"\n\nif [[ -f \"$output\" && -x $(realpath \"$output\") ]]; then\n  echo \"Output is executable!\"\n  $output\nfi\n"
+          "run": "set -eo pipefail\n\nderivation=${{matrix.derivation}}\necho \"Got derivation: $derivation\"\n\noutput=$(nix build .#checks.x86_64-linux.${derivation} --no-link --json --extra-experimental-features nix-command --extra-experimental-features flakes | jq -r '.[0].outputs.out')\necho \"Got output: $output\"\n\nif [[ -f \"$output\" && -x $(realpath \"$output\") ]]; then\n  echo \"Output is executable!\"\n  $output\nfi\n"
         }
       ],
       "strategy": {

@@ -1,14 +1,16 @@
 { lib
 , writeTextFile
 , bats
-, jupyter
 , jupyter_path
 , codeExecutions
+
+, python3
+, coreutils
 }:
 
 let
   name = "check-code";
-  runtimeInputs = [jupyter];
+  runtimeInputs = [coreutils (python3.withPackages (ps: [ps.jupyter ps.jupyter_client]))];
 
   makeTest = codeExecution: ''
     @test "[${codeExecution.kernel}] ${codeExecution.code} --> ${codeExecution.output}" {
@@ -37,7 +39,7 @@ writeTextFile {
     set -o nounset
     set -o pipefail
 
-    export PATH="${lib.makeBinPath runtimeInputs}:$PATH"
+    export PATH="${lib.makeBinPath runtimeInputs}"
     export JUPYTER_PATH="${jupyter_path}"
 
     ${tests}
