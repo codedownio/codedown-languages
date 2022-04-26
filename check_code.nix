@@ -6,11 +6,16 @@
 
 , python3
 , coreutils
+, findutils
 }:
 
 let
   name = "check-code";
-  runtimeInputs = [coreutils (python3.withPackages (ps: [ps.jupyter ps.jupyter_client]))];
+  runtimeInputs = [
+    (python3.withPackages (ps: [ps.jupyter ps.jupyter_client]))
+    coreutils
+    findutils
+  ];
 
   makeTest = codeExecution: ''
     @test "[${codeExecution.kernel}] ${codeExecution.code} --> ${codeExecution.output}" {

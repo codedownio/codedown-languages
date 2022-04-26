@@ -1,15 +1,15 @@
 {
   kernels = [({
     channel = "nixpkgs";
-    language = "julia_15";
+    language = "bash";
     args = {
       packages = [];
       languageServers = [];
     };
   })];
 
-  codeExecutions = map (x: x // { kernel = "julia"; }) [{
-    code = ''print("hi")'';
+  codeExecutions = map (x: x // { kernel = "bash"; }) [{
+    code = ''echo hi'';
     output = "hi";
   }];
 }

@@ -21,6 +21,12 @@
         "matrix": {
           "include": [
             {
+              "derivation": "bash-build-environment"
+            },
+            {
+              "derivation": "bash-run-code"
+            },
+            {
               "derivation": "haskell-build-environment"
             },
             {
