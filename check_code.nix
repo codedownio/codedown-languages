@@ -17,13 +17,15 @@ let
     findutils
   ];
 
+  escape = lib.replaceStrings ["'" "\n"] ["'\\''" "\\n"];
+
   makeTest = codeExecution: ''
-    @test "[${codeExecution.kernel}] ${codeExecution.code} --> ${codeExecution.output}" {
+    @test "[${codeExecution.kernel}] '${escape codeExecution.code}' --> ${escape codeExecution.output}" {
       dir=$(mktemp -d)
       cd "$dir"
       set +e
 
-      echo "${codeExecution.code}" | jupyter run --kernel "${codeExecution.kernel}" > out
+      echo '${escape codeExecution.code}' | jupyter run --kernel "${codeExecution.kernel}" > out
       [ "$?" = 0 ]
 
       set -e

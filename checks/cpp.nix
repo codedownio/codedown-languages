@@ -1,14 +1,14 @@
 {
   kernels = [({
     channel = "nixpkgs";
-    language = "cpp11";
+    language = "cpp14";
     args = {
       packages = [];
       languageServers = [];
     };
   })];
 
-  codeExecutions = map (x: x // { kernel = "cpp"; }) [{
+  codeExecutions = map (x: x // { kernel = "cpp14"; }) [{
     code = ''
       #include <iostream>
       using namespace std;

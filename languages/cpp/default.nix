@@ -71,7 +71,7 @@ if cling == null then {} else
         build = args@{
           packages ? []
           , languageServers ? []
-          , attrs ? [baseName "cpp"]
+          , attrs ? [x "cpp"]
           , extensions ? ["cpp" "hpp" "cxx" "hxx" "c" "h"]
           , metaOnly ? false
         }:
