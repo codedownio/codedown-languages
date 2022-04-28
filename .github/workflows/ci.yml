@@ -27,6 +27,12 @@
               "derivation": "bash-run-code"
             },
             {
+              "derivation": "cpp-build-environment"
+            },
+            {
+              "derivation": "cpp-run-code"
+            },
+            {
               "derivation": "haskell-build-environment"
             },
             {
