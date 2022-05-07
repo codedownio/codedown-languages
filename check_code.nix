@@ -4,7 +4,7 @@
 , jupyter_path
 , codeExecutions
 
-, python3
+, python38
 , coreutils
 , findutils
 }:
@@ -12,7 +12,7 @@
 let
   name = "check-code";
   runtimeInputs = [
-    (python3.withPackages (ps: [ps.jupyter ps.jupyter_client]))
+    (python38.withPackages (ps: [ps.jupyter ps.jupyter_client]))
     coreutils
     findutils
   ];
