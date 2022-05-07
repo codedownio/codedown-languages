@@ -1,7 +1,8 @@
 { callPackage
 , python
 , julia
-, writeShellScriptBin
+, displayName
+, writeShellScript
 , attrs
 , extensions
 }:
@@ -9,7 +10,7 @@
 let
   common = callPackage ../common.nix {};
 
-  runJuliaKernel = writeShellScriptBin "run-julia-kernel.sh" ''
+  runJuliaKernel = writeShellScript "run-julia-kernel.sh" ''
     kernelFilePath=$(find ${julia.depot}/packages/IJulia -name kernel.jl)
     ${julia}/bin/julia -i --startup-file=yes --color=yes $kernelFilePath $1
   '';
@@ -18,9 +19,9 @@ in
 
 common.makeJupyterKernel {
   julia = {
-    displayName = "Julia 1.5";
+    inherit displayName;
     argv = [
-      "${runJuliaKernel}/bin/run-julia-kernel.sh"
+      "${runJuliaKernel}"
       "{connection_file}"
     ];
     language = "julia";

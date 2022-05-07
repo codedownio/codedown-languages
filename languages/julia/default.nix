@@ -41,9 +41,11 @@ listToAttrs (map (x:
   let
     baseJulia = getAttr x pkgs;
 
+    displayName = "Julia " + baseJulia.version;
+
     meta = baseJulia.meta // {
       baseName = x;
-      displayName = "Julia " + baseJulia.version;
+      inherit displayName;
       version = baseJulia.version;
       icon = ./logo-64x64.png;
     };
@@ -76,7 +78,7 @@ listToAttrs (map (x:
             name = "julia";
 
             paths = [
-              (callPackage ./kernel.nix { inherit julia python attrs extensions; })
+              (callPackage ./kernel.nix { inherit julia python attrs extensions displayName; })
               (callPackage ./mode_info.nix { inherit attrs extensions; })
               (writeTextDir "lib/codedown/julia-language-servers.yaml" (
                 pkgs.lib.generators.toYAML {} (map (x: x.config) (map (x: getAttr x availableLanguageServers) languageServers))
