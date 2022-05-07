@@ -33,7 +33,7 @@ common.writeTextDirWithMeta pyright.meta "lib/codedown/python-pyright-language-s
 
   # Obtained from https://raw.githubusercontent.com/microsoft/pyright/30b467e75c6a032c8e0973ee85edf9db268826a7/client/images/pyright-icon.png
   # under MIT License
-  icon = ./icon.png;
+  icon = ./icon_scaled_64x64.png;
 
   extensions = ["py"];
   notebook_suffix = ".py";
