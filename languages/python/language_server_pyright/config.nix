@@ -30,7 +30,11 @@ common.writeTextDirWithMeta pyright.meta "lib/codedown/python-pyright-language-s
   name = "pyright";
   display_name = "Pyright";
   description = pyright.meta.description;
-  icon = null;
+
+  # Obtained from https://raw.githubusercontent.com/microsoft/pyright/30b467e75c6a032c8e0973ee85edf9db268826a7/client/images/pyright-icon.png
+  # under MIT License
+  icon = ./icon.png;
+
   extensions = ["py"];
   notebook_suffix = ".py";
   kernel_name = kernelName;
