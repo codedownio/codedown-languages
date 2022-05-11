@@ -19,7 +19,7 @@ let
   # This is pretty gross because it means the language server and the kernel will have slightly
   # different values of sys.path, but at least it makes it harder to break the language server.
 
-  # There doesn't seem to be any way to tell python-language-server to distinguish *its own*
+  # There doesn't seem to be any way to tell python-lsp-server to distinguish *its own*
   # imports from those of the code it's examining. This might be worth researching further.
 
   common = callPackage ../../common.nix {};
@@ -27,7 +27,7 @@ let
   # manylinux1 = callPackage ./manylinux1.nix { inherit python; };
 
   pythonEnv = python.buildEnv.override {
-    extraLibs = [python.pkgs.python-language-server];
+    extraLibs = [python.pkgs.python-lsp-server];
     permitUserSite = false;
     makeWrapperArgs = [
       # Append libs needed at runtime for manylinux1 compliance
@@ -43,7 +43,7 @@ let
 
 in
 
-common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedown/python-pythonlsp-language-servers.yaml"
+common.writeTextDirWithMeta python.pkgs.python-lsp-server.meta "lib/codedown/python-pythonlsp-language-servers.yaml"
   (lib.generators.toYAML {} [{
     name = "python-lsp-server";
     display_name = "Python LSP Server";
@@ -55,6 +55,6 @@ common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedow
     type = "tcp";
     args = ["${pythonEnv}/bin/python" "-m" "pyls" "--tcp" "--host=localhost" "--port={port_number}"];
     initialization_options = {
-      "pylsp.plugins.flake8.ignore" = ["E303" "E402"]
-    }
+      "pylsp.plugins.flake8.ignore" = ["E303" "E402"];
+    };
   }])
