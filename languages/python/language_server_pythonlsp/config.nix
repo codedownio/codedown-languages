@@ -54,4 +54,7 @@ common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedow
     attrs = ["python"];
     type = "tcp";
     args = ["${pythonEnv}/bin/python" "-m" "pyls" "--tcp" "--host=localhost" "--port={port_number}"];
+    initialization_options = {
+      "pylsp.plugins.flake8.ignore" = ["E303" "E402"]
+    }
   }])
