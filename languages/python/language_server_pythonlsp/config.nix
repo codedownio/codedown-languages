@@ -55,8 +55,10 @@ common.writeTextDirWithMeta python.pkgs.python-lsp-server.meta "lib/codedown/pyt
     type = "tcp";
     args = ["${pythonEnv}/bin/python" "-m" "pylsp" "--tcp" "--host=localhost" "--port={port_number}"];
     initialization_options = {
-      "pylsp.plugins.flake8.ignore" = ["E303" "E402"];
-      "pylsp.plugins.autopep8.ignore" = ["E303" "E402"];
-      "pylsp.plugins.pycodestyle.ignore" = ["E303" "E402"];
+      pylsp = {
+        plugins = {
+          pycodestyle = { ignore = ["E303" "E402"]; };
+        };
+      };
     };
   }])
