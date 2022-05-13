@@ -9,6 +9,10 @@ extra-source-files:
 - README.md
 - ChangeLog.md
 
+default-extensions:
+- QuasiQuotes
+- OverloadedStrings
+
 dependencies:
 - base >= 4.7 && < 5
 - aeson

@@ -23,6 +23,9 @@ library
       Paths_tests
   hs-source-dirs:
       src
+  default-extensions:
+      QuasiQuotes
+      OverloadedStrings
   build-depends:
       aeson
     , aeson-qq
@@ -42,6 +45,9 @@ executable tests-exe
       Paths_tests
   hs-source-dirs:
       app
+  default-extensions:
+      QuasiQuotes
+      OverloadedStrings
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-tool-depends:
       sandwich:sandwich-discover
