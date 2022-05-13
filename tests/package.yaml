@@ -12,16 +12,26 @@ extra-source-files:
 default-extensions:
 - QuasiQuotes
 - OverloadedStrings
+- FlexibleContexts
+- ConstraintKinds
+- DataKinds
+- TypeOperators
+- LambdaCase
 
 dependencies:
 - base >= 4.7 && < 5
 - aeson
 - aeson-qq
 - data-default
+- exceptions
+- filepath
 - lsp-test
 - optparse-applicative
 - sandwich
 - string-interpolate
+- text
+- unliftio
+- unliftio-core
 
 library:
   source-dirs: src

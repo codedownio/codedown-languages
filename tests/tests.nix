@@ -1,5 +1,6 @@
-{ mkDerivation, aeson, aeson-qq, base, data-default, hpack, lib
-, lsp-test, optparse-applicative, sandwich, string-interpolate
+{ mkDerivation, aeson, aeson-qq, base, data-default, exceptions
+, filepath, hpack, lib, lsp-test, optparse-applicative, sandwich
+, string-interpolate, text, unliftio, unliftio-core
 }:
 mkDerivation {
   pname = "tests";
@@ -8,19 +9,17 @@ mkDerivation {
   isLibrary = true;
   isExecutable = true;
   libraryHaskellDepends = [
-    aeson aeson-qq base data-default lsp-test optparse-applicative
-    sandwich string-interpolate
+    aeson aeson-qq base data-default exceptions filepath lsp-test
+    optparse-applicative sandwich string-interpolate text unliftio
+    unliftio-core
   ];
   libraryToolDepends = [ hpack ];
   executableHaskellDepends = [
-    aeson aeson-qq base data-default lsp-test optparse-applicative
-    sandwich string-interpolate
+    aeson aeson-qq base data-default exceptions filepath lsp-test
+    optparse-applicative sandwich string-interpolate text unliftio
+    unliftio-core
   ];
-  testHaskellDepends = [
-    aeson aeson-qq base data-default lsp-test optparse-applicative
-    sandwich string-interpolate
-  ];
+  executableToolDepends = [ sandwich ];
   prePatch = "hpack";
-  homepage = "https://github.com/githubuser/tests#readme";
   license = lib.licenses.bsd3;
 }
