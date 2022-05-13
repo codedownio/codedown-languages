@@ -1,5 +1,5 @@
 
-module Spec.Tests.Python3Kernel where
+module Spec.Tests.Python3Kernel (tests) where
 
 import Test.Sandwich
 

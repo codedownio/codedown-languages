@@ -32,3 +32,4 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - tests
+    build-tools: sandwich:sandwich-discover
