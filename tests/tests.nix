@@ -1,5 +1,5 @@
 { mkDerivation, aeson, aeson-qq, base, data-default, hpack, lib
-, lsp-test, optparse-applicative, string-interpolate
+, lsp-test, optparse-applicative, sandwich, string-interpolate
 }:
 mkDerivation {
   pname = "tests";
@@ -9,16 +9,16 @@ mkDerivation {
   isExecutable = true;
   libraryHaskellDepends = [
     aeson aeson-qq base data-default lsp-test optparse-applicative
-    string-interpolate
+    sandwich string-interpolate
   ];
   libraryToolDepends = [ hpack ];
   executableHaskellDepends = [
     aeson aeson-qq base data-default lsp-test optparse-applicative
-    string-interpolate
+    sandwich string-interpolate
   ];
   testHaskellDepends = [
     aeson aeson-qq base data-default lsp-test optparse-applicative
-    string-interpolate
+    sandwich string-interpolate
   ];
   prePatch = "hpack";
   homepage = "https://github.com/githubuser/tests#readme";
