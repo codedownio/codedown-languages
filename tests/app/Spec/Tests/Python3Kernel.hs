@@ -6,8 +6,8 @@ import Control.Monad.Catch (MonadMask, MonadThrow)
 import Control.Monad.IO.Unlift
 import Data.String.Interpolate
 import Data.Text
-import NixEnvironmentContext
 import Test.Sandwich
+import TestLib.NixEnvironmentContext
 
 
 python3Environment = undefined

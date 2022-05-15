@@ -1,6 +1,6 @@
 {-# LANGUAGE ViewPatterns #-}
 
-module NixEnvironmentContext where
+module TestLib.NixEnvironmentContext where
 
 import Control.Monad
 import Control.Monad.Catch (MonadMask, MonadThrow)
@@ -12,7 +12,8 @@ import Data.String.Interpolate
 import Data.Text
 import System.FilePath
 import Test.Sandwich
-import Types
+import TestLib.Aeson
+import TestLib.Types
 import UnliftIO.Directory
 import UnliftIO.Process
 

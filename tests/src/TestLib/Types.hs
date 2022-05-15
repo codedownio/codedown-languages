@@ -1,0 +1,25 @@
+{-# LANGUAGE TemplateHaskell #-}
+
+module TestLib.Types where
+
+import Data.Aeson as A
+import Data.Aeson.TH
+import qualified Data.List as L
+import Data.Text
+import TestLib.Aeson
+
+data LockedType = LockedTypeGithub
+  deriving (Show)
+deriveJSON toSnakeC1 ''LockedType
+
+data Locked = LockedGithub {
+  lockedNarHash :: Text
+  , lockedOwner :: Text
+  , lockedRepo :: Text
+  , lockedRev :: Text
+  } deriving (Show)
+deriveJSON ((dropNAndToCamelCaseOptions (L.length ("locked" :: String))) {
+               A.tagSingleConstructors = True
+               , A.constructorTagModifier = toSnakeAndDropFirstWord
+               , A.sumEncoding = A.defaultTaggedObject { A.tagFieldName = "type" }
+               }) ''Locked

@@ -18,10 +18,9 @@ extra-source-files:
 
 library
   exposed-modules:
-      Aeson
-      Lib
-      NixEnvironmentContext
-      Types
+      TestLib.Aeson
+      TestLib.NixEnvironmentContext
+      TestLib.Types
   other-modules:
       Paths_tests
   hs-source-dirs:
