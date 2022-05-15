@@ -12,6 +12,7 @@ extra-source-files:
 default-extensions:
 - QuasiQuotes
 - OverloadedStrings
+- ScopedTypeVariables
 - FlexibleContexts
 - ConstraintKinds
 - DataKinds
@@ -22,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - aeson
 - aeson-qq
+- bytestring
 - data-default
 - exceptions
 - filepath
@@ -32,6 +34,7 @@ dependencies:
 - text
 - unliftio
 - unliftio-core
+- unordered-containers
 
 library:
   source-dirs: src

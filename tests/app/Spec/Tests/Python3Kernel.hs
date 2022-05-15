@@ -24,3 +24,6 @@ tests = introduceNixEnvironment python3Environment "Python 3" $ do
     info [i|Got env: #{env}|]
 
   -- testKernelStdout "python" [i|print("hi")|]  "hi"
+
+main :: IO ()
+main = runSandwichWithCommandLineArgs defaultOptions tests

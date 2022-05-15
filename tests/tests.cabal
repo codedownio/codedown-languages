@@ -18,8 +18,10 @@ extra-source-files:
 
 library
   exposed-modules:
+      Aeson
       Lib
       NixEnvironmentContext
+      Types
   other-modules:
       Paths_tests
   hs-source-dirs:
@@ -27,6 +29,7 @@ library
   default-extensions:
       QuasiQuotes
       OverloadedStrings
+      ScopedTypeVariables
       FlexibleContexts
       ConstraintKinds
       DataKinds
@@ -36,6 +39,7 @@ library
       aeson
     , aeson-qq
     , base >=4.7 && <5
+    , bytestring
     , data-default
     , exceptions
     , filepath
@@ -46,6 +50,7 @@ library
     , text
     , unliftio
     , unliftio-core
+    , unordered-containers
   default-language: Haskell2010
 
 executable tests-exe
@@ -59,6 +64,7 @@ executable tests-exe
   default-extensions:
       QuasiQuotes
       OverloadedStrings
+      ScopedTypeVariables
       FlexibleContexts
       ConstraintKinds
       DataKinds
@@ -71,6 +77,7 @@ executable tests-exe
       aeson
     , aeson-qq
     , base >=4.7 && <5
+    , bytestring
     , data-default
     , exceptions
     , filepath
@@ -82,4 +89,5 @@ executable tests-exe
     , text
     , unliftio
     , unliftio-core
+    , unordered-containers
   default-language: Haskell2010
