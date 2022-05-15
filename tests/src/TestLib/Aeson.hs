@@ -25,6 +25,20 @@ toSnakeC3 = baseOptions { A.constructorTagModifier = toSnakeAndDropThreeWords }
 toSnakeC4 = baseOptions { A.constructorTagModifier = toSnakeAndDropFourWords }
 toSnakeC5 = baseOptions { A.constructorTagModifier = toSnakeAndDropFiveWords }
 
+toSnakeBoth0, toSnakeBoth1, toSnakeBoth2, toSnakeBoth3, toSnakeBoth4, toSnakeBoth5 :: A.Options
+toSnakeBoth0 = baseOptions { A.fieldLabelModifier = toSnake . dropLeadingUnderscore
+                           , A.constructorTagModifier = toSnake }
+toSnakeBoth1 = baseOptions { A.fieldLabelModifier = toSnakeAndDropFirstWord . dropLeadingUnderscore
+                           , A.constructorTagModifier = toSnakeAndDropFirstWord }
+toSnakeBoth2 = baseOptions { A.fieldLabelModifier = toSnakeAndDropTwoWords . dropLeadingUnderscore
+                           , A.constructorTagModifier = toSnakeAndDropTwoWords }
+toSnakeBoth3 = baseOptions { A.fieldLabelModifier = toSnakeAndDropThreeWords . dropLeadingUnderscore
+                           , A.constructorTagModifier = toSnakeAndDropThreeWords }
+toSnakeBoth4 = baseOptions { A.fieldLabelModifier = toSnakeAndDropFourWords . dropLeadingUnderscore
+                           , A.constructorTagModifier = toSnakeAndDropFourWords }
+toSnakeBoth5 = baseOptions { A.fieldLabelModifier = toSnakeAndDropFiveWords . dropLeadingUnderscore
+                           , A.constructorTagModifier = toSnakeAndDropFiveWords }
+
 dropLeadingUnderscore :: [Char] -> [Char]
 dropLeadingUnderscore ('_':xs) = xs
 dropLeadingUnderscore xs = xs

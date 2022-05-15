@@ -20,6 +20,7 @@ library
   exposed-modules:
       TestLib.Aeson
       TestLib.NixEnvironmentContext
+      TestLib.NixTypes
       TestLib.Types
   other-modules:
       Paths_tests
@@ -34,6 +35,7 @@ library
       DataKinds
       TypeOperators
       LambdaCase
+      RecordWildCards
   build-depends:
       aeson
     , aeson-qq
@@ -69,6 +71,7 @@ executable tests-exe
       DataKinds
       TypeOperators
       LambdaCase
+      RecordWildCards
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-tool-depends:
       sandwich:sandwich-discover

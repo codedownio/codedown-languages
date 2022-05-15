@@ -18,6 +18,7 @@ default-extensions:
 - DataKinds
 - TypeOperators
 - LambdaCase
+- RecordWildCards
 
 dependencies:
 - base >= 4.7 && < 5

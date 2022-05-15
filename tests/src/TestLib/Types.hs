@@ -7,6 +7,8 @@ import Data.Aeson.TH
 import qualified Data.List as L
 import Data.Text
 import TestLib.Aeson
+import TestLib.NixTypes
+
 
 data LockedType = LockedTypeGithub
   deriving (Show)
@@ -23,3 +25,12 @@ deriveJSON ((dropNAndToCamelCaseOptions (L.length ("locked" :: String))) {
                , A.constructorTagModifier = toSnakeAndDropFirstWord
                , A.sumEncoding = A.defaultTaggedObject { A.tagFieldName = "type" }
                }) ''Locked
+
+lockedToNixSrcSpec :: Text -> Locked -> NixSrcSpec
+lockedToNixSrcSpec name (LockedGithub {..}) = NixSrcFetchFromGithub {
+  nixSrcName = name
+  , nixSrcOwner = lockedOwner
+  , nixSrcRepo = lockedRepo
+  , nixSrcRev = lockedRev
+  , nixSrcSha256 = lockedNarHash
+  }

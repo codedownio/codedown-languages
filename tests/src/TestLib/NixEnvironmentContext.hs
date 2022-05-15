@@ -13,16 +13,11 @@ import Data.Text
 import System.FilePath
 import Test.Sandwich
 import TestLib.Aeson
+import TestLib.NixTypes
 import TestLib.Types
 import UnliftIO.Directory
 import UnliftIO.Process
 
-
-nixEnvironment :: Label "nixEnvironment" FilePath
-nixEnvironment = Label
-type HasNixEnvironment context = HasLabel context "nixEnvironment" FilePath
-
-data NixEnvironment = NixEnvironment
 
 introduceNixEnvironment :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m

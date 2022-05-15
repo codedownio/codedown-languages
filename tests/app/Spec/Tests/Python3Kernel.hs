@@ -8,6 +8,7 @@ import Data.String.Interpolate
 import Data.Text
 import Test.Sandwich
 import TestLib.NixEnvironmentContext
+import TestLib.NixTypes
 
 
 python3Environment = undefined
