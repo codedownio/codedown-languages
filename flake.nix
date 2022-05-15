@@ -94,6 +94,8 @@
             #   };
             # };
 
+            codedown = pkgs.callPackage ./codedown.nix {};
+
             environment = callEnvironment ./environment.nix {};
 
             ci = pkgs.callPackage ./ci.nix { inherit checks; };
