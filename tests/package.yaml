@@ -26,9 +26,11 @@ dependencies:
 - aeson-qq
 - bytestring
 - data-default
+- directory
 - exceptions
 - filepath
 - lsp-test
+- monad-control
 - optparse-applicative
 - sandwich
 - string-interpolate

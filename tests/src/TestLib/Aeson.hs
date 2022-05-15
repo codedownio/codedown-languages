@@ -2,7 +2,7 @@
 module TestLib.Aeson where
 
 import Data.Aeson as A
-import Data.Char (isUpper, toLower)
+import Data.Char (isUpper, toLower, toUpper)
 import Data.List as L
 
 
@@ -78,12 +78,29 @@ toSnakeAndDropFourWords = L.drop 1 . L.dropWhile (/= '_') . L.drop 1 . L.dropWhi
 toSnakeAndDropFiveWords :: String -> String
 toSnakeAndDropFiveWords = L.drop 1 . L.dropWhile (/= '_') . L.drop 1 . L.dropWhile (/= '_') . L.drop 1 . L.dropWhile (/= '_') . L.drop 1 . L.dropWhile (/= '_') . L.drop 1 . L.dropWhile (/= '_') . toSnake
 
+-- * Camel case
+
+snakeToCamelCase :: String -> String
+snakeToCamelCase s = case parts of
+  (x:xs) -> x <> concatMap capitalize xs
+  [] -> ""
+  where
+    rawParts = splitR (== '_') s
+
+    parts = case rawParts of
+      (x:xs) -> x : (fmap (L.drop 1) xs)
+      [] -> []
+
+    capitalize :: String -> String
+    capitalize (x:xs) = toUpper x : (fmap toLower xs)
+    capitalize x = x
+
 dropNAndToCamelCaseOptions :: Int -> A.Options
 dropNAndToCamelCaseOptions n = A.defaultOptions { A.fieldLabelModifier = dropNAndCamelCase n }
 
 dropNAndCamelCase :: Int -> String -> String
 dropNAndCamelCase n = lowercaseFirst . L.drop n
-
-lowercaseFirst :: [Char] -> [Char]
-lowercaseFirst (x:xs) = (toLower x) : xs
-lowercaseFirst [] = []
+  where
+    lowercaseFirst :: [Char] -> [Char]
+    lowercaseFirst (x:xs) = (toLower x) : xs
+    lowercaseFirst [] = []

@@ -11,7 +11,18 @@ import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 
 
-python3Environment = undefined
+kernelSpec = NixKernelSpec {
+  nixKernelChannel = "codedown"
+  , nixKernelLanguage = "python3"
+  , nixKernelDisplayName = Just "Python 3"
+  , nixKernelPackages = []
+  , nixKernelLanguageServers = []
+  , nixKernelExtraJupyterConfig = Nothing
+  , nixKernelMeta = Nothing
+  , nixKernelIcon = Nothing
+  , nixKernelSettingsSchema = Nothing
+  , nixKernelSettings = Nothing
+  }
 
 testKernelStdout :: MonadThrow m => Text -> Text -> Text -> SpecFree context m ()
 testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ do
@@ -19,7 +30,7 @@ testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] 
 
 
 tests :: TopSpec
-tests = introduceNixEnvironment python3Environment "Python 3" $ do
+tests = introduceNixEnvironment [kernelSpec] [] "Python 3" $ do
   it "gets the nix env" $ do
     env <- getContext nixEnvironment
     info [i|Got env: #{env}|]

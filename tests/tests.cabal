@@ -20,6 +20,7 @@ library
   exposed-modules:
       TestLib.Aeson
       TestLib.NixEnvironmentContext
+      TestLib.NixRendering
       TestLib.NixTypes
       TestLib.Types
   other-modules:
@@ -42,9 +43,11 @@ library
     , base >=4.7 && <5
     , bytestring
     , data-default
+    , directory
     , exceptions
     , filepath
     , lsp-test
+    , monad-control
     , optparse-applicative
     , sandwich
     , string-interpolate
@@ -81,9 +84,11 @@ executable tests-exe
     , base >=4.7 && <5
     , bytestring
     , data-default
+    , directory
     , exceptions
     , filepath
     , lsp-test
+    , monad-control
     , optparse-applicative
     , sandwich
     , string-interpolate
