@@ -96,6 +96,21 @@
 
             codedown = pkgs.callPackage ./codedown.nix {};
 
+            jupyter-runner = with pkgs; let
+              packages = [
+                coreutils
+                findutils
+                (python38.withPackages (ps: with ps; [jupyter jupyter_client]))
+              ];
+              in
+                writeShellScript "jupyter-runner.sh" ''
+                  set -o errexit
+                  set -o nounset
+                  set -o pipefail
+                  export PATH="${lib.makeBinPath runtimeInputs}"
+
+                '';
+
             environment = callEnvironment ./environment.nix {};
 
             ci = pkgs.callPackage ./ci.nix { inherit checks; };
