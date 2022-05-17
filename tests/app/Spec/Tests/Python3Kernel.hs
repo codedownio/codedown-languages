@@ -6,9 +6,13 @@ import Control.Monad.Catch (MonadMask, MonadThrow)
 import Control.Monad.IO.Unlift
 import Data.String.Interpolate
 import Data.Text
+import qualified Data.Text as T
 import Test.Sandwich
+import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
+import TestLib.Types
+import UnliftIO.Process
 
 
 kernelSpec = NixKernelSpec {
@@ -24,18 +28,14 @@ kernelSpec = NixKernelSpec {
   , nixKernelSettings = Nothing
   }
 
-testKernelStdout :: MonadThrow m => Text -> Text -> Text -> SpecFree context m ()
-testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ do
-  2 `shouldBe` 2
-
 
 tests :: TopSpec
-tests = introduceNixEnvironment [kernelSpec] [] "Python 3" $ do
+tests = introduceNixEnvironment [kernelSpec] [] "Python 3" $ introduceJupyterRunner $ do
   it "gets the nix env" $ do
     env <- getContext nixEnvironment
     info [i|Got env: #{env}|]
 
-  -- testKernelStdout "python" [i|print("hi")|]  "hi"
+  testKernelStdout "python" [i|print("hi")|]  "hi"
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs defaultOptions tests

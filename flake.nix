@@ -97,18 +97,12 @@
             codedown = pkgs.callPackage ./codedown.nix {};
 
             jupyter-runner = with pkgs; let
-              packages = [
-                coreutils
-                findutils
-                (python38.withPackages (ps: with ps; [jupyter jupyter_client]))
-              ];
+              pythonEnv = python38.withPackages (ps: with ps; [jupyter jupyter_client]);
+              packages = [coreutils findutils pythonEnv];
               in
-                writeShellScript "jupyter-runner.sh" ''
-                  set -o errexit
-                  set -o nounset
-                  set -o pipefail
-                  export PATH="${lib.makeBinPath runtimeInputs}"
-
+                runCommand "jupyter" { buildInputs = [makeWrapper]; } ''
+                  makeWrapper ${pythonEnv}/bin/jupyter $out \
+                    --set PATH ${lib.makeBinPath packages}
                 '';
 
             environment = callEnvironment ./environment.nix {};

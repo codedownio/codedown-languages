@@ -72,7 +72,3 @@ data NixEnvironment = NixEnvironment {
   , nixEnvironmentOtherPackages :: [ChannelAndAttr]
   } deriving (Show, Eq, Ord)
 deriveJSON toSnake2 ''NixEnvironment
-
-nixEnvironment :: Label "nixEnvironment" FilePath
-nixEnvironment = Label
-type HasNixEnvironment context = HasLabel context "nixEnvironment" FilePath

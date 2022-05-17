@@ -1,4 +1,3 @@
-{-# LANGUAGE ViewPatterns #-}
 
 module TestLib.NixEnvironmentContext where
 
@@ -19,6 +18,7 @@ import TestLib.Aeson
 import TestLib.NixRendering
 import TestLib.NixTypes
 import TestLib.Types
+import TestLib.Util
 import UnliftIO.Directory
 import UnliftIO.Process
 import UnliftIO.Temporary
@@ -68,13 +68,3 @@ parseNixpkgsSource (HM.lookup "locks" ->
                                     ))
                    ) = Just x
 parseNixpkgsSource _ =  Nothing
-
-findFirstParentMatching :: (MonadIO m, MonadThrow m) => (FilePath -> m Bool) -> m FilePath
-findFirstParentMatching pred = getCurrentDirectory >>= findFirstParentMatching' pred
-
-findFirstParentMatching' :: (MonadIO m, MonadThrow m) => (FilePath -> m Bool) -> FilePath -> m FilePath
-findFirstParentMatching' pred startingAt = pred startingAt >>= \case
-  True -> return startingAt
-  False -> case takeDirectory startingAt of
-    parent | parent /= startingAt -> findFirstParentMatching' pred parent
-    parent -> expectationFailure [i|Couldn't find parent folder (could no longer traverse up at '#{parent}')|]

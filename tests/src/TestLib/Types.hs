@@ -6,6 +6,7 @@ import Data.Aeson as A
 import Data.Aeson.TH
 import qualified Data.List as L
 import Data.Text
+import Test.Sandwich
 import TestLib.Aeson
 import TestLib.NixTypes
 
@@ -34,3 +35,11 @@ lockedToNixSrcSpec name (LockedGithub {..}) = NixSrcFetchFromGithub {
   , nixSrcRev = lockedRev
   , nixSrcSha256 = lockedNarHash
   }
+
+nixEnvironment :: Label "nixEnvironment" FilePath
+nixEnvironment = Label
+type HasNixEnvironment context = HasLabel context "nixEnvironment" FilePath
+
+jupyterRunner :: Label "jupyterRunner" FilePath
+jupyterRunner = Label
+type HasJupyterRunner context = HasLabel context "jupyterRunner" FilePath

@@ -19,6 +19,7 @@ default-extensions:
 - TypeOperators
 - LambdaCase
 - RecordWildCards
+- ViewPatterns
 
 dependencies:
 - base >= 4.7 && < 5
@@ -38,6 +39,7 @@ dependencies:
 - unliftio
 - unliftio-core
 - unordered-containers
+- vector
 
 library:
   source-dirs: src
