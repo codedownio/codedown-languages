@@ -41,7 +41,7 @@ introduceNixEnvironment kernels otherPackages label  = introduceWith [i|#{label}
   let nixEnv = NixEnvironment {
         nixEnvironmentMetaOnly = Nothing
         , nixEnvironmentChannels = [lockedToNixSrcSpec "nixpkgs" nixpkgsLocked]
-        , nixEnvironmentOverlays = []
+        , nixEnvironmentOverlays = [NixSrcPath "codedown" (T.pack rootDir)]
         , nixEnvironmentKernels = kernels
         , nixEnvironmentOtherPackages = otherPackages
         }

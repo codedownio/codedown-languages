@@ -59,13 +59,12 @@ rec {
   # Build tools
   mkCodeDownEnvironment = args@{
     channels
-    , importedChannels
     , overlays
     , kernels ? []
     , otherPackages ? []
     , metaOnly ? false
   }: let
-    builtKernels = map (x: let kernel = (getAttr x.language (getAttr x.channel importedChannels).codedown.languages).build (x.args // { inherit metaOnly; }); in
+    builtKernels = map (x: let kernel = (getAttr x.language languages).build (x.args // { inherit metaOnly; }); in
                            kernel.overrideAttrs (old: {
                              passthru = old.passthru // {
                                language = x.language;

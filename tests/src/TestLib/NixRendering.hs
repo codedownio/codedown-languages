@@ -40,7 +40,7 @@ let
 in
 
 importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
-  inherit channels importedChannels overlays;
+  inherit channels overlays;
 
   metaOnly = #{A.encode $ fromMaybe False nixEnvironmentMetaOnly};
 
