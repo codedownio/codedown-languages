@@ -28,14 +28,9 @@ kernelSpec = NixKernelSpec {
   , nixKernelSettings = Nothing
   }
 
-
 tests :: TopSpec
 tests = introduceNixEnvironment [kernelSpec] [] "Python 3" $ introduceJupyterRunner $ do
-  it "gets the nix env" $ do
-    env <- getContext nixEnvironment
-    info [i|Got env: #{env}|]
-
-  testKernelStdout "python" [i|print("hi")|]  "hi"
+  testKernelStdout "python" [i|print("hi")|] "hi"
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs defaultOptions tests
