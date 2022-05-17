@@ -6,9 +6,6 @@ import qualified Spec.Tests as Tests
 
 tests :: TopSpec
 tests = describe "Initial test" $ do
-  it "tests addition" $ do
-    2 `shouldBe` 2
-
   Tests.tests
 
 

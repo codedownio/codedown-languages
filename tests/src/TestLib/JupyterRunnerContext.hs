@@ -43,8 +43,22 @@ introduceJupyterRunner = introduceWith [i|Jupyter runner|] jupyterRunner $ \acti
 parseJson ((flip (V.!?) 0) -> Just (A.Object (HM.lookup "outputs" -> Just (A.Object (HM.lookup "out" -> Just (A.String t)))))) = Just t
 parseJson _ = Nothing
 
-testKernelStdout :: (HasJupyterRunner context, MonadIO m, MonadThrow m) => Text -> Text -> Text -> SpecFree context m ()
+testKernelStdout :: (
+  HasJupyterRunner context
+  , HasNixEnvironment context
+  , MonadIO m
+  , MonadThrow m
+  ) => Text -> Text -> Text -> SpecFree context m ()
 testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ do
+  nixEnv <- getContext nixEnvironment
+  let jupyterPath = nixEnv </> "lib" </> "codedown"
+  debug [i|Got jupyterPath: #{jupyterPath}|]
+
   jr <- getContext jupyterRunner
-  (T.pack <$> readCreateProcess (proc jr ["run", "--kernel", T.unpack kernel]) (T.unpack code))
+  debug [i|Got jupyterRunner: #{jr}|]
+
+  let cp = (proc jr ["run", "--kernel", T.unpack kernel]) {
+        env = Just [("JUPYTER_PATH", jupyterPath)]
+        }
+  (T.pack <$> readCreateProcess cp (T.unpack code))
     >>= (`shouldBe` desired)
