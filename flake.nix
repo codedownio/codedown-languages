@@ -97,11 +97,11 @@
             codedown = pkgs.callPackage ./codedown.nix {};
 
             jupyter-runner = with pkgs; let
-              pythonEnv = python38.withPackages (ps: with ps; [jupyter jupyter_client]);
+              pythonEnv = python38.withPackages (ps: with ps; [papermill]);
               packages = [coreutils findutils pythonEnv];
               in
-                runCommand "jupyter" { buildInputs = [makeWrapper]; } ''
-                  makeWrapper ${pythonEnv}/bin/jupyter $out \
+                runCommand "papermill" { buildInputs = [makeWrapper]; } ''
+                  makeWrapper ${pythonEnv}/bin/papermill $out \
                     --set PATH ${lib.makeBinPath packages}
                 '';
 

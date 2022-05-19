@@ -51,6 +51,7 @@ library
     , filepath
     , lsp-test
     , monad-control
+    , monad-logger
     , optparse-applicative
     , sandwich
     , string-interpolate
@@ -94,6 +95,7 @@ executable tests-exe
     , filepath
     , lsp-test
     , monad-control
+    , monad-logger
     , optparse-applicative
     , sandwich
     , string-interpolate

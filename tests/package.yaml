@@ -32,6 +32,7 @@ dependencies:
 - filepath
 - lsp-test
 - monad-control
+- monad-logger
 - optparse-applicative
 - sandwich
 - string-interpolate
