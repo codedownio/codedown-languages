@@ -66,12 +66,14 @@ testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] 
   Just folder <- getCurrentFolder
   let runDir = folder </> "run"
   let notebook = runDir </> "notebook.ipynb"
+  let outFile = runDir </> "out.txt"
+  let errFile = runDir </> "err.txt"
   createDirectoryIfMissing True runDir
   liftIO $ BL.writeFile notebook (A.encode (notebookWithCode kernel code))
 
   let cp = (proc jr ["notebook.ipynb", "out.ipynb"
-                    , "--stdout-file", runDir </> "out.txt"
-                    , "--stderr-file", runDir </> "err.txt"
+                    , "--stdout-file", outFile
+                    , "--stderr-file", errFile
                     , "-k", T.unpack kernel
                     ]) {
         env = Just [("JUPYTER_PATH", jupyterPath)]
@@ -79,7 +81,9 @@ testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] 
         }
   createProcessWithLogging cp >>= waitForProcess >>= (`shouldBe` ExitSuccess)
 
-  liftIO (T.readFile (runDir </> "out.txt")) >>= (`shouldBe` desired)
+  doesFileExist outFile >>= \case
+    True -> liftIO (T.readFile outFile) >>= (`shouldBe` desired)
+    False -> "" `shouldBe` desired
 
 notebookWithCode kernel code = A.object [
   ("nbformat", A.Number 4)
