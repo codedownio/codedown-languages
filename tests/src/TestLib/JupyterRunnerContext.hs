@@ -34,14 +34,12 @@ introduceJupyterRunner :: (
 introduceJupyterRunner = introduceWith [i|Jupyter runner|] jupyterRunner $ \action -> do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
-  let cp = ((proc "nix" ["build", ".#jupyter-runner", "--json"]) { cwd = Just rootDir })
-  jupyterRunnerRaw :: A.Array <- ((A.eitherDecode . BL.pack) <$>) (readCreateProcess cp "") >>= \case
-    Left err -> expectationFailure [i|Failed to parse build JSON: #{err}|]
-    Right x -> return x
+  Just currentDir <- getCurrentFolder
+  let runnerPath = currentDir </> "jupyter-runner"
 
-  case parseJson jupyterRunnerRaw of
-    Nothing -> expectationFailure [i|Couldn't parse build path|]
-    Just path -> void $ action $ T.unpack path
+  let cp = ((proc "nix" ["build", ".#jupyter-runner", "-o", runnerPath]) { cwd = Just rootDir })
+  createProcessWithLogging cp >>= waitForProcess >>= (`shouldBe` ExitSuccess)
+  void $ action runnerPath
 
 parseJson ((flip (V.!?) 0) -> Just (A.Object (HM.lookup "outputs" -> Just (A.Object (HM.lookup "out" -> Just (A.String t)))))) = Just t
 parseJson _ = Nothing
