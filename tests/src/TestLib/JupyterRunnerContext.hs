@@ -9,6 +9,7 @@ import Control.Monad.Trans.Control (MonadBaseControl)
 import qualified Data.Aeson as A
 import Data.ByteString.Lazy.Char8 as BL
 import qualified Data.HashMap.Strict as HM
+import qualified Data.List as L
 import Data.String.Interpolate
 import Data.Text as T
 import Data.Text.IO as T
@@ -105,7 +106,11 @@ notebookWithCode kernel code = A.object [
                   ("cell_type", A.String "code")
                   , ("metadata", A.object [])
                   , ("execution_count", A.Null)
-                  , ("source", A.Array (V.fromList [A.String x | x <- (T.splitOn "\n" code)]))
+                  , ("source", A.Array (V.fromList (fmap A.String lines)))
                   , ("outputs", A.Array [])
                   ]])
   ]
+
+  where
+    rawLines = T.splitOn "\n" code
+    lines = [x <> "\n" | x <- L.init rawLines] <> [L.last rawLines]

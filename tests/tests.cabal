@@ -69,6 +69,8 @@ executable tests-exe
   other-modules:
       Spec.Tests
       Spec.Tests.Bash
+      Spec.Tests.Cpp
+      Spec.Tests.Julia
       Spec.Tests.Python3
       Paths_tests
   hs-source-dirs:
