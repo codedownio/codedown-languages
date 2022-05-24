@@ -88,6 +88,7 @@ listToAttrs (map (x:
         ]
         ++ (if metaOnly then [] else [
           rustPackages.rustc rustPackages.cargo pkgs.gcc
+          (map (y: builtins.getAttr y (allLanguageServerOptions rust x)) languageServers)
         ]);
         passthru = {
           args = args // { baseName = x; };
