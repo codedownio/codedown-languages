@@ -37,7 +37,7 @@ kernelSpec = NixKernelSpec {
   }
 
 tests :: TopSpec
-tests = introduceNixEnvironment [kernelSpec] [] "Python 3" $ introduceJupyterRunner $ do
+tests = describe "Python 3" $ introduceNixEnvironment [kernelSpec] [] "Python 3" $ introduceJupyterRunner $ do
   testKernelStdout "python3" [i|print("hi")|] "hi\n"
   testKernelStdout "python3" [i|print(42)|] "42\n"
 

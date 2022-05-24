@@ -5,8 +5,7 @@ import Test.Sandwich
 import qualified Spec.Tests as Tests
 
 tests :: TopSpec
-tests = describe "Initial test" $ do
-  Tests.tests
+tests = Tests.tests
 
 
 main :: IO ()

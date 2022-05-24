@@ -20,6 +20,7 @@ import TestLib.NixTypes
 import TestLib.Types
 import TestLib.Util
 import UnliftIO.Directory
+import UnliftIO.IO
 import UnliftIO.Process
 import UnliftIO.Temporary
 
@@ -30,9 +31,15 @@ introduceNixEnvironment :: (
 introduceNixEnvironment kernels otherPackages label  = introduceWith [i|#{label} Nix environment|] nixEnvironment $ \action -> do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
-  metadata :: A.Object <- ((A.eitherDecode . BL.pack) <$>) (readCreateProcess ((proc "nix" ["flake", "metadata", "--json"]) { cwd = Just rootDir }) "") >>= \case
-    Left err -> expectationFailure [i|Failed to parse flake metadata: #{err}|]
-    Right x -> return x
+  metadata :: A.Object <- withFile "/dev/null" WriteMode $ \devNullHandle -> do
+    let cp = (proc "nix" ["flake", "metadata", "--json"]) {
+          cwd = Just rootDir
+          , std_err = UseHandle devNullHandle
+          }
+
+    (A.eitherDecode . BL.pack) <$> (readCreateProcess cp "") >>= \case
+      Left err -> expectationFailure [i|Failed to parse flake metadata: #{err}|]
+      Right x -> return x
 
   nixpkgsLocked <- case parseNixpkgsSource metadata of
     Nothing -> expectationFailure [i|Couldn't find nixpkgs lock info|]
