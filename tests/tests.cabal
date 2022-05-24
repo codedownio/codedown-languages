@@ -69,6 +69,7 @@ executable tests-exe
   other-modules:
       Spec.Tests
       Spec.Tests.Bash
+      Spec.Tests.Clojure
       Spec.Tests.Cpp
       Spec.Tests.Julia
       Spec.Tests.Python3
