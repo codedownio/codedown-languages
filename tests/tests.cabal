@@ -68,6 +68,7 @@ executable tests-exe
   main-is: Main.hs
   other-modules:
       Spec.Tests
+      Spec.Tests.Bash
       Spec.Tests.Python3
       Paths_tests
   hs-source-dirs:
