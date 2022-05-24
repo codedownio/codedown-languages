@@ -63,6 +63,7 @@ rec {
     , kernels ? []
     , otherPackages ? []
     , metaOnly ? false
+    , ...
   }: let
     builtKernels = map (x: let kernel = (getAttr x.language languages).build (x.args // { inherit metaOnly; }); in
                            kernel.overrideAttrs (old: {

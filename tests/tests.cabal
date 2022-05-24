@@ -72,7 +72,10 @@ executable tests-exe
       Spec.Tests.Clojure
       Spec.Tests.Cpp
       Spec.Tests.Julia
+      Spec.Tests.Octave
       Spec.Tests.Python3
+      Spec.Tests.R
+      Spec.Tests.Rust
       Paths_tests
   hs-source-dirs:
       app

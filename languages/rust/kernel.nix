@@ -1,6 +1,8 @@
 { callPackage
 , evcxr
 , attrs
+, extensions
+, metaOnly ? false
 }:
 
 let
@@ -8,7 +10,7 @@ let
 
 in
 
-common.makeJupyterKernel {
+common.makeJupyterKernelInner metaOnly {
   rust = {
     displayName = "Rust";
     argv = [
@@ -21,7 +23,7 @@ common.makeJupyterKernel {
     logo64 = ./logo-64x64.png;
     metadata = {
       codedown = {
-        inherit attrs;
+        inherit attrs extensions;
         priority = 1;
       };
     };

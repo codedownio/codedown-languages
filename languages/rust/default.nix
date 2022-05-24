@@ -10,6 +10,10 @@ with pkgs.lib;
 let
   common = callPackage ../common.nix {};
 
+  allLanguageServerOptions = rust: kernelName: {
+    rust-analyzer = callPackage ./language_server_rust_analyzer/config.nix { inherit rust kernelName; };
+  };
+
   baseCandidates = [
     "rust_1_40"
     "rust_1_41"
@@ -60,14 +64,15 @@ listToAttrs (map (x:
       packageOptions = rustPackages;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = {};
+      languageServerOptions = allLanguageServerOptions rust "rust";
       languageServerSearch = common.searcher languageServerOptions;
 
       build = args@{
         packages ? []
         , languageServers ? []
         , attrs ? ["rust"]
-        , extensions ? ["rs" "rc"]
+        , extensions ? ["rs" "rlib"]
+        , metaOnly ? false
       }: symlinkJoin {
         name = "rust";
         paths = [
@@ -80,11 +85,10 @@ listToAttrs (map (x:
           })
 
           (callPackage ./mode_info.nix { inherit attrs extensions; })
-
+        ]
+        ++ (if metaOnly then [] else [
           rustPackages.rustc rustPackages.cargo pkgs.gcc
-
-          modeInfo
-        ];
+        ]);
         passthru = {
           args = args // { baseName = x; };
           inherit meta packageOptions languageServerOptions;
