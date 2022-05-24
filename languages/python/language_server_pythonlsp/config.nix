@@ -52,8 +52,8 @@ common.writeTextDirWithMeta python.pkgs.python-lsp-server.meta "lib/codedown/pyt
     notebook_suffix = ".py";
     kernel_name = kernelName;
     attrs = ["python"];
-    type = "tcp";
-    args = ["${pythonEnv}/bin/python" "-m" "pylsp" "--tcp" "--host=localhost" "--port={port_number}"];
+    type = "stream";
+    args = ["${pythonEnv}/bin/python" "-m" "pylsp"];
     initialization_options = {
       pylsp = {
         plugins = {

@@ -9,15 +9,17 @@ import Data.Aeson as A
 import Data.Aeson.QQ
 import Data.Default
 import Data.String.Interpolate
-import Data.Text
-import qualified Data.Text as T
+import qualified Data.Text as T hiding (filter)
+import Data.Text hiding (filter)
 import Language.LSP.Test
 import System.FilePath
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
+import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.Types
+import UnliftIO.Directory
 import UnliftIO.Process
 
 
@@ -26,7 +28,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelLanguage = "python3"
   , nixKernelDisplayName = Just "Python 3"
   , nixKernelPackages = [nameOnly "tensorflow"]
-  , nixKernelLanguageServers = [nameOnly "python-lsp-server"]
+  , nixKernelLanguageServers = [nameOnly "python-language-server"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
@@ -41,33 +43,8 @@ tests = introduceNixEnvironment [kernelSpec] [] "Python 3" $ introduceJupyterRun
 
   testKernelStdout "python3" [i|import tensorflow|] ""
 
-  testDiagnostics "python3" [i|import tensorflow|] []
+  testDiagnostics "python-language-server" "test.py" [i|\n\n\nfoo = 42|] []
 
-config :: Value
-config = [aesonQQ|{pylsp: {plugins: {pycodestyle: {ignore: ["E303", "E402"]}}}}|]
-
-testDiagnostics :: (
-  HasJupyterRunner context
-  , HasNixEnvironment context
-  , HasBaseContext context
-  , MonadIO m
-  , MonadBaseControl IO m
-  , MonadUnliftIO m
-  , MonadThrow m
-  ) => Text -> Text -> [()] -> SpecFree context m ()
-testDiagnostics kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ do
-  Just dataDir <- getCurrentFolder
-
-  envPath <- (</> "lib" </> "codedown") <$> getContext nixEnvironment
-
-  lspCommand <- undefined
-
-  withRunInIO $ \runInIO -> do
-    runSessionWithConfig (def { lspConfig = Just config }) lspCommand fullCaps dataDir $ do
-      openDoc "test.py" "python3"
-      diagnostics <- waitForDiagnostics
-      liftIO $ runInIO $ info [i|Got diagnostics: #{diagnostics}|]
-    -- diagnostics `shouldBe` desired
 
 
 main :: IO ()

@@ -45,15 +45,15 @@ in
 
 common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedown/python-palantir-language-servers.yaml"
   (lib.generators.toYAML {} [{
-    name = "pyls";
+    name = "python-language-server";
     display_name = "Python Language Server";
     description = python.pkgs.python-language-server.meta.description;
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;
     attrs = ["python"];
-    type = "tcp";
-    args = ["${pythonEnv}/bin/python" "-m" "pyls" "--tcp" "--host=localhost" "--port={port_number}"];
+    type = "stream";
+    args = ["${pythonEnv}/bin/python" "-m" "pyls"];
     initialization_options = {
       pylsp = {
         plugins = {
