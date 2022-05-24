@@ -1,26 +1,12 @@
 
 module Spec.Tests.Python3 (tests) where
 
-import Control.Monad
-import Control.Monad.Catch (MonadMask, MonadThrow)
-import Control.Monad.IO.Unlift
-import Control.Monad.Trans.Control (MonadBaseControl)
-import Data.Aeson as A
-import Data.Aeson.QQ
-import Data.Default
 import Data.String.Interpolate
-import qualified Data.Text as T hiding (filter)
-import Data.Text hiding (filter)
-import Language.LSP.Test
-import System.FilePath
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
-import TestLib.Types
-import UnliftIO.Directory
-import UnliftIO.Process
 
 
 kernelSpec = NixKernelSpec {
