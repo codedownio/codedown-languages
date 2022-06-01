@@ -1,7 +1,10 @@
 
 module Spec.Tests.Python3 (tests) where
 
+import Control.Lens
 import Data.String.Interpolate
+import Language.LSP.Types
+import Language.LSP.Types.Lens
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -29,9 +32,11 @@ tests = describe "Python 3" $ introduceNixEnvironment [kernelSpec] [] "Python 3"
 
   testKernelStdout "python3" [i|import tensorflow|] ""
 
-  testDiagnostics "python-language-server" "test.py" [i|\n\n\nfoo = 42|] []
+  testDiagnostics "python-language-server" "test.py" [i|\n\n\nfoo = 42|] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics []
 
-
+    -- (Range (Position 3 8) (Position 3 8), Just (InR "W292"))
+    -- (Range (Position 3 0) (Position 3 8), Just (InR "E303"))
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests

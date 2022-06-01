@@ -2,6 +2,7 @@
 
 module TestLib.LSP where
 
+import Control.Lens
 import Control.Monad
 import Control.Monad.Catch (MonadThrow)
 import Control.Monad.IO.Unlift
@@ -17,6 +18,8 @@ import qualified Data.Text as T hiding (filter)
 import Data.Text hiding (filter)
 import qualified Data.Text.IO as T
 import Language.LSP.Test
+import Language.LSP.Types
+import Language.LSP.Types.Lens
 import System.FilePath
 import Test.Sandwich as Sandwich
 import TestLib.Aeson
@@ -58,8 +61,8 @@ testDiagnostics :: (
   , MonadBaseControl IO m
   , MonadUnliftIO m
   , MonadThrow m
-  ) => Text -> FilePath -> Text -> [()] -> SpecFree context m ()
-testDiagnostics name filename code desired = it [i|#{name}: #{show code}|] $ do
+  ) => Text -> FilePath -> Text -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
+testDiagnostics name filename code cb = it [i|#{name}: #{show code}|] $ do
   Just currentFolder <- getCurrentFolder
 
   envPath <- (</> "lib" </> "codedown") <$> getContext nixEnvironment
@@ -74,11 +77,12 @@ testDiagnostics name filename code desired = it [i|#{name}: #{show code}|] $ do
   config <- case L.find (\x -> lspConfigName x == name) lspConfigs of
     Nothing -> expectationFailure [i|Couldn't find LSP config: #{name}. Had: #{fmap lspConfigName lspConfigs}|]
     Just x -> return x
+  info [i|LSP config: #{config}|]
 
   let lspCommand = T.unpack $ T.unwords (lspConfigArgs config)
   info [i|LSP command: #{lspCommand}|]
 
-  withTempDirectory currentFolder (T.unpack name) $ \dataDir -> do
+  diagnostics <- withTempDirectory currentFolder (T.unpack name) $ \dataDir -> do
     liftIO $ T.writeFile (dataDir </> filename) code
 
     withRunInIO $ \runInIO -> do
@@ -86,4 +90,13 @@ testDiagnostics name filename code desired = it [i|#{name}: #{show code}|] $ do
         openDoc filename "python3"
         diagnostics <- waitForDiagnostics
         liftIO $ runInIO $ info [i|Got diagnostics: #{A.encode diagnostics}|]
-      -- diagnostics `shouldBe` desired
+        return diagnostics
+
+  cb diagnostics
+
+
+
+assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT context m ()
+assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
+  where
+    ranges = fmap (\x -> (x ^. range, x ^. code)) diagnostics

@@ -31,7 +31,9 @@ dependencies:
 - directory
 - exceptions
 - filepath
+- lens
 - lsp-test
+- lsp-types
 - monad-control
 - monad-logger
 - optparse-applicative

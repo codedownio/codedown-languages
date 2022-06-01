@@ -51,7 +51,9 @@ library
     , directory
     , exceptions
     , filepath
+    , lens
     , lsp-test
+    , lsp-types
     , monad-control
     , monad-logger
     , optparse-applicative
@@ -104,7 +106,9 @@ executable tests-exe
     , directory
     , exceptions
     , filepath
+    , lens
     , lsp-test
+    , lsp-types
     , monad-control
     , monad-logger
     , optparse-applicative

@@ -1,8 +1,8 @@
 { mkDerivation, aeson, aeson-qq, base, bytestring, containers
-, data-default, directory, exceptions, filepath, hpack, lib
-, lsp-test, monad-control, monad-logger, optparse-applicative
-, sandwich, string-interpolate, text, unliftio, unliftio-core
-, unordered-containers, vector
+, data-default, directory, exceptions, filepath, hpack, lens, lib
+, lsp-test, lsp-types, monad-control, monad-logger
+, optparse-applicative, sandwich, string-interpolate, text
+, unliftio, unliftio-core, unordered-containers, vector
 }:
 mkDerivation {
   pname = "tests";
@@ -12,16 +12,16 @@ mkDerivation {
   isExecutable = true;
   libraryHaskellDepends = [
     aeson aeson-qq base bytestring containers data-default directory
-    exceptions filepath lsp-test monad-control monad-logger
-    optparse-applicative sandwich string-interpolate text unliftio
-    unliftio-core unordered-containers vector
+    exceptions filepath lens lsp-test lsp-types monad-control
+    monad-logger optparse-applicative sandwich string-interpolate text
+    unliftio unliftio-core unordered-containers vector
   ];
   libraryToolDepends = [ hpack ];
   executableHaskellDepends = [
     aeson aeson-qq base bytestring containers data-default directory
-    exceptions filepath lsp-test monad-control monad-logger
-    optparse-applicative sandwich string-interpolate text unliftio
-    unliftio-core unordered-containers vector
+    exceptions filepath lens lsp-test lsp-types monad-control
+    monad-logger optparse-applicative sandwich string-interpolate text
+    unliftio unliftio-core unordered-containers vector
   ];
   executableToolDepends = [ sandwich ];
   prePatch = "hpack";
