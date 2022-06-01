@@ -77,7 +77,7 @@ testDiagnostics name filename code cb = it [i|#{name}: #{show code}|] $ do
   config <- case L.find (\x -> lspConfigName x == name) lspConfigs of
     Nothing -> expectationFailure [i|Couldn't find LSP config: #{name}. Had: #{fmap lspConfigName lspConfigs}|]
     Just x -> return x
-  info [i|LSP config: #{config}|]
+  info [i|LSP config: #{A.encode config}|]
 
   let lspCommand = T.unpack $ T.unwords (lspConfigArgs config)
   info [i|LSP command: #{lspCommand}|]
@@ -85,8 +85,13 @@ testDiagnostics name filename code cb = it [i|#{name}: #{show code}|] $ do
   diagnostics <- withTempDirectory currentFolder (T.unpack name) $ \dataDir -> do
     liftIO $ T.writeFile (dataDir </> filename) code
 
+    let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
+                            -- , logStdErr = True
+                            -- , logMessages = True
+                            }
+
     withRunInIO $ \runInIO -> do
-      runSessionWithConfig (def {lspConfig = lspConfigInitializationOptions config}) lspCommand fullCaps dataDir $ do
+      runSessionWithConfig sessionConfig lspCommand fullCaps dataDir $ do
         openDoc filename "python3"
         diagnostics <- waitForDiagnostics
         liftIO $ runInIO $ info [i|Got diagnostics: #{A.encode diagnostics}|]
