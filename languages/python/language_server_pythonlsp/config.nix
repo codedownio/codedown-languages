@@ -54,11 +54,5 @@ common.writeTextDirWithMeta python.pkgs.python-lsp-server.meta "lib/codedown/pyt
     attrs = ["python"];
     type = "stream";
     args = ["${pythonEnv}/bin/python" "-m" "pylsp"];
-    initialization_options = {
-      pylsp = {
-        plugins = {
-          pycodestyle = { ignore = ["E303" "E402"]; };
-        };
-      };
-    };
+    initialization_options = import ../pylsp_initialization_options.nix;
   }])
