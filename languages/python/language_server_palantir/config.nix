@@ -54,5 +54,5 @@ common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedow
     attrs = ["python"];
     type = "stream";
     args = ["${pythonEnv}/bin/python" "-m" "pyls"];
-    initialization_options = import ../pylsp_initialization_options.nix;
+    initialization_options = import ../pylsp_initialization_options.nix "pyls";
   }])

@@ -54,5 +54,5 @@ common.writeTextDirWithMeta python.pkgs.python-lsp-server.meta "lib/codedown/pyt
     attrs = ["python"];
     type = "stream";
     args = ["${pythonEnv}/bin/python" "-m" "pylsp"];
-    initialization_options = import ../pylsp_initialization_options.nix;
+    initialization_options = import ../pylsp_initialization_options.nix "pylsp";
   }])

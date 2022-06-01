@@ -17,7 +17,9 @@ kernelSpec = NixKernelSpec {
   , nixKernelLanguage = "python3"
   , nixKernelDisplayName = Just "Python 3"
   , nixKernelPackages = [nameOnly "tensorflow"]
-  , nixKernelLanguageServers = [nameOnly "python-language-server"]
+  , nixKernelLanguageServers = [nameOnly "python-language-server"
+                               -- , nameOnly "python-lsp-server"
+                               ]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
@@ -34,6 +36,10 @@ tests = describe "Python 3" $ introduceNixEnvironment [kernelSpec] [] "Python 3"
 
   testDiagnostics "python-language-server" "test.py" [i|\n\n\nfoo = 42|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
+
+  -- TODO: get on a later Nix snapshot where python-lsp-server works
+  -- testDiagnostics "python-lsp-server" "test.py" [i|\n\n\nfoo = 42|] $ \diagnostics -> do
+  --   assertDiagnosticRanges diagnostics []
 
     -- (Range (Position 3 8) (Position 3 8), Just (InR "W292"))
     -- (Range (Position 3 0) (Position 3 8), Just (InR "E303"))
