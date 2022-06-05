@@ -60,7 +60,7 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
     ({
       channel = "nixpkgs";
       # language = "haskell-ghc8107";
-      language = "haskell-ghc902";
+      language = "haskell-ghc8107";
       args = {
         packages = ["aeson" "aeson-typescript"];
         languageServers = ["haskell-language-server"];
@@ -76,24 +76,24 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       };
     })
 
-    ({
-      channel = "nixpkgs-unstable";
-      language = "octave";
-      args = {
-        packages = ["arduino"];
-        languageServers = [];
-        extraJupyterConfig = ''
-          c.OctaveKernel.plot_settings = dict(format='svg')
-        '';
-      };
-    })
+    # ({
+    #   channel = "nixpkgs-unstable";
+    #   language = "octave";
+    #   args = {
+    #     packages = ["arduino"];
+    #     languageServers = [];
+    #     extraJupyterConfig = ''
+    #       c.OctaveKernel.plot_settings = dict(format='svg')
+    #     '';
+    #   };
+    # })
 
     ({
       channel = "nixpkgs-unstable";
       language = "python38";
       args = {
         packages = ["matplotlib" "scipy" "rope"];
-        languageServers = ["jedi" "pyright" "pylint" "flake8" "pycodestyle" "microsoft" "python-lsp-server" "python-language-server"];
+        languageServers = ["jedi" "pyright" "pylint" "flake8" "pycodestyle" "microsoft" "python-language-server"];
         settings = {
           permitUserSite = false;
         };
@@ -121,14 +121,14 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
     #   };
     # })
 
-    # ({
-    #   channel = "nixpkgs-unstable";
-    #   language = "rust_1_51";
-    #   args = {
-    #     packages = [];
-    #     languageServers = [];
-    #   };
-    # })
+    ({
+      channel = "nixpkgs-unstable";
+      language = "rust_1_52";
+      args = {
+        packages = [];
+        languageServers = ["rust-analyzer"];
+      };
+    })
   ];
 
   otherPackages = [

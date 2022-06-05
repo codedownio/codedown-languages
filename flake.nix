@@ -17,12 +17,9 @@
       let
         baseNixpkgs = import nixpkgs { inherit system; };
         overlays = [
-          haskellNixSrc.outputs.overlay (import ./default_old.nix)
-          (self: super: {
-            ihaskell-884 = ihaskell.ihaskell-884;
-            ihaskell-8107 = ihaskell.ihaskell-8107;
-            ihaskell-902 = ihaskell.ihaskell-902;
-            ihaskell-921 = ihaskell.ihaskell-921;
+          haskellNixSrc.outputs.overlay (final: prev: {
+            inherit (pkgs.lib.getAttr system ihaskell.packages) ihaskell-884 ihaskell-8107 ihaskell-902 ihaskell-921;
+            codedown = final.callPackage ./codedown.nix {};
           })
         ];
 
@@ -40,6 +37,7 @@
               sha256 = inputs.${x}.narHash;
             };
           }) ["nixpkgs" "nixpkgs-unstable"]);
+
           # importedChannels = pkgs.lib.listToAttrs (map (x: {
           #   name = x;
           #   value = import inputs.${x} { inherit system overlays; };
@@ -81,30 +79,7 @@
 
             haskellCompilers = pkgs.callPackage ./languages/haskell/generate.nix {};
 
-            # codedown = pkgs.codedown;
-
-            # default = import ./shell.nix { inherit pkgs environment; };
-            # devShell = import ./shell.nix { inherit pkgs environment; };
-
-            # haskellNix = pkgs.haskell-nix;
-
-            # pkgsTest = pkgs;
-            # test = pkgs.callPackage ./languages/haskell {};
-            # generateHaskell = pkgs.callPackage ./languages/haskell/generate.nix {};
-            # ps = pkgs.codedown.languages."haskell-stackage-lts-18.27".packageSearch;
-            # ps2 = pkgs.codedown.languages.python3.packageSearch;
-            # haskellTest = with pkgs; callPackage ./languages/haskell/kernel.nix {
-            #   attrs = ["haskell"];
-            #   extensions = ["hs"];
-            #   displayName = "Haskell Test";
-            #   snapshot = pkgs.haskell-nix."lts-18.6";
-            #   ihaskell = callPackage ./languages/haskell/ihaskell.nix {
-            #     compiler = pkgs.haskell.packages.ghc8104;
-            #     packages = ["aeson"];
-            #   };
-            # };
-
-            codedown = pkgs.callPackage ./codedown.nix {};
+            codedown = pkgs.codedown;
 
             jupyter-runner = with pkgs; let
               pythonEnv = python38.withPackages (ps: with ps; [papermill]);
@@ -118,8 +93,6 @@
             environment = callEnvironment ./environment.nix {};
 
             ci = pkgs.callPackage ./ci.nix { inherit checks; };
-
-            ihaskell-test = ihaskell.defaultPackage;
           };
         }
     );
