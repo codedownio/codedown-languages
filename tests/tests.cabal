@@ -20,6 +20,7 @@ library
   exposed-modules:
       TestLib.Aeson
       TestLib.JupyterRunnerContext
+      TestLib.Lang.HaskellCommon
       TestLib.LSP
       TestLib.NixEnvironmentContext
       TestLib.NixRendering
@@ -73,7 +74,8 @@ executable tests-exe
       Spec.Tests.Bash
       Spec.Tests.Clojure
       Spec.Tests.Cpp
-      Spec.Tests.Haskell
+      Spec.Tests.Haskell810
+      Spec.Tests.Haskell92
       Spec.Tests.Julia
       Spec.Tests.Octave
       Spec.Tests.Python3

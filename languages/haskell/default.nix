@@ -3,6 +3,7 @@
 , stdenv
 , symlinkJoin
 , makeWrapper
+, pkgs
 
 , haskell
 , haskell-language-server
@@ -104,10 +105,12 @@ listToAttrs (mapAttrsToList (compilerName: snapshotName:
           paths = [
             (callPackage ./kernel.nix {
               inherit displayName attrs extensions metaOnly snapshot;
+
               # ihaskell = ghc;
-              ihaskell = callPackage ./ihaskell.nix {
-                inherit packages snapshot;
-              };
+              # ihaskell = callPackage ./ihaskell.nix {
+              #   inherit packages snapshot;
+              # };
+              ihaskell = pkgs.ihaskell-921;
 
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })

@@ -7,14 +7,24 @@
   # When updating this, make sure to run ./update.sh to generate the new compiler set!
   inputs.haskellNixSrc.url = "github:input-output-hk/haskell.nix/f3ea06dcacc8a46b4a207a6a1fad14bc5ea41b19";
 
+  inputs.ihaskell.url = "github:IHaskell/IHaskell/10c93054debd329a22872c93df21ece5165d74ab";
+
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, haskellNixSrc, flake-utils }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, haskellNixSrc, ihaskell, flake-utils }@inputs:
     # flake-utils.lib.eachDefaultSystem (system:
     flake-utils.lib.eachSystem ["x86_64-linux"] (system:
       let
         baseNixpkgs = import nixpkgs { inherit system; };
-        overlays = [ haskellNixSrc.outputs.overlay (import ./default_old.nix) ];
+        overlays = [
+          haskellNixSrc.outputs.overlay (import ./default_old.nix)
+          (self: super: {
+            ihaskell-884 = ihaskell.ihaskell-884;
+            ihaskell-8107 = ihaskell.ihaskell-8107;
+            ihaskell-902 = ihaskell.ihaskell-902;
+            ihaskell-921 = ihaskell.ihaskell-921;
+          })
+        ];
 
         pkgs = import nixpkgs { inherit system overlays; };
         pkgsUnstable = import nixpkgs-unstable { inherit system overlays; };
@@ -108,6 +118,8 @@
             environment = callEnvironment ./environment.nix {};
 
             ci = pkgs.callPackage ./ci.nix { inherit checks; };
+
+            ihaskell-test = ihaskell.defaultPackage;
           };
         }
     );
