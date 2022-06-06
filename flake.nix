@@ -24,56 +24,15 @@
         pkgs = import nixpkgs { inherit system overlays; };
         pkgsUnstable = import nixpkgs-unstable { inherit system overlays; };
 
-        callEnvironment = path: args: pkgs.callPackage path (rec {
-          channels = (pkgs.lib.listToAttrs (map (x: {
-            name = x;
-            value = {
-              tag = "fetch_from_github";
-              owner = "NixOS";
-              repo = "nixpkgs";
-              rev = inputs.${x}.rev;
-              sha256 = inputs.${x}.narHash;
-            };
-          }) ["nixpkgs" "nixpkgs-unstable"])) // {
-            codedown = {
-              tag = "path";
-              path = ./default_old.nix;
-            };
-          };
-
-          # importedChannels = pkgs.lib.listToAttrs (map (x: {
-          #   name = x;
-          #   value = import inputs.${x} { inherit system overlays; };
-          # }) ["nixpkgs" "nixpkgs-unstable"]);
-          importedChannels = {
-            nixpkgs = pkgs;
-            nixpkgs-unstable = pkgsUnstable;
-            codedown = pkgs.callPackage ./codedown.nix {};
-          };
-
-          overlays = {};
-          importedOverlays = pkgs.lib.mapAttrsToList (name: value: import (channelSpecToChannel name value)) overlays;
-        } // args);
-
         channelSpecToChannel = name: channel:
           if (channel.tag == "fetch_from_github") then pkgs.fetchFromGitHub ((removeAttrs channel ["tag" "name"]))
           else if (channel.tag == "fetch_git") then pkgs.fetchgit (removeAttrs channel ["tag" "name"])
           else if (channel.tag == "path") then channel.path else null;
+
+        callEnvironment = (pkgs.callPackage ./util.nix { inherit channelSpecToChannel inputs; }).callPackage;
+
       in
         rec {
-          checks = let checks = with pkgs.lib; import ./checks.nix; in (
-            pkgs.lib.listToAttrs (pkgs.lib.flatten ((pkgs.lib.mapAttrsToList (n: v: [{
-              name = n + "-build-environment";
-              value = callEnvironment ./empty_environment.nix { inherit (v) kernels; };
-            } {
-              name = n + "-run-code";
-              value = pkgs.callPackage ./check_code.nix {
-                inherit (v) codeExecutions;
-                jupyter_path = "${callEnvironment ./empty_environment.nix { inherit (v) kernels; }}/lib/codedown";
-              };
-            }])) checks))
-          );
-
           packages = rec {
             exportersSearcher = pkgs.codedown.exportersSearcher;
             shellsSearcher = pkgs.codedown.shellsSearcher;
@@ -81,7 +40,7 @@
 
             haskellCompilers = pkgs.callPackage ./languages/haskell/generate.nix {};
 
-            codedown = pkgs.codedown;
+            codedown = pkgs.callPackage ./codedown.nix {};
 
             jupyter-runner = with pkgs; let
               pythonEnv = python38.withPackages (ps: with ps; [papermill]);
@@ -93,8 +52,6 @@
                 '';
 
             environment = callEnvironment ./environment.nix {};
-
-            ci = pkgs.callPackage ./ci.nix { inherit checks; };
           };
         }
     );
