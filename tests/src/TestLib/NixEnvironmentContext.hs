@@ -6,7 +6,7 @@ import Control.Monad.Catch (MonadMask, MonadThrow)
 import Control.Monad.IO.Unlift
 import Control.Monad.Trans.Control (MonadBaseControl)
 import qualified Data.Aeson as A
-import Data.ByteString.Lazy.Char8 as BL
+import Data.ByteString.Lazy.Char8 as BL hiding (writeFile)
 import qualified Data.HashMap.Strict as HM
 import Data.String.Interpolate
 import Data.Text as T
@@ -25,10 +25,18 @@ import UnliftIO.Process
 import UnliftIO.Temporary
 
 
+data NixBuildMethod = NixBuildTraditional
+                    | NixBuildFlake
+
 introduceNixEnvironment :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => [NixKernelSpec] -> [ChannelAndAttr] -> Text -> SpecFree (LabelValue "nixEnvironment" FilePath :> context) m () -> SpecFree context m ()
-introduceNixEnvironment kernels otherPackages label  = introduceWith [i|#{label} Nix environment|] nixEnvironment $ \action -> do
+introduceNixEnvironment = introduceNixEnvironment' NixBuildFlake
+
+introduceNixEnvironment' :: (
+  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  ) => NixBuildMethod -> [NixKernelSpec] -> [ChannelAndAttr] -> Text -> SpecFree (LabelValue "nixEnvironment" FilePath :> context) m () -> SpecFree context m ()
+introduceNixEnvironment' nixBuildMethod kernels otherPackages label  = introduceWith [i|#{label} Nix environment|] nixEnvironment $ \action -> do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
   metadata :: A.Object <- withFile "/dev/null" WriteMode $ \devNullHandle -> do
@@ -47,21 +55,36 @@ introduceNixEnvironment kernels otherPackages label  = introduceWith [i|#{label}
 
   let nixEnv = NixEnvironment {
         nixEnvironmentMetaOnly = Nothing
-        , nixEnvironmentChannels = [lockedToNixSrcSpec "nixpkgs" nixpkgsLocked]
-        , nixEnvironmentOverlays = [NixSrcPath "codedown" (T.pack rootDir)]
+        , nixEnvironmentChannels = [
+            lockedToNixSrcSpec "nixpkgs" nixpkgsLocked
+            , NixSrcPath "codedown" (T.pack rootDir)
+            ]
+        , nixEnvironmentOverlays = []
         , nixEnvironmentKernels = kernels
         , nixEnvironmentOtherPackages = otherPackages
         }
 
-  let rendered = renderNixEnvironment "<nixpkgs>" nixEnv
+  let rendered = case nixBuildMethod of
+        NixBuildTraditional -> renderNixEnvironment "<nixpkgs>" nixEnv
+        NixBuildFlake -> renderNixEnvironmentFlake nixEnv
+
   debug [i|Rendered: #{rendered}|]
 
-  built <- withSystemTempDirectory "test-nix-build" $ \((</> "link") -> linkPath) -> do
-    createProcessWithLogging (proc "nix-build" ["--quiet", "--no-out-link"
-                                               , "-E", T.unpack rendered
-                                               , "-o", linkPath
-                                               ])
-      >>= waitForProcess >>= (`shouldBe` ExitSuccess)
+  built <- withSystemTempDirectory "test-nix-build" $ \tmpDir -> do
+    let linkPath = tmpDir </> "link"
+
+    p <- case nixBuildMethod of
+      NixBuildTraditional ->
+        createProcessWithLogging (proc "nix-build" ["-E", T.unpack rendered
+                                                   , "-o", linkPath
+                                                   ])
+      NixBuildFlake -> do
+        liftIO $ writeFile (tmpDir </> "flake.nix") (T.unpack rendered)
+        createProcessWithLogging ((proc "nix" ["build"
+                                              , "-o", linkPath]) { cwd = Just tmpDir })
+
+    waitForProcess p >>= (`shouldBe` ExitSuccess)
+
     liftIO $ getSymbolicLinkTarget linkPath
 
   void $ action built

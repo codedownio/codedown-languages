@@ -1,7 +1,3 @@
-final: prev:
-
-with final;
-with final.lib;
 
 let
   # This must be chosen to match haskellNix.sources.nixpkgs!

@@ -5,7 +5,7 @@
 }:
 
 
-importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
+importedChannels.codedown.mkCodeDownEnvironment {
   inherit channels importedChannels overlays;
 
   # metaOnly = true;
@@ -132,14 +132,14 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
   ];
 
   otherPackages = [
-    { channel = "nixpkgs"; attr = "codedown.spellchecker"; contents = importedChannels.nixpkgs.codedown.spellchecker; }
+    { channel = "nixpkgs"; attr = "codedown.spellchecker"; contents = importedChannels.codedown.spellchecker; }
 
-    { channel = "nixpkgs"; attr = "codedown.shells.zsh"; contents = importedChannels.nixpkgs.codedown.shells.zsh; }
-    { channel = "nixpkgs"; attr = "codedown.shells.fish"; contents = importedChannels.nixpkgs.codedown.shells.fish; }
-    { channel = "nixpkgs"; attr = "codedown.shells.bash"; contents = importedChannels.nixpkgs.codedown.shells.bash; }
+    { channel = "nixpkgs"; attr = "codedown.shells.zsh"; contents = importedChannels.codedown.shells.zsh; }
+    { channel = "nixpkgs"; attr = "codedown.shells.fish"; contents = importedChannels.codedown.shells.fish; }
+    { channel = "nixpkgs"; attr = "codedown.shells.bash"; contents = importedChannels.codedown.shells.bash; }
 
-    { channel = "nixpkgs"; attr = "codedown.exporters.nbconvert-small"; contents = importedChannels.nixpkgs.codedown.exporters.nbconvert-small; }
-    { channel = "nixpkgs"; attr = "codedown.exporters.nbconvert-large"; contents = importedChannels.nixpkgs.codedown.exporters.nbconvert-large; }
+    { channel = "nixpkgs"; attr = "codedown.exporters.nbconvert-small"; contents = importedChannels.codedown.exporters.nbconvert-small; }
+    { channel = "nixpkgs"; attr = "codedown.exporters.nbconvert-large"; contents = importedChannels.codedown.exporters.nbconvert-large; }
 
     # { channel = "nixpkgs"; attr = "tree"; contents = importedChannels.nixpkgs.tree; }
   ];

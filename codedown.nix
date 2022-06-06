@@ -58,9 +58,7 @@ rec {
 
   # Build tools
   mkCodeDownEnvironment = args@{
-    channels
-    , overlays
-    , kernels ? []
+    kernels ? []
     , otherPackages ? []
     , metaOnly ? false
     , ...

@@ -3,7 +3,9 @@
 , stdenv
 , symlinkJoin
 , makeWrapper
+
 , pkgs
+, ihaskell-8107
 
 , haskell
 , haskell-language-server
@@ -110,7 +112,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshotName:
               # ihaskell = callPackage ./ihaskell.nix {
               #   inherit packages snapshot;
               # };
-              ihaskell = pkgs.ihaskell-8107;
+              ihaskell = ihaskell-8107;
 
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })

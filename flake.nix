@@ -15,11 +15,9 @@
     # flake-utils.lib.eachDefaultSystem (system:
     flake-utils.lib.eachSystem ["x86_64-linux"] (system:
       let
-        baseNixpkgs = import nixpkgs { inherit system; };
         overlays = [
           haskellNixSrc.outputs.overlay (final: prev: {
             inherit (pkgs.lib.getAttr system ihaskell.packages) ihaskell-884 ihaskell-8107 ihaskell-902 ihaskell-921;
-            codedown = final.callPackage ./codedown.nix {};
           })
         ];
 
@@ -27,7 +25,7 @@
         pkgsUnstable = import nixpkgs-unstable { inherit system overlays; };
 
         callEnvironment = path: args: pkgs.callPackage path (rec {
-          channels = pkgs.lib.listToAttrs (map (x: {
+          channels = (pkgs.lib.listToAttrs (map (x: {
             name = x;
             value = {
               tag = "fetch_from_github";
@@ -36,20 +34,24 @@
               rev = inputs.${x}.rev;
               sha256 = inputs.${x}.narHash;
             };
-          }) ["nixpkgs" "nixpkgs-unstable"]);
-
-          # importedChannels = pkgs.lib.listToAttrs (map (x: {
-          #   name = x;
-          #   value = import inputs.${x} { inherit system overlays; };
-          # }) ["nixpkgs" "nixpkgs-unstable"]);
-          importedChannels = { nixpkgs = pkgs; nixpkgs-unstable = pkgsUnstable; };
-
-          overlays = {
+          }) ["nixpkgs" "nixpkgs-unstable"])) // {
             codedown = {
               tag = "path";
               path = ./default_old.nix;
             };
           };
+
+          # importedChannels = pkgs.lib.listToAttrs (map (x: {
+          #   name = x;
+          #   value = import inputs.${x} { inherit system overlays; };
+          # }) ["nixpkgs" "nixpkgs-unstable"]);
+          importedChannels = {
+            nixpkgs = pkgs;
+            nixpkgs-unstable = pkgsUnstable;
+            codedown = pkgs.callPackage ./codedown.nix {};
+          };
+
+          overlays = {};
           importedOverlays = pkgs.lib.mapAttrsToList (name: value: import (channelSpecToChannel name value)) overlays;
         } // args);
 
