@@ -1,4 +1,5 @@
 { pkgs
+, pkgsUnstable
 , channelSpecToChannel
 , inputs
 }:
@@ -19,6 +20,16 @@
         tag = "path";
         path = ./default_old.nix;
       };
+    };
+
+    # importedChannels = pkgs.lib.listToAttrs (map (x: {
+    #   name = x;
+    #   value = import inputs.${x} { inherit system overlays; };
+    # }) ["nixpkgs" "nixpkgs-unstable"]);
+    importedChannels = {
+      nixpkgs = pkgs;
+      nixpkgs-unstable = pkgsUnstable;
+      codedown = pkgs.callPackage ./codedown.nix {};
     };
 
     overlays = {};
