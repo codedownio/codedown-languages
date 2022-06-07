@@ -98,22 +98,17 @@ listToAttrs (mapAttrsToList (compilerName: snapshotName:
       }:
         let
           settingsToUse = defaultSettings // settings;
-          # ghc = snapshot.ghcWithPackages (ps: [ps.ihaskell] ++ (map (x: builtins.getAttr x ps) packages));
-          ghc = snapshot.ghcWithPackages (ps: map (x: builtins.getAttr x ps) packages);
+
+          # Note: IHaskell seems to depend on "directory" so we add it manually here
+          ghc = snapshot.ghcWithPackages (ps: map (x: builtins.getAttr x ps) (["directory"] ++ packages));
 
         in symlinkJoin {
           name = meta.baseName;
 
           paths = [
             (callPackage ./kernel.nix {
-              inherit displayName attrs extensions metaOnly snapshot;
-
-              # ihaskell = ghc;
-              # ihaskell = callPackage ./ihaskell.nix {
-              #   inherit packages snapshot;
-              # };
+              inherit displayName attrs extensions metaOnly snapshot ghc;
               ihaskell = ihaskell-8107;
-
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })
 

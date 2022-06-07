@@ -87,6 +87,8 @@ introduceNixEnvironment' nixBuildMethod kernels otherPackages label  = introduce
 
     liftIO $ getSymbolicLinkTarget linkPath
 
+  info [i|Built environment: #{built}|]
+
   void $ action built
 
 parseNixpkgsSource :: A.Object -> Maybe Locked

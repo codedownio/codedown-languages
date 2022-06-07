@@ -1,4 +1,8 @@
 { lib
+, callPackage
+, runCommand
+, makeWrapper
+
 , jupyter-kernel
 , snapshot
 , attrs
@@ -6,7 +10,7 @@
 , displayName
 , ihaskell
 , ghc
-, callPackage
+
 , metaOnly ? false
 }:
 
@@ -20,6 +24,23 @@ let
     proc = "${ghc.out}/bin/ghci";
   }];
 
+  ihaskellWrapped = runCommand "ihaskell-wrapped" { buildInputs = [makeWrapper]; } ''
+    mkdir -p $out/bin
+
+    for prg in ${ihaskell}/bin"/"*;do
+      if [[ -f $prg && -x $prg ]]; then
+        if [[ "$(basename $prg)" == "ihaskell" ]]; then
+          makeWrapper $prg $out/bin/$(basename $prg) \
+            --add-flags "kernel -l $(${ghc}/bin/ghc --print-libdir)" \
+            --prefix PATH : "${lib.makeBinPath [ghc]}"
+        else
+          makeWrapper $prg $out/bin/$(basename $prg) $prg \
+            --prefix PATH : "${lib.makeBinPath [ghc]}"
+        fi
+      fi
+    done
+  '';
+
 in
 
 common.makeJupyterKernelInner metaOnly (
@@ -28,10 +49,8 @@ common.makeJupyterKernelInner metaOnly (
     value = {
       inherit displayName;
       argv = [
-        "${ihaskell}/bin/ihaskell"
-        "kernel"
+        "${ihaskellWrapped}/bin/ihaskell"
         "{connection_file}"
-        "--stack"
         "+RTS" "-M3g" "-N2" "-RTS"
       ];
       language = head attrs;
