@@ -34,13 +34,13 @@
       in
         rec {
           packages = rec {
-            exportersSearcher = pkgs.codedown.exportersSearcher;
-            shellsSearcher = pkgs.codedown.shellsSearcher;
-            languagesSearcher = pkgs.codedown.languagesSearcher;
+            codedown = pkgs.callPackage ./codedown.nix {};
+
+            exportersSearcher = codedown.exportersSearcher;
+            shellsSearcher = codedown.shellsSearcher;
+            languagesSearcher = codedown.languagesSearcher;
 
             haskellCompilers = pkgs.callPackage ./languages/haskell/generate.nix {};
-
-            codedown = pkgs.callPackage ./codedown.nix {};
 
             jupyter-runner = with pkgs; let
               pythonEnv = python38.withPackages (ps: with ps; [papermill]);
