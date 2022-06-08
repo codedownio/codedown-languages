@@ -15,27 +15,11 @@ data NixSrcType = NixSrcTypeNixpkgs
   deriving (Show, Eq, Ord)
 deriveJSON toSnakeC3 ''NixSrcType
 
-data NixSrcSpec = NixSrcFetchGit {
+data NixSrcSpec = NixSrcSpec {
   nixSrcName :: Text
   , nixSrcUrl :: Text
-  , nixSrcRev :: Text
-  , nixSrcBranchName :: Maybe Text
-  , nixSrcSha256 :: Text
   , nixSrcType :: NixSrcType
   }
-  | NixSrcFetchFromGithub {
-      nixSrcName :: Text
-      , nixSrcOwner :: Text
-      , nixSrcRepo :: Text
-      , nixSrcRev :: Text
-      , nixSrcSha256 :: Text
-      , nixSrcType :: NixSrcType
-      }
-  | NixSrcPath {
-      nixSrcName :: Text
-      , nixSrcPath :: Text
-      , nixSrcType :: NixSrcType
-    }
   deriving (Show, Eq, Ord)
 deriveJSON toSnakeBoth2 ''NixSrcSpec
 

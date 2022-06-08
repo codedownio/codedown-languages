@@ -25,18 +25,10 @@ import UnliftIO.Process
 import UnliftIO.Temporary
 
 
-data NixBuildMethod = NixBuildTraditional
-                    | NixBuildFlake
-
 introduceNixEnvironment :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => [NixKernelSpec] -> [ChannelAndAttr] -> Text -> SpecFree (LabelValue "nixEnvironment" FilePath :> context) m () -> SpecFree context m ()
-introduceNixEnvironment = introduceNixEnvironment' NixBuildFlake
-
-introduceNixEnvironment' :: (
-  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
-  ) => NixBuildMethod -> [NixKernelSpec] -> [ChannelAndAttr] -> Text -> SpecFree (LabelValue "nixEnvironment" FilePath :> context) m () -> SpecFree context m ()
-introduceNixEnvironment' nixBuildMethod kernels otherPackages label  = introduceWith [i|#{label} Nix environment|] nixEnvironment $ \action -> do
+introduceNixEnvironment kernels otherPackages label  = introduceWith [i|#{label} Nix environment|] nixEnvironment $ \action -> do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
   metadata :: A.Object <- withFile "/dev/null" WriteMode $ \devNullHandle -> do
@@ -57,31 +49,24 @@ introduceNixEnvironment' nixBuildMethod kernels otherPackages label  = introduce
         nixEnvironmentMetaOnly = Nothing
         , nixEnvironmentChannels = [
             lockedToNixSrcSpec "nixpkgs" nixpkgsLocked
-            , NixSrcPath "codedown" (T.pack rootDir) NixSrcTypeFlake
+            , NixSrcSpec "codedown" [i|path:#{rootDir}|] NixSrcTypeFlake
             ]
         , nixEnvironmentOverlays = []
         , nixEnvironmentKernels = kernels
         , nixEnvironmentOtherPackages = otherPackages
         }
 
-  let rendered = case nixBuildMethod of
-        NixBuildTraditional -> renderNixEnvironment "<nixpkgs>" nixEnv
-        NixBuildFlake -> renderNixEnvironmentFlake nixEnv
+  let rendered = renderNixEnvironmentFlake nixEnv
 
   debug [i|Rendered: #{rendered}|]
 
   built <- withSystemTempDirectory "test-nix-build" $ \tmpDir -> do
     let linkPath = tmpDir </> "link"
 
-    p <- case nixBuildMethod of
-      NixBuildTraditional ->
-        createProcessWithLogging (proc "nix-build" ["-E", T.unpack rendered
-                                                   , "-o", linkPath
-                                                   ])
-      NixBuildFlake -> do
-        liftIO $ writeFile (tmpDir </> "flake.nix") (T.unpack rendered)
-        createProcessWithLogging ((proc "nix" ["build"
-                                              , "-o", linkPath]) { cwd = Just tmpDir })
+    p <- do
+      liftIO $ writeFile (tmpDir </> "flake.nix") (T.unpack rendered)
+      createProcessWithLogging ((proc "nix" ["build"
+                                            , "-o", linkPath]) { cwd = Just tmpDir })
 
     waitForProcess p >>= (`shouldBe` ExitSuccess)
 

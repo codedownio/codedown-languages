@@ -5,6 +5,7 @@ module TestLib.Types where
 import Data.Aeson as A
 import Data.Aeson.TH
 import qualified Data.List as L
+import Data.String.Interpolate
 import Data.Text
 import Test.Sandwich
 import TestLib.Aeson
@@ -16,8 +17,7 @@ data LockedType = LockedTypeGithub
 deriveJSON toSnakeC1 ''LockedType
 
 data Locked = LockedGithub {
-  lockedNarHash :: Text
-  , lockedOwner :: Text
+  lockedOwner :: Text
   , lockedRepo :: Text
   , lockedRev :: Text
   } deriving (Show)
@@ -28,12 +28,9 @@ deriveJSON ((dropNAndToCamelCaseOptions (L.length ("locked" :: String))) {
                }) ''Locked
 
 lockedToNixSrcSpec :: Text -> Locked -> NixSrcSpec
-lockedToNixSrcSpec name (LockedGithub {..}) = NixSrcFetchFromGithub {
+lockedToNixSrcSpec name (LockedGithub {..}) = NixSrcSpec {
   nixSrcName = name
-  , nixSrcOwner = lockedOwner
-  , nixSrcRepo = lockedRepo
-  , nixSrcRev = lockedRev
-  , nixSrcSha256 = lockedNarHash
+  , nixSrcUrl = [i|github:#{lockedOwner}/#{lockedRepo}/#{lockedRev}|]
   , nixSrcType = NixSrcTypeNixpkgs
   }
 
