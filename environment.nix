@@ -131,13 +131,13 @@ codedown.mkCodeDownEnvironment {
   ];
 
   otherPackages = [
-    { channel = "nixpkgs"; attr = "codedown.spellchecker"; contents = codedown.spellchecker; }
+    { channel = "codedown"; attr = "spellchecker"; contents = codedown.spellchecker; }
 
-    { channel = "nixpkgs"; attr = "codedown.shells.zsh"; contents = codedown.shells.zsh; }
-    { channel = "nixpkgs"; attr = "codedown.shells.fish"; contents = codedown.shells.fish; }
-    { channel = "nixpkgs"; attr = "codedown.shells.bash"; contents = codedown.shells.bash; }
+    { channel = "codedown"; attr = "shells.zsh"; contents = codedown.shells.zsh; }
+    { channel = "codedown"; attr = "shells.fish"; contents = codedown.shells.fish; }
+    { channel = "codedown"; attr = "shells.bash"; contents = codedown.shells.bash; }
 
-    { channel = "nixpkgs"; attr = "codedown.exporters.nbconvert-small"; contents = codedown.exporters.nbconvert-small; }
-    { channel = "nixpkgs"; attr = "codedown.exporters.nbconvert-large"; contents = codedown.exporters.nbconvert-large; }
+    { channel = "codedown"; attr = "exporters.nbconvert-small"; contents = codedown.exporters.nbconvert-small; }
+    { channel = "codedown"; attr = "exporters.nbconvert-large"; contents = codedown.exporters.nbconvert-large; }
   ];
 }

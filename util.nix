@@ -9,16 +9,15 @@
     channels = (pkgs.lib.listToAttrs (map (x: {
       name = x;
       value = {
-        tag = "fetch_from_github";
-        owner = "NixOS";
-        repo = "nixpkgs";
-        rev = inputs.${x}.rev;
-        sha256 = inputs.${x}.narHash;
+        name = x;
+        url = "github:NixOS/nixpkgs/${inputs.${x}.rev}";
+        type = "nixpkgs";
       };
     }) ["nixpkgs" "nixpkgs-unstable"])) // {
       codedown = {
-        tag = "path";
-        path = ./default_old.nix;
+        name = "codedown";
+        url = path:./default_old.nix;
+        type = "flake";
       };
     };
 
