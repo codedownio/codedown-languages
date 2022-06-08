@@ -23,7 +23,7 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Octave" $ introduceNixEnvironment [kernelSpec] [] "Octave" $ introduceJupyterRunner $ do
-  testKernelStdout "octave" [__i|disp("hi")|] "hi\n"
+  testKernelStdout "octave" [__i|printf('%s', 'hi')|] "hi"
 
 
 main :: IO ()
