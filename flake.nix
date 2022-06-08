@@ -31,15 +31,11 @@
 
         callEnvironment = (pkgs.callPackage ./util.nix { inherit pkgsUnstable channelSpecToChannel inputs; }).callEnvironment;
 
+        codedown = pkgs.callPackage ./codedown.nix {};
+
       in
         rec {
-          packages = rec {
-            codedown = pkgs.callPackage ./codedown.nix {};
-
-            exportersSearcher = codedown.exportersSearcher;
-            shellsSearcher = codedown.shellsSearcher;
-            languagesSearcher = codedown.languagesSearcher;
-
+          packages = codedown // {
             haskellCompilers = pkgs.callPackage ./languages/haskell/generate.nix {};
 
             jupyter-runner = with pkgs; let

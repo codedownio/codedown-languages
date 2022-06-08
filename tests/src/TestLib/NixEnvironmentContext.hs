@@ -57,7 +57,7 @@ introduceNixEnvironment' nixBuildMethod kernels otherPackages label  = introduce
         nixEnvironmentMetaOnly = Nothing
         , nixEnvironmentChannels = [
             lockedToNixSrcSpec "nixpkgs" nixpkgsLocked
-            , NixSrcPath "codedown" (T.pack rootDir)
+            , NixSrcPath "codedown" (T.pack rootDir) NixSrcTypeFlake
             ]
         , nixEnvironmentOverlays = []
         , nixEnvironmentKernels = kernels

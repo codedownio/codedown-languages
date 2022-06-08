@@ -34,6 +34,7 @@ lockedToNixSrcSpec name (LockedGithub {..}) = NixSrcFetchFromGithub {
   , nixSrcRepo = lockedRepo
   , nixSrcRev = lockedRev
   , nixSrcSha256 = lockedNarHash
+  , nixSrcType = NixSrcTypeNixpkgs
   }
 
 nixEnvironment :: Label "nixEnvironment" FilePath

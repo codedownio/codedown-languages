@@ -9,12 +9,19 @@ import Test.Sandwich
 import TestLib.Aeson
 
 
+data NixSrcType = NixSrcTypeNixpkgs
+                | NixSrcTypeFlake
+                | NixSrcTypeNormal
+  deriving (Show, Eq, Ord)
+deriveJSON toSnakeC3 ''NixSrcType
+
 data NixSrcSpec = NixSrcFetchGit {
   nixSrcName :: Text
   , nixSrcUrl :: Text
   , nixSrcRev :: Text
   , nixSrcBranchName :: Maybe Text
   , nixSrcSha256 :: Text
+  , nixSrcType :: NixSrcType
   }
   | NixSrcFetchFromGithub {
       nixSrcName :: Text
@@ -22,10 +29,12 @@ data NixSrcSpec = NixSrcFetchGit {
       , nixSrcRepo :: Text
       , nixSrcRev :: Text
       , nixSrcSha256 :: Text
+      , nixSrcType :: NixSrcType
       }
   | NixSrcPath {
       nixSrcName :: Text
       , nixSrcPath :: Text
+      , nixSrcType :: NixSrcType
     }
   deriving (Show, Eq, Ord)
 deriveJSON toSnakeBoth2 ''NixSrcSpec

@@ -1,3 +1,6 @@
+{ fetchFromGitHub
+, callPackage
+}:
 
 let
   # This must be chosen to match haskellNix.sources.nixpkgs!
