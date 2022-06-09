@@ -29,17 +29,23 @@ let
     else if (channel.tag == "path") then channel.path else null;
 
   overlays = {
-#{T.intercalate "\n\n" [indentTo 4 $ renderChannel x | x <- nixEnvironmentOverlays]}  };
+#{T.intercalate "\n\n" [indentTo 4 $ renderChannel x | x <- nixEnvironmentOverlays]}
+  };
 
   channels = rec {
-#{T.intercalate "\n\n" [indentTo 4 $ renderChannel x | x <- nixEnvironmentChannels]}  };
+#{T.intercalate "\n\n" [indentTo 4 $ renderChannel x | x <- nixEnvironmentChannels]}
+  };
 
   importedOverlays = lib.mapAttrsToList (name: value: import (channelSpecToChannel name value)) overlays;
-  importedChannels = lib.mapAttrs (name: value: import (channelSpecToChannel name value) { overlays = importedOverlays; }) channels;
+  importedChannels = lib.mapAttrs (name: value: let imported = import (channelSpecToChannel name value); in
+    if (builtins.isFunction imported && builtins.hasAttr "overlays" (builtins.functionArgs imported)) then imported { overlays = importedOverlays; }
+    else if (builtins.isFunction imported) then bootstrapNixpkgs.callPackage imported {}
+    else imported
+  ) channels;
 
 in
 
-importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
+importedChannels.codedown.mkCodeDownEnvironment {
   inherit channels overlays;
 
   metaOnly = #{A.encode $ fromMaybe False nixEnvironmentMetaOnly};
@@ -55,8 +61,7 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
 |]
 
 renderChannel :: NixSrcSpec -> Text
-renderChannel nixSrcSpec = [i|#{nixSrcName nixSrcSpec} = (#{renderNixSrcSpec nixSrcSpec});
-|]
+renderChannel nixSrcSpec = [i|#{nixSrcName nixSrcSpec} = (#{renderNixSrcSpec nixSrcSpec});|]
 
 renderNixSrcSpec :: NixSrcSpec -> Text
 renderNixSrcSpec nixSrcSpec = "{\n" <> (T.intercalate "\n" $ mapMaybe toLine keysAndValues) <> "\n}"

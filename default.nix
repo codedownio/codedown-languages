@@ -1,7 +1,5 @@
-final: prev:
-
-with final;
-with final.lib;
+{ fetchFromGitHub
+}:
 
 let
   # This must be chosen to match haskellNix.sources.nixpkgs!
@@ -9,22 +7,12 @@ let
   nixpkgsSrc = fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
-    rev = "110a2c9ebbf5d4a94486854f18a37a938cfacbbb";
-    sha256 = "0v12ylqxy1kl06dgln6h5k8vhlfzp8xvdymljj7bl0avr0nrgrcm";
+    rev = "ce6aa13369b667ac2542593170993504932eb836";
+    sha256 = "0d643wp3l77hv2pmg2fi7vyxn4rwy0iyr8djcw1h5x72315ck9ik";
   };
 
-  haskellNix = import (fetchFromGitHub {
-    owner = "input-output-hk";
-    repo = "haskell.nix";
-    rev = "f3ea06dcacc8a46b4a207a6a1fad14bc5ea41b19";
-    sha256 = "0fs3b52k8qcpqz4mlq970djnww16dcngwscsfn84h4n9j3ng4glr";
-  }) { pkgs = import nixpkgsSrc {}; };
+  pkgs = import nixpkgsSrc {};
 
 in
 
-rec {
-  haskell-nix = (import nixpkgsSrc haskellNix.nixpkgsArgs).haskell-nix;
-  ghc-boot-packages = (import nixpkgsSrc haskellNix.nixpkgsArgs).ghc-boot-packages;
-
-  codedown = callPackage ./codedown.nix {};
-}
+pkgs.callPackage ./codedown.nix {}
