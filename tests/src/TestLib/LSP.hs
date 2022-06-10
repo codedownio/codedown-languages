@@ -54,8 +54,7 @@ data LanguageServerConfig = LanguageServerConfig {
 deriveJSON toSnake2 ''LanguageServerConfig
 
 testDiagnostics :: (
-  HasJupyterRunner context
-  , HasNixEnvironment context
+  HasNixEnvironment context
   , HasBaseContext context
   , MonadIO m
   , MonadBaseControl IO m

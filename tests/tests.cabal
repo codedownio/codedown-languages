@@ -81,6 +81,7 @@ executable tests-exe
       Spec.Tests.Python3
       Spec.Tests.R
       Spec.Tests.Rust
+      Spec.Tests.Spellchecker
       Paths_tests
   hs-source-dirs:
       app
