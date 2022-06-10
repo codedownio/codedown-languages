@@ -29,8 +29,6 @@
           else if (channel.tag == "fetch_git") then pkgs.fetchgit (removeAttrs channel ["tag" "name"])
           else if (channel.tag == "path") then channel.path else null;
 
-        callEnvironment = (pkgs.callPackage ./util.nix { inherit pkgsUnstable channelSpecToChannel inputs; }).callEnvironment;
-
         codedown = pkgs.callPackage ./codedown.nix {};
 
       in
@@ -47,7 +45,11 @@
                     --set PATH ${lib.makeBinPath packages}
                 '';
 
-            environment = callEnvironment ./environment.nix { inherit codedown; };
+            environment = import ./environment.nix {
+              inherit codedown;
+              channels = {};
+              overlays = {};
+            };
           };
         }
     );

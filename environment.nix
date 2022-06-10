@@ -1,13 +1,12 @@
-{ channels
-, importedChannels
+{ codedown
+, channels
 , overlays
-, importedOverlays
+, ...
 }:
 
 
-importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
-  inherit channels importedChannels overlays;
-
+codedown.mkCodeDownEnvironment {
+  inherit channels overlays;
   # metaOnly = true;
 
   kernels = [
@@ -38,15 +37,15 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       };
     })
 
-    ({
-      channel = "nixpkgs-unstable";
-      language = "cpp11";
-      args = {
-        packages = [];
-        languageServers = [];
-        attrs = ["cpp11" "cpp"];
-      };
-    })
+    # ({
+    #   channel = "nixpkgs-unstable";
+    #   language = "cpp11";
+    #   args = {
+    #     packages = [];
+    #     languageServers = [];
+    #     attrs = ["cpp11" "cpp"];
+    #   };
+    # })
 
     # ({
     #   channel = "nixpkgs-unstable";
@@ -57,15 +56,14 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
     #   };
     # })
 
-    ({
-      channel = "nixpkgs";
-      # language = "haskell-ghc8107";
-      language = "haskell-ghc8107";
-      args = {
-        packages = ["aeson" "aeson-typescript"];
-        languageServers = ["haskell-language-server"];
-      };
-    })
+    # ({
+    #   channel = "nixpkgs";
+    #   language = "haskell-ghc8107";
+    #   args = {
+    #     packages = ["aeson" "aeson-typescript"];
+    #     languageServers = ["haskell-language-server"];
+    #   };
+    # })
 
     ({
       channel = "nixpkgs";
@@ -93,7 +91,7 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
       language = "python38";
       args = {
         packages = ["matplotlib" "scipy" "rope"];
-        languageServers = ["jedi" "pyright" "pylint" "flake8" "pycodestyle" "microsoft" "python-language-server"];
+        languageServers = ["jedi" "pyright" "pylint" "flake8" "pycodestyle" "microsoft" "python-lsp-server"];
         settings = {
           permitUserSite = false;
         };
@@ -123,7 +121,7 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
 
     ({
       channel = "nixpkgs-unstable";
-      language = "rust_1_52";
+      language = "rust_1_60";
       args = {
         packages = [];
         languageServers = ["rust-analyzer"];
@@ -132,15 +130,13 @@ importedChannels.nixpkgs.codedown.mkCodeDownEnvironment {
   ];
 
   otherPackages = [
-    { channel = "nixpkgs"; attr = "codedown.spellchecker"; contents = importedChannels.nixpkgs.codedown.spellchecker; }
+    { channel = "codedown"; attr = "spellchecker"; contents = codedown.spellchecker; }
 
-    { channel = "nixpkgs"; attr = "codedown.shells.zsh"; contents = importedChannels.nixpkgs.codedown.shells.zsh; }
-    { channel = "nixpkgs"; attr = "codedown.shells.fish"; contents = importedChannels.nixpkgs.codedown.shells.fish; }
-    { channel = "nixpkgs"; attr = "codedown.shells.bash"; contents = importedChannels.nixpkgs.codedown.shells.bash; }
+    { channel = "codedown"; attr = "shells.zsh"; contents = codedown.shells.zsh; }
+    { channel = "codedown"; attr = "shells.fish"; contents = codedown.shells.fish; }
+    { channel = "codedown"; attr = "shells.bash"; contents = codedown.shells.bash; }
 
-    { channel = "nixpkgs"; attr = "codedown.exporters.nbconvert-small"; contents = importedChannels.nixpkgs.codedown.exporters.nbconvert-small; }
-    { channel = "nixpkgs"; attr = "codedown.exporters.nbconvert-large"; contents = importedChannels.nixpkgs.codedown.exporters.nbconvert-large; }
-
-    # { channel = "nixpkgs"; attr = "tree"; contents = importedChannels.nixpkgs.tree; }
+    { channel = "codedown"; attr = "exporters.nbconvert-small"; contents = codedown.exporters.nbconvert-small; }
+    { channel = "codedown"; attr = "exporters.nbconvert-large"; contents = codedown.exporters.nbconvert-large; }
   ];
 }
