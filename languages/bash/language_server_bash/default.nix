@@ -1,4 +1,6 @@
-{stdenv, pkgs}:
+{ stdenv
+, pkgs
+}:
 
 with pkgs;
 with pkgs.lib;
@@ -6,7 +8,9 @@ with pkgs.lib;
 let
   common = callPackage ../../common.nix {};
 
-  bashLanguageServer = (callPackage ./bash-language-server {})."bash-language-server-2.0.0";
+  bashLanguageServer = (callPackage ./bash-language-server {
+    nodejs = pkgs.nodejs-14_x;
+  })."bash-language-server-2.0.0";
 
   # manWithPages = (import ../shared.nix).manWithPages;
 

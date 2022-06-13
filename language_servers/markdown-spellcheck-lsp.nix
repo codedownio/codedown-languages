@@ -7,6 +7,7 @@
 , runCommand
 , makeWrapper
 , unixtools
+, nodejs-14_x
 }:
 with lib.lists;
 
@@ -24,7 +25,9 @@ let
     ];
   }]);
 
-  server = (callPackage ./markdown-spellcheck-lsp {})."markdown-spellcheck-lsp-git+https://github.com/codedownio/markdown-spellcheck-lsp.git#f047c58b51ab93bbec54120c508728acc02c82c9";
+  server = (callPackage ./markdown-spellcheck-lsp {
+    nodejs = nodejs-14_x;
+  })."markdown-spellcheck-lsp-git+https://github.com/codedownio/markdown-spellcheck-lsp.git#f047c58b51ab93bbec54120c508728acc02c82c9";
 
   customHunspell = hunspellWithDicts [
     hunspellDicts.en-us
