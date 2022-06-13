@@ -1,1 +1,4 @@
-node2nix -8 -i node-packages.json --include-peer-dependencies
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p node2nix
+
+node2nix -16 -i node-packages.json --include-peer-dependencies
