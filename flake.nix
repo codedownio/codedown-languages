@@ -50,6 +50,10 @@
               channels = {};
               overlays = {};
             };
+
+            test = pkgs.callPackage ./languages/haskell {};
+
+            testPkgs = pkgs;
           };
         }
     );

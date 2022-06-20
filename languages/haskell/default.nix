@@ -110,7 +110,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshotName:
               # ihaskell = callPackage ./ihaskell.nix {
               #   inherit packages snapshot;
               # };
-              ihaskell = pkgs.ihaskell-8107;
+              ihaskell = snapshot.ghcWithPackages (ps: [ps.ihaskell]);
 
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })
