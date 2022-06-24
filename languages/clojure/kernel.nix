@@ -1,6 +1,7 @@
 { callPackage
 , attrs
 , extensions
+, clojupyter
 }:
 
 let
@@ -12,7 +13,7 @@ common.makeJupyterKernel {
   clojure = {
     displayName = "Clojure";
     argv = [
-      "${callPackage ./clojupyter {}}"
+      "${clojupyter.launcher}/bin/clojupyter"
       "{connection_file}"
     ];
     language = "clojure";
