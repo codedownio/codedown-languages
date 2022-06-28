@@ -60,8 +60,8 @@ rec {
         haskellNix = import (fetchFromGitHub {
           owner = "input-output-hk";
           repo = "haskell.nix";
-          rev = "f3ea06dcacc8a46b4a207a6a1fad14bc5ea41b19";
-          sha256 = "0fs3b52k8qcpqz4mlq970djnww16dcngwscsfn84h4n9j3ng4glr";
+          rev = "5c49987f99a8b12961979e32fcefec163ce0ef52";
+          sha256 = "sha256-Mb99mzuCM6Tme96s2Gqajy/hT2a1N1J4gDyVr4phXe0=";
         }) { pkgs = import nixpkgsSrc { inherit system; }; };
 
       in

@@ -60,8 +60,17 @@ codedown.mkCodeDownEnvironment {
       channel = "nixpkgs";
       language = "haskell-ghc8107";
       args = {
-        packages = ["aeson" "aeson-typescript"];
-        languageServers = ["haskell-language-server"];
+        packages = ["aeson"];
+        languageServers = [];
+      };
+    })
+
+    ({
+      channel = "nixpkgs";
+      language = "haskell-ghc902";
+      args = {
+        packages = ["aeson"];
+        languageServers = [];
       };
     })
 
