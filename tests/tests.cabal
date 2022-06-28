@@ -74,8 +74,7 @@ executable tests-exe
       Spec.Tests.Bash
       Spec.Tests.Clojure
       Spec.Tests.Cpp
-      Spec.Tests.Haskell810
-      Spec.Tests.Haskell92
+      Spec.Tests.Haskell
       Spec.Tests.Julia
       Spec.Tests.Octave
       Spec.Tests.Python3

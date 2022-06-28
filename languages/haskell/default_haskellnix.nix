@@ -42,13 +42,7 @@ let
     };
   };
 
-  compilers = {
-    ghc865 = haskell.packages.ghc865Binary;
-    ghc884 = haskell.packages.ghc884;
-    ghc8107 = haskell.packages.ghc8107;
-    ghc902 = haskell.packages.ghc902;
-    # ghc922 = haskell.packages.ghc922;
-  };
+  compilers = filterAttrs (n: v: hasAttr n ghc-boot-packages) (import ./compilers.nix);
 
   repls = ghc: {
     ghci = {
@@ -60,16 +54,18 @@ let
 
 in
 
-listToAttrs (mapAttrsToList (compilerName: snapshot:
+listToAttrs (mapAttrsToList (compilerName: snapshotName:
   let
-    version = snapshot.ghc.version;
-    displayName = "Haskell (GHC " + version + ")";
+    snapshot = util.applyVersionToSnapshot snapshotName (getAttr snapshotName haskell-nix.snapshots);
+
+    displayName = "Haskell (GHC " + (snapshot.ghcWithPackages (ps: [])).version + ")";
 
     meta = {
       baseName = "haskell-" + compilerName;
       name = "haskell-" + compilerName;
-      description = "An advanced, purely functional programming language (GHC ${version})";
-      inherit version displayName;
+      description = "An advanced, purely functional programming language (Stackage ${snapshotName})";
+      version = snapshot.version;
+      inherit displayName;
       icon = ./haskell-logo-64x64.png;
     };
 
@@ -109,7 +105,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
             (callPackage ./kernel.nix {
               inherit displayName attrs extensions metaOnly snapshot;
 
-              ihaskell = snapshot.ihaskell;
+              ihaskell = snapshot.ihaskell.components.exes.ihaskell;
               inherit ghc;
 
               # enableVariableInspector = settingsToUse.enableVariableInspector;

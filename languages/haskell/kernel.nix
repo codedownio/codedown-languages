@@ -35,7 +35,6 @@ common.makeJupyterKernelInner metaOnly (
         "kernel"
         "{connection_file}"
         "-l" "${ghc.out}/lib/${ghc.meta.name}"
-        "--debug"
         "+RTS" "-M3g" "-N2" "-RTS"
       ];
       language = head attrs;
