@@ -63,11 +63,17 @@ testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] 
   debug [i|Got jupyterRunner: #{jr}|]
 
   Just folder <- getCurrentFolder
+
   let runDir = folder </> "run"
+  createDirectoryIfMissing True runDir
+
   let notebook = runDir </> "notebook.ipynb"
   let outFile = runDir </> "out.txt"
   let errFile = runDir </> "err.txt"
-  createDirectoryIfMissing True runDir
+
+  let homeDir = folder </> "home"
+  createDirectoryIfMissing True homeDir
+
   liftIO $ BL.writeFile notebook (A.encode (notebookWithCode kernel code))
 
   let cp = (proc jr ["notebook.ipynb", "out.ipynb"
@@ -75,7 +81,10 @@ testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] 
                     , "--stderr-file", errFile
                     , "-k", T.unpack kernel
                     ]) {
-        env = Just [("JUPYTER_PATH", jupyterPath)]
+        env = Just [
+            ("JUPYTER_PATH", jupyterPath)
+            , ("HOME", homeDir)
+            ]
         , cwd = Just runDir
         }
   createProcessWithLogging cp >>= waitForProcess >>= (`shouldBe` ExitSuccess)
