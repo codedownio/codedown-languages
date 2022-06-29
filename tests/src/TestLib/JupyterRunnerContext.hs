@@ -1,15 +1,19 @@
 {-# LANGUAGE OverloadedLists #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
 
 module TestLib.JupyterRunnerContext where
 
 import Control.Monad
 import Control.Monad.Catch (MonadMask, MonadThrow)
 import Control.Monad.IO.Unlift
+import Control.Monad.Logger
+import Control.Monad.Reader
 import Control.Monad.Trans.Control (MonadBaseControl)
 import qualified Data.Aeson as A
 import Data.ByteString.Lazy.Char8 as BL
 import qualified Data.HashMap.Strict as HM
 import qualified Data.List as L
+import Data.Map (Map)
 import Data.String.Interpolate
 import Data.Text as T
 import Data.Text.IO as T
@@ -20,6 +24,7 @@ import System.FilePath
 import Test.Sandwich
 import Test.Sandwich.Logging
 import TestLib.Aeson
+import TestLib.JupyterTypes
 import TestLib.NixRendering
 import TestLib.NixTypes
 import TestLib.Types
@@ -45,16 +50,39 @@ introduceJupyterRunner = introduceWith [i|Jupyter runner|] jupyterRunner $ \acti
 parseJson ((flip (V.!?) 0) -> Just (A.Object (HM.lookup "outputs" -> Just (A.Object (HM.lookup "out" -> Just (A.String t)))))) = Just t
 parseJson _ = Nothing
 
-testKernelStdout :: (
+type HasJupyterRunnerAndNix context m = (
   HasJupyterRunner context
   , HasNixEnvironment context
   , HasBaseContext context
-  , MonadIO m
   , MonadBaseControl IO m
   , MonadUnliftIO m
   , MonadThrow m
-  ) => Text -> Text -> Text -> SpecFree context m ()
+  , MonadFail m
+  )
+
+testKernelStdout :: HasJupyterRunnerAndNix context m => Text -> Text -> Text -> SpecFree context m ()
 testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ do
+  runKernelCode kernel code $ \notebookFile outputNotebookFile outFile errFile -> do
+    doesFileExist outFile >>= \case
+      True -> liftIO (T.readFile outFile) >>= (`shouldBe` desired)
+      False -> "" `shouldBe` desired
+
+testNotebookDisplayDataOutputs :: HasJupyterRunnerAndNix context m => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
+testNotebookDisplayDataOutputs kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ do
+  runKernelCode kernel code $ \notebookFile outputNotebookFile outFile errFile -> do
+    liftIO (A.eitherDecodeFileStrict outputNotebookFile) >>= \case
+      Left err -> expectationFailure [i|Failed to decode notebook '#{notebookFile}': #{err}|]
+      Right nb@(JupyterNotebook {..}) -> do
+        let outputs = mconcat [codeOutputs | CodeCell {..} <- notebookCells]
+        let displayDatas = [displayDataData | DisplayDataOutput {..} <- outputs]
+        displayDatas `shouldBe` desired
+
+runKernelCode :: (
+  HasJupyterRunnerAndNix context m
+  , MonadReader context m
+  , MonadLoggerIO m
+  ) => Text -> Text -> (FilePath -> FilePath -> FilePath -> FilePath -> m b) -> m b
+runKernelCode kernel code cb = do
   nixEnv <- getContext nixEnvironment
   let jupyterPath = nixEnv </> "lib" </> "codedown"
   debug [i|Got jupyterPath: #{jupyterPath}|]
@@ -89,9 +117,8 @@ testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] 
         }
   createProcessWithLogging cp >>= waitForProcess >>= (`shouldBe` ExitSuccess)
 
-  doesFileExist outFile >>= \case
-    True -> liftIO (T.readFile outFile) >>= (`shouldBe` desired)
-    False -> "" `shouldBe` desired
+  cb notebook (runDir </> "out.ipynb") outFile errFile
+
 
 notebookWithCode kernel code = A.object [
   ("nbformat", A.Number 4)

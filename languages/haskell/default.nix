@@ -43,7 +43,7 @@ let
   };
 
   compilers = {
-    ghc865 = haskell.packages.ghc865Binary;
+    # ghc865 = haskell.packages.ghc865Binary;
     ghc884 = haskell.packages.ghc884;
     ghc8107 = haskell.packages.ghc8107;
     ghc902 = haskell.packages.ghc902;

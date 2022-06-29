@@ -36,6 +36,7 @@ dependencies:
 - lsp-types
 - monad-control
 - monad-logger
+- mtl
 - optparse-applicative
 - sandwich
 - string-interpolate
