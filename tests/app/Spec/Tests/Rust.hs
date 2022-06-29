@@ -11,7 +11,7 @@ import TestLib.NixTypes
 
 kernelSpec = NixKernelSpec {
   nixKernelChannel = "codedown"
-  , nixKernelLanguage = "rust_1_52"
+  , nixKernelLanguage = "rust_1_60"
   , nixKernelDisplayName = Just "Rust"
   , nixKernelPackages = []
   , nixKernelLanguageServers = [nameOnly "rust-analyzer"]
