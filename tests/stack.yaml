@@ -5,3 +5,10 @@ resolver: nightly-2022-02-07
 
 packages:
 - .
+
+extra-deps:
+- git: https://github.com/codedownio/lsp-types.git
+  # nix-sha256: 0svwj79phsh99ca0cxa9a33vrc5a0wi8yp5cf469r0bamyjk54k6
+  commit: 2139db9ec322ccca26ef1649619234bedf41be08
+  subdirs:
+  - lsp-types
