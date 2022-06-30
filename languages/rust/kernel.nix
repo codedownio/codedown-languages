@@ -2,6 +2,9 @@
 , evcxr
 , attrs
 , extensions
+
+, rustLibSrc
+
 , metaOnly ? false
 }:
 

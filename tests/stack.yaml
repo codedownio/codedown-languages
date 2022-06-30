@@ -10,4 +10,8 @@ extra-deps:
 - git: https://github.com/codedownio/lsp.git
   commit: 2139db9ec322ccca26ef1649619234bedf41be08
   subdirs:
+  - lsp
+  - lsp-test
   - lsp-types
+
+- co-log-core-0.3.1.0@sha256:9794bdedd1391decd0e22bdfe2b11abcb42e6cff7a4531e1f8882890828f4e63,3816

@@ -3,7 +3,53 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    subdir: lsp
+    name: lsp
+    version: 1.5.0.0
+    git: https://github.com/codedownio/lsp.git
+    pantry-tree:
+      size: 1551
+      sha256: 8d13180ceb84b5b0f24ba4df81109dd7300adc5e471579b933a86f5941bbe5c0
+    commit: 2139db9ec322ccca26ef1649619234bedf41be08
+  original:
+    subdir: lsp
+    git: https://github.com/codedownio/lsp.git
+    commit: 2139db9ec322ccca26ef1649619234bedf41be08
+- completed:
+    subdir: lsp-test
+    name: lsp-test
+    version: 0.14.0.3
+    git: https://github.com/codedownio/lsp.git
+    pantry-tree:
+      size: 2061
+      sha256: 415236a1e28d1c93b0f87f0422c86e7becf7be8fc23f557abab628298b0a7b3c
+    commit: 2139db9ec322ccca26ef1649619234bedf41be08
+  original:
+    subdir: lsp-test
+    git: https://github.com/codedownio/lsp.git
+    commit: 2139db9ec322ccca26ef1649619234bedf41be08
+- completed:
+    subdir: lsp-types
+    name: lsp-types
+    version: 1.5.0.0
+    git: https://github.com/codedownio/lsp.git
+    pantry-tree:
+      size: 4160
+      sha256: 7b78d53b788fb50863395c75d209619f6150102c8ec6ee278ccc3408de0b1777
+    commit: 2139db9ec322ccca26ef1649619234bedf41be08
+  original:
+    subdir: lsp-types
+    git: https://github.com/codedownio/lsp.git
+    commit: 2139db9ec322ccca26ef1649619234bedf41be08
+- completed:
+    hackage: co-log-core-0.3.1.0@sha256:9794bdedd1391decd0e22bdfe2b11abcb42e6cff7a4531e1f8882890828f4e63,3816
+    pantry-tree:
+      size: 584
+      sha256: d4cc089c40c5052ee02f91eafa567e0a239908aabc561dfa6080ba3bfc8c25bd
+  original:
+    hackage: co-log-core-0.3.1.0@sha256:9794bdedd1391decd0e22bdfe2b11abcb42e6cff7a4531e1f8882890828f4e63,3816
 snapshots:
 - completed:
     size: 634925

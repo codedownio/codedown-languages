@@ -56,9 +56,10 @@ listToAttrs (map (x:
           (callPackage ./kernel.nix {
             inherit attrs extensions;
             evcxr = pkgs.evcxr.override {
-              # rustPlatform = rustPackages.rustPlatform;
-              # cargo = rustPackages.cargo;
+              rustPlatform = rustPackages.rustPlatform;
+              cargo = rustPackages.cargo;
             };
+            rustLibSrc = rustPackages.rustPlatform.rustLibSrc;
           })
 
           (callPackage ./mode_info.nix { inherit attrs extensions; })
