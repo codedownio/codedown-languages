@@ -107,6 +107,7 @@ runKernelCode kernel code cb = do
   let cp = (proc jr ["notebook.ipynb", "out.ipynb"
                     , "--stdout-file", outFile
                     , "--stderr-file", errFile
+                    , "--start-timeout", "30"
                     , "-k", T.unpack kernel
                     ]) {
         env = Just [
