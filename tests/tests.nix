@@ -1,6 +1,6 @@
 { mkDerivation, aeson, aeson-qq, base, bytestring, containers
 , data-default, directory, exceptions, filepath, hpack, lens, lib
-, lsp-test, lsp-types, monad-control, monad-logger
+, lsp-test, lsp-types, monad-control, monad-logger, mtl
 , optparse-applicative, sandwich, string-interpolate, text
 , unliftio, unliftio-core, unordered-containers, vector
 }:
@@ -13,15 +13,15 @@ mkDerivation {
   libraryHaskellDepends = [
     aeson aeson-qq base bytestring containers data-default directory
     exceptions filepath lens lsp-test lsp-types monad-control
-    monad-logger optparse-applicative sandwich string-interpolate text
-    unliftio unliftio-core unordered-containers vector
+    monad-logger mtl optparse-applicative sandwich string-interpolate
+    text unliftio unliftio-core unordered-containers vector
   ];
   libraryToolDepends = [ hpack ];
   executableHaskellDepends = [
     aeson aeson-qq base bytestring containers data-default directory
     exceptions filepath lens lsp-test lsp-types monad-control
-    monad-logger optparse-applicative sandwich string-interpolate text
-    unliftio unliftio-core unordered-containers vector
+    monad-logger mtl optparse-applicative sandwich string-interpolate
+    text unliftio unliftio-core unordered-containers vector
   ];
   executableToolDepends = [ sandwich ];
   prePatch = "hpack";
