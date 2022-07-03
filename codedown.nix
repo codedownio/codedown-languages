@@ -17,6 +17,8 @@ let
 in
 
 rec {
+  searcher = common.searcher;
+
   nixpkgsSearcher = common.searcher pkgs;
 
   spellchecker = callPackage ./language_servers/markdown-spellcheck-lsp.nix {};
