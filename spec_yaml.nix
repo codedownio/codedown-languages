@@ -6,7 +6,6 @@ with lib;
 
 {
   channels
-, overlays
 , shells
 , exporters ? []
 , repls ? {}
@@ -15,8 +14,6 @@ with lib;
 , ...
 }: writeTextDir "lib/codedown/spec.yaml" (lib.generators.toYAML {} {
   channels = lib.mapAttrsToList (name: value: value // { inherit name; }) channels;
-
-  overlays = lib.mapAttrsToList (name: value: value // { inherit name; }) overlays;
 
   shells = map (x: {
     channel = x.channel;
