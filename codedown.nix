@@ -29,14 +29,14 @@ rec {
     bash = callPackage ./shells/bash {};
   };
   availableShells = shells;
-  shellsSearcher = common.searcher' "codedown.shells." shells;
+  shellsSearcher = common.searcher' "shells." shells;
 
   exporters = {
     nbconvert-small = callPackage ./exporters/nbconvert.nix { size = "small"; };
     nbconvert-large = callPackage ./exporters/nbconvert.nix { size = "large"; };
   };
   availableExporters = exporters;
-  exportersSearcher = common.searcher' "codedown.exporters." exporters;
+  exportersSearcher = common.searcher' "exporters." exporters;
 
   # Languages
   # First argument controls whether attributes get filtered to the valid ones.
@@ -106,9 +106,9 @@ rec {
       icon = shell.contents.icon;
     };
 
-    shells = filter (x: lib.hasPrefix "codedown.shells." x.attr) otherPackages;
+    shells = filter (x: lib.hasPrefix "shells." x.attr) otherPackages;
 
-    exporters = filter (x: lib.hasPrefix "codedown.exporters." x.attr) otherPackages;
+    exporters = filter (x: lib.hasPrefix "exporters." x.attr) otherPackages;
     exporterInfos = concatMap (exporter: exporter.contents.meta.exporterInfos) exporters;
 
     repls =
