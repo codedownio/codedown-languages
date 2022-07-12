@@ -23,6 +23,6 @@ common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/haskell-h
   attrs = ["haskell"];
   type = "stream";
   primary = true;
-  args = ["${haskell-language-server}/bin/haskell-language-server"];
+  args = ["${haskell-language-server}/bin/haskell-language-server" "--lsp"];
   env = {};
 }])
