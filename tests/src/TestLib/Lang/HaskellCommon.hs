@@ -10,6 +10,7 @@ import qualified Data.Vector as V
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.JupyterTypes
+import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 
@@ -18,13 +19,19 @@ haskellCommonTests :: Text -> TopSpec
 haskellCommonTests lang = describe [i|Haskell #{lang}|] $ introduceNixEnvironment [kernelSpec] [] "Haskell" $ introduceJupyterRunner $ do
   testNotebookDisplayDataOutputs lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
 
+  testDiagnostics "haskell-language-server" "Foo.hs" [__i|module Foo where
+
+                                                          foo = 42
+                                                         |] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics []
+
   where
     kernelSpec = NixKernelSpec {
       nixKernelChannel = "codedown"
       , nixKernelLanguage = lang
       , nixKernelDisplayName = Just "Haskell"
       , nixKernelPackages = []
-      , nixKernelLanguageServers = []
+      , nixKernelLanguageServers = [nameOnly "haskell-language-server"]
       , nixKernelExtraJupyterConfig = Nothing
       , nixKernelMeta = Nothing
       , nixKernelIcon = Nothing

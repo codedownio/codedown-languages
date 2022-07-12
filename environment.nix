@@ -61,7 +61,7 @@ codedown.mkCodeDownEnvironment {
       language = "haskell-ghc8107";
       args = {
         packages = ["aeson"];
-        languageServers = [];
+        languageServers = ["haskell-language-server"];
       };
     })
 
@@ -70,7 +70,7 @@ codedown.mkCodeDownEnvironment {
       language = "haskell-ghc902";
       args = {
         packages = ["aeson"];
-        languageServers = [];
+        languageServers = ["haskell-language-server"];
       };
     })
 

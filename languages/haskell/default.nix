@@ -6,10 +6,6 @@
 , pkgs
 
 , haskell
-, haskell-language-server
-, haskell-nix
-, ghc-boot-packages
-, filterToValid ? false
 , ltsOnly ? true
 }:
 
@@ -19,12 +15,12 @@ let
   common = callPackage ../common.nix {};
   util = callPackage ./util.nix {};
 
-  allLanguageServerOptions = ghc: kernelName: {
+  allLanguageServerOptions = snapshot: ghc: kernelName: {
     haskell-language-server = callPackage ./language-server-hls/config.nix {
       inherit kernelName;
       haskell-language-server = stdenv.mkDerivation {
         pname = "haskell-language-server-wrapped";
-        version = haskell-language-server.version;
+        version = snapshot.haskell-language-server.version;
 
         buildInputs = [makeWrapper];
 
@@ -32,12 +28,12 @@ let
         dontConfigure = true;
         buildPhase = ''
           mkdir -p $out/bin
-          makeWrapper ${haskell-language-server}/bin/haskell-language-server $out/bin/haskell-language-server \
+          makeWrapper ${ghc}/bin/haskell-language-server $out/bin/haskell-language-server \
                       --suffix PATH ':' ${ghc}/bin
         '';
         dontInstall = true;
 
-        inherit (haskell-language-server) meta;
+        inherit (snapshot.haskell-language-server) meta;
       };
     };
   };
@@ -84,7 +80,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
         let meta = (attrByPath ["components" "library" "meta"] null value); in
         if meta == null then value else value // { inherit meta; }) packageOptions);
 
-      languageServerOptions = allLanguageServerOptions (snapshot.ghcWithPackages (ps: [])) "haskell";
+      languageServerOptions = allLanguageServerOptions snapshot (snapshot.ghcWithPackages (ps: [])) "haskell";
       languageServerSearch = common.searcher languageServerOptions;
 
       settingsSchema = [];
@@ -100,7 +96,11 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
       }:
         let
           settingsToUse = defaultSettings // settings;
-          ghc = snapshot.ghcWithPackages (ps: [ps.directory] ++ (map (x: builtins.getAttr x ps) packages));
+          ghc = snapshot.ghcWithPackages (ps:
+            [ps.directory]
+            ++ (map (x: builtins.getAttr x ps) packages)
+            ++ (if any (x: x == "haskell-language-server") languageServers then [ps.haskell-language-server] else [])
+          );
 
         in symlinkJoin {
           name = meta.baseName;
@@ -118,7 +118,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [ghc])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions ghc meta.baseName)) languageServers))
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions snapshot ghc meta.baseName)) languageServers))
           ;
 
           passthru = {

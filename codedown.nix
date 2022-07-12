@@ -68,9 +68,8 @@ rec {
 
       in
         {
-          inherit filterToValid;
-          haskell-nix = (import nixpkgsSrc (haskellNix.nixpkgsArgs // { inherit system; })).haskell-nix;
-          ghc-boot-packages = (import nixpkgsSrc (haskellNix.nixpkgsArgs // { inherit system;})).ghc-boot-packages;
+          # haskell-nix = (import nixpkgsSrc (haskellNix.nixpkgsArgs // { inherit system; })).haskell-nix;
+          # ghc-boot-packages = (import nixpkgsSrc (haskellNix.nixpkgsArgs // { inherit system;})).ghc-boot-packages;
         }))
     (callPackage ./languages/julia {})
     (callPackage ./languages/octave {})
