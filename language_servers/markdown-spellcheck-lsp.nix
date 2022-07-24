@@ -27,7 +27,7 @@ let
 
   server = (callPackage ./markdown-spellcheck-lsp {
     nodejs = nodejs-14_x;
-  })."markdown-spellcheck-lsp-git+https://github.com/codedownio/markdown-spellcheck-lsp.git#f047c58b51ab93bbec54120c508728acc02c82c9";
+  })."markdown-spellcheck-lsp-git+https://github.com/codedownio/markdown-spellcheck-lsp.git#d6832cf474bc382bc735a452a071ed2bf6e1828b";
 
   customHunspell = hunspellWithDicts [
     hunspellDicts.en-us
