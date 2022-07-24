@@ -19,10 +19,7 @@ otherPackages = [
 tests :: TopSpec
 tests = describe "Spellchecker" $ introduceNixEnvironment [] otherPackages "Python 3" $ do
   testDiagnostics "spellchecker" "test.md" [i|\# This is mispelled|] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics []
-
-    -- (Range (Position 3 8) (Position 3 8), Just (InR "W292"))
-    -- (Range (Position 3 0) (Position 3 8), Just (InR "E303"))
+    assertDiagnosticRanges diagnostics [(Range (Position 0 10) (Position 0 19), Nothing)]
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
