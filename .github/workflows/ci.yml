@@ -13,7 +13,13 @@ jobs:
       fail-fast: false
 
     steps:
-    - name: Tests
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        token: ${{ secrets.ACCESS_TOKEN }}
+        persist-credentials: false
+
+    - name: Run tests
       run: |
         cd tests
         stack run -- --print
