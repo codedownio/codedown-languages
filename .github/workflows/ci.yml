@@ -32,5 +32,5 @@ jobs:
         ./result/bin/tests-exe \
           --print-failures \
           --fixed-root $TEST_ROOT \
-          -v 200
+          -v 200 --debug
         # --markdown-summary $GITHUB_STEP_SUMMARY
