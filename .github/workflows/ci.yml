@@ -1,67 +1,19 @@
-{
-  "jobs": {
-    "tests": {
-      "name": "${{matrix.derivation}}",
-      "runs-on": "self-hosted",
-      "steps": [
-        {
-          "uses": "actions/checkout@v2",
-          "with": {
-            "persist-credentials": false,
-            "submodules": "recursive"
-          }
-        },
-        {
-          "name": "Test",
-          "run": "set -eo pipefail\n\nderivation=${{matrix.derivation}}\necho \"Got derivation: $derivation\"\n\noutput=$(nix build .#checks.x86_64-linux.${derivation} --no-link --json --extra-experimental-features nix-command --extra-experimental-features flakes | jq -r '.[0].outputs.out')\necho \"Got output: $output\"\n\nif [[ -f \"$output\" && -x $(realpath \"$output\") ]]; then\n  echo \"Output is executable!\"\n  $output\nfi\n"
-        }
-      ],
-      "strategy": {
-        "fail-fast": false,
-        "matrix": {
-          "include": [
-            {
-              "derivation": "bash-build-environment"
-            },
-            {
-              "derivation": "bash-run-code"
-            },
-            {
-              "derivation": "cpp-build-environment"
-            },
-            {
-              "derivation": "cpp-run-code"
-            },
-            {
-              "derivation": "haskell-build-environment"
-            },
-            {
-              "derivation": "haskell-run-code"
-            },
-            {
-              "derivation": "julia-build-environment"
-            },
-            {
-              "derivation": "julia-run-code"
-            },
-            {
-              "derivation": "python-build-environment"
-            },
-            {
-              "derivation": "python-run-code"
-            }
-          ]
-        }
-      }
-    }
-  },
-  "name": "ci",
-  "on": {
-    "pull_request": {},
-    "push": {
-      "branches": [
-        "main"
-      ]
-    }
-  }
-}
+name: codedown-languages
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  test:
+    name: test
+    runs-on: self-hosted
+    strategy:
+      fail-fast: false
+
+    steps:
+    - name: Tests
+      run: |
+        cd tests
+        stack run -- --print
