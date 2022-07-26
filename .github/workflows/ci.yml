@@ -9,6 +9,10 @@ jobs:
   test:
     name: test
     runs-on: self-hosted
+
+    env:
+      TEST_ROOT: /home/tester/test_runs/${{github.repository}}_${{github.workflow}}_${{github.run_number}}
+
     strategy:
       fail-fast: false
 
@@ -19,7 +23,15 @@ jobs:
         token: ${{ secrets.ACCESS_TOKEN }}
         persist-credentials: false
 
+    - name: Build tests
+      run: |
+        cd tests
+        nix build
+
     - name: Run tests
       run: |
         cd tests
-        stack run -- --print
+        ./result/bin/tests-exe \
+          --print-failures \
+          --fixed-root $TEST_ROOT \
+          --markdown-summary $GITHUB_STEP_SUMMARY

@@ -17,6 +17,7 @@ import Data.String.Interpolate
 import qualified Data.Text as T hiding (filter)
 import Data.Text hiding (filter)
 import qualified Data.Text.IO as T
+import GHC.Int
 import Language.LSP.Test
 import Language.LSP.Types
 import Language.LSP.Types.Lens
@@ -100,7 +101,7 @@ testDiagnostics name filename code cb = it [i|#{name}: #{show code}|] $ do
 
 
 
-assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT context m ()
+assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int |? Text))] -> ExampleT context m ()
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
   where
     ranges = fmap (\x -> (x ^. range, x ^. code)) diagnostics
