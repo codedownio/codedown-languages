@@ -29,6 +29,9 @@ jobs:
     - name: Run tests
       run: |
         cd tests
+
+        export NIX_PATH=nixpkgs=$(nix eval --raw .#nixpkgsPath.x86_64-linux)
+
         ./result/bin/tests-exe \
           --print-failures \
           --fixed-root $TEST_ROOT \

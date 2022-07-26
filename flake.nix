@@ -51,9 +51,8 @@
               overlays = {};
             };
 
-            test = pkgs.callPackage ./languages/haskell {};
-
-            testPkgs = pkgs;
+            # test = pkgs.callPackage ./languages/haskell {};
+            # testPkgs = pkgs;
           };
         }
     );

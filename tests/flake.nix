@@ -18,6 +18,8 @@
 
           defaultPackage = packages.tests;
 
+          nixpkgsPath = pkgs.path;
+
           devShell = tests.env;
         }
     );
