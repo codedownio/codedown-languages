@@ -31,5 +31,5 @@ jobs:
         cd tests
         ./result/bin/tests-exe \
           --print-failures \
-          --fixed-root $TEST_ROOT \
-          --markdown-summary $GITHUB_STEP_SUMMARY
+          --fixed-root $TEST_ROOT
+        # --markdown-summary $GITHUB_STEP_SUMMARY
