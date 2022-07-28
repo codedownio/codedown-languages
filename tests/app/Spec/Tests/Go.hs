@@ -14,7 +14,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelLanguage = "go"
   , nixKernelDisplayName = Just "Go"
   , nixKernelPackages = []
-  , nixKernelLanguageServers = []
+  , nixKernelLanguageServers = [nameOnly "go-langserver"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
@@ -27,8 +27,8 @@ tests = describe "Go" $ introduceNixEnvironment [kernelSpec] [] "Go" $ introduce
   testKernelStdout "go" [__i|import("fmt")
                              fmt.Println("hi")|] "hi\n"
 
-  -- testDiagnostics "" "test.go" [__i||] $ \diagnostics -> do
-  --   assertDiagnosticRanges diagnostics []
+  testDiagnostics "go-langserver" "test.go" [__i||] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics []
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests

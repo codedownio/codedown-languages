@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE NumericUnderscores #-}
 
 module TestLib.LSP where
 
@@ -20,12 +21,17 @@ import qualified Data.Text.IO as T
 import GHC.Int
 import Language.LSP.Test
 import Language.LSP.Types
+import qualified Language.LSP.Types.Capabilities as C
 import Language.LSP.Types.Lens
 import System.FilePath
+import System.IO
 import Test.Sandwich as Sandwich
 import TestLib.Aeson
 import TestLib.Types
+import UnliftIO.Async
 import UnliftIO.Directory
+import UnliftIO.Environment (getEnvironment)
+import UnliftIO.Process
 import UnliftIO.Temporary
 
 
@@ -82,26 +88,35 @@ testDiagnostics name filename code cb = it [i|#{name}: #{show code}|] $ do
   let lspCommand = T.unpack $ T.unwords (lspConfigArgs config)
   info [i|LSP command: #{lspCommand}|]
 
-  diagnostics <- withTempDirectory currentFolder (T.unpack name) $ \dataDir -> do
-    liftIO $ T.writeFile (dataDir </> filename) code
+  diagnostics <-
+    withTempDirectory currentFolder (T.unpack (name <> "_home")) $ \homeDir -> do
+      withTempDirectory currentFolder (T.unpack name) $ \dataDir -> do
+        liftIO $ T.writeFile (dataDir </> filename) code
 
-    let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
-                            -- , logStdErr = True
-                            -- , logMessages = True
-                            }
+        let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
+                                -- , logStdErr = True
+                                -- , logMessages = True
+                                }
 
-    withRunInIO $ \runInIO -> do
-      runSessionWithConfig sessionConfig lspCommand fullCaps dataDir $ do
-        openDoc filename "python3"
-        diagnostics <- waitForDiagnostics
-        liftIO $ runInIO $ info [i|Got diagnostics: #{A.encode diagnostics}|]
-        return diagnostics
+        withRunInIO $ \runInIO -> do
+          env <- getEnvironment
+          let cleanEnv = [(k, v) | (k, v) <- env, k /= "PATH", k /= "HOME", k /= "GHC_PACKAGE_PATH"]
+          let finalEnv = ("HOME", homeDir) : cleanEnv
+          runInIO $ info [i|finalEnv: #{finalEnv}|]
+          -- let modifyCp cp = cp { env = Just finalEnv }
+          let modifyCp cp = cp { env = Just [] }
+
+          runSessionWithConfig' modifyCp sessionConfig lspCommand fullCaps dataDir $ do
+            openDoc filename name
+            diagnostics <- waitForDiagnostics
+            liftIO $ runInIO $ info [i|Got diagnostics: #{A.encode diagnostics}|]
+            return diagnostics
 
   cb diagnostics
 
 
 
-assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int |? Text))] -> ExampleT context m ()
+assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT context m ()
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
   where
     ranges = fmap (\x -> (x ^. range, x ^. code)) diagnostics

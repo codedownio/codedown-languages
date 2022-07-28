@@ -29,7 +29,8 @@ let
         buildPhase = ''
           mkdir -p $out/bin
           makeWrapper ${ghc}/bin/haskell-language-server $out/bin/haskell-language-server \
-                      --suffix PATH ':' ${ghc}/bin
+                      --set NIX_GHC_LIBDIR "${ghc.out}/lib/${ghc.meta.name}" \
+                      --prefix PATH ':' ${ghc}/bin
         '';
         dontInstall = true;
 
