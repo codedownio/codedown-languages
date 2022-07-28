@@ -12,20 +12,15 @@ let
 
   baseCandidates = [
     "julia"
+    "julia-bin"
     "julia-stable"
     "julia-stable-bin"
-    "julia_10"
-    "julia_10-bin"
-    # "julia_11"
-    # "julia_13"
-    "julia_15"
-    "julia_16"
+
+    "julia-lts"
+    "julia-lts-bin"
+
     "julia_16-bin"
     "julia_17-bin"
-
-    # Some future proofing...
-    "julia_18-bin"
-    "julia_19-bin"
   ];
 
   validCandidate = x:
