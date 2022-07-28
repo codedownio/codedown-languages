@@ -136,6 +136,15 @@ codedown.mkCodeDownEnvironment {
         languageServers = ["rust-analyzer"];
       };
     })
+
+    ({
+      channel = "nixpkgs-unstable";
+      language = "go";
+      args = {
+        packages = [];
+        languageServers = [];
+      };
+    })
   ];
 
   otherPackages = [

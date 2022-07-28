@@ -1,48 +1,65 @@
-with import <nixpkgs> {};
-with pythonPackages;
-with buildGoPackage;
+{ pkgs
+, callPackage
+, lib
+, symlinkJoin
+}:
 
-rec {
-  name = "go";
+let
+  common = callPackage ../common.nix {};
 
-  binaries = [go];
+  baseCandidates = [
+    "go"
+  ];
 
-  kernel = jupyter-kernel.create {
-    definitions = {
-      go = {
-        displayName = "Go";
-        argv = [
-          "${import ./gophernotes.nix}/bin/gophernotes"
-          "{connection_file}"
-        ];
-        language = "go";
-        logo32 = ./logo-32x32.png;
-        logo64 = ./logo-64x64.png;
-        metadata = {
-          codedown = {
-            priority = 1;
+  repls = go: {};
+
+in
+
+with lib;
+
+listToAttrs (map (x:
+  let
+    go = getAttr x pkgs;
+
+    meta = go.meta // {
+      baseName = x;
+      displayName = "Go";
+      version = go.version;
+      icon = ./logo-64x64.png;
+    };
+
+  in {
+    name = x;
+    value = rec {
+      packageOptions = getAttr x packagesLookup;
+      packageSearch = common.searcher packageOptions;
+
+      languageServerOptions = {};
+      languageServerSearch = common.searcher languageServerOptions;
+
+      build = args@{
+        packages ? []
+        , languageServers ? []
+        , attrs ? ["go"]
+        , extensions ? ["clj"]
+        , metaOnly ? false
+      }:
+        symlinkJoin {
+          name = "go";
+          paths = [
+            go
+            (callPackage ./kernel.nix { inherit attrs extensions; })
+            (callPackage ./mode_info.nix { inherit attrs extensions; })
+          ];
+          passthru = {
+            inherit meta packageOptions languageServerOptions;
+            args = args // { baseName = x; };
+            repls = repls go;
           };
         };
-      };
-    };
-  };
 
-  modeInfo = writeTextDir "lib/codedown/go-modes.yaml" (lib.generators.toYAML {} [{
-    attr_name = "go";
-    code_mirror_mode = "go";
-    extensions_to_highlight = ["go"];
-    extensions_to_run = ["go"];
-  }]);
-
-  languageServer = writeTextDir "lib/codedown/go-language-servers.yaml" (lib.generators.toYAML {} [{
-    name = "go";
-    extensions = ["go"];
-    attrs = ["go"];
-    type = "stream";
-    args = ["${import ./language_server.nix}/bin/go-langserver" "start"];
-    initialization_options = {
-      gocodeCompletionEnabled = true;
-      lintTool = "golint";
+      inherit meta;
     };
-  }]);
-}
+  }
+
+) baseCandidates)
