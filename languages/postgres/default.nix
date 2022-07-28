@@ -46,7 +46,7 @@ in
         ;
 
         passthru = {
-          args = args // { baseName = x; };
+          args = args // { baseName = "postgres"; };
           inherit meta packageOptions languageServerOptions;
         };
       };

@@ -1,5 +1,5 @@
 { callPackage
-, buildPythonApplication
+, fetchFromGitHub
 , python3
 , bash
 , attrs
@@ -10,19 +10,19 @@
 let
   common = callPackage ../common.nix {};
 
-  app = buildPythonApplication rec {
+  app = python3.pkgs.buildPythonApplication rec {
     name = "postgres_kernel";
 
     src = fetchFromGitHub {
       owner = "codedownio";
-      repo = "postgres-kernel";
+      repo = "postgres_kernel";
       rev = "523c4f3b7057ca165d7c0407fd8cc865c793be30";
-      sha256 = "1h3m1a5y3shmy4lh4sqmkiv54ja850papsh8gmv3w51gjzh14jsp";
+      sha256 = "sha256-FC+DxR9BmL7yjjDnLhnT3sW38+yPx9GQKqG5cwkMjB0=";
     };
 
-    buildInputs = [ipykernel gcc makeWrapper];
+    # buildInputs = [ipykernel gcc makeWrapper];
 
-    propagatedBuildInputs = [ipykernel gcc];
+    # propagatedBuildInputs = [ipykernel gcc];
 
     buildPhase = "# Dummy build phase";
 
@@ -65,8 +65,8 @@ common.makeJupyterKernelInner metaOnly {
       "{connection_file}"
     ];
     language = "postgres";
-    # logo32 = ./bash.png;
-    # logo64 = ./bash.png;
+    logo32 = null;
+    logo64 = null;
     metadata = {
       codedown = {
         inherit attrs extensions;
