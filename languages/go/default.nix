@@ -2,6 +2,7 @@
 , callPackage
 , lib
 , symlinkJoin
+, go-langserver
 }:
 
 let
@@ -9,6 +10,8 @@ let
 
   baseCandidates = [
     "go"
+    "go_1_17"
+    "go_1_18"
   ];
 
   repls = go: {};
@@ -34,7 +37,9 @@ listToAttrs (map (x:
       packageOptions = getAttr x packagesLookup;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = {};
+      languageServerOptions = {
+        go-langserver = callPackage ./language-server.nix { kernelName = x; };
+      };
       languageServerSearch = common.searcher languageServerOptions;
 
       build = args@{
@@ -47,10 +52,14 @@ listToAttrs (map (x:
         symlinkJoin {
           name = "go";
           paths = [
-            go
-            (callPackage ./kernel.nix { inherit attrs extensions; })
+            (callPackage ./kernel.nix { inherit attrs extensions metaOnly; })
             (callPackage ./mode_info.nix { inherit attrs extensions; })
-          ];
+          ]
+          ++ (if metaOnly then [] else [
+            go
+          ])
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y languageServerOptions) languageServers));
+
           passthru = {
             inherit meta packageOptions languageServerOptions;
             args = args // { baseName = x; };

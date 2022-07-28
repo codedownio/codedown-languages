@@ -2,6 +2,7 @@
 , attrs
 , extensions
 , gophernotes
+, metaOnly
 }:
 
 let
@@ -9,7 +10,7 @@ let
 
 in
 
-common.makeJupyterKernel {
+common.makeJupyterKernelInner metaOnly {
   go = {
     displayName = "Go";
     argv = [

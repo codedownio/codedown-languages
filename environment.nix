@@ -142,7 +142,7 @@ codedown.mkCodeDownEnvironment {
       language = "go";
       args = {
         packages = [];
-        languageServers = [];
+        languageServers = ["go-langserver"];
       };
     })
   ];
