@@ -145,6 +145,15 @@ codedown.mkCodeDownEnvironment {
         languageServers = ["go-langserver"];
       };
     })
+
+    ({
+      channel = "nixpkgs-unstable";
+      language = "postgres";
+      args = {
+        packages = [];
+        languageServers = [];
+      };
+    })
   ];
 
   otherPackages = [
