@@ -11,7 +11,6 @@ codedown.mkCodeDownEnvironment {
 
   kernels = [
     ({
-      channel = "nixpkgs";
       language = "bashInteractive";
       args = {
         packages = [];
@@ -20,7 +19,6 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
-    #   channel = "nixpkgs-unstable";
     #   language = "graphviz";
     #   args = {
     #     packages = [];
@@ -29,7 +27,6 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
-      channel = "nixpkgs";
       language = "clojure";
       args = {
         packages = [];
@@ -38,7 +35,6 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
-    #   channel = "nixpkgs-unstable";
     #   language = "cpp11";
     #   args = {
     #     packages = [];
@@ -48,8 +44,7 @@ codedown.mkCodeDownEnvironment {
     # })
 
     # ({
-    #   channel = "nixpkgs-unstable";
-    #   language = "julia_15";
+    #   language = "julia-stable-bin";
     #   args = {
     #     packages = [];
     #     languageServers = [];
@@ -57,7 +52,6 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
-      channel = "nixpkgs";
       language = "haskell-ghc8107";
       args = {
         packages = ["aeson"];
@@ -66,7 +60,6 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
-      channel = "nixpkgs";
       language = "haskell-ghc902";
       args = {
         packages = ["aeson"];
@@ -74,8 +67,15 @@ codedown.mkCodeDownEnvironment {
       };
     })
 
+    # ({
+    #   language = "haskell-ghc922";
+    #   args = {
+    #     packages = ["aeson"];
+    #     languageServers = ["haskell-language-server"];
+    #   };
+    # })
+
     ({
-      channel = "nixpkgs";
       language = "R";
       args = {
         packages = ["ggplot2"];
@@ -84,7 +84,6 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
-    #   channel = "nixpkgs-unstable";
     #   language = "octave";
     #   args = {
     #     packages = ["arduino"];
@@ -96,7 +95,6 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
-      channel = "nixpkgs-unstable";
       language = "python38";
       args = {
         packages = ["matplotlib" "scipy" "rope"];
@@ -108,7 +106,6 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
-    #   channel = "nixpkgs-unstable";
     #   language = "pypy27";
     #   args = {
     #     packages = [];
@@ -120,7 +117,6 @@ codedown.mkCodeDownEnvironment {
     # })
 
     # ({
-    #   channel = "nixpkgs";
     #   language = "ruby_2_7";
     #   args = {
     #     packages = [];
@@ -129,7 +125,6 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
-      channel = "nixpkgs-unstable";
       language = "rust_1_60";
       args = {
         packages = [];
@@ -138,7 +133,6 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
-      channel = "nixpkgs-unstable";
       language = "go";
       args = {
         packages = [];
@@ -146,14 +140,13 @@ codedown.mkCodeDownEnvironment {
       };
     })
 
-    ({
-      channel = "nixpkgs-unstable";
-      language = "postgres";
-      args = {
-        packages = [];
-        languageServers = [];
-      };
-    })
+    # ({
+    #   language = "postgres";
+    #   args = {
+    #     packages = [];
+    #     languageServers = [];
+    #   };
+    # })
   ];
 
   otherPackages = [

@@ -96,7 +96,6 @@ rec {
                            kernel.overrideAttrs (old: {
                              passthru = old.passthru // {
                                language = x.language;
-                               channel = x.channel;
                              };
                            })) kernels;
 

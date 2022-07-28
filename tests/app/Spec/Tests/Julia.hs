@@ -10,7 +10,7 @@ import TestLib.NixTypes
 
 kernelSpec = NixKernelSpec {
   nixKernelChannel = "codedown"
-  , nixKernelLanguage = "julia_15"
+  , nixKernelLanguage = "julia-stable-bin"
   , nixKernelDisplayName = Just "Julia"
   , nixKernelPackages = []
   , nixKernelLanguageServers = []
