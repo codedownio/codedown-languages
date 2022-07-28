@@ -7,6 +7,7 @@ import qualified Data.Map as M
 import Data.String.Interpolate
 import Data.Text
 import qualified Data.Vector as V
+import Language.LSP.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.JupyterTypes
@@ -20,10 +21,9 @@ haskellCommonTests lang = describe [i|Haskell #{lang}|] $ introduceNixEnvironmen
   testNotebookDisplayDataOutputs lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
 
   testDiagnostics "haskell-language-server" "Foo.hs" [__i|module Foo where
-
-                                                          foo = 42
-                                                         |] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics []
+                                                          foo = bar
+                                                          |] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
   where
     kernelSpec = NixKernelSpec {
