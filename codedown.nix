@@ -48,6 +48,7 @@ rec {
     (callPackage ./languages/clojure {})
     (callPackage ./languages/cpp {})
     (callPackage ./languages/dot {})
+    (callPackage ./languages/go {})
     (callPackage ./languages/haskell (
       let
         # This must be chosen to match haskellNix.sources.nixpkgs!

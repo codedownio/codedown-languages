@@ -1,4 +1,4 @@
-{ config
+{ callPackage
 , lib
 , pkgs
 , kernelName
@@ -6,7 +6,7 @@
 }:
 
 let
-  common = callPackage ../../common.nix {};
+  common = callPackage ../common.nix {};
 
 in
 
