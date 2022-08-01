@@ -1,7 +1,10 @@
 {-# LANGUAGE GADTs #-}
 
 module TestLib.Contexts.PostgresqlDatabase (
-  PostgresDatabaseTestContext (..)
+  introducePostgres
+  , introducePostgres'
+
+  , PostgresDatabaseTestContext (..)
   , withPostgresDatabase
 
   , createPostgresDatabase
@@ -14,11 +17,16 @@ import Control.Monad.IO.Unlift
 import Control.Monad.Logger
 import Control.Monad.Reader
 import Control.Monad.Trans.Control (MonadBaseControl)
+import Control.Retry
 import Data.List as L
 import Data.Map as M
 import Data.Maybe
+import Data.Pool
 import Data.String.Interpolate
 import Data.Text as T
+import qualified Database.PostgreSQL.LibPQ as LPQ
+import qualified Database.PostgreSQL.Simple as PGS
+import qualified Database.PostgreSQL.Simple.Internal as PGS
 import GHC.Stack
 import Network.Socket (PortNumber)
 import Safe
@@ -29,6 +37,41 @@ import Test.Sandwich
 import UnliftIO.Async
 import UnliftIO.Concurrent
 import UnliftIO.Exception
+
+
+-- * Labels
+
+db :: Label "postgresDb" (Pool PGS.Connection, PostgresDatabaseTestContext)
+db = Label
+
+type HasPostgresDbLabel context = HasLabel context "postgresDb" (Pool PGS.Connection, PostgresDatabaseTestContext)
+
+-- * Introduce functions
+
+introducePostgres :: (MonadMask m, MonadBaseControl IO m, MonadUnliftIO m, HasBaseContext context)
+  => Maybe Text -> SpecFree (LabelValue "postgresDb" (Pool PGS.Connection, PostgresDatabaseTestContext) :> context) m () -> SpecFree context m ()
+introducePostgres = introducePostgres' mempty
+
+introducePostgres' :: (MonadMask m, MonadBaseControl IO m, MonadUnliftIO m, HasBaseContext context)
+  => Map Text Text -> Maybe Text -> SpecFree (LabelValue "postgresDb" (Pool PGS.Connection, PostgresDatabaseTestContext) :> context) m () -> SpecFree context m ()
+introducePostgres' labels maybeContainerName = introduceWith "Postgres" db $ \cb ->
+  withPostgresDatabase labels maybeContainerName $ \ctx@(PostgresDatabaseTestContext {..}) -> do
+    let databaseConfig = PostgresDatabaseConfig {
+          databaseHostname = postgresDatabaseLocalHostname
+          , databasePort = postgresDatabaseLocalPort
+          , databaseUsername = postgresDatabaseUsername
+          , databasePassword = postgresDatabasePassword
+          , databaseDatabase = postgresDatabaseDatabase
+          }
+
+    let connString = [i|postgresql://#{postgresDatabaseUsername}:#{postgresDatabasePassword}@#{postgresDatabaseLocalHostname}:#{postgresDatabaseLocalPort}/#{postgresDatabaseDatabase}|]
+
+    -- Retry until we connect successfully, since apparently the Docker healthcheck using pg_isready isn't enough
+    let policy = constantDelay 50000 <> limitRetries 50
+    _ <- recoverAll policy (\_ -> liftIO $ PGS.connectPostgreSQL connString)
+
+    withSqlPool 5 databaseConfig $ \(pool, _) ->
+      void $ cb (pool, ctx)
 
 -- * Implementation
 
@@ -176,3 +219,16 @@ numUUIDLetters = L.length uuidLetters
 
 makeUUID' :: MonadIO m => Int -> m Text
 makeUUID' n = T.pack <$> (replicateM n ((uuidLetters L.!!) <$> R.randomRIO (0, numUUIDLetters - 1)))
+
+withSqlPool :: forall m a. (MonadMask m, MonadIO m, MonadUnliftIO m) => Int -> PostgresDatabaseConfig -> ((Pool PGS.Connection, PostgresDatabaseConfig) -> m a) -> m a
+withSqlPool n config action = do
+  bracket (liftIO $ createPool (connectPostgres config) PGS.close 1 30 n)
+          (liftIO . destroyAllResources)
+          (\pool -> action (pool, config))
+
+connectPostgres :: PostgresDatabaseConfig -> IO PGS.Connection
+connectPostgres (PostgresDatabaseConfig {..}) = do
+  let connString = [i|postgresql://#{databaseUsername}:#{unpack databasePassword}@#{databaseHostname}:#{databasePort}/#{databaseDatabase}|]
+  conn <- PGS.connectPostgreSQL connString
+  withMVar (PGS.connectionHandle conn) LPQ.disableNoticeReporting
+  return conn

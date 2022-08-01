@@ -40,8 +40,12 @@ dependencies:
 - mtl
 - network
 - optparse-applicative
+- postgresql-libpq
+- postgresql-simple
 - process
 - random
+- resource-pool
+- retry
 - safe
 - sandwich
 - string-interpolate

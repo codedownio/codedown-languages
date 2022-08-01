@@ -6,6 +6,7 @@ import Data.String.Interpolate
 import Language.LSP.Types
 import Language.LSP.Types.Lens
 import Test.Sandwich as Sandwich
+import TestLib.Contexts.PostgresqlDatabase
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
@@ -28,7 +29,7 @@ kernelSpec = NixKernelSpec {
   }
 
 tests :: TopSpec
-tests = describe "Postgres" $ introduceNixEnvironment [kernelSpec] [] "Postgres" $ introduceJupyterRunner $ do
+tests = describe "Postgres" $ introduceNixEnvironment [kernelSpec] [] "Postgres" $ introduceJupyterRunner $ introducePostgres $ do
   testKernelStdout "postgres" [i|SELECT * FROM FOO|] ""
 
 main :: IO ()
