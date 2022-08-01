@@ -19,6 +19,7 @@ extra-source-files:
 library
   exposed-modules:
       TestLib.Aeson
+      TestLib.Contexts.PostgresqlDatabase
       TestLib.JupyterRunnerContext
       TestLib.JupyterTypes
       TestLib.Lang.HaskellCommon
@@ -43,6 +44,7 @@ library
       LambdaCase
       RecordWildCards
       ViewPatterns
+      NumericUnderscores
   build-depends:
       aeson
     , aeson-qq
@@ -59,7 +61,11 @@ library
     , monad-control
     , monad-logger
     , mtl
+    , network
     , optparse-applicative
+    , process
+    , random
+    , safe
     , sandwich
     , string-interpolate
     , text
@@ -80,6 +86,7 @@ executable tests-exe
       Spec.Tests.Haskell
       Spec.Tests.Julia
       Spec.Tests.Octave
+      Spec.Tests.Postgres
       Spec.Tests.Python3
       Spec.Tests.R
       Spec.Tests.Rust
@@ -98,6 +105,7 @@ executable tests-exe
       LambdaCase
       RecordWildCards
       ViewPatterns
+      NumericUnderscores
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-tool-depends:
       sandwich:sandwich-discover
@@ -117,7 +125,11 @@ executable tests-exe
     , monad-control
     , monad-logger
     , mtl
+    , network
     , optparse-applicative
+    , process
+    , random
+    , safe
     , sandwich
     , string-interpolate
     , tests

@@ -20,6 +20,7 @@ default-extensions:
 - LambdaCase
 - RecordWildCards
 - ViewPatterns
+- NumericUnderscores
 
 dependencies:
 - base >= 4.7 && < 5
@@ -37,7 +38,11 @@ dependencies:
 - monad-control
 - monad-logger
 - mtl
+- network
 - optparse-applicative
+- process
+- random
+- safe
 - sandwich
 - string-interpolate
 - text
