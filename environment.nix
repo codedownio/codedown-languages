@@ -140,13 +140,13 @@ codedown.mkCodeDownEnvironment {
       };
     })
 
-    # ({
-    #   language = "postgres";
-    #   args = {
-    #     packages = [];
-    #     languageServers = [];
-    #   };
-    # })
+    ({
+      language = "postgres";
+      args = {
+        packages = [];
+        languageServers = [];
+      };
+    })
   ];
 
   otherPackages = [

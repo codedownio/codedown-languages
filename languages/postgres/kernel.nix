@@ -10,7 +10,7 @@
 let
   common = callPackage ../common.nix {};
 
-  app = python3.pkgs.buildPythonApplication rec {
+  app = python3.pkgs.buildPythonPackage rec {
     name = "postgres_kernel";
 
     src = fetchFromGitHub {
@@ -20,31 +20,7 @@ let
       sha256 = "sha256-FC+DxR9BmL7yjjDnLhnT3sW38+yPx9GQKqG5cwkMjB0=";
     };
 
-    # buildInputs = [ipykernel gcc makeWrapper];
-
-    # propagatedBuildInputs = [ipykernel gcc];
-
-    buildPhase = "# Dummy build phase";
-
-    # installPhase = ''
-    #   pp=$out/lib/${python.libPrefix}/site-packages
-
-    #   mkdir -p $out/bin
-    #   mkdir -p $pp
-
-    #   cat > $out/bin/jupyter_c_kernel <<EOF
-    #   #!${python}/bin/python
-    #   from ipykernel.kernelapp import IPKernelApp
-    #   from jupyter_c_kernel.kernel import CKernel
-    #   IPKernelApp.launch_instance(kernel_class=CKernel)
-    #   EOF
-    #   chmod 755 $out/bin/jupyter_c_kernel
-
-    #   cp -rv jupyter_c_kernel $pp/
-
-    #   wrapProgram $out/bin/jupyter_c_kernel --suffix C_INCLUDE_PATH : "/home/user/" \
-    #                                         --suffix C_INCLUDE_PATH : "/home/user/deps"
-    # '';
+    propagatedBuildInputs = with python3.pkgs; [jupyter_client psycopg2 tabulate ipykernel];
 
     doCheck = false;
 
@@ -54,15 +30,17 @@ let
     };
   };
 
+  pythonWithApp = python3.withPackages (ps: [app]);
+
 in
 
 common.makeJupyterKernelInner metaOnly {
-  bash = {
+  postgres = {
     displayName = "PostgreSQL";
     argv = [
-      "${app}/bin/todo"
-      "-f"
-      "{connection_file}"
+      "${pythonWithApp}/bin/python"
+      "-m" "postgres_kernel"
+      "-f" "{connection_file}"
     ];
     language = "postgres";
     logo32 = null;
