@@ -3,12 +3,16 @@
 module TestLib.Contexts.PostgresqlDatabase (
   introducePostgres
   , introducePostgres'
+  , postgresDb
+  , HasPostgresDb
 
   , PostgresDatabaseTestContext (..)
   , withPostgresDatabase
 
   , createPostgresDatabase
   , waitForPostgresDatabase
+
+  , postgresConnString
   ) where
 
 import Control.Monad
@@ -18,12 +22,14 @@ import Control.Monad.Logger
 import Control.Monad.Reader
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Control.Retry
+import qualified Data.ByteString.Char8 as BS8
 import Data.List as L
 import Data.Map as M
 import Data.Maybe
 import Data.Pool
 import Data.String.Interpolate
 import Data.Text as T
+import qualified Data.Text.Encoding as T
 import qualified Database.PostgreSQL.LibPQ as LPQ
 import qualified Database.PostgreSQL.Simple as PGS
 import qualified Database.PostgreSQL.Simple.Internal as PGS
@@ -31,6 +37,7 @@ import GHC.Stack
 import Network.Socket (PortNumber)
 import Safe
 import System.Exit
+import System.IO
 import System.Process
 import qualified System.Random as R
 import Test.Sandwich
@@ -41,20 +48,21 @@ import UnliftIO.Exception
 
 -- * Labels
 
-db :: Label "postgresDb" (Pool PGS.Connection, PostgresDatabaseTestContext)
-db = Label
+postgresDb :: Label "postgresDb" (Pool PGS.Connection, PostgresDatabaseTestContext)
+postgresDb = Label
 
-type HasPostgresDbLabel context = HasLabel context "postgresDb" (Pool PGS.Connection, PostgresDatabaseTestContext)
+type HasPostgresDb context = HasLabel context "postgresDb" (Pool PGS.Connection, PostgresDatabaseTestContext)
 
 -- * Introduce functions
 
-introducePostgres :: (MonadMask m, MonadBaseControl IO m, MonadUnliftIO m, HasBaseContext context)
-  => Maybe Text -> SpecFree (LabelValue "postgresDb" (Pool PGS.Connection, PostgresDatabaseTestContext) :> context) m () -> SpecFree context m ()
+introducePostgres :: (
+  HasBaseContext context, MonadMask m, MonadBaseControl IO m, MonadUnliftIO m
+  ) => Maybe Text -> SpecFree (LabelValue "postgresDb" (Pool PGS.Connection, PostgresDatabaseTestContext) :> context) m () -> SpecFree context m ()
 introducePostgres = introducePostgres' mempty
 
 introducePostgres' :: (MonadMask m, MonadBaseControl IO m, MonadUnliftIO m, HasBaseContext context)
   => Map Text Text -> Maybe Text -> SpecFree (LabelValue "postgresDb" (Pool PGS.Connection, PostgresDatabaseTestContext) :> context) m () -> SpecFree context m ()
-introducePostgres' labels maybeContainerName = introduceWith "Postgres" db $ \cb ->
+introducePostgres' labels maybeContainerName = introduceWith "Postgres database" postgresDb $ \cb ->
   withPostgresDatabase labels maybeContainerName $ \ctx@(PostgresDatabaseTestContext {..}) -> do
     let databaseConfig = PostgresDatabaseConfig {
           databaseHostname = postgresDatabaseLocalHostname
@@ -64,11 +72,9 @@ introducePostgres' labels maybeContainerName = introduceWith "Postgres" db $ \cb
           , databaseDatabase = postgresDatabaseDatabase
           }
 
-    let connString = [i|postgresql://#{postgresDatabaseUsername}:#{postgresDatabasePassword}@#{postgresDatabaseLocalHostname}:#{postgresDatabaseLocalPort}/#{postgresDatabaseDatabase}|]
-
     -- Retry until we connect successfully, since apparently the Docker healthcheck using pg_isready isn't enough
     let policy = constantDelay 50000 <> limitRetries 50
-    _ <- recoverAll policy (\_ -> liftIO $ PGS.connectPostgreSQL connString)
+    _ <- recoverAll policy (\_ -> liftIO $ PGS.connectPostgreSQL (T.encodeUtf8 $ postgresConnString ctx))
 
     withSqlPool 5 databaseConfig $ \(pool, _) ->
       void $ cb (pool, ctx)
@@ -110,16 +116,17 @@ createPostgresDatabase labels maybeContainerName = timeAction "create Postgres d
   let username = "test"
   -- TODO: use shell escape on this
   let labelArgs = [[i|-l #{k}=#{v}|] | (k, v) <- M.toList labels]
-  let cmd = [i|docker run -e POSTGRES_PASSWORD=#{password}
-                          -e POSTGRES_USER=#{username}
-                          -p 5432
-                          #{T.unwords labelArgs}
-                          --network #{networkName}
-                          --health-cmd='pg_isready -U #{username}'
-                          --health-interval=100ms
-                          --name #{containerName}
-                          -d postgres:13|]
+  let cmd = [iii|docker run -e POSTGRES_PASSWORD=#{password}
+                            -e POSTGRES_USER=#{username}
+                            -p 5432
+                            #{T.unwords labelArgs}
+                            --network #{networkName}
+                            --health-cmd='pg_isready -U #{username}'
+                            --health-interval=100ms
+                            --name #{containerName}
+                            -d postgres:13|]
 
+  info [i|cmd: #{cmd}|]
   (exitCode, sout, serr) <- liftIO $ readCreateProcessWithExitCode (shell $ T.unpack $ replace "\n" " " cmd) ""
 
   containerID <- case exitCode of
@@ -148,35 +155,10 @@ waitForPostgresDatabase (localHostname, dockerPort, username, password, database
         , postgresDatabaseContainerName = containerName
         }
 
-  -- TODO: might be a good idea to do this here, rather than wrap a retry around the initial migrate later on
   -- waitForSimpleQuery pdtc
 
   return pdtc
 
-
--- withJoinOwnContainerToNetwork :: (
---   HasCallStack, MonadLoggerIO m, MonadBaseControl IO m, MonadUnliftIO m, MonadCatch m
---   ) => DockerState -> Text -> m a -> m a
--- withJoinOwnContainerToNetwork ds networkName action = do
---   maybeOwnContainerID <- liftIO getOwnContainerID >>= \case
---     Left err -> throwIO $ CodeDownException [i|Couldn't get own container ID: #{err}|] (Just callStack)
---     Right x-> return x
---   case maybeOwnContainerID of
---     Just ownContainerID -> do
---       bracket_ (joinContainerNetwork ds ownContainerID networkName)
---                (leaveContainerNetwork ds ownContainerID networkName)
---                action
---     Nothing -> action
-
-
--- waitForSimpleQuery :: forall m. (HasCallStack, MonadLoggerIO m, MonadUnliftIO m, MonadBaseControl IO m) => PostgresDatabaseTestContext -> m ()
--- waitForSimpleQuery pdtc@(PostgresDatabaseTestContext {..}) = undefined
-
--- test :: IO ()
--- test = runStdoutLoggingT $ do
---   withPostgresDatabase $ \db -> do
---     info [i|Got Postgres context: #{db}|]
---     void $ liftIO $ BS8.hGetLine stdin
 
 data PostgresDatabaseTestContext = PostgresDatabaseTestContext {
   postgresDatabaseLocalHostname :: Text
@@ -210,6 +192,9 @@ waitForHealth containerID = race (liftIO $ threadDelay 60_000_000) waitForHealth
       case health of
        "\"healthy\"" -> return ()
        _ -> liftIO (threadDelay 100_000) >> loop
+
+postgresConnString :: PostgresDatabaseTestContext -> Text
+postgresConnString (PostgresDatabaseTestContext {..}) = [i|postgresql://#{postgresDatabaseUsername}:#{postgresDatabasePassword}@#{postgresDatabaseLocalHostname}:#{postgresDatabaseLocalPort}/#{postgresDatabaseDatabase}|]
 
 uuidLetters :: [Char]
 uuidLetters = ['a'..'z'] ++ ['0'..'9']

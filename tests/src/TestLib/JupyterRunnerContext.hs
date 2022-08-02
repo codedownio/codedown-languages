@@ -50,24 +50,30 @@ introduceJupyterRunner = introduceWith [i|Jupyter runner|] jupyterRunner $ \acti
 parseJson ((flip (V.!?) 0) -> Just (A.Object (HM.lookup "outputs" -> Just (A.Object (HM.lookup "out" -> Just (A.String t)))))) = Just t
 parseJson _ = Nothing
 
-type HasJupyterRunnerAndNix context m = (
+type HasJupyterRunnerContext context = (
   HasJupyterRunner context
   , HasNixEnvironment context
   , HasBaseContext context
-  , MonadBaseControl IO m
+  )
+
+type JupyterRunnerMonad m = (
+  MonadBaseControl IO m
   , MonadUnliftIO m
   , MonadThrow m
   , MonadFail m
   )
 
-testKernelStdout :: HasJupyterRunnerAndNix context m => Text -> Text -> Text -> SpecFree context m ()
-testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ do
+testKernelStdout :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> Text -> SpecFree context m ()
+testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ testKernelStdout' kernel code desired
+
+testKernelStdout' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> Text -> ExampleT context m ()
+testKernelStdout' kernel code desired = do
   runKernelCode kernel code $ \notebookFile outputNotebookFile outFile errFile -> do
     doesFileExist outFile >>= \case
       True -> liftIO (T.readFile outFile) >>= (`shouldBe` desired)
       False -> "" `shouldBe` desired
 
-testNotebookDisplayDataOutputs :: HasJupyterRunnerAndNix context m => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
+testNotebookDisplayDataOutputs :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
 testNotebookDisplayDataOutputs kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ do
   runKernelCode kernel code $ \notebookFile outputNotebookFile outFile errFile -> do
     liftIO (A.eitherDecodeFileStrict outputNotebookFile) >>= \case
@@ -78,7 +84,7 @@ testNotebookDisplayDataOutputs kernel code desired = it [i|#{kernel}: #{code} ->
         displayDatas `shouldBe` desired
 
 runKernelCode :: (
-  HasJupyterRunnerAndNix context m
+  (HasJupyterRunnerContext context, JupyterRunnerMonad m)
   , MonadReader context m
   , MonadLoggerIO m
   ) => Text -> Text -> (FilePath -> FilePath -> FilePath -> FilePath -> m b) -> m b
