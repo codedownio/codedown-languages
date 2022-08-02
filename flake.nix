@@ -33,7 +33,7 @@
 
       in
         rec {
-          packages = codedown // {
+          packages = codedown // (rec {
             haskellCompilers = pkgs.callPackage ./languages/haskell/generate.nix {};
 
             jupyter-runner = with pkgs; let
@@ -51,9 +51,12 @@
               overlays = {};
             };
 
-            # test = pkgs.callPackage ./languages/haskell {};
-            # testPkgs = pkgs;
-          };
+            notebook = with pkgs; python3.pkgs.toPythonModule (
+              python3.pkgs.notebook.overridePythonAttrs(oldAttrs: {
+                makeWrapperArgs = ["--set JUPYTER_PATH ${environment}/lib/codedown"];
+              })
+            );
+          });
         }
     );
 }
