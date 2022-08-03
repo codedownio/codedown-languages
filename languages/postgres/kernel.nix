@@ -16,8 +16,8 @@ let
     src = fetchFromGitHub {
       owner = "codedownio";
       repo = "postgres_kernel";
-      rev = "523c4f3b7057ca165d7c0407fd8cc865c793be30";
-      sha256 = "sha256-FC+DxR9BmL7yjjDnLhnT3sW38+yPx9GQKqG5cwkMjB0=";
+      rev = "62cc2a4182288765436798d7d3fdcb7253460abf";
+      sha256 = "sha256-zd914NgkaBybCKe5jEN4+KfW3rJiQt4CxTuAChxD888=";
     };
 
     propagatedBuildInputs = with python3.pkgs; [jupyter_client psycopg2 tabulate ipykernel];

@@ -35,18 +35,13 @@ kernelSpec = NixKernelSpec {
 tests :: TopSpec
 tests = describe "Postgres tests" $ introduceNixEnvironment [kernelSpec] [] "Postgres" $ introduceJupyterRunner $
   introducePostgres Nothing $ introducePostgresData $ do
-    it "pauses" $ do
-      (_, ctx) <- getContext postgresDb
-      info [i|conn string: #{postgresConnString ctx}|]
-      threadDelay 99999999999999
-
     it "selects from test_table" $ do
       (_, ctx) <- getContext postgresDb
       let connStr = postgresConnString ctx
       info [i|Connection string: #{connStr}|]
-      testKernelStdout' "postgres" [__i|-- connection: #{connStr}
-                                        SELECT * FROM test_table
-                                       |] ""
+      testNotebookDisplayDataOutputs' "postgres" [__i|-- connection: #{connStr}
+                                                      SELECT * FROM test_table
+                                                     |] mempty
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests

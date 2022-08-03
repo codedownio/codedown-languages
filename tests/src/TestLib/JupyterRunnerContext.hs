@@ -74,7 +74,10 @@ testKernelStdout' kernel code desired = do
       False -> "" `shouldBe` desired
 
 testNotebookDisplayDataOutputs :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
-testNotebookDisplayDataOutputs kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ do
+testNotebookDisplayDataOutputs kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ testNotebookDisplayDataOutputs' kernel code desired
+
+testNotebookDisplayDataOutputs' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> ExampleT context m ()
+testNotebookDisplayDataOutputs' kernel code desired = do
   runKernelCode kernel code $ \notebookFile outputNotebookFile outFile errFile -> do
     liftIO (A.eitherDecodeFileStrict outputNotebookFile) >>= \case
       Left err -> expectationFailure [i|Failed to decode notebook '#{notebookFile}': #{err}|]
