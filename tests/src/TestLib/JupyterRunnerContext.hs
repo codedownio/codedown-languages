@@ -77,14 +77,19 @@ testNotebookDisplayDataOutputs :: (HasJupyterRunnerContext context, JupyterRunne
 testNotebookDisplayDataOutputs kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ testNotebookDisplayDataOutputs' kernel code desired
 
 testNotebookDisplayDataOutputs' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> ExampleT context m ()
-testNotebookDisplayDataOutputs' kernel code desired = do
+testNotebookDisplayDataOutputs' kernel code desired = testNotebookDisplayDataOutputs'' kernel code (`shouldBe` desired)
+
+testNotebookDisplayDataOutputs'' :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> ([Map MimeType A.Value] -> ExampleT context m ()) -> ExampleT context m ()
+testNotebookDisplayDataOutputs'' kernel code pred = do
   runKernelCode kernel code $ \notebookFile outputNotebookFile outFile errFile -> do
     liftIO (A.eitherDecodeFileStrict outputNotebookFile) >>= \case
       Left err -> expectationFailure [i|Failed to decode notebook '#{notebookFile}': #{err}|]
       Right nb@(JupyterNotebook {..}) -> do
         let outputs = mconcat [codeOutputs | CodeCell {..} <- notebookCells]
         let displayDatas = [displayDataData | DisplayDataOutput {..} <- outputs]
-        displayDatas `shouldBe` desired
+        pred displayDatas
 
 runKernelCode :: (
   (HasJupyterRunnerContext context, JupyterRunnerMonad m)
