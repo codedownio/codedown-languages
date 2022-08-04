@@ -11,6 +11,7 @@ codedown.mkCodeDownEnvironment {
 
   kernels = [
     ({
+      channel = "codedown";
       language = "bashInteractive";
       args = {
         packages = [];
@@ -19,6 +20,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
+    #   channel = "codedown";
     #   language = "graphviz";
     #   args = {
     #     packages = [];
@@ -27,6 +29,7 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
+      channel = "codedown";
       language = "clojure";
       args = {
         packages = [];
@@ -35,6 +38,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
+    #   channel = "codedown";
     #   language = "cpp11";
     #   args = {
     #     packages = [];
@@ -44,6 +48,7 @@ codedown.mkCodeDownEnvironment {
     # })
 
     # ({
+    #   channel = "codedown";
     #   language = "julia-stable-bin";
     #   args = {
     #     packages = [];
@@ -52,6 +57,7 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
+      channel = "codedown";
       language = "haskell-ghc8107";
       args = {
         packages = ["aeson"];
@@ -60,6 +66,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
+      channel = "codedown";
       language = "haskell-ghc902";
       args = {
         packages = ["aeson"];
@@ -68,6 +75,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
+    #   channel = "codedown";
     #   language = "haskell-ghc922";
     #   args = {
     #     packages = ["aeson"];
@@ -76,6 +84,7 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
+      channel = "codedown";
       language = "R";
       args = {
         packages = ["ggplot2"];
@@ -84,6 +93,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
+    #   channel = "codedown";
     #   language = "octave";
     #   args = {
     #     packages = ["arduino"];
@@ -95,6 +105,7 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
+      channel = "codedown";
       language = "python38";
       args = {
         packages = ["matplotlib" "scipy" "rope"];
@@ -106,6 +117,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
+    #   channel = "codedown";
     #   language = "pypy27";
     #   args = {
     #     packages = [];
@@ -117,6 +129,7 @@ codedown.mkCodeDownEnvironment {
     # })
 
     # ({
+    #   channel = "codedown";
     #   language = "ruby_2_7";
     #   args = {
     #     packages = [];
@@ -125,6 +138,7 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
+      channel = "codedown";
       language = "rust_1_60";
       args = {
         packages = [];
@@ -133,6 +147,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
+      channel = "codedown";
       language = "go";
       args = {
         packages = [];
@@ -141,6 +156,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
+      channel = "codedown";
       language = "postgres";
       args = {
         packages = [];

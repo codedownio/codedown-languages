@@ -95,6 +95,7 @@ rec {
     builtKernels = map (x: let kernel = (getAttr x.language languages).build (x.args // { inherit metaOnly; }); in
                            kernel.overrideAttrs (old: {
                              passthru = old.passthru // {
+                               channel = x.channel;
                                language = x.language;
                              };
                            })) kernels;
