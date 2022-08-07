@@ -4,9 +4,9 @@ import Test.Sandwich
 
 import qualified Spec.Tests as Tests
 
-tests :: TopSpec
+tests :: TopSpecWithOptions' Tests.SpecialOptions
 tests = Tests.tests
 
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs defaultOptions tests
+main = runSandwichWithCommandLineArgs' defaultOptions Tests.specialOptions tests

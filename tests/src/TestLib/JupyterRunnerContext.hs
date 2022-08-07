@@ -47,7 +47,7 @@ introduceJupyterRunner = introduceWith [i|Jupyter runner|] jupyterRunner $ \acti
   createProcessWithLogging cp >>= waitForProcess >>= (`shouldBe` ExitSuccess)
   void $ action runnerPath
 
-parseJson ((flip (V.!?) 0) -> Just (A.Object (HM.lookup "outputs" -> Just (A.Object (HM.lookup "out" -> Just (A.String t)))))) = Just t
+parseJson ((flip (V.!?) 0) -> Just (A.Object (aesonLookup "outputs" -> Just (A.Object (aesonLookup "out" -> Just (A.String t)))))) = Just t
 parseJson _ = Nothing
 
 type HasJupyterRunnerContext context = (

@@ -1,9 +1,9 @@
+{-# LANGUAGE CPP #-}
 
 module TestLib.NixRendering where
 
 import Data.Aeson as A
 import Data.Aeson.TH
-import qualified Data.HashMap.Strict as HM
 import Data.Maybe
 import Data.String.Interpolate
 import Data.Text
@@ -11,6 +11,13 @@ import qualified Data.Text as T
 import Test.Sandwich
 import TestLib.Aeson
 import TestLib.NixTypes
+
+#if MIN_VERSION_aeson(2,0,0)
+import qualified Data.Aeson.Key             as A
+import qualified Data.Aeson.KeyMap          as HM
+#else
+import qualified Data.HashMap.Strict        as HM
+#endif
 
 
 renderNixEnvironment :: FilePath -> NixEnvironment -> Text
@@ -76,9 +83,15 @@ renderNixSrcSpec nixSrcSpec = "{\n" <> (T.intercalate "\n" $ mapMaybe toLine key
     showValue A.Null = "null"
     showValue _ = [i|(throw "Couldn't render expression in NixEnvironment.hs.")|]
 
+#if MIN_VERSION_aeson(2,0,0)
+    toLine :: (A.Key, A.Value) -> Maybe Text
+    toLine (A.toText -> "name", _) = Nothing
+    toLine (A.toText -> k, v) = Just [i|  #{snakeToCamelCase $ T.unpack k} = #{showValue v};|]
+#else
     toLine :: (Text, A.Value) -> Maybe Text
     toLine ("name", _) = Nothing
     toLine (k, v) = Just [i|  #{snakeToCamelCase $ T.unpack k} = #{showValue v};|]
+#endif
 
     quote t = [i|''#{t}''|]
 

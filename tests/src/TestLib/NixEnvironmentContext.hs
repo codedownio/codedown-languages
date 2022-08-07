@@ -10,7 +10,7 @@ import Data.ByteString.Lazy.Char8 as BL
 import qualified Data.HashMap.Strict as HM
 import Data.String.Interpolate
 import Data.Text as T
-import System.Directory (getSymbolicLinkTarget)
+import qualified System.Directory as SD
 import System.Exit
 import System.FilePath
 import Test.Sandwich
@@ -65,15 +65,15 @@ introduceNixEnvironment kernels otherPackages label  = introduceWith [i|#{label}
                                                , "-o", linkPath
                                                ])
       >>= waitForProcess >>= (`shouldBe` ExitSuccess)
-    liftIO $ getSymbolicLinkTarget linkPath
+    liftIO $ SD.getSymbolicLinkTarget linkPath
 
   void $ action built
 
 parseNixpkgsSource :: A.Object -> Maybe Locked
-parseNixpkgsSource (HM.lookup "locks" ->
-                     Just (A.Object (HM.lookup "nodes" ->
-                                      Just (A.Object (HM.lookup "nixpkgs" ->
-                                                       Just (A.Object (HM.lookup "locked" -> Just (A.fromJSON -> A.Success (x :: Locked))))
+parseNixpkgsSource (aesonLookup "locks" ->
+                     Just (A.Object (aesonLookup "nodes" ->
+                                      Just (A.Object (aesonLookup "nixpkgs" ->
+                                                       Just (A.Object (aesonLookup "locked" -> Just (A.fromJSON -> A.Success (x :: Locked))))
                                                      ))
                                     ))
                    ) = Just x

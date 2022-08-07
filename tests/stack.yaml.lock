@@ -52,7 +52,7 @@ packages:
     hackage: co-log-core-0.3.1.0@sha256:9794bdedd1391decd0e22bdfe2b11abcb42e6cff7a4531e1f8882890828f4e63,3816
 snapshots:
 - completed:
-    size: 634925
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2022/2/7.yaml
-    sha256: eccf3b87cf7521eb8e7704c2efbb579d2074a0a76c7b961e0f07b98b3079ada5
-  original: nightly-2022-02-07
+    size: 619161
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/19/17.yaml
+    sha256: 7f47507fd037228a8d23cf830f5844e1f006221acebdd7cb49f2f5fb561e0546
+  original: lts-19.17
