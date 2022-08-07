@@ -31,8 +31,8 @@ in
     build = args@{
       packages ? []
       , languageServers ? []
-      , attrs ? []
-      , extensions ? []
+      , attrs ? ["postgres"]
+      , extensions ? ["sql"]
       , metaOnly ? false
     }:
       symlinkJoin {
