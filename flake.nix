@@ -5,7 +5,7 @@
   inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/18de53ca965bd0678aaf09e5ce0daae05c58355a";
 
   # When updating this, make sure to run ./update.sh to generate the new compiler set!
-  inputs.haskellNixSrc.url = "github:input-output-hk/haskell.nix/5c49987f99a8b12961979e32fcefec163ce0ef52";
+  inputs.haskellNixSrc.url = "github:input-output-hk/haskell.nix/9709b2d05acb8b2d1451e5d7593756ca3a1be7d7";
 
   inputs.ihaskell.url = "github:IHaskell/IHaskell/10c93054debd329a22872c93df21ece5165d74ab";
 
