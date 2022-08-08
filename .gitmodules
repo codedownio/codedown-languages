@@ -1,6 +1,3 @@
-[submodule "languages/haskell/language-server-hls/haskell-notebook-language-server"]
-	path = languages/haskell/language-server-hls/haskell-notebook-language-server
-	url = git@github.com:codedownio/haskell-notebook-language-server.git
 [submodule "languages/postgres/postgres_kernel"]
 	path = languages/postgres/postgres_kernel
 	url = git@github.com:codedownio/postgres_kernel.git

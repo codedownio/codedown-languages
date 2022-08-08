@@ -18,14 +18,16 @@ let
   hnlsSrc = fetchFromGitHub {
     owner = "codedownio";
     repo = "haskell-notebook-language-server";
-    rev = "55becca06f0c3a0a01773c2e61d6ebaa4896b9ec";
-    sha256 = "sha256-0h/Co3mIu1cMBEYlPag18qxhq+n78LkqxC6Dk+3TqmQ=";
+    rev = "725376a278f2975b35d0ccbe28e58a62bd94cc2a";
+    sha256 = "sha256-TGbrhZsU2wcBKjb1I1ic3UyKdNinIfxQXT0FN7JuUwI=";
   };
 
-  hnls = callPackage hnlsSrc {
+  hnls = (callPackage hnlsSrc {
     haskellNix = null;
     inherit pkgs;
-  };
+  });
+
+  exe = hnls.haskell-notebook-language-server.components.exes.haskell-notebook-language-server;
 
 in
 
@@ -40,6 +42,10 @@ common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/haskell-h
   attrs = ["haskell"];
   type = "stream";
   primary = true;
-  args = ["${hnls}/bin/haskell-language-server" "--lsp"];
+  args = [
+    "${exe}/bin/haskell-notebook-language-server"
+    "--wrapped-hls" "${haskell-language-server}/bin/haskell-language-server"
+    "--hls-args" "--lsp"
+  ];
   env = {};
 }])
