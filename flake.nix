@@ -4,22 +4,13 @@
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/ce6aa13369b667ac2542593170993504932eb836";
   inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/18de53ca965bd0678aaf09e5ce0daae05c58355a";
 
-  # When updating this, make sure to run ./update.sh to generate the new compiler set!
-  inputs.haskellNixSrc.url = "github:input-output-hk/haskell.nix/9709b2d05acb8b2d1451e5d7593756ca3a1be7d7";
-
-  inputs.ihaskell.url = "github:IHaskell/IHaskell/10c93054debd329a22872c93df21ece5165d74ab";
-
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, haskellNixSrc, ihaskell, flake-utils }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, flake-utils }@inputs:
     # flake-utils.lib.eachDefaultSystem (system:
     flake-utils.lib.eachSystem ["x86_64-linux"] (system:
       let
-        overlays = [
-          haskellNixSrc.outputs.overlay (final: prev: {
-            inherit (pkgs.lib.getAttr system ihaskell.packages) ihaskell-884 ihaskell-8107 ihaskell-902 ihaskell-921;
-          })
-        ];
+        overlays = [];
 
         pkgs = import nixpkgs { inherit system overlays; };
         pkgsUnstable = import nixpkgs-unstable { inherit system overlays; };
@@ -34,8 +25,6 @@
       in
         rec {
           packages = codedown // (rec {
-            haskellCompilers = pkgs.callPackage ./languages/haskell/generate.nix {};
-
             jupyter-runner = with pkgs; let
               pythonEnv = python38.withPackages (ps: with ps; [papermill]);
               packages = [coreutils findutils pythonEnv];
