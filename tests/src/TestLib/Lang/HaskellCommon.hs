@@ -40,11 +40,9 @@ haskellCommonTests lang = describe [i|Haskell #{lang}|] $ introduceNixEnvironmen
   it "does document highlight" $ do
     let filename :: Text = "haskell-language-server"
     let name :: Text = "main.ipynb"
-    withRunInIO $ \runInIO ->
-      runInIO $ withLspSession filename (T.unpack name) documentHighlightCode $ do
-        ident <- openDoc (T.unpack filename) name
-        highlights <- getHighlights ident (Position 0 1)
-        liftIO $ runInIO (highlights `shouldBe` (List []))
+    withRunInIO $ \runInIO -> runInIO $ withLspSession filename (T.unpack name) documentHighlightCode $ do
+      ident <- openDoc (T.unpack filename) name
+      getHighlights ident (Position 0 1) >>= (`shouldBe` (List []))
 
 
 documentHighlightCode = [__i|foo = "hello"

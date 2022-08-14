@@ -117,8 +117,7 @@ withLspSession name filename code doSession = do
       let cleanEnv = [(k, v) | (k, v) <- env, k /= "PATH", k /= "HOME", k /= "GHC_PACKAGE_PATH"]
       let finalEnv = ("HOME", homeDir) : cleanEnv
       info [i|finalEnv: #{finalEnv}|]
-      -- let modifyCp cp = cp { env = Just finalEnv }
-      let modifyCp cp = cp { env = Just [] }
+      let modifyCp cp = cp { env = Just [] } -- Just finalEnv
 
       liftIO $ runSessionWithConfig' modifyCp sessionConfig lspCommand fullCaps dataDir $ do
         doSession
