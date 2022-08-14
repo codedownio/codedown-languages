@@ -69,6 +69,22 @@ testDiagnostics :: (
   , MonadThrow m
   ) => Text -> FilePath -> Text -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
 testDiagnostics name filename code cb = it [i|#{name}: #{show code}|] $ do
+  withRunInIO $ \runInIO ->
+    runInIO $ withLspSession name filename code $ do
+      openDoc filename name
+      diagnostics <- waitForDiagnostics
+      liftIO $ runInIO $ info [i|Got diagnostics: #{A.encode diagnostics}|]
+      liftIO $ runInIO $ cb diagnostics
+
+withLspSession :: (
+  HasNixEnvironment context
+  , HasBaseContext context
+  , MonadIO m
+  , MonadBaseControl IO m
+  , MonadUnliftIO m
+  , MonadThrow m
+  ) => Text -> FilePath -> Text -> Session () -> ExampleT context m ()
+withLspSession name filename code doSession = do
   Just currentFolder <- getCurrentFolder
 
   envPath <- (</> "lib" </> "codedown") <$> getContext nixEnvironment
@@ -88,32 +104,24 @@ testDiagnostics name filename code cb = it [i|#{name}: #{show code}|] $ do
   let lspCommand = T.unpack $ T.unwords (lspConfigArgs config)
   info [i|LSP command: #{lspCommand}|]
 
-  diagnostics <-
-    withTempDirectory currentFolder (T.unpack (name <> "_home")) $ \homeDir -> do
-      withTempDirectory currentFolder (T.unpack name) $ \dataDir -> do
-        liftIO $ T.writeFile (dataDir </> filename) code
+  withTempDirectory currentFolder (T.unpack (name <> "_home")) $ \homeDir -> do
+    withTempDirectory currentFolder (T.unpack name) $ \dataDir -> do
+      liftIO $ T.writeFile (dataDir </> filename) code
 
-        let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
-                                -- , logStdErr = True
-                                -- , logMessages = True
-                                }
+      let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
+                              , logStdErr = True
+                              , logMessages = True
+                              }
 
-        withRunInIO $ \runInIO -> do
-          env <- getEnvironment
-          let cleanEnv = [(k, v) | (k, v) <- env, k /= "PATH", k /= "HOME", k /= "GHC_PACKAGE_PATH"]
-          let finalEnv = ("HOME", homeDir) : cleanEnv
-          runInIO $ info [i|finalEnv: #{finalEnv}|]
-          -- let modifyCp cp = cp { env = Just finalEnv }
-          let modifyCp cp = cp { env = Just [] }
+      env <- getEnvironment
+      let cleanEnv = [(k, v) | (k, v) <- env, k /= "PATH", k /= "HOME", k /= "GHC_PACKAGE_PATH"]
+      let finalEnv = ("HOME", homeDir) : cleanEnv
+      info [i|finalEnv: #{finalEnv}|]
+      -- let modifyCp cp = cp { env = Just finalEnv }
+      let modifyCp cp = cp { env = Just [] }
 
-          runSessionWithConfig' modifyCp sessionConfig lspCommand fullCaps dataDir $ do
-            openDoc filename name
-            diagnostics <- waitForDiagnostics
-            liftIO $ runInIO $ info [i|Got diagnostics: #{A.encode diagnostics}|]
-            return diagnostics
-
-  cb diagnostics
-
+      liftIO $ runSessionWithConfig' modifyCp sessionConfig lspCommand fullCaps dataDir $ do
+        doSession
 
 
 assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT context m ()
