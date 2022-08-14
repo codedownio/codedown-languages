@@ -4,8 +4,9 @@
 
 module TestLib.Lang.HaskellCommon (haskellCommonTests) where
 
-import Control.Monad.Catch (MonadThrow)
+import Control.Monad.Catch (MonadThrow, onException)
 import Control.Monad.IO.Unlift
+import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.Aeson as A
 import qualified Data.Map as M
 import Data.String.Interpolate
@@ -19,35 +20,52 @@ import TestLib.JupyterTypes
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
+import TestLib.Types (HasNixEnvironment)
+import UnliftIO.Concurrent
 
 
 haskellCommonTests :: Text -> TopSpec
 haskellCommonTests lang = describe [i|Haskell #{lang}|] $ introduceNixEnvironment [kernelSpec lang] [] "Haskell" $ introduceJupyterRunner $ do
   testNotebookDisplayDataOutputs lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
 
-  testDiagnostics "haskell-language-server" "Foo.hs" [__i|module Foo where
-                                                          foo = bar
-                                                          |] $ \diagnostics -> do
+  testDiagnostics lsName "Foo.hs" [__i|module Foo where
+                                       foo = bar
+                                      |] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
-  testDiagnostics "haskell-language-server" "main.ipynb" [__i|-- Some comment
-                                                              foo = bar
+  testDiagnostics lsName "main.ipynb" [__i|-- Some comment
+                                           foo = bar
 
-                                                              putStrLn "HI"
-                                                              |] $ \diagnostics -> do
+                                           putStrLn "HI"
+                                          |] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
-  it "does document highlight" $ do
-    let filename :: Text = "haskell-language-server"
-    let name :: Text = "main.ipynb"
-    withRunInIO $ \runInIO -> runInIO $ withLspSession filename (T.unpack name) documentHighlightCode $ do
-      ident <- openDoc (T.unpack filename) name
-      getHighlights ident (Position 0 1) >>= (`shouldBe` (List []))
+  it "does document highlight" $ doSession documentHighlightCode $ \filename -> do
+    ident <- openDoc filename "haskell"
+    let desired = [
+          DocumentHighlight (Range (Position 0 0) (Position 0 3)) (Just HkWrite)
+          , DocumentHighlight (Range (Position 1 9) (Position 1 12)) (Just HkRead)
+          ]
+    getHighlights ident (Position 0 1) >>= (`shouldBe` List desired)
 
+  it "does hover" $ doSession documentHighlightCode $ \filename -> do
+    ident <- openDoc filename "haskell"
+    getHover ident (Position 1 1) >>= (`shouldBe` Nothing)
+
+
+doSession :: (
+  MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
+  ) => Text -> (FilePath -> Session ()) -> ExampleT context m ()
+doSession code cb = do
+  let filename :: Text = "main.ipynb"
+  withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) documentHighlightCode $ do
+    cb (T.unpack filename)
 
 documentHighlightCode = [__i|foo = "hello"
                              putStrLn foo|]
 
+lsName :: Text
+lsName = "haskell-language-server"
 
 kernelSpec lang = NixKernelSpec {
   nixKernelChannel = "codedown"

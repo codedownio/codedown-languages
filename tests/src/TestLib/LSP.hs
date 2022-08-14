@@ -71,7 +71,7 @@ testDiagnostics :: (
 testDiagnostics name filename code cb = it [i|#{name}: #{show code}|] $ do
   withRunInIO $ \runInIO ->
     runInIO $ withLspSession name filename code $ do
-      openDoc filename name
+      openDoc filename "haskell"
       diagnostics <- waitForDiagnostics
       liftIO $ runInIO $ info [i|Got diagnostics: #{A.encode diagnostics}|]
       liftIO $ runInIO $ cb diagnostics
