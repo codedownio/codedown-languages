@@ -4,6 +4,7 @@
 
 module TestLib.Lang.HaskellCommon (haskellCommonTests) where
 
+import Control.Lens ((^.))
 import Control.Monad.Catch (MonadThrow, onException)
 import Control.Monad.IO.Unlift
 import Control.Monad.Trans.Control (MonadBaseControl)
@@ -14,6 +15,7 @@ import Data.Text as T
 import qualified Data.Vector as V
 import Language.LSP.Test
 import Language.LSP.Types
+import Language.LSP.Types.Lens
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.JupyterTypes
@@ -50,7 +52,10 @@ haskellCommonTests lang = describe [i|Haskell #{lang}|] $ introduceNixEnvironmen
 
   it "does hover" $ doSession documentHighlightCode $ \filename -> do
     ident <- openDoc filename "haskell"
-    getHover ident (Position 1 1) >>= (`shouldBe` Nothing)
+    Just hover <- getHover ident (Position 1 1)
+    (hover ^. range) `shouldBe` (Just (Range (Position 1 0) (Position 1 8)))
+    let HoverContents (MarkupContent {..}) = hover ^. contents
+    _value `textShouldContain` "putStrLn :: String -> IO ()"
 
 
 doSession :: (
