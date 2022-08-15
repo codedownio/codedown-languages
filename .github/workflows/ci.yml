@@ -21,18 +21,23 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Build tests
+    - name: Run tests with Stack
       run: |
-        cd tests
-        nix build
-
-    - name: Run tests
-      run: |
-        cd tests
-
         export NIX_PATH=nixpkgs=$(nix eval --raw .#nixpkgsPath.x86_64-linux)
+        stack run -- --print
 
-        ./result/bin/tests-exe \
-          --print-failures \
-          --fixed-root $TEST_ROOT
-        # --markdown-summary $GITHUB_STEP_SUMMARY
+    # - name: Build tests
+    #   run: |
+    #     cd tests
+    #     nix build
+
+    # - name: Run tests
+    #   run: |
+    #     cd tests
+
+    #     export NIX_PATH=nixpkgs=$(nix eval --raw .#nixpkgsPath.x86_64-linux)
+
+    #     ./result/bin/tests-exe \
+    #       --print-failures \
+    #       --fixed-root $TEST_ROOT
+    #     # --markdown-summary $GITHUB_STEP_SUMMARY
