@@ -21,6 +21,8 @@
           nixpkgsPath = pkgs.path;
 
           devShell = tests.env;
+
+          stack = pkgs.stack;
         }
     );
 }

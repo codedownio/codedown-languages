@@ -24,6 +24,7 @@ jobs:
     - name: Run tests with Stack
       run: |
         export NIX_PATH=nixpkgs=$(nix eval --raw .#nixpkgsPath.x86_64-linux)
+        export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
         stack run -- --print
 
     # - name: Build tests
