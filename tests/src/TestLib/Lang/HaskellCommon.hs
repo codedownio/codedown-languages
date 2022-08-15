@@ -44,7 +44,7 @@ haskellCommonTests lang = describe [i|Haskell #{lang}|] $ introduceNixEnvironmen
                                             |] $ \diagnostics -> do
       assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
-    it "does document highlight" $ doSession documentHighlightCode $ \filename -> do
+    it "document highlight" $ doSession documentHighlightCode $ \filename -> do
       ident <- openDoc filename "haskell"
       let desired = [
             DocumentHighlight (Range (Position 0 0) (Position 0 3)) (Just HkWrite)
@@ -52,13 +52,22 @@ haskellCommonTests lang = describe [i|Haskell #{lang}|] $ introduceNixEnvironmen
             ]
       getHighlights ident (Position 0 1) >>= (`shouldBe` List desired)
 
-    it "does hover" $ doSession documentHighlightCode $ \filename -> do
+    it "hover" $ doSession documentHighlightCode $ \filename -> do
       ident <- openDoc filename "haskell"
       Just hover <- getHover ident (Position 1 1)
       (hover ^. range) `shouldBe` (Just (Range (Position 1 0) (Position 1 8)))
       let HoverContents (MarkupContent {..}) = hover ^. contents
       _value `textShouldContain` "putStrLn :: String -> IO ()"
 
+    it "symbols" $ doSession documentHighlightCode $ \filename -> do
+      ident <- openDoc filename "haskell"
+      Left documentSymbols <- getDocumentSymbols ident
+      fmap (^. name) documentSymbols `shouldBe` ["foo"]
+
+    it "code actions" $ doSession documentHighlightCode $ \filename -> do
+      ident <- openDoc filename "haskell"
+      actions <- getCodeActions ident (Range (Position 1 0) (Position 1 8))
+      actions `shouldBe` []
 
 doSession :: (
   MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
