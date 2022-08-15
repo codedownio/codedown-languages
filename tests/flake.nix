@@ -8,7 +8,14 @@
     flake-utils.lib.eachSystem ["x86_64-linux"] (system:
       let
         pkgs = import nixpkgs { inherit system; };
-        tests = pkgs.haskell.packages.ghc8107.callPackage ./tests.nix {};
+
+        myLspTest = with pkgs; haskell.lib.overrideSrc haskellPackages.lsp-test { src = /home/tom/tools/haskell-lsp/lsp-test; };
+        myLspTypes = with pkgs; haskell.lib.overrideSrc haskellPackages.lsp-types { src = /home/tom/tools/haskell-lsp/lsp-types; };
+
+        tests = pkgs.haskell.packages.ghc8107.callPackage ./tests.nix {
+          lsp-test = myLspTest;
+          lsp-types = myLspTypes;
+        };
       in
         rec {
           packages = rec {
@@ -18,7 +25,10 @@
 
           defaultPackage = packages.tests;
 
+          inherit myLspTypes;
+
           nixpkgsPath = pkgs.path;
+          testPath = with pkgs; lib.makeBinPath [stack];
 
           devShell = tests.env;
 
