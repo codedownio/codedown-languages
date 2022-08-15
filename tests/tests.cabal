@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.34.5.
 --
 -- see: https://github.com/sol/hpack
 
@@ -56,6 +56,7 @@ library
     , directory
     , exceptions
     , filepath
+    , hashable
     , lens
     , lsp-test
     , lsp-types
@@ -124,6 +125,7 @@ executable tests-exe
     , directory
     , exceptions
     , filepath
+    , hashable
     , lens
     , lsp-test
     , lsp-types
