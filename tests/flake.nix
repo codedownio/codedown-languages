@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/051448e41537c3463ae776d46115d01afb6c498d";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/ce6aa13369b667ac2542593170993504932eb836";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
