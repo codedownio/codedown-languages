@@ -1,8 +1,10 @@
 { mkDerivation, aeson, aeson-qq, base, bytestring, containers
-, data-default, directory, exceptions, filepath, hpack, lens, lib
-, lsp-test, lsp-types, monad-control, monad-logger, mtl
-, optparse-applicative, sandwich, string-interpolate, text
-, unliftio, unliftio-core, unordered-containers, vector
+, data-default, directory, exceptions, filepath, hashable, hpack
+, lens, lib, lsp-test, lsp-types, monad-control, monad-logger, mtl
+, network, optparse-applicative, postgresql-libpq
+, postgresql-simple, process, random, resource-pool, retry, safe
+, sandwich, string-interpolate, text, unliftio, unliftio-core
+, unordered-containers, vector
 }:
 mkDerivation {
   pname = "tests";
@@ -12,16 +14,20 @@ mkDerivation {
   isExecutable = true;
   libraryHaskellDepends = [
     aeson aeson-qq base bytestring containers data-default directory
-    exceptions filepath lens lsp-test lsp-types monad-control
-    monad-logger mtl optparse-applicative sandwich string-interpolate
-    text unliftio unliftio-core unordered-containers vector
+    exceptions filepath hashable lens lsp-test lsp-types monad-control
+    monad-logger mtl network optparse-applicative postgresql-libpq
+    postgresql-simple process random resource-pool retry safe sandwich
+    string-interpolate text unliftio unliftio-core unordered-containers
+    vector
   ];
   libraryToolDepends = [ hpack ];
   executableHaskellDepends = [
     aeson aeson-qq base bytestring containers data-default directory
-    exceptions filepath lens lsp-test lsp-types monad-control
-    monad-logger mtl optparse-applicative sandwich string-interpolate
-    text unliftio unliftio-core unordered-containers vector
+    exceptions filepath hashable lens lsp-test lsp-types monad-control
+    monad-logger mtl network optparse-applicative postgresql-libpq
+    postgresql-simple process random resource-pool retry safe sandwich
+    string-interpolate text unliftio unliftio-core unordered-containers
+    vector
   ];
   executableToolDepends = [ sandwich ];
   prePatch = "hpack";

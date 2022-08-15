@@ -32,6 +32,7 @@ dependencies:
 - directory
 - exceptions
 - filepath
+- hashable # Only needed for aeson < 2
 - lens
 - lsp-test
 - lsp-types
