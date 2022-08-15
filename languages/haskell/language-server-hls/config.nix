@@ -57,7 +57,7 @@ common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/haskell-h
   description = haskell-language-server.meta.description;
   icon = ./icon_64x64.png;
   extensions = ["hs"];
-  notebook_suffix = ".hs";
+  notebook_suffix = "";
   kernel_name = kernelName;
   attrs = ["haskell"];
   type = "stream";

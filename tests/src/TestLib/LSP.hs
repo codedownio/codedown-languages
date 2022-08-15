@@ -109,8 +109,8 @@ withLspSession name filename code doSession = do
       liftIO $ T.writeFile (dataDir </> filename) code
 
       let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
-                              , logStdErr = True
-                              , logMessages = True
+                              -- , logStdErr = True
+                              -- , logMessages = True
                               }
 
       env <- getEnvironment

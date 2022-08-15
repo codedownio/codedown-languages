@@ -28,34 +28,36 @@ import UnliftIO.Concurrent
 
 haskellCommonTests :: Text -> TopSpec
 haskellCommonTests lang = describe [i|Haskell #{lang}|] $ introduceNixEnvironment [kernelSpec lang] [] "Haskell" $ introduceJupyterRunner $ do
-  testNotebookDisplayDataOutputs lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
+  describe "Kernel" $ do
+    testNotebookDisplayDataOutputs lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
 
-  testDiagnostics lsName "Foo.hs" [__i|module Foo where
-                                       foo = bar
-                                      |] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
+  describe "LSP" $ do
+    testDiagnostics lsName "Foo.hs" [__i|module Foo where
+                                         foo = bar
+                                        |] $ \diagnostics -> do
+      assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
-  testDiagnostics lsName "main.ipynb" [__i|-- Some comment
-                                           foo = bar
+    testDiagnostics lsName "main.ipynb" [__i|-- Some comment
+                                             foo = bar
 
-                                           putStrLn "HI"
-                                          |] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
+                                             putStrLn "HI"
+                                            |] $ \diagnostics -> do
+      assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
-  it "does document highlight" $ doSession documentHighlightCode $ \filename -> do
-    ident <- openDoc filename "haskell"
-    let desired = [
-          DocumentHighlight (Range (Position 0 0) (Position 0 3)) (Just HkWrite)
-          , DocumentHighlight (Range (Position 1 9) (Position 1 12)) (Just HkRead)
-          ]
-    getHighlights ident (Position 0 1) >>= (`shouldBe` List desired)
+    it "does document highlight" $ doSession documentHighlightCode $ \filename -> do
+      ident <- openDoc filename "haskell"
+      let desired = [
+            DocumentHighlight (Range (Position 0 0) (Position 0 3)) (Just HkWrite)
+            , DocumentHighlight (Range (Position 1 9) (Position 1 12)) (Just HkRead)
+            ]
+      getHighlights ident (Position 0 1) >>= (`shouldBe` List desired)
 
-  it "does hover" $ doSession documentHighlightCode $ \filename -> do
-    ident <- openDoc filename "haskell"
-    Just hover <- getHover ident (Position 1 1)
-    (hover ^. range) `shouldBe` (Just (Range (Position 1 0) (Position 1 8)))
-    let HoverContents (MarkupContent {..}) = hover ^. contents
-    _value `textShouldContain` "putStrLn :: String -> IO ()"
+    it "does hover" $ doSession documentHighlightCode $ \filename -> do
+      ident <- openDoc filename "haskell"
+      Just hover <- getHover ident (Position 1 1)
+      (hover ^. range) `shouldBe` (Just (Range (Position 1 0) (Position 1 8)))
+      let HoverContents (MarkupContent {..}) = hover ^. contents
+      _value `textShouldContain` "putStrLn :: String -> IO ()"
 
 
 doSession :: (
