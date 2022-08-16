@@ -2,6 +2,7 @@
 , pkgs
 , haskell-language-server
 , kernelName
+, ghc
 }:
 
 with pkgs;
@@ -10,44 +11,17 @@ with pkgs.lib;
 let
   common = callPackage ../../common.nix {};
 
-  # This must be chosen to match haskellNix.sources.nixpkgs!
-  # We do it ourselves because we want to use fetchFromGitHub instead of fetchTarball.
-  nixpkgsSrc = fetchFromGitHub {
-    owner = "NixOS";
-    repo = "nixpkgs";
-    rev = "ce6aa13369b667ac2542593170993504932eb836";
-    sha256 = "sha256-M6bJShji9AIDZ7Kh7CPwPBPb/T7RiVev2PAcOi4fxDQ=";
-  };
-
-  haskellNix = import (fetchFromGitHub {
-    owner = "input-output-hk";
-    repo = "haskell.nix";
-    rev = "9709b2d05acb8b2d1451e5d7593756ca3a1be7d7";
-    sha256 = "sha256-GkAdLMNFxfHtoQVswsf+imdBDhK/msqva7KCq0VUhNA=";
-  }) { pkgs = import nixpkgsSrc { inherit system; }; };
-
-
-  hls = callPackage ./haskell-notebook-language-server {
-    haskellNix = null;
-    inherit pkgs;
-  };
-
   hnlsSrc = fetchFromGitHub {
     owner = "codedownio";
     repo = "haskell-notebook-language-server";
-    rev = "92e4ebfa5b3c2647c94c1c797dab234d09ea83bb";
-    sha256 = "0ysi7dpx0nkc43hrb4k3v2iyxjnhb4dzhg27i1yr0fvii5qvqqnp";
+    rev = "4dfe247f8c7f966b0a38fe01160f47db61124f33";
+    sha256 = "0cy8kiszbpqvwbw3bqfx2ckpm2y4kizywbxdmhm6wd4j3ip31ibf";
   };
   # hnlsSrc = /home/tom/tools/haskell-notebook-language-server;
 
-  hnls = (callPackage hnlsSrc {
-    haskellNix = null;
-    pkgs = pkgs // {
-      haskell-nix = (import nixpkgsSrc (haskellNix.nixpkgsArgs // { inherit system; })).haskell-nix;
-    };
-  });
+  hnls = ghc.callPackage hnlsSrc {};
 
-  exe = hnls.haskell-notebook-language-server.components.exes.haskell-notebook-language-server;
+  exe = hnls;
 
 in
 

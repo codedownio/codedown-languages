@@ -18,6 +18,9 @@ let
   allLanguageServerOptions = snapshot: ghc: kernelName: {
     haskell-language-server = callPackage ./language-server-hls/config.nix {
       inherit kernelName;
+
+      ghc = snapshot;
+
       haskell-language-server = stdenv.mkDerivation {
         pname = "haskell-language-server-wrapped";
         version = snapshot.haskell-language-server.version;
