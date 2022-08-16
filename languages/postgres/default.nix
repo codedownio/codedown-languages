@@ -16,9 +16,12 @@ let
   languageServerSearch = common.searcher languageServerOptions;
 
   meta = {
+    name = "postgres";
     baseName = "postgres";
     displayName = "PostgreSQL";
-    version = "1.0.0";
+    description = "A simple Jupyter kernel for PostgreSQL";
+    icon = ./logo-64x64.png;
+    version = "0.1";
   };
 
 in

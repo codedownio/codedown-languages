@@ -11,7 +11,8 @@ let
   common = callPackage ../common.nix {};
 
   app = python3.pkgs.buildPythonPackage rec {
-    name = "postgres_kernel";
+    pname = "postgres_kernel";
+    version = "0.1";
 
     src = fetchFromGitHub {
       owner = "codedownio";
