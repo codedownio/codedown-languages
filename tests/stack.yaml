@@ -3,6 +3,16 @@ resolver: lts-19.17
 # resolver:
 #   url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/19/6.yaml
 
+nix:
+  enable: true
+  packages:
+  - zlib
+  - postgresql
+  - nix
+  - openssh
+  path:
+  - "nixpkgs=/home/tom/tools/nixpkgs"
+
 packages:
 - .
 
