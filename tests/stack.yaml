@@ -4,7 +4,7 @@ resolver: lts-19.17
 #   url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/19/6.yaml
 
 nix:
-  enable: true
+  enable: false
   packages:
   - zlib
   - postgresql
