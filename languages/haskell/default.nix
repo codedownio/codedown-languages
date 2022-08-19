@@ -15,31 +15,34 @@ let
   common = callPackage ../common.nix {};
   util = callPackage ./util.nix {};
 
-  allLanguageServerOptions = snapshot: ghc: kernelName: {
-    haskell-language-server = callPackage ./language-server-hls/config.nix {
-      inherit kernelName;
+  hls = snapshot: ghc: kernelName: raw: callPackage ./language-server-hls/config.nix {
+    inherit kernelName raw;
 
-      ghc = snapshot;
+    ghc = snapshot;
 
-      haskell-language-server = stdenv.mkDerivation {
-        pname = "haskell-language-server-wrapped";
-        version = snapshot.haskell-language-server.version;
+    haskell-language-server = stdenv.mkDerivation {
+      pname = "haskell-language-server-wrapped";
+      version = snapshot.haskell-language-server.version;
 
-        buildInputs = [makeWrapper];
+      buildInputs = [makeWrapper];
 
-        dontUnpack = true;
-        dontConfigure = true;
-        buildPhase = ''
+      dontUnpack = true;
+      dontConfigure = true;
+      buildPhase = ''
           mkdir -p $out/bin
           makeWrapper ${ghc}/bin/haskell-language-server $out/bin/haskell-language-server \
                       --set NIX_GHC_LIBDIR "${ghc.out}/lib/${ghc.meta.name}" \
                       --prefix PATH ':' ${ghc}/bin
         '';
-        dontInstall = true;
+      dontInstall = true;
 
-        inherit (snapshot.haskell-language-server) meta;
-      };
+      inherit (snapshot.haskell-language-server) meta;
     };
+  };
+
+  allLanguageServerOptions = snapshot: ghc: kernelName: {
+    haskell-language-server = hls snapshot ghc kernelName false;
+    haskell-language-server-raw = hls snapshot ghc kernelName true;
   };
 
   compilers = {

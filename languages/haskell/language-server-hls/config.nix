@@ -3,6 +3,7 @@
 , haskell-language-server
 , kernelName
 , ghc
+, raw
 }:
 
 with pkgs;
@@ -23,9 +24,11 @@ let
 
   exe = hnls;
 
+  suffix = if raw then "-raw" else "";
+
 in
 
-common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/haskell-hls-language-servers.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/haskell-hls-language-servers${suffix}.yaml" (lib.generators.toYAML {} [{
   name = "haskell-language-server";
   display_name = "Haskell Language Server";
   description = haskell-language-server.meta.description;
@@ -36,11 +39,15 @@ common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/haskell-h
   attrs = ["haskell"];
   type = "stream";
   primary = true;
-  args = [
-    "${exe}/bin/haskell-notebook-language-server"
-    "--wrapped-hls" "${haskell-language-server}/bin/haskell-language-server"
-    "--hls-args" "--lsp"
-  ];
-  # args = ["${haskell-language-server}/bin/haskell-language-server" "--lsp"];
+  args = if raw
+         then [
+           "${haskell-language-server}/bin/haskell-language-server"
+           "--lsp"
+         ]
+         else [
+           "${exe}/bin/haskell-notebook-language-server"
+           "--wrapped-hls" "${haskell-language-server}/bin/haskell-language-server"
+           "--hls-args" "--lsp"
+         ];
   env = {};
 }])
