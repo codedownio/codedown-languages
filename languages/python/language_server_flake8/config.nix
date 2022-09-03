@@ -22,7 +22,7 @@ let
 
 in
 
-common.writeTextDirWithMeta python.pkgs.flake8.meta "lib/codedown/python-flake8-language-servers.yaml"
+common.writeTextDirWithMeta python.pkgs.flake8.meta "lib/codedown/language-servers/python-flake8.yaml"
   (lib.generators.toYAML {} [{
     name = "flake8";
     display_name = "Flake8";

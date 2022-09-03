@@ -29,7 +29,7 @@ rec {
 
   languageServer = null;
 
-  modeInfo = writeTextDir "lib/codedown/csharp-modes.yaml" (lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/modes/csharp.yaml" (lib.generators.toYAML {} [{
     attr_name = "csharp";
     code_mirror_mode = "clike";
     codeMirrorMimeType = "text/x-csharp";

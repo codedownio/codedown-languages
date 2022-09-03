@@ -18,7 +18,7 @@ let
 
 in
 
-common.writeTextDirWithMeta rust-analyzer.meta "lib/codedown/rust-analyzer-language-servers.yaml"
+common.writeTextDirWithMeta rust-analyzer.meta "lib/codedown/language-servers/rust-analyzer.yaml"
   (lib.generators.toYAML {} [{
     name = "rust-analyzer";
     display_name = "rust-analyzer";

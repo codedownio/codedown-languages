@@ -43,7 +43,7 @@ let
 
 in
 
-common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedown/python-palantir-language-servers.yaml"
+common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedown/language-servers/python-palantir.yaml"
   (lib.generators.toYAML {} [{
     name = "python-language-server";
     display_name = "Python Language Server";

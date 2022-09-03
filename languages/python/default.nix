@@ -138,5 +138,5 @@ lib.listToAttrs (map (x:
 ) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))
 
 
-  # languageServer = writeTextDir "lib/codedown/python-language-servers.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
+  # languageServer = writeTextDir "lib/codedown/language-servers/python.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
   # extraGitIgnoreLines = [".ipython"];

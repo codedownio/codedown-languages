@@ -1,5 +1,6 @@
 { callPackage
 , attrs
+, iruby
 }:
 
 let
@@ -11,7 +12,7 @@ common.makeJupyterKernel {
   ruby = {
     displayName = "Ruby";
     argv = [
-      "${import ./iruby}/bin/iruby"
+      "${iruby}/bin/iruby"
       "kernel"
       "{connection_file}"
     ];

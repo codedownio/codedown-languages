@@ -22,7 +22,7 @@ let
 
 in
 
-common.writeTextDirWithMeta python.pkgs.pylint.meta "lib/codedown/python-pylint-language-servers.yaml"
+common.writeTextDirWithMeta python.pkgs.pylint.meta "lib/codedown/language-servers/python-pylint.yaml"
   (lib.generators.toYAML {} [{
     name = "pylint";
     display_name = "Pylint";

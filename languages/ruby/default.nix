@@ -41,7 +41,7 @@ let
     ruby_3_0 = pkgs.rubyPackages_3_0;
   };
 
-  modeInfo = writeTextDir "lib/codedown/ruby-modes.yaml" (pkgs.lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/modes/ruby.yaml" (pkgs.lib.generators.toYAML {} [{
     attr_name = "ruby";
     code_mirror_mode = "ruby";
     extensions_to_highlight = ["rb"];
@@ -76,6 +76,7 @@ listToAttrs (map (x:
         packages ? []
         , languageServers ? []
         , attrs ? ["ruby"]
+        , metaOnly ? false
       }:
         symlinkJoin {
           name = "ruby";

@@ -77,7 +77,7 @@ listToAttrs (map (x:
 ) (filter (x: (common.hasAttrSafe x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates))
 
 
-  # languageServer = writeTextDir "lib/codedown/clojure-language-servers.yaml" (lib.generators.toYAML {} [{
+  # languageServer = writeTextDir "lib/codedown/language-servers/clojure.yaml" (lib.generators.toYAML {} [{
   #   name = "clojure";
   #   extensions = ["clj"];
   #   attrs = ["clojure"];

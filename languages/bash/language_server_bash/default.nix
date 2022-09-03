@@ -24,7 +24,7 @@ let
     '';
 in
 
-common.writeTextDirWithMeta bashLanguageServer.meta "lib/codedown/bash-language-server-language-servers.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta bashLanguageServer.meta "lib/codedown/language-servers/bash-language-server.yaml" (lib.generators.toYAML {} [{
   name = "bash";
   extensions = ["sh" "bash"];
   attrs = ["bash"];

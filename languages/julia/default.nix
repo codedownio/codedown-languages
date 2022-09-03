@@ -75,7 +75,7 @@ listToAttrs (map (x:
             paths = [
               (callPackage ./kernel.nix { inherit julia python attrs extensions displayName; })
               (callPackage ./mode_info.nix { inherit attrs extensions; })
-              (writeTextDir "lib/codedown/julia-language-servers.yaml" (
+              (writeTextDir "lib/codedown/language-servers/julia.yaml" (
                 pkgs.lib.generators.toYAML {} (map (x: x.config) (map (x: getAttr x availableLanguageServers) languageServers))
               ))
             ]

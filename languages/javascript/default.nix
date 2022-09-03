@@ -37,7 +37,7 @@ rec {
     remove = ["bash" "-c" "${npm}/bin/npm uninstall --save {name}"];
   }]);
 
-  languageServer = writeTextDir "lib/codedown/javascript-language-servers.yaml" (lib.generators.toYAML {} [{
+  languageServer = writeTextDir "lib/codedown/language-servers/javascript.yaml" (lib.generators.toYAML {} [{
     name = "javascript";
     extensions = ["js" "jsx" "ts" "tsx"];
     type = "stream";

@@ -28,12 +28,12 @@ let
 
 in
 
-common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/haskell-hls-language-servers${suffix}.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/language-servers/haskell-hls${suffix}.yaml" (lib.generators.toYAML {} [{
   name = "haskell-language-server";
   display_name = "Haskell Language Server";
   description = haskell-language-server.meta.description;
   icon = ./icon_64x64.png;
-  extensions = ["hs"];
+  extensions = if raw then ["hs"] else [];
   notebook_suffix = if raw then ".hs" else "";
   kernel_name = kernelName;
   attrs = ["haskell"];

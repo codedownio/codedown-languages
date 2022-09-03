@@ -21,7 +21,7 @@ let
 
 in
 
-common.writeTextDirWithMeta jediLanguageServer.meta "lib/codedown/python-jedi-language-servers.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta jediLanguageServer.meta "lib/codedown/language-servers/python-jedi.yaml" (lib.generators.toYAML {} [{
   name = "jedi";
   display_name = "Jedi";
   description = jediLanguageServer.meta.description;

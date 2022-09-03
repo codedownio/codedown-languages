@@ -25,14 +25,14 @@ rec {
     };
   };
 
-  languageServer = writeTextDir "lib/codedown/elixir-language-servers.yaml" (lib.generators.toYAML {} [{
+  languageServer = writeTextDir "lib/codedown/language-servers/elixir.yaml" (lib.generators.toYAML {} [{
       name = "elixir";
       extensions = ["exs"];
       type = "stream";
       args = [];
     }]);
 
-  modeInfo = writeTextDir "lib/codedown/elixir-modes.yaml" (lib.generators.toYAML {} [{
+  modeInfo = writeTextDir "lib/codedown/modes/elixir.yaml" (lib.generators.toYAML {} [{
     attr_name = "elixir";
     code_mirror_mode = "erlang";
     extensions_to_highlight = ["exs"];

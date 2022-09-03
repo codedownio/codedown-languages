@@ -43,7 +43,7 @@ let
 
 in
 
-common.writeTextDirWithMeta python.pkgs.python-lsp-server.meta "lib/codedown/python-pythonlsp-language-servers.yaml"
+common.writeTextDirWithMeta python.pkgs.python-lsp-server.meta "lib/codedown/language-servers/python-pythonlsp.yaml"
   (lib.generators.toYAML {} [{
     name = "python-lsp-server";
     display_name = "Python LSP Server";

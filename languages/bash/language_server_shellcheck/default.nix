@@ -15,7 +15,7 @@ let
 
 in
 
-common.writeTextDirWithMeta shellcheck "lib/codedown/bash-shellcheck-language-servers.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta shellcheck "lib/codedown/language-servers/bash-shellcheck.yaml" (lib.generators.toYAML {} [{
   name = "shellcheck";
   extensions = ["sh" "bash"];
   attrs = ["bash"];

@@ -69,7 +69,7 @@ let
 
 in
 
-common.writeTextDirWithMeta languageserver.meta "lib/codedown/r-languageserver-language-servers.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta languageserver.meta "lib/codedown/language-servers/r-languageserver.yaml" (lib.generators.toYAML {} [{
   name = "languageserver";
   display_name = "";
   description = "An implementation of the Language Server Protocol for R";

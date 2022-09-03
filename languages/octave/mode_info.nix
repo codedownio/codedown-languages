@@ -4,7 +4,7 @@
 , extensions
 }:
 
-writeTextDir "lib/codedown/octave-modes.yaml" (lib.generators.toYAML {} [{
+writeTextDir "lib/codedown/modes/octave.yaml" (lib.generators.toYAML {} [{
   inherit attrs extensions;
   code_mirror_mode = "octave";
 }])

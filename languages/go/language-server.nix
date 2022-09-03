@@ -10,7 +10,7 @@ let
 
 in
 
-common.writeTextDirWithMeta go-langserver.meta "lib/codedown/go-language-servers.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta go-langserver.meta "lib/codedown/language-servers/go.yaml" (lib.generators.toYAML {} [{
   name = "go-langserver";
   display_name = "go-langserver";
   description = go-langserver.meta.description;

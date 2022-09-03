@@ -4,7 +4,7 @@
 , extensions
 }:
 
-writeTextDir "lib/codedown/python-modes.yaml" (lib.generators.toYAML {} [{
+writeTextDir "lib/codedown/modes/python.yaml" (lib.generators.toYAML {} [{
   inherit attrs extensions;
   code_mirror_mode = "python";
 }])
