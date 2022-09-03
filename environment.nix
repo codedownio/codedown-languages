@@ -61,18 +61,21 @@ codedown.mkCodeDownEnvironment {
       language = "haskell-ghc8107";
       args = {
         packages = ["aeson"];
-        languageServers = ["haskell-language-server"];
+        languageServers = [
+            "haskell-language-server"
+            "haskell-language-server-raw"
+        ];
       };
     })
 
-    ({
-      channel = "codedown";
-      language = "haskell-ghc902";
-      args = {
-        packages = ["aeson"];
-        languageServers = ["haskell-language-server"];
-      };
-    })
+    # ({
+    #   channel = "codedown";
+    #   language = "haskell-ghc902";
+    #   args = {
+    #     packages = ["aeson"];
+    #     languageServers = ["haskell-language-server"];
+    #   };
+    # })
 
     # ({
     #   channel = "codedown";
@@ -92,17 +95,17 @@ codedown.mkCodeDownEnvironment {
       };
     })
 
-    # ({
-    #   channel = "codedown";
-    #   language = "octave";
-    #   args = {
-    #     packages = ["arduino"];
-    #     languageServers = [];
-    #     extraJupyterConfig = ''
-    #       c.OctaveKernel.plot_settings = dict(format='svg')
-    #     '';
-    #   };
-    # })
+    ({
+      channel = "codedown";
+      language = "octave";
+      args = {
+        packages = ["arduino"];
+        languageServers = [];
+        extraJupyterConfig = ''
+          c.OctaveKernel.plot_settings = dict(format='svg')
+        '';
+      };
+    })
 
     ({
       channel = "codedown";
@@ -128,14 +131,14 @@ codedown.mkCodeDownEnvironment {
     #   };
     # })
 
-    # ({
-    #   channel = "codedown";
-    #   language = "ruby_2_7";
-    #   args = {
-    #     packages = [];
-    #     languageServers = [];
-    #   };
-    # })
+    ({
+      channel = "codedown";
+      language = "ruby_2_7";
+      args = {
+        packages = [];
+        languageServers = [];
+      };
+    })
 
     ({
       channel = "codedown";
