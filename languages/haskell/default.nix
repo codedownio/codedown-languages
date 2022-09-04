@@ -15,8 +15,8 @@ let
   common = callPackage ../common.nix {};
   util = callPackage ./util.nix {};
 
-  hls = snapshot: ghc: kernelName: raw: callPackage ./language-server-hls/config.nix {
-    inherit kernelName raw;
+  hls = snapshot: ghc: kernelName: callPackage ./language-server-hls/config.nix {
+    inherit kernelName;
 
     ghc = snapshot;
 
@@ -41,8 +41,7 @@ let
   };
 
   allLanguageServerOptions = snapshot: ghc: kernelName: {
-    haskell-language-server = hls snapshot ghc kernelName false;
-    haskell-language-server-raw = hls snapshot ghc kernelName true;
+    haskell-language-server = hls snapshot ghc kernelName;
   };
 
   compilers = {
