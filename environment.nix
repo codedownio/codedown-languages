@@ -139,7 +139,7 @@ codedown.mkCodeDownEnvironment {
 
     ({
       channel = "codedown";
-      language = "rust_1_60";
+      language = "rust";
       args = {
         packages = [];
         languageServers = ["rust-analyzer"];
