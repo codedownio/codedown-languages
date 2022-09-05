@@ -37,6 +37,16 @@ haskellCommonTests lang = describe [i|Haskell #{lang}|] $ introduceNixEnvironmen
                                         |] $ \diagnostics -> do
       assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
+    testDiagnostics lsName "Foo.hs" [__i|module Foo where
+
+                                         baz :: Int -> Int
+                                         baz x = x + 1
+
+                                         baz2 :: Int -> Int
+                                         baz2 x = baz x
+                                        |] $ \diagnostics -> do
+      assertDiagnosticRanges diagnostics [(Range (Position 6 0) (Position 6 14), Just (InR "refact:Eta reduce"))]
+
     testDiagnostics lsName "main.ipynb" [__i|-- Some comment
                                              foo = bar
 
