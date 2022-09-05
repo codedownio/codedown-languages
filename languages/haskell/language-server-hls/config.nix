@@ -32,7 +32,7 @@ let
       extensions = if raw then ["hs"] else [];
       notebook_suffix = if raw then ".hs" else "";
       kernel_name = kernelName;
-      attrs = ["haskell"];
+      attrs = if raw then [] else ["haskell"];
       type = "stream";
       primary = true;
       args = if raw
