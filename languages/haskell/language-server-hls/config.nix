@@ -25,8 +25,8 @@ let
 
   config = raw:
     {
-      name = "haskell-${if raw then "" else "notebook-"}language-server";
-      display_name = "Haskell ${if raw then "" else "Notebook "}Language Server";
+      name = "haskell-language-server${if raw then "-raw" else ""}";
+      display_name = "Haskell Language Server";
       description = haskell-language-server.meta.description;
       icon = ./icon_64x64.png;
       extensions = if raw then ["hs"] else [];
@@ -51,6 +51,5 @@ let
 in
 
 common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/language-servers/haskell-hls.yaml" (lib.generators.toYAML {} [
-  (config true)
   (config false)
 ])
