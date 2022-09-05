@@ -3,6 +3,7 @@
 , symlinkJoin
 , writeTextDir
 , pkgs
+, pkgsUnstable
 , fetchFromGitHub
 , requiredPackages ? [pkgs.nix-prefetch-git]
 , system ? "x86_64-linux"
@@ -49,29 +50,7 @@ rec {
     (callPackage ./languages/cpp {})
     (callPackage ./languages/dot {})
     (callPackage ./languages/go {})
-    (callPackage ./languages/haskell (
-      let
-        # This must be chosen to match haskellNix.sources.nixpkgs!
-        # We do it ourselves because we want to use fetchFromGitHub instead of fetchTarball.
-        nixpkgsSrc = fetchFromGitHub {
-          owner = "NixOS";
-          repo = "nixpkgs";
-          rev = "110a2c9ebbf5d4a94486854f18a37a938cfacbbb";
-          sha256 = "0v12ylqxy1kl06dgln6h5k8vhlfzp8xvdymljj7bl0avr0nrgrcm";
-        };
-
-        haskellNix = import (fetchFromGitHub {
-          owner = "input-output-hk";
-          repo = "haskell.nix";
-          rev = "5c49987f99a8b12961979e32fcefec163ce0ef52";
-          sha256 = "sha256-Mb99mzuCM6Tme96s2Gqajy/hT2a1N1J4gDyVr4phXe0=";
-        }) { pkgs = import nixpkgsSrc { inherit system; }; };
-
-      in
-        {
-          # haskell-nix = (import nixpkgsSrc (haskellNix.nixpkgsArgs // { inherit system; })).haskell-nix;
-          # ghc-boot-packages = (import nixpkgsSrc (haskellNix.nixpkgsArgs // { inherit system;})).ghc-boot-packages;
-        }))
+    (pkgsUnstable.callPackage ./languages/haskell {})
     (callPackage ./languages/julia {})
     (callPackage ./languages/octave {})
     (callPackage ./languages/postgres {})

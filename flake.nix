@@ -1,8 +1,8 @@
 {
   description = "CodeDown languages";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/ce6aa13369b667ac2542593170993504932eb836";
-  inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/18de53ca965bd0678aaf09e5ce0daae05c58355a";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/50c62eeda9df340ff6b83a0e2343a447af04237c";
+  inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/21de2b973f9fee595a7a1ac4693efff791245c34";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -20,7 +20,7 @@
           else if (channel.tag == "fetch_git") then pkgs.fetchgit (removeAttrs channel ["tag" "name"])
           else if (channel.tag == "path") then channel.path else null;
 
-        codedown = pkgs.callPackage ./codedown.nix {};
+        codedown = pkgs.callPackage ./codedown.nix { inherit pkgsUnstable; };
 
       in
         rec {
