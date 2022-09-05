@@ -87,11 +87,9 @@ withLspSession :: (
 withLspSession name filename code doSession = do
   Just currentFolder <- getCurrentFolder
 
-  envPath <- (</> "lib" </> "codedown") <$> getContext nixEnvironment
-
-  info [i|Saw envPath: #{envPath}|]
-  languageServerFiles <- filter (\x -> "language-servers.yaml" `T.isSuffixOf` T.pack x) <$> listDirectory envPath
-  lspConfigs :: [LanguageServerConfig] <- (mconcat <$>) $ forM languageServerFiles $ \((envPath </>) -> path) -> do
+  languageServersPath <- (</> "lib" </> "codedown" </> "language-servers") <$> getContext nixEnvironment
+  languageServerFiles <- filter (\x -> ".yaml" `T.isSuffixOf` T.pack x) <$> listDirectory languageServersPath
+  lspConfigs :: [LanguageServerConfig] <- (mconcat <$>) $ forM languageServerFiles $ \((languageServersPath </>) -> path) -> do
     liftIO (A.eitherDecodeFileStrict path) >>= \case
       Left err -> expectationFailure [i|Failed to decode language server path '#{path}': #{err}|]
       Right x -> return x
