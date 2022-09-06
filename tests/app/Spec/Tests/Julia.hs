@@ -17,14 +17,12 @@ kernelSpec = NixKernelSpec {
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettingsSchema = Nothing
   , nixKernelSettings = Nothing
   }
 
 tests :: TopSpec
 tests = describe "Julia" $ introduceNixEnvironment [kernelSpec] [] "Julia" $ introduceJupyterRunner $ do
   testKernelStdout "julia" [i|print("hi")|] "hi\n"
-
 
 
 main :: IO ()

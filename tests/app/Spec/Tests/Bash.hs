@@ -17,7 +17,6 @@ kernelSpec = NixKernelSpec {
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettingsSchema = Nothing
   , nixKernelSettings = Nothing
   }
 
