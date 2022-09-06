@@ -117,7 +117,7 @@ withLspSession name filename code doSession = do
       info [i|finalEnv: #{finalEnv}|]
       let modifyCp cp = cp { env = Just [] } -- Just finalEnv
 
-      liftIO $ runSessionWithConfig' modifyCp sessionConfig lspCommand fullCaps dataDir $ do
+      liftIO $ runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand fullCaps dataDir $ do
         doSession
 
 
