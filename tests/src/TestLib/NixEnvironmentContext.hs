@@ -57,6 +57,7 @@ introduceNixEnvironment kernels otherPackages label = introduceWith [i|#{label} 
         }
 
   let rendered = renderNixEnvironment "<nixpkgs>" nixEnv
+  debug [i|nixEnv: #{nixEnv}|]
   debug [i|Rendered: #{rendered}|]
 
   built <- withSystemTempDirectory "test-nix-build" $ \((</> "link") -> linkPath) -> do

@@ -1,4 +1,6 @@
 {-# LANGUAGE CPP #-}
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Replace case with maybe" #-}
 
 module TestLib.NixRendering where
 
@@ -8,6 +10,7 @@ import Data.Maybe
 import Data.String.Interpolate
 import Data.Text
 import qualified Data.Text as T
+import qualified Data.Vector as V
 import Test.Sandwich
 import TestLib.Aeson
 import TestLib.NixTypes
@@ -104,10 +107,24 @@ renderKernel (NixKernelSpec {..}) = [i|({
   language = "#{nixKernelLanguage}";
   args = {
     packages = [#{T.unwords $ fmap quote $ fmap nameAndMetaName nixKernelPackages}];
-    languageServers = [#{T.unwords $ fmap quote $ fmap nameAndMetaName nixKernelLanguageServers}];
+    languageServers = [#{T.unwords $ fmap quote $ fmap nameAndMetaName nixKernelLanguageServers}];#{settings}
   };
 })|]
-  where quote x = "\"" <> x <> "\""
+  where
+    quote x = "\"" <> x <> "\""
+
+    settings = maybe "" (("\n" <>) . indentTo 4 . (\x -> [i|settings = #{x};|]) . aesonToNix . A.Object) nixKernelSettings
+
+aesonToNix :: A.Value -> Text
+aesonToNix (A.Bool True) = "true"
+aesonToNix (A.Bool False) = "false"
+aesonToNix (A.Array xs) = "[" <> T.intercalate " " (fmap aesonToNix (V.toList xs)) <> "]"
+aesonToNix (A.String s) = [i|''#{s}''|]
+aesonToNix (A.Object os) = let
+  lines = [[i|#{k} = #{aesonToNix v};|] | (k, v) <- HM.toList os]
+    in [__i|{
+              #{T.intercalate "\n" lines}
+            }|]
 
 indentTo :: Int -> Text -> Text
 indentTo n = T.intercalate "\n" . fmap (space <>) . T.splitOn "\n"

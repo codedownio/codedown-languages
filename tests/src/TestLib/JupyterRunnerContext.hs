@@ -14,6 +14,7 @@ import Data.ByteString.Lazy.Char8 as BL
 import qualified Data.HashMap.Strict as HM
 import qualified Data.List as L
 import Data.Map (Map)
+import qualified Data.Map as M
 import Data.String.Interpolate
 import Data.Text as T
 import Data.Text.IO as T
@@ -74,10 +75,16 @@ testKernelStdout' kernel code desired = do
       False -> "" `shouldBe` desired
 
 testNotebookDisplayDataOutputs :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
-testNotebookDisplayDataOutputs kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ testNotebookDisplayDataOutputs' kernel code desired
+testNotebookDisplayDataOutputs kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ testNotebookDisplayDataOutputs' kernel code desired
+
+testNotebookDisplayDataTextOutputs :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Maybe A.Value] -> SpecFree context m ()
+testNotebookDisplayDataTextOutputs kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ testNotebookDisplayDataTextOutputs' kernel code desired
 
 testNotebookDisplayDataOutputs' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> ExampleT context m ()
 testNotebookDisplayDataOutputs' kernel code desired = testNotebookDisplayDataOutputs'' kernel code (`shouldBe` desired)
+
+testNotebookDisplayDataTextOutputs' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Maybe A.Value] -> ExampleT context m ()
+testNotebookDisplayDataTextOutputs' kernel code desired = testNotebookDisplayDataOutputs'' kernel code ((`shouldBe` desired) . fmap (M.lookup (MimeType "text/plain")))
 
 testNotebookDisplayDataOutputs'' :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m

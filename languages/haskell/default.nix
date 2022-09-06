@@ -15,6 +15,19 @@ let
   common = callPackage ../common.nix {};
   util = callPackage ./util.nix {};
 
+  settingsSchema = [
+    {
+      target = "enableHlintOutput";
+      title = "Enable hlint warnings in code output.";
+      description = "Show hlint warnings as part of Jupyter kernel output. Normally you don't want this because it is provided by haskell-language-server.";
+      type = "boolean";
+      defaultValue = false;
+    }
+  ];
+  defaultSettings = {
+    enableHlintOutput = false;
+  };
+
   hls = snapshot: ghc: kernelName: callPackage ./language-server-hls/config.nix {
     inherit kernelName;
 
@@ -92,9 +105,6 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
       languageServerOptions = allLanguageServerOptions snapshot (snapshot.ghcWithPackages (ps: [])) "haskell";
       languageServerSearch = common.searcher languageServerOptions;
 
-      settingsSchema = [];
-      defaultSettings = {};
-
       build = args@{
         packages ? []
         , languageServers ? []
@@ -118,7 +128,9 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
             (callPackage ./kernel.nix {
               inherit displayName attrs extensions metaOnly snapshot;
 
-              ihaskell = snapshot.ihaskell;
+              ihaskell = if settings.enableHlintOutput then snapshot.ihaskell else snapshot.ihaskell.overrideAttrs (oldAttrs: {
+                configureFlags = ["-f" "-use-hlint"];
+              });
               inherit ghc;
 
               # enableVariableInspector = settingsToUse.enableVariableInspector;
