@@ -11,13 +11,17 @@ import TestLib.NixTypes
 
 tests :: TopSpec
 tests = do
+  -- See languages/haskell/default.nix for details on what's available
+
   -- haskellCommonTests "haskell-ghc865"
   -- haskellCommonTests "haskell-ghc884"
 
   haskellCommonTests "haskell-ghc8107"
   haskellCommonTests "haskell-ghc902"
-  haskellCommonTests "haskell-ghc924"
-  haskellCommonTests "haskell-ghc942"
+
+  -- haskellCommonTests "haskell-ghc924"
+  -- haskellCommonTests "haskell-ghc942"
+
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests

@@ -46,10 +46,13 @@ let
 
   compilers = {
     # ghc865 = haskell.packages.ghc865Binary; # Fails with error: attribute 'exceptions_0_10_4' missing
-    ghc884 = haskell.packages.ghc884;
+    # ghc884 = haskell.packages.ghc884; # hlint HLS plugin not working
+
     ghc8107 = haskell.packages.ghc8107;
     ghc902 = haskell.packages.ghc902;
-    # ghc922 = haskell.packages.ghc922; # ghc-parser not building on 22.05 release tag
+
+    # ghc924 = haskell.packages.ghc924; # ghc-parser not building on 22.05 release tag
+    # ghc942 = haskell.packages.ghc942; # base-compat not building
   };
 
   repls = ghc: {
