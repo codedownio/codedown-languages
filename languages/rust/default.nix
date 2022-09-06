@@ -17,7 +17,7 @@ let
   # Note: update this when the base Nixpkgs is bumped
   baseCandidates = [
     "rust"
-    "rust_1_60"
+    "rust_1_63"
   ];
 
 in
