@@ -1,10 +1,11 @@
 { callPackage
 , attrs
-, iruby
 }:
 
 let
   common = callPackage ../common.nix {};
+
+  iruby = (callPackage ./iruby {}).iruby;
 
 in
 

@@ -130,7 +130,7 @@ codedown.mkCodeDownEnvironment {
 
     ({
       channel = "codedown";
-      language = "ruby_2_7";
+      language = "ruby";
       args = {
         packages = [];
         languageServers = [];
