@@ -133,7 +133,7 @@ codedown.mkCodeDownEnvironment {
       language = "ruby";
       args = {
         packages = [];
-        languageServers = [];
+        languageServers = ["solargraph"];
       };
     })
 

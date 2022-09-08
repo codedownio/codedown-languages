@@ -23,6 +23,7 @@ let
     "ruby_2_6"
     "ruby_2_7"
     "ruby_3_0"
+    "ruby_3_1"
   ];
 
   packagesLookup = {
@@ -39,6 +40,7 @@ let
     ruby_2_6 = pkgs.rubyPackages_2_6;
     ruby_2_7 = pkgs.rubyPackages_2_7;
     ruby_3_0 = pkgs.rubyPackages_3_0;
+    ruby_3_1 = pkgs.rubyPackages_3_1;
   };
 
   modeInfo = writeTextDir "lib/codedown/modes/ruby.yaml" (pkgs.lib.generators.toYAML {} [{
@@ -69,7 +71,9 @@ listToAttrs (map (x:
       packageOptions = getAttr x packagesLookup;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = {};
+      languageServerOptions = {
+        solargraph = callPackage ./solargraph.nix { rubyPackages = packageOptions; };
+      };
       languageServerSearch = common.searcher languageServerOptions;
 
       build = args@{
@@ -81,10 +85,14 @@ listToAttrs (map (x:
         symlinkJoin {
           name = "ruby";
           paths = [
-            ruby
             (callPackage ./kernel.nix { inherit attrs; })
             modeInfo
-          ];
+          ]
+          ++ (if metaOnly then [] else [
+            ruby
+          ])
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y languageServerOptions) languageServers))
+          ;
           passthru = {
             args = args // { baseName = x; };
             inherit meta packageOptions languageServerOptions;
@@ -96,19 +104,3 @@ listToAttrs (map (x:
   }
 
 ) (filter (x: (common.hasAttrSafe x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates))
-
-  # Env = [
-  #   "GEM_PATH=/home/user/gems"
-  #   "GEM_HOME=/home/user/gems"
-  #   "BUNDLE_PATH=/home/user/gems"
-  # ];
-  # extraEnvFlags = ''--suffix PATH ":" /home/user/gems/bin'';
-
-
-  # writeTextDir "language-servers.yaml" (pkgs.lib.generators.toYAML {} [{
-  #   name = "ruby";
-  #   extensions = ["rb"];
-  #   attrs = ["ruby"];
-  #   type = "stream";
-  #   args = ["${solargraph}/bin/solargraph" "stdio"];
-  # }]);
