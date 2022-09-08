@@ -23,7 +23,6 @@ library
       TestLib.Contexts.PostgresqlDatabase
       TestLib.JupyterRunnerContext
       TestLib.JupyterTypes
-      TestLib.Lang.HaskellCommon
       TestLib.LSP
       TestLib.NixEnvironmentContext
       TestLib.NixRendering

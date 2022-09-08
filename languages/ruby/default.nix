@@ -72,7 +72,10 @@ listToAttrs (map (x:
       packageSearch = common.searcher packageOptions;
 
       languageServerOptions = {
-        solargraph = callPackage ./solargraph.nix { rubyPackages = packageOptions; };
+        solargraph = callPackage ./solargraph.nix {
+          rubyPackages = packageOptions;
+          kernelName = x;
+        };
       };
       languageServerSearch = common.searcher languageServerOptions;
 

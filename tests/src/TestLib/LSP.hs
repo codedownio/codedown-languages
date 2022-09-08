@@ -76,6 +76,21 @@ testDiagnostics name filename code cb = it [i|#{name}: #{show code}|] $ do
       liftIO $ runInIO $ info [i|Got diagnostics: #{A.encode diagnostics}|]
       liftIO $ runInIO $ cb diagnostics
 
+itHasHoverSatisfying :: (
+  HasNixEnvironment context
+  , HasBaseContext context
+  , MonadIO m
+  , MonadBaseControl IO m
+  , MonadUnliftIO m
+  , MonadThrow m
+  ) => Text -> FilePath -> Text -> Position -> (Maybe Hover -> ExampleT context m ()) -> SpecFree context m ()
+itHasHoverSatisfying name filename code pos cb = it [i|#{name}: #{show code}|] $ do
+  maybeHover <- withRunInIO $ \runInIO ->
+    runInIO $ withLspSession name filename code $ do
+      ident <- openDoc filename "haskell"
+      getHover ident pos
+  cb maybeHover
+
 withLspSession :: (
   HasNixEnvironment context
   , HasBaseContext context
@@ -83,7 +98,7 @@ withLspSession :: (
   , MonadBaseControl IO m
   , MonadUnliftIO m
   , MonadThrow m
-  ) => Text -> FilePath -> Text -> Session () -> ExampleT context m ()
+  ) => Text -> FilePath -> Text -> Session a -> ExampleT context m a
 withLspSession name filename code doSession = do
   Just currentFolder <- getCurrentFolder
 
@@ -125,3 +140,6 @@ assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
   where
     ranges = fmap (\x -> (x ^. range, x ^. code)) diagnostics
+
+-- hoverShouldSatisfy :: MonadThrow m => Position -> (Maybe Hover -> ExampleT context m ()) -> ExampleT context m ()
+-- hoverShouldSatisfy pos pred = getHover (TextDocumentIdentifier (Uri undefined)) pos >>= pred
