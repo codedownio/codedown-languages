@@ -8,41 +8,41 @@ packages:
     subdir: lsp
     name: lsp
     version: 1.5.1.0
-    git: https://github.com/haskell/lsp.git
+    git: https://github.com/codedownio/lsp.git
     pantry-tree:
       size: 1044
-      sha256: 39be9b3c290910818b05ab2a9e5eaf3315b06fa4b5525674393bc7172d3a4cae
-    commit: 6fbe0669f1b79f3623181d1fc89c156f9f65011d
+      sha256: 550d48deba41642801c4cfe176c51263c1a513a507ed3ae21de49f2a5f161085
+    commit: ae2c0ff5340ba2dcb25e016435fc07b390479b59
   original:
     subdir: lsp
-    git: https://github.com/haskell/lsp.git
-    commit: 6fbe0669f1b79f3623181d1fc89c156f9f65011d
+    git: https://github.com/codedownio/lsp.git
+    commit: ae2c0ff5340ba2dcb25e016435fc07b390479b59
 - completed:
     subdir: lsp-test
     name: lsp-test
     version: 0.14.1.0
-    git: https://github.com/haskell/lsp.git
+    git: https://github.com/codedownio/lsp.git
     pantry-tree:
       size: 2061
-      sha256: dc4c9c06d5652410565808edcd84fbacb9bd8908a9f03b220a9d86da27bb75e6
-    commit: 6fbe0669f1b79f3623181d1fc89c156f9f65011d
+      sha256: 58c6d1abaec6ad83df3c453c4387f974878b4aa2d1486e4c98d2c896b7840969
+    commit: ae2c0ff5340ba2dcb25e016435fc07b390479b59
   original:
     subdir: lsp-test
-    git: https://github.com/haskell/lsp.git
-    commit: 6fbe0669f1b79f3623181d1fc89c156f9f65011d
+    git: https://github.com/codedownio/lsp.git
+    commit: ae2c0ff5340ba2dcb25e016435fc07b390479b59
 - completed:
     subdir: lsp-types
     name: lsp-types
     version: 1.5.1.0
-    git: https://github.com/haskell/lsp.git
+    git: https://github.com/codedownio/lsp.git
     pantry-tree:
       size: 4909
-      sha256: a34d0c261b3290a0920a71f29cade27c100c6f2cd769a692b39aa142564373c5
-    commit: 6fbe0669f1b79f3623181d1fc89c156f9f65011d
+      sha256: 753f36cb72679a1d5fcf5a2a510a06ac24adf44d668d8988706a2a9f63a21b79
+    commit: ae2c0ff5340ba2dcb25e016435fc07b390479b59
   original:
     subdir: lsp-types
-    git: https://github.com/haskell/lsp.git
-    commit: 6fbe0669f1b79f3623181d1fc89c156f9f65011d
+    git: https://github.com/codedownio/lsp.git
+    commit: ae2c0ff5340ba2dcb25e016435fc07b390479b59
 - completed:
     hackage: co-log-core-0.3.1.0@sha256:9794bdedd1391decd0e22bdfe2b11abcb42e6cff7a4531e1f8882890828f4e63,3816
     pantry-tree:
