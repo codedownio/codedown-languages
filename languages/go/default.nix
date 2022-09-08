@@ -46,7 +46,7 @@ listToAttrs (map (x:
         packages ? []
         , languageServers ? []
         , attrs ? ["go"]
-        , extensions ? ["clj"]
+        , extensions ? ["go"]
         , metaOnly ? false
       }:
         symlinkJoin {
