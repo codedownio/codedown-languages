@@ -47,6 +47,7 @@ rec {
   languagesFn = filterToValid: zipAttrsWith (n: v: head v) [
     (callPackage ./languages/bash {})
     (callPackage ./languages/clojure {})
+    (callPackage ./languages/coq {})
     (callPackage ./languages/cpp {})
     (callPackage ./languages/dot {})
     (callPackage ./languages/go {})

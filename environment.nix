@@ -163,6 +163,15 @@ codedown.mkCodeDownEnvironment {
         languageServers = [];
       };
     })
+
+    ({
+      channel = "codedown";
+      language = "coq";
+      args = {
+        packages = [];
+        languageServers = [];
+      };
+    })
   ];
 
   otherPackages = [
