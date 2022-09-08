@@ -87,6 +87,7 @@ executable tests-exe
       Spec.Tests
       Spec.Tests.Bash
       Spec.Tests.Clojure
+      Spec.Tests.Coq
       Spec.Tests.Cpp
       Spec.Tests.Go
       Spec.Tests.Haskell

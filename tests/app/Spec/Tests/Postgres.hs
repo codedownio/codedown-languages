@@ -42,9 +42,9 @@ tests = describe "Postgres tests" $ introduceNixEnvironment [kernelSpec] [] "Pos
       (_, ctx) <- getContext postgresDb
       let connStr = postgresConnString ctx
       info [i|Connection string: #{connStr}|]
-      testNotebookDisplayDataOutputs'' "postgres" [__i|-- connection: #{connStr}
-                                                       SELECT * FROM test_table
-                                                      |] $ \case
+      displayDatasShouldSatisfy "postgres" [__i|-- connection: #{connStr}
+                                                SELECT * FROM test_table
+                                               |] $ \case
         [M.lookup (MimeType "text/plain") -> Just x] ->
           x `shouldBe` (Array (V.fromList [
               String "name      num\n"

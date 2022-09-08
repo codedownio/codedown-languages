@@ -35,8 +35,8 @@ common.makeJupyterKernelInner metaOnly (
         "-f"
         "{connection_file}"
       ];
-      logo32 = coq_jupyter.sizedLogo 32;
-      logo64 = coq_jupyter.sizedLogo 64;
+      logo32 = coq_jupyter.sizedLogo "32";
+      logo64 = coq_jupyter.sizedLogo "64";
       metadata = {
         codedown = {
           inherit attrs extensions;

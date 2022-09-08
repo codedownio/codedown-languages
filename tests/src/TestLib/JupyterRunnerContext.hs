@@ -74,29 +74,56 @@ testKernelStdout' kernel code desired = do
       True -> liftIO (T.readFile outFile) >>= (`shouldBe` desired)
       False -> "" `shouldBe` desired
 
-testNotebookDisplayDataOutputs :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
-testNotebookDisplayDataOutputs kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ testNotebookDisplayDataOutputs' kernel code desired
+itHasDisplayDatas :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
+itHasDisplayDatas kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ displayDatasShouldBe kernel code desired
 
-testNotebookDisplayDataTextOutputs :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Maybe A.Value] -> SpecFree context m ()
-testNotebookDisplayDataTextOutputs kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ testNotebookDisplayDataTextOutputs' kernel code desired
+itHasDisplayTexts :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Maybe A.Value] -> SpecFree context m ()
+itHasDisplayTexts kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ displayTextsShouldBe kernel code desired
 
-testNotebookDisplayDataOutputs' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> ExampleT context m ()
-testNotebookDisplayDataOutputs' kernel code desired = testNotebookDisplayDataOutputs'' kernel code (`shouldBe` desired)
+displayDatasShouldBe :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> ExampleT context m ()
+displayDatasShouldBe kernel code desired = displayDatasShouldSatisfy kernel code (`shouldBe` desired)
 
-testNotebookDisplayDataTextOutputs' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Maybe A.Value] -> ExampleT context m ()
-testNotebookDisplayDataTextOutputs' kernel code desired = testNotebookDisplayDataOutputs'' kernel code ((`shouldBe` desired) . fmap (M.lookup (MimeType "text/plain")))
+displayTextsShouldBe :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Maybe A.Value] -> ExampleT context m ()
+displayTextsShouldBe kernel code desired = displayDatasShouldSatisfy kernel code ((`shouldBe` desired) . fmap (M.lookup (MimeType "text/plain")))
 
-testNotebookDisplayDataOutputs'' :: (
+displayDatasShouldSatisfy :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> ([Map MimeType A.Value] -> ExampleT context m ()) -> ExampleT context m ()
-testNotebookDisplayDataOutputs'' kernel code pred = do
+displayDatasShouldSatisfy kernel code pred = notebookShouldSatisfy kernel code $ \(JupyterNotebook {..}) -> do
+  let outputs = mconcat [codeOutputs | CodeCell {..} <- notebookCells]
+  pred ([displayDataData | DisplayDataOutput {..} <- outputs])
+
+-- * Execute result helpers
+
+itHasExecuteDatas :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
+itHasExecuteDatas kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ executeDatasShouldBe kernel code desired
+
+itHasExecuteTexts :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Maybe A.Value] -> SpecFree context m ()
+itHasExecuteTexts kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ executeTextsShouldBe kernel code desired
+
+executeDatasShouldBe :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> ExampleT context m ()
+executeDatasShouldBe kernel code desired = executeResultsShouldSatisfy kernel code (`shouldBe` desired)
+
+executeTextsShouldBe :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Maybe A.Value] -> ExampleT context m ()
+executeTextsShouldBe kernel code desired = executeResultsShouldSatisfy kernel code ((`shouldBe` desired) . fmap (M.lookup (MimeType "text/plain")))
+
+executeResultsShouldSatisfy :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> ([Map MimeType A.Value] -> ExampleT context m ()) -> ExampleT context m ()
+executeResultsShouldSatisfy kernel code pred = notebookShouldSatisfy kernel code $ \(JupyterNotebook {..}) -> do
+  let outputs = mconcat [codeOutputs | CodeCell {..} <- notebookCells]
+  pred ([executeResultData | ExecuteResultOutput {..} <- outputs])
+
+-- * Core notebook helper
+
+notebookShouldSatisfy :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> (JupyterNotebook -> ExampleT context m ()) -> ExampleT context m ()
+notebookShouldSatisfy kernel code pred = do
   runKernelCode kernel code $ \notebookFile outputNotebookFile outFile errFile -> do
     liftIO (A.eitherDecodeFileStrict outputNotebookFile) >>= \case
       Left err -> expectationFailure [i|Failed to decode notebook '#{notebookFile}': #{err}|]
-      Right nb@(JupyterNotebook {..}) -> do
-        let outputs = mconcat [codeOutputs | CodeCell {..} <- notebookCells]
-        let displayDatas = [displayDataData | DisplayDataOutput {..} <- outputs]
-        pred displayDatas
+      Right nb -> pred nb
 
 runKernelCode :: (
   (HasJupyterRunnerContext context, JupyterRunnerMonad m)

@@ -12,42 +12,45 @@ let
 
   repls = coq: {};
 
+  coq_jupyter = callPackage ./coq_jupyter {};
+
   baseCandidates = [
-    "coq"
-    "coq_8_5"
-    "coq_8_6"
-    "coq_8_7"
-    "coq_8_8"
-    "coq_8_9"
-    "coq_8_10"
-    "coq_8_11"
-    "coq_8_12"
-    "coq_8_13"
-    "coq_8_14"
-    "coq_8_15"
-    "coq_8_16"
-    "coq_8_17"
-    "coq_8_18"
-    "coq_8_19"
-    "coq_8_20"
+    "coqPackages"
+    "coqPackages_8_5"
+    "coqPackages_8_6"
+    "coqPackages_8_7"
+    "coqPackages_8_8"
+    "coqPackages_8_9"
+    "coqPackages_8_10"
+    "coqPackages_8_11"
+    "coqPackages_8_12"
+    "coqPackages_8_13"
+    "coqPackages_8_14"
+    "coqPackages_8_15"
+    "coqPackages_8_16"
+    "coqPackages_8_17"
+    "coqPackages_8_18"
+    "coqPackages_8_19"
+    "coqPackages_8_20"
   ];
 
 in
 
 lib.listToAttrs (map (x:
-  let baseCoq = lib.getAttr x pkgs;
+  let coqPackages = lib.getAttr x pkgs;
+      baseCoq = coqPackages.coq;
+      baseName = with builtins; (substring 0 3 x) + (substring 11 (stringLength x - 11) x);
       displayName = "Coq " + baseCoq.version;
       meta = baseCoq.meta // {
-        baseName = x;
-        inherit displayName;
+        inherit baseName displayName;
         version = baseCoq.version;
-        icon = ./logo-64x64.png;
+        icon = coq_jupyter.sizedLogo "64";
       };
 
   in {
-    name = x;
+    name = baseName;
     value = rec {
-      packageOptions = baseCoq.pkgs;
+      packageOptions = coqPackages;
       packageSearch = common.searcher packageOptions;
 
       languageServerOptions = allLanguageServerOptions baseCoq "coq";
@@ -59,8 +62,8 @@ lib.listToAttrs (map (x:
       build = args@{
         packages ? []
         , languageServers ? []
-        , attrs ? [x "coq"]
-        , extensions ? ["py"]
+        , attrs ? [baseName "coq"]
+        , extensions ? ["v"]
         , settings ? defaultSettings
         , metaOnly ? false
       }:
@@ -73,7 +76,7 @@ lib.listToAttrs (map (x:
           coq = baseCoq;
 
         in symlinkJoin {
-          name = x;
+          name = baseName;
 
           paths = [
             (callPackage ./kernel.nix {
@@ -86,10 +89,10 @@ lib.listToAttrs (map (x:
           ++ (if metaOnly then [] else [
             coq
           ])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions coq x)) languageServers));
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions coq baseName)) languageServers));
 
           passthru = {
-            args = args // { baseName = x; };
+            args = args // { inherit baseName; };
             settings = settingsToUse;
             repls = repls coq;
             inherit meta languageServerOptions packageOptions settingsSchema;

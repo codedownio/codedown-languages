@@ -38,20 +38,20 @@ haskellCommonTests lang = do
   describe [i|Haskell #{lang} with hlint output|] $ introduceNixEnvironment [kernelSpecWithHlintOutput lang] [] "Haskell" $ introduceJupyterRunner $ do
     describe "Kernel" $ do
       -- With the setting turned on, we should get hlint output
-      testNotebookDisplayDataTextOutputs lang etaExpandCode [Just (A.Array $ V.fromList [
-                                                                String "Line 7: Eta reduce\n"
-                                                                , String "Found:\n"
-                                                                , String "baz2 x = baz x\n"
-                                                                , String "Why not:\n"
-                                                                , String "baz2 = baz"
-                                                                ])]
+      itHasDisplayTexts lang etaExpandCode [Just (A.Array $ V.fromList [
+                                                     String "Line 7: Eta reduce\n"
+                                                     , String "Found:\n"
+                                                     , String "baz2 x = baz x\n"
+                                                     , String "Why not:\n"
+                                                     , String "baz2 = baz"
+                                                     ])]
 
   describe [i|Haskell #{lang}|] $ introduceNixEnvironment [kernelSpec lang] [] "Haskell" $ introduceJupyterRunner $ do
     describe "Kernel" $ do
-      testNotebookDisplayDataOutputs lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
+      itHasDisplayDatas lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
 
       -- We shouldn't get hlint output by default
-      testNotebookDisplayDataOutputs lang etaExpandCode []
+      itHasDisplayDatas lang etaExpandCode []
 
     describe "LSP" $ do
       testDiagnostics lsName "Foo.hs" [__i|module Foo where
