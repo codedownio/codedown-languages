@@ -83,13 +83,15 @@ itHasHoverSatisfying :: (
   , MonadBaseControl IO m
   , MonadUnliftIO m
   , MonadThrow m
-  ) => Text -> FilePath -> Text -> Position -> (Maybe Hover -> ExampleT context m ()) -> SpecFree context m ()
+  ) => Text -> FilePath -> Text -> Position -> (Hover -> ExampleT context m ()) -> SpecFree context m ()
 itHasHoverSatisfying name filename code pos cb = it [i|#{name}: #{show code}|] $ do
   maybeHover <- withRunInIO $ \runInIO ->
     runInIO $ withLspSession name filename code $ do
       ident <- openDoc filename "haskell"
       getHover ident pos
-  cb maybeHover
+  case maybeHover of
+    Nothing -> expectationFailure [i|Expected a hover.|]
+    Just x -> cb x
 
 withLspSession :: (
   HasNixEnvironment context
