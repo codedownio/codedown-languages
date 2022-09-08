@@ -63,15 +63,15 @@
     version = "1.4.1";
   };
   iruby = {
-    dependencies = ["data_uri" "ffi-rzmq" "irb" "mime-types" "multi_json" "native-package-installer"];
+    dependencies = ["data_uri" "ffi-rzmq" "irb" "mime-types" "multi_json"];
     groups = ["default"];
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "0856ncjk7akm55gxcnhfmv426xsl4ryywdxrqbwgphwpqwm9w8fc";
+      sha256 = "1hwgdsnzmv5qhnrfxrd14di7arz5wgm5h94sn9xbcs210b39vm04";
       type = "gem";
     };
-    version = "0.7.4";
+    version = "0.7.3";
   };
   mime-types = {
     dependencies = ["mime-types-data"];
@@ -103,16 +103,6 @@
       type = "gem";
     };
     version = "1.15.0";
-  };
-  native-package-installer = {
-    groups = ["default"];
-    platforms = [];
-    source = {
-      remotes = ["https://rubygems.org"];
-      sha256 = "1r1sh17dj6jwmnk4awj0vpagl3fncrkdlvm99m17warqsynbnvji";
-      type = "gem";
-    };
-    version = "1.1.5";
   };
   reline = {
     dependencies = ["io-console"];
