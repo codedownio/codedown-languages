@@ -1,9 +1,10 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE NumericUnderscores #-}
+{-# OPTIONS_GHC -fno-warn-deprecations #-} -- For PlainString, CodeString, etc.
 
 module TestLib.LSP where
 
-import Control.Lens
+import Control.Lens hiding (List)
 import Control.Monad
 import Control.Monad.Catch (MonadThrow)
 import Control.Monad.IO.Unlift
@@ -145,3 +146,13 @@ assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
 
 -- hoverShouldSatisfy :: MonadThrow m => Position -> (Maybe Hover -> ExampleT context m ()) -> ExampleT context m ()
 -- hoverShouldSatisfy pos pred = getHover (TextDocumentIdentifier (Uri undefined)) pos >>= pred
+
+allHoverText :: Hover -> Text
+allHoverText hover = allHoverContentsText (hover ^. contents)
+
+allHoverContentsText :: HoverContents -> Text
+allHoverContentsText (HoverContentsMS (List mss)) = mconcat $ fmap markedStringToText mss
+  where
+    markedStringToText (PlainString t) = t
+    markedStringToText (CodeString (LanguageString _ t)) = t
+allHoverContentsText (HoverContents (MarkupContent _ t)) = t

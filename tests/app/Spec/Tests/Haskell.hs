@@ -41,7 +41,7 @@ tests = do
   -- haskellCommonTests "haskell-ghc884"
 
   haskellCommonTests "haskell-ghc8107"
-  haskellCommonTests "haskell-ghc902"
+  -- haskellCommonTests "haskell-ghc902"
 
   -- haskellCommonTests "haskell-ghc924"
   -- haskellCommonTests "haskell-ghc942"
@@ -90,12 +90,18 @@ haskellCommonTests lang = do
               ]
         getHighlights ident (Position 0 1) >>= (`shouldBe` List desired)
 
-      it "hover" $ doSession documentHighlightCode $ \filename -> do
-        ident <- openDoc filename "haskell"
-        Just hover <- getHover ident (Position 1 1)
-        (hover ^. range) `shouldBe` (Just (Range (Position 1 0) (Position 1 8)))
-        let HoverContents (MarkupContent {..}) = hover ^. contents
-        _value `textShouldContain` "putStrLn :: String -> IO ()"
+      describe "hover" $ do
+        it "hovers a variable and has the correct definition line" $ doSession hoverCode $ \filename -> do
+          ident <- openDoc filename "haskell"
+          Just hover <- getHover ident (Position 0 1)
+          allHoverText hover `textShouldContain` [i|main.ipynb:1:1|]
+
+        it "hovers putStrLn" $ doSession hoverCode $ \filename -> do
+          ident <- openDoc filename "haskell"
+          Just hover <- getHover ident (Position 1 1)
+          (hover ^. range) `shouldBe` (Just (Range (Position 1 0) (Position 1 8)))
+          let HoverContents (MarkupContent {..}) = hover ^. contents
+          _value `textShouldContain` "putStrLn :: String -> IO ()"
 
       it "symbols" $ doSession documentHighlightCode $ \filename -> do
         ident <- openDoc filename "haskell"
@@ -117,6 +123,10 @@ doSession code cb = do
 
 documentHighlightCode = [__i|foo = "hello"
                              putStrLn foo|]
+
+hoverCode = [__i|foo = "hello"
+                 putStrLn foo
+                 import Data.Aeson|]
 
 etaExpandCode = [__i|module Foo where
 
