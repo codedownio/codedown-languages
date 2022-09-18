@@ -41,9 +41,9 @@ tests = do
   -- haskellCommonTests "haskell-ghc884"
 
   haskellCommonTests "haskell-ghc8107"
-  -- haskellCommonTests "haskell-ghc902"
+  haskellCommonTests "haskell-ghc902"
+  haskellCommonTests "haskell-ghc924"
 
-  -- haskellCommonTests "haskell-ghc924"
   -- haskellCommonTests "haskell-ghc942"
 
 haskellCommonTests :: Text -> TopSpec

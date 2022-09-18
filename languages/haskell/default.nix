@@ -72,6 +72,7 @@ let
         }) {};
       };
     };
+
     # ghc942 = haskell.packages.ghc942; # base-compat not building
   };
 
