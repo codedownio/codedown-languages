@@ -42,11 +42,11 @@ let
       dontUnpack = true;
       dontConfigure = true;
       buildPhase = ''
-          mkdir -p $out/bin
-          makeWrapper ${ghc}/bin/haskell-language-server $out/bin/haskell-language-server \
-                      --set NIX_GHC_LIBDIR "${ghc.out}/lib/${ghc.meta.name}" \
-                      --prefix PATH ':' ${ghc}/bin
-        '';
+        mkdir -p $out/bin
+        makeWrapper ${ghc}/bin/haskell-language-server $out/bin/haskell-language-server \
+                    --set NIX_GHC_LIBDIR "${ghc.out}/lib/${ghc.meta.name}" \
+                    --prefix PATH ':' ${ghc}/bin
+      '';
       dontInstall = true;
 
       inherit (snapshot.haskell-language-server) meta;
