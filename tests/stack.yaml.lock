@@ -7,16 +7,16 @@ packages:
 - completed:
     subdir: lsp
     name: lsp
-    version: 1.5.1.0
+    version: 1.6.0.0
     git: https://github.com/codedownio/lsp.git
     pantry-tree:
       size: 1044
-      sha256: 550d48deba41642801c4cfe176c51263c1a513a507ed3ae21de49f2a5f161085
-    commit: 00eefafe984c877c38aba7f13580a09034543e1c
+      sha256: 15e730668ce798b51ec0424d0fe53278a63939ff4dabbc415a782fdc9c34c27f
+    commit: a6254b325b90e0c85aa822b69456cd635ae9666b
   original:
     subdir: lsp
     git: https://github.com/codedownio/lsp.git
-    commit: 00eefafe984c877c38aba7f13580a09034543e1c
+    commit: a6254b325b90e0c85aa822b69456cd635ae9666b
 - completed:
     subdir: lsp-test
     name: lsp-test
@@ -24,25 +24,25 @@ packages:
     git: https://github.com/codedownio/lsp.git
     pantry-tree:
       size: 2061
-      sha256: 58c6d1abaec6ad83df3c453c4387f974878b4aa2d1486e4c98d2c896b7840969
-    commit: 00eefafe984c877c38aba7f13580a09034543e1c
+      sha256: 265a1c45382806f9a9bf16782bd7a37da8541d4eb7edc3c0e61e08ee4f82b9f5
+    commit: a6254b325b90e0c85aa822b69456cd635ae9666b
   original:
     subdir: lsp-test
     git: https://github.com/codedownio/lsp.git
-    commit: 00eefafe984c877c38aba7f13580a09034543e1c
+    commit: a6254b325b90e0c85aa822b69456cd635ae9666b
 - completed:
     subdir: lsp-types
     name: lsp-types
-    version: 1.5.1.0
+    version: 1.6.0.0
     git: https://github.com/codedownio/lsp.git
     pantry-tree:
       size: 4909
-      sha256: 7bdac16a5e686932b29b630b2f740d87193f8c28e6507a296d10f8d4340e24c0
-    commit: 00eefafe984c877c38aba7f13580a09034543e1c
+      sha256: 2fc5439f21d51acb92b71e3dad71acd0c073bff052480520dfe40aba937597b9
+    commit: a6254b325b90e0c85aa822b69456cd635ae9666b
   original:
     subdir: lsp-types
     git: https://github.com/codedownio/lsp.git
-    commit: 00eefafe984c877c38aba7f13580a09034543e1c
+    commit: a6254b325b90e0c85aa822b69456cd635ae9666b
 - completed:
     hackage: co-log-core-0.3.1.0@sha256:9794bdedd1391decd0e22bdfe2b11abcb42e6cff7a4531e1f8882890828f4e63,3816
     pantry-tree:
