@@ -64,7 +64,14 @@ let
     ghc8107 = haskell.packages.ghc8107;
     ghc902 = haskell.packages.ghc902;
 
-    # ghc924 = haskell.packages.ghc924; # ghc-parser not building on 22.05 release tag
+    ghc924 = haskell.packages.ghc924.override {
+      overrides = self: super: {
+        ghc-parser = self.callCabal2nix "ghc-parser" (builtins.fetchTarball {
+          url = "https://hackage.haskell.org/package/ghc-parser-0.2.4.0/ghc-parser-0.2.4.0.tar.gz";
+          sha256 = "13ih9b417nyglzs46z1n68apw9w3pvmp1sfcxpmr24s2nshl1r74";
+        }) {};
+      };
+    };
     # ghc942 = haskell.packages.ghc942; # base-compat not building
   };
 
