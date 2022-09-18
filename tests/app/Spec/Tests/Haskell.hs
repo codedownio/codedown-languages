@@ -91,9 +91,10 @@ haskellCommonTests lang = do
         getHighlights ident (Position 0 1) >>= (`shouldBe` List desired)
 
       describe "hover" $ do
-        it "hovers a variable and has the correct definition line" $ doSession hoverCode $ \filename -> do
+        it "hovers foo" $ doSession' "Test.hs" hoverCode $ \filename -> do
           ident <- openDoc filename "haskell"
-          hover <- getHoverOrException ident (Position 0 2)
+          hover <- getHoverOrException ident (Position 0 1)
+          allHoverText hover `textShouldContain` [i|foo|]
           allHoverText hover `textShouldContain` [i|main.ipynb:1:1|]
 
         it "hovers putStrLn" $ doSession hoverCode $ \filename -> do
@@ -116,7 +117,12 @@ haskellCommonTests lang = do
 doSession :: (
   MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
   ) => Text -> (FilePath -> Session ()) -> ExampleT context m ()
-doSession code cb = do
+doSession = doSession' "main.ipynb"
+
+doSession' :: (
+  MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
+  ) => Text -> Text -> (FilePath -> Session ()) -> ExampleT context m ()
+doSession' filename code cb = do
   let filename :: Text = "main.ipynb"
   withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) documentHighlightCode $ do
     cb (T.unpack filename)
