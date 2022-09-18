@@ -93,13 +93,13 @@ haskellCommonTests lang = do
       describe "hover" $ do
         it "hovers a variable and has the correct definition line" $ doSession hoverCode $ \filename -> do
           ident <- openDoc filename "haskell"
-          Just hover <- getHover ident (Position 0 1)
+          hover <- getHoverOrException ident (Position 0 2)
           allHoverText hover `textShouldContain` [i|main.ipynb:1:1|]
 
         it "hovers putStrLn" $ doSession hoverCode $ \filename -> do
           ident <- openDoc filename "haskell"
-          Just hover <- getHover ident (Position 1 1)
-          (hover ^. range) `shouldBe` (Just (Range (Position 1 0) (Position 1 8)))
+          hover <- getHoverOrException ident (Position 1 1)
+          (hover ^. range) `shouldBe` Just (Range (Position 1 0) (Position 1 8))
           let HoverContents (MarkupContent {..}) = hover ^. contents
           _value `textShouldContain` "putStrLn :: String -> IO ()"
 

@@ -147,6 +147,11 @@ assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
 -- hoverShouldSatisfy :: MonadThrow m => Position -> (Maybe Hover -> ExampleT context m ()) -> ExampleT context m ()
 -- hoverShouldSatisfy pos pred = getHover (TextDocumentIdentifier (Uri undefined)) pos >>= pred
 
+getHoverOrException :: TextDocumentIdentifier -> Position -> Session Hover
+getHoverOrException tdi pos = getHover tdi pos >>= \case
+  Nothing -> expectationFailure [i|No hover returned.|]
+  Just x -> return x
+
 allHoverText :: Hover -> Text
 allHoverText hover = allHoverContentsText (hover ^. contents)
 
