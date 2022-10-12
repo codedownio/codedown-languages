@@ -13,14 +13,14 @@ in
 {
   kernels = [{
     channel = "nixpkgs-unstable";
-    language = "haskell-ghc902";
+    name = "haskell-ghc902";
     args = {
       packages = ["aeson"];
       languageServers = ["haskell-language-server"];
     };
   } {
     channel = "nixpkgs-unstable";
-    language = "haskell-ghc8107";
+    name = "haskell-ghc8107";
     args = {
       packages = ["aeson"];
       languageServers = ["haskell-language-server"];

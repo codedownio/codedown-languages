@@ -13,8 +13,8 @@ import TestLib.NixTypes
 
 
 kernelSpec = NixKernelSpec {
-  nixKernelChannel = "codedown"
-  , nixKernelLanguage = "python3"
+  nixKernelName = "python3"
+  , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Python 3"
   , nixKernelPackages = [nameOnly "tensorflow"]
   , nixKernelLanguageServers = [

@@ -22,8 +22,8 @@ import UnliftIO.Concurrent
 
 
 kernelSpec = NixKernelSpec {
-  nixKernelChannel = "codedown"
-  , nixKernelLanguage = "postgres"
+  nixKernelName = "postgres"
+  , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Postgres"
   , nixKernelPackages = []
   , nixKernelLanguageServers = [

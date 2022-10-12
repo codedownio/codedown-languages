@@ -9,8 +9,8 @@ import TestLib.NixTypes
 
 
 kernelSpec = NixKernelSpec {
-  nixKernelChannel = "codedown"
-  , nixKernelLanguage = "R"
+  nixKernelName = "R"
+  , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "R"
   , nixKernelPackages = [nameOnly "ggplot2"]
   , nixKernelLanguageServers = []

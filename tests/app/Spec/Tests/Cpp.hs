@@ -9,8 +9,8 @@ import TestLib.NixTypes
 
 
 kernelSpec = NixKernelSpec {
-  nixKernelChannel = "codedown"
-  , nixKernelLanguage = "cpp11"
+  nixKernelName = "cpp11"
+  , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "CPP"
   , nixKernelPackages = []
   , nixKernelLanguageServers = []

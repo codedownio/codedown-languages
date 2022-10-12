@@ -147,8 +147,8 @@ lsName :: Text
 lsName = "haskell-language-server"
 
 kernelSpec lang = NixKernelSpec {
-  nixKernelChannel = "codedown"
-  , nixKernelLanguage = lang
+  nixKernelName = lang
+  , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Haskell"
   , nixKernelPackages = []
   , nixKernelLanguageServers = [nameOnly "haskell-language-server"]

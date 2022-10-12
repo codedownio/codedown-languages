@@ -10,7 +10,7 @@ import TestLib.NixTypes
 
 kernelSpec = NixKernelSpec {
   nixKernelChannel = "codedown"
-  , nixKernelLanguage = "bashInteractive"
+  , nixKernelName = "bashInteractive"
   , nixKernelDisplayName = Just "Bash"
   , nixKernelPackages = []
   , nixKernelLanguageServers = []

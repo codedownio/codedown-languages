@@ -1,7 +1,7 @@
 {
   kernels = [({
     channel = "nixpkgs";
-    language = "cpp14";
+    name = "cpp14";
     args = {
       packages = [];
       languageServers = [];

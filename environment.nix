@@ -11,8 +11,8 @@ codedown.mkCodeDownEnvironment {
 
   kernels = [
     ({
+      name = "bashInteractive";
       channel = "codedown";
-      language = "bashInteractive";
       args = {
         packages = [];
         languageServers = ["bashLanguageServer" "shellcheck"];
@@ -20,8 +20,8 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
+    #   name = "graphviz";
     #   channel = "codedown";
-    #   language = "graphviz";
     #   args = {
     #     packages = [];
     #     languageServers = [];
@@ -29,8 +29,8 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
+      name = "clojure";
       channel = "codedown";
-      language = "clojure";
       args = {
         packages = [];
         languageServers = [];
@@ -38,8 +38,8 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
+    #   name = "cpp11";
     #   channel = "codedown";
-    #   language = "cpp11";
     #   args = {
     #     packages = [];
     #     languageServers = [];
@@ -48,8 +48,8 @@ codedown.mkCodeDownEnvironment {
     # })
 
     # ({
+    #   name = "julia-stable-bin";
     #   channel = "codedown";
-    #   language = "julia-stable-bin";
     #   args = {
     #     packages = [];
     #     languageServers = [];
@@ -57,17 +57,26 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
+      name = "haskell-ghc8107";
       channel = "codedown";
-      language = "haskell-ghc8107";
       args = {
         packages = ["aeson"];
         languageServers = ["haskell-language-server"];
       };
     })
 
+    ({
+      name = "haskell-ghc924";
+      channel = "codedown";
+      args = {
+        packages = ["aeson"];
+        languageServers = [];
+      };
+    })
+
     # ({
+    #   name = "haskell-ghc902";
     #   channel = "codedown";
-    #   language = "haskell-ghc902";
     #   args = {
     #     packages = ["aeson"];
     #     languageServers = ["haskell-language-server"];
@@ -75,8 +84,8 @@ codedown.mkCodeDownEnvironment {
     # })
 
     # ({
+    #   name = "haskell-ghc922";
     #   channel = "codedown";
-    #   language = "haskell-ghc922";
     #   args = {
     #     packages = ["aeson"];
     #     languageServers = ["haskell-language-server"];
@@ -84,8 +93,8 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
+      name = "R";
       channel = "codedown";
-      language = "R";
       args = {
         packages = ["ggplot2"];
         languageServers = ["languageserver"];
@@ -93,8 +102,8 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
+      name = "octave";
       channel = "codedown";
-      language = "octave";
       args = {
         packages = ["arduino"];
         languageServers = [];
@@ -105,8 +114,8 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
+      name = "python38";
       channel = "codedown";
-      language = "python38";
       args = {
         packages = ["matplotlib" "scipy" "rope"];
         languageServers = ["jedi" "pyright" "pylint" "flake8" "pycodestyle" "microsoft" "python-lsp-server"];
@@ -117,8 +126,8 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
+    #   name = "pypy27";
     #   channel = "codedown";
-    #   language = "pypy27";
     #   args = {
     #     packages = [];
     #     languageServers = [];
@@ -129,8 +138,8 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
+      name = "ruby";
       channel = "codedown";
-      language = "ruby";
       args = {
         packages = [];
         languageServers = ["solargraph"];
@@ -138,8 +147,8 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
+      name = "rust";
       channel = "codedown";
-      language = "rust";
       args = {
         packages = [];
         languageServers = ["rust-analyzer"];
@@ -147,8 +156,8 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
+      name = "go";
       channel = "codedown";
-      language = "go";
       args = {
         packages = [];
         languageServers = ["go-langserver"];
@@ -156,8 +165,8 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
+      name = "postgres";
       channel = "codedown";
-      language = "postgres";
       args = {
         packages = [];
         languageServers = [];
@@ -165,8 +174,8 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
+      name = "coq";
       channel = "codedown";
-      language = "coq";
       args = {
         packages = [];
         languageServers = [];

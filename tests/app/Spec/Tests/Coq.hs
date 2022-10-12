@@ -15,8 +15,8 @@ import TestLib.NixTypes
 
 
 kernelSpec = NixKernelSpec {
-  nixKernelChannel = "codedown"
-  , nixKernelLanguage = "coq"
+  nixKernelName = "coq"
+  , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Coq"
   , nixKernelPackages = []
   , nixKernelLanguageServers = [

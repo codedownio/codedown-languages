@@ -9,8 +9,8 @@ import TestLib.NixTypes
 
 
 kernelSpec = NixKernelSpec {
-  nixKernelChannel = "codedown"
-  , nixKernelLanguage = "clojure"
+  nixKernelName = "clojure"
+  , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Clojure"
   , nixKernelPackages = []
   , nixKernelLanguageServers = []

@@ -1,7 +1,7 @@
 {
   kernels = [({
     channel = "nixpkgs";
-    language = "julia_15";
+    name = "julia_15";
     args = {
       packages = [];
       languageServers = [];

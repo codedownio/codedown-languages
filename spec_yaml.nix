@@ -30,8 +30,8 @@ with lib;
   }) exporters;
 
   kernels = map (x: {
+    name = x.name;
     channel = x.channel;
-    language = x.language;
     display_name = attrByPath ["meta" "displayName"] null x;
     icon = attrByPath ["meta" "icon"] null x.passthru;
     meta = attrByPath ["meta"] null x.passthru;

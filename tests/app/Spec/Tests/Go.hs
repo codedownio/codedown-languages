@@ -10,8 +10,8 @@ import TestLib.NixTypes
 
 
 kernelSpec = NixKernelSpec {
-  nixKernelChannel = "codedown"
-  , nixKernelLanguage = "go"
+  nixKernelName = "go"
+  , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Go"
   , nixKernelPackages = []
   , nixKernelLanguageServers = [nameOnly "go-langserver"]

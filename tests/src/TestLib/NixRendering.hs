@@ -103,8 +103,8 @@ renderOtherPackage (ChannelAndAttr {..}) = [i|{ channel = "#{channelAndAttrChann
 
 renderKernel :: NixKernelSpec -> Text
 renderKernel (NixKernelSpec {..}) = [i|({
+  name = "#{nixKernelName}";
   channel = "#{nixKernelChannel}";
-  language = "#{nixKernelLanguage}";
   args = {
     packages = [#{T.unwords $ fmap quote $ fmap nameAndMetaName nixKernelPackages}];
     languageServers = [#{T.unwords $ fmap quote $ fmap nameAndMetaName nixKernelLanguageServers}];#{settings}

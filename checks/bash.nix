@@ -1,7 +1,7 @@
 {
   kernels = [({
     channel = "nixpkgs";
-    language = "bashInteractive";
+    name = "bashInteractive";
     args = {
       packages = [];
       languageServers = ["bashLanguageServer" "shellcheck"];

@@ -9,8 +9,8 @@ import TestLib.NixTypes
 
 
 kernelSpec = NixKernelSpec {
-  nixKernelChannel = "codedown"
-  , nixKernelLanguage = "octave"
+  nixKernelName = "octave"
+  , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Octave"
   , nixKernelPackages = []
   , nixKernelLanguageServers = []

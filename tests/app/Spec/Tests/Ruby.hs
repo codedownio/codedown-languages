@@ -35,8 +35,8 @@ rubyTests lang = do
             }
 
 kernelSpec lang = NixKernelSpec {
-  nixKernelChannel = "codedown"
-  , nixKernelLanguage = lang
+  nixKernelName = lang
+  , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just [i|Ruby (#{lang})|]
   , nixKernelPackages = []
   , nixKernelLanguageServers = [nameOnly "solargraph"]

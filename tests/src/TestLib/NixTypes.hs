@@ -51,8 +51,8 @@ channelAndAttr :: Text -> Text -> ChannelAndAttr
 channelAndAttr channel attr = ChannelAndAttr channel attr Nothing Nothing
 
 data NixKernelSpec = NixKernelSpec {
-  nixKernelChannel :: Text
-  , nixKernelLanguage :: Text
+  nixKernelName :: Text
+  , nixKernelChannel :: Text
   , nixKernelDisplayName :: Maybe Text
   , nixKernelPackages :: [NameAndMeta]
   , nixKernelLanguageServers :: [NameAndMeta]
