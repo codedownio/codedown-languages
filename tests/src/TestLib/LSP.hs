@@ -135,7 +135,10 @@ withLspSession name filename code doSession = do
       info [i|finalEnv: #{finalEnv}|]
       let modifyCp cp = cp { env = Just [] } -- Just finalEnv
 
-      liftIO $ runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand fullCaps dataDir $ do
+      -- We don't support workspace folders
+      let caps = set (workspace . _Just . workspaceFolders) Nothing fullCaps
+
+      liftIO $ runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir $ do
         doSession
 
 
