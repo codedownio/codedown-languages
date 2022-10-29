@@ -18,12 +18,11 @@ in
 common.writeTextDirWithMeta shellcheck "lib/codedown/language-servers/bash-shellcheck.yaml" (lib.generators.toYAML {} [{
   name = "shellcheck";
   extensions = ["sh" "bash"];
+  notebook_suffix = ".sh";
   attrs = ["bash"];
   type = "stream";
   args = ["${diagnostic-languageserver}/bin/diagnostic-languageserver" "--stdio" "--log-level" "1"];
-  env = {
-
-  };
+  env = {};
   initialization_options = {
     linters = {
       shellcheck = {
@@ -51,11 +50,13 @@ common.writeTextDirWithMeta shellcheck "lib/codedown/language-servers/bash-shell
       };
     };
     filetypes = {
-      py = "shellcheck";
+      sh = "shellcheck";
+      bash = "shellcheck";
+
       md = "shellcheck";
       ipynb = "shellcheck";
+
       shellcheck = "shellcheck";
-      python = "shellcheck";
     };
     formatters = {};
     formatFiletypes = {};
