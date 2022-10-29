@@ -34,7 +34,7 @@ in
 common.writeTextDirWithMeta bashLanguageServerWithMan.meta "lib/codedown/language-servers/bash-language-server.yaml" (lib.generators.toYAML {} [{
   name = "bash-language-server";
   extensions = ["sh" "bash"];
-  notebook_suffix = ".sh";
+  notebook_suffix = ".bash";
   attrs = ["bash"];
   type = "stream";
   primary = true;
