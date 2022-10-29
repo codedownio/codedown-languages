@@ -19,13 +19,14 @@ let
 
   # manWithPages = (import ../shared.nix).manWithPages;
 
-  bashLanguageServerWithMan = runCommand "bash-language-server-with-man" {
+  bashLanguageServerWithMan = runCommand "bash-language-server" {
     buildInputs = [makeWrapper];
     propagatedBuildInputs = [unixtools.col];
   } ''
       mkdir -p $out/bin
       makeWrapper ${bashLanguageServer}/bin/bash-language-server $out/bin/bash-language-server \
                   --suffix PATH ':' ${unixtools.col}/bin \
+                  --suffix PATH ':' ${shellcheck}/bin \
                   --set SHELLCHECK_PATH ${shellcheck}/bin/shellcheck
     '';
 in
