@@ -38,6 +38,10 @@ common.writeTextDirWithMeta bashLanguageServerWithMan.meta "lib/codedown/languag
   attrs = ["bash"];
   type = "stream";
   primary = true;
+
+  notebook_header_lines = ["# shellcheck shell=bash"];
+  raw_header_lines = ["# shellcheck shell=bash"];
+
   args = [
     "${bashLanguageServerWithMan}/bin/bash-language-server"
     "start"
