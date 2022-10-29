@@ -2,6 +2,7 @@
 module Spec.Tests.Bash (tests) where
 
 import Data.String.Interpolate
+import Language.LSP.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -32,7 +33,10 @@ tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ intro
   --   assertDiagnosticRanges diagnostics []
 
   testDiagnostics "bash-language-server" "test.sh" [__i|FOO=42|] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics []
+    assertDiagnosticRanges diagnostics [
+      (Range (Position 0 0) (Position 0 0), Just (InL 2148))
+      , (Range (Position 0 0) (Position 0 3), Just (InL 2034))
+      ]
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
