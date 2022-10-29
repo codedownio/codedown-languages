@@ -15,7 +15,7 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = [];
-        languageServers = ["bashLanguageServer" "shellcheck"];
+        languageServers = ["bash-language-server"];
       };
     })
 

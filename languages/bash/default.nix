@@ -18,7 +18,7 @@ let
   packageSearch = common.searcher packageOptions;
 
   languageServerOptions = {
-    bashLanguageServer = callPackage ./language_server_bash {};
+    bash-language-server = callPackage ./language_server_bash {};
     shellcheck = callPackage ./language_server_shellcheck {};
   };
   languageServerSearch = common.searcher languageServerOptions;

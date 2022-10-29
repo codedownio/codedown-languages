@@ -1,16 +1,21 @@
-{ stdenv
-, pkgs
+{ lib
+, runCommand
+, callPackage
+, makeWrapper
+
+, nodejs-14_x
+, shellcheck
+, unixtools
 }:
 
-with pkgs;
-with pkgs.lib;
+with lib;
 
 let
   common = callPackage ../../common.nix {};
 
   bashLanguageServer = (callPackage ./bash-language-server {
-    nodejs = pkgs.nodejs-14_x;
-  })."bash-language-server-2.0.0";
+    nodejs = nodejs-14_x;
+  })."bash-language-server-3.1.0";
 
   # manWithPages = (import ../shared.nix).manWithPages;
 
@@ -20,13 +25,15 @@ let
   } ''
       mkdir -p $out/bin
       makeWrapper ${bashLanguageServer}/bin/bash-language-server $out/bin/bash-language-server \
-                  --suffix PATH ':' ${unixtools.col}/bin
+                  --suffix PATH ':' ${unixtools.col}/bin \
+                  --set SHELLCHECK_PATH ${shellcheck}/bin/shellcheck
     '';
 in
 
-common.writeTextDirWithMeta bashLanguageServer.meta "lib/codedown/language-servers/bash-language-server.yaml" (lib.generators.toYAML {} [{
-  name = "bash";
+common.writeTextDirWithMeta bashLanguageServerWithMan.meta "lib/codedown/language-servers/bash-language-server.yaml" (lib.generators.toYAML {} [{
+  name = "bash-language-server";
   extensions = ["sh" "bash"];
+  notebook_suffix = ".sh";
   attrs = ["bash"];
   type = "stream";
   primary = true;

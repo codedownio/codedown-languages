@@ -15,8 +15,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelDisplayName = Just "Bash"
   , nixKernelPackages = []
   , nixKernelLanguageServers = [
-      nameOnly "bashLanguageServer"
-      , nameOnly "shellcheck"
+      nameOnly "bash-language-server"
       ]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
@@ -32,7 +31,7 @@ tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ intro
   --                                            |] $ \diagnostics -> do
   --   assertDiagnosticRanges diagnostics []
 
-  testDiagnostics "bashLanguageServer" "test.sh" [__i|FOO=42|] $ \diagnostics -> do
+  testDiagnostics "bash-language-server" "test.sh" [__i|FOO=42|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
 
 main :: IO ()
