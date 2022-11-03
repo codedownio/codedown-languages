@@ -160,7 +160,7 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = [];
-        languageServers = ["go-langserver"];
+        languageServers = ["gopls"];
       };
     })
 
