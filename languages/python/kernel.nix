@@ -1,15 +1,16 @@
-{ stdenv
-, pkgs
+{ lib
 , callPackage
 , python
 , displayName
+
 , enableVariableInspector
+
 , attrs
 , extensions
 , metaOnly ? false
 }:
 
-with pkgs.lib;
+with lib;
 
 let
   common = callPackage ../common.nix {};
