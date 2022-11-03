@@ -12,6 +12,7 @@ let
     "go"
     "go_1_17"
     "go_1_18"
+    "go_1_19"
   ];
 
   repls = go: {};
@@ -34,7 +35,7 @@ listToAttrs (map (x:
   in {
     name = x;
     value = rec {
-      packageOptions = getAttr x packagesLookup;
+      packageOptions = {};
       packageSearch = common.searcher packageOptions;
 
       languageServerOptions = {
