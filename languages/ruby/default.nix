@@ -82,13 +82,14 @@ listToAttrs (map (x:
       build = args@{
         packages ? []
         , languageServers ? []
-        , attrs ? ["ruby" x]
+        , attrs ? [x "ruby"]
+        , extensions ? ["rb"]
         , metaOnly ? false
       }:
         symlinkJoin {
-          name = "ruby";
+          name = x;
           paths = [
-            (callPackage ./kernel.nix { inherit attrs; })
+            (callPackage ./kernel.nix { inherit attrs extensions; })
             modeInfo
           ]
           ++ (if metaOnly then [] else [
