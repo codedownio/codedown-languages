@@ -2,7 +2,6 @@
 , callPackage
 , lib
 , symlinkJoin
-, go-langserver
 }:
 
 let
