@@ -22,13 +22,12 @@ import TestLib.Util
 import UnliftIO.Directory
 import UnliftIO.IO
 import UnliftIO.Process
-import UnliftIO.Temporary
 
 
 testKernelSearchers :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => Text -> SpecFree context m ()
-testKernelSearchers kernel = it [i|#{kernel}: searchers build|] $ testKernelSearchers' kernel
+testKernelSearchers kernel = it [i|#{kernel}: package and LSP searchers build|] $ testKernelSearchers' kernel
 
 testKernelSearchers' :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
