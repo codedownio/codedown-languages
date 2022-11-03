@@ -38,7 +38,7 @@ listToAttrs (map (x:
       packageSearch = common.searcher packageOptions;
 
       languageServerOptions = {
-        gopls = callPackage ./language-server-gopls.nix { kernelName = x; };
+        gopls = callPackage ./language-server-gopls.nix { inherit go; kernelName = x; };
       };
       languageServerSearch = common.searcher languageServerOptions;
 

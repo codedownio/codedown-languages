@@ -1,14 +1,25 @@
-{ callPackage
-, lib
+{ lib
+, callPackage
+, runCommand
+, makeWrapper
 , pkgs
 , kernelName
 
+, go
 , gopls
 # , go-langserver
 }:
 
 let
   common = callPackage ../common.nix {};
+
+  goplsWrapped = runCommand "gopls-wrapped" { buildInputs = [makeWrapper]; } ''
+    mkdir -p $out/bin
+    makeWrapper ${gopls}/bin/gopls $out/bin/gopls \
+      --suffix PATH ":" ${go}/bin \
+      --set GOCACHE /tmp/gocache \
+      --set GOPATH ${go}/share/go
+  '';
 
 in
 
@@ -23,7 +34,7 @@ common.writeTextDirWithMeta gopls.meta "lib/codedown/language-servers/gopls.yaml
   header_lines = ["package Notebook"];
   attrs = ["go"];
   type = "stream";
-  args = ["${gopls}/bin/gopls"];
+  args = ["${goplsWrapped}/bin/gopls"];
   env = {};
 }])
 
