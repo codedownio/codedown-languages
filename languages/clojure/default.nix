@@ -46,7 +46,9 @@ listToAttrs (map (x:
       packageOptions = getAttr x packagesLookup;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = {};
+      languageServerOptions = {
+        clojure-lsp = callPackage ./language-server.nix { kernelName = x; };
+      };
       languageServerSearch = common.searcher languageServerOptions;
 
       build = args@{

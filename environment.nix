@@ -33,7 +33,7 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = [];
-        languageServers = [];
+        languageServers = ["clojure-lsp"];
       };
     })
 
