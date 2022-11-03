@@ -2,7 +2,7 @@
 resolver: lts-19.17
 
 nix:
-  enable: true
+  enable: false
   packages:
   - zlib
   - postgresql
