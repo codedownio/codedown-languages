@@ -8,6 +8,7 @@ import Control.Lens hiding (List)
 import Control.Monad
 import Control.Monad.Catch (MonadThrow)
 import Control.Monad.IO.Unlift
+import Control.Monad.Logger
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.Aeson as A
 import Data.Aeson.TH as A
@@ -101,8 +102,8 @@ withLspSession :: (
   , MonadBaseControl IO m
   , MonadUnliftIO m
   , MonadThrow m
-  ) => Text -> FilePath -> Text -> Session a -> ExampleT context m a
-withLspSession name filename code doSession = do
+  ) => Text -> FilePath -> Text -> Session (ExampleT context m) a -> ExampleT context m a
+withLspSession name filename code session = do
   Just currentFolder <- getCurrentFolder
 
   languageServersPath <- (</> "lib" </> "codedown" </> "language-servers") <$> getContext nixEnvironment
@@ -125,8 +126,8 @@ withLspSession name filename code doSession = do
       liftIO $ T.writeFile (dataDir </> filename) code
 
       let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
-                              -- , logStdErr = True
-                              -- , logMessages = True
+                              , logStdErr = True
+                              , logMessages = True
                               }
 
       env <- getEnvironment
@@ -140,8 +141,8 @@ withLspSession name filename code doSession = do
                & set (workspace . _Just . workspaceFolders) Nothing
                & set (workspace . _Just . configuration) Nothing
 
-      liftIO $ runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir $ do
-        doSession
+      runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir $ do
+        session
 
 
 assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT context m ()
@@ -152,7 +153,7 @@ assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
 -- hoverShouldSatisfy :: MonadThrow m => Position -> (Maybe Hover -> ExampleT context m ()) -> ExampleT context m ()
 -- hoverShouldSatisfy pos pred = getHover (TextDocumentIdentifier (Uri undefined)) pos >>= pred
 
-getHoverOrException :: TextDocumentIdentifier -> Position -> Session Hover
+getHoverOrException :: (MonadLoggerIO m, MonadThrow m) => TextDocumentIdentifier -> Position -> Session m Hover
 getHoverOrException tdi pos = getHover tdi pos >>= \case
   Nothing -> expectationFailure [i|No hover returned.|]
   Just x -> return x

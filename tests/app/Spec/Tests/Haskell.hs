@@ -119,12 +119,12 @@ haskellCommonTests lang = do
 
 doSession :: (
   MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
-  ) => Text -> (FilePath -> Session ()) -> ExampleT context m ()
+  ) => Text -> (FilePath -> Session (ExampleT context m) a) -> ExampleT context m a
 doSession = doSession' "main.ipynb"
 
 doSession' :: (
   MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
-  ) => Text -> Text -> (FilePath -> Session ()) -> ExampleT context m ()
+  ) => Text -> Text -> (FilePath -> Session (ExampleT context m) a) -> ExampleT context m a
 doSession' filename code cb = do
   let filename :: Text = "main.ipynb"
   withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) documentHighlightCode $ do
