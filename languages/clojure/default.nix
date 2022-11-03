@@ -61,10 +61,13 @@ listToAttrs (map (x:
         symlinkJoin {
           name = "clojure";
           paths = [
-            clojure
             (callPackage ./kernel.nix { inherit attrs extensions; })
             (callPackage ./mode_info.nix { inherit attrs extensions; })
-          ];
+          ]
+          ++ (if metaOnly then [] else [clojure])
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y languageServerOptions) languageServers))
+          ;
+
           passthru = {
             inherit meta packageOptions languageServerOptions;
             args = args // { baseName = x; };

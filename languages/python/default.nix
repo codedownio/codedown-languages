@@ -118,17 +118,15 @@ lib.listToAttrs (map (x:
 
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
-          ++ (if metaOnly then [] else [
-            python
-            ps.ipython
-          ])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions python x)) languageServers));
+          ++ (if metaOnly then [] else [python ps.ipython])
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions python x)) languageServers))
+          ;
 
           passthru = {
+            inherit meta packageOptions languageServerOptions settingsSchema;
             args = args // { baseName = x; };
             settings = settingsToUse;
             repls = repls python;
-            inherit meta languageServerOptions packageOptions settingsSchema;
           };
         };
 
