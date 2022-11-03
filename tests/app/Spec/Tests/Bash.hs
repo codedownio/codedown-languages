@@ -27,7 +27,7 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ introduceJupyterRunner $ do
-  testKernelSearchers "bash"
+  testKernelSearchers "bashInteractive"
 
   testKernelStdout "bash" [i|echo hi|] "hi\n"
 
