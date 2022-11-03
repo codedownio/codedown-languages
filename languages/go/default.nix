@@ -39,7 +39,7 @@ listToAttrs (map (x:
       packageSearch = common.searcher packageOptions;
 
       languageServerOptions = {
-        go-langserver = callPackage ./language-server.nix { kernelName = x; };
+        gopls = callPackage ./language-server-gopls.nix { kernelName = x; };
       };
       languageServerSearch = common.searcher languageServerOptions;
 
