@@ -7,6 +7,7 @@ import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
+import TestLib.TestSearchers
 
 
 kernelSpec = NixKernelSpec {
@@ -23,9 +24,11 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Clojure" $ introduceNixEnvironment [kernelSpec] [] "Clojure" $ introduceJupyterRunner $ do
+  testKernelSearchers "clojure"
+
   testKernelStdout "clojure" [__i|(println "hi")|] "hi\n"
 
-  testDiagnostics "go-langserver" "test.clj" [__i||] $ \diagnostics -> do
+  testDiagnostics "clojure-lsp" "test.clj" [__i|(foo 42)|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
 
 

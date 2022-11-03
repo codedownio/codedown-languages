@@ -12,6 +12,7 @@ import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
+import TestLib.TestSearchers
 
 
 kernelSpec = NixKernelSpec {
@@ -30,6 +31,8 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Coq" $ introduceNixEnvironment [kernelSpec] [] "Coq" $ introduceJupyterRunner $ do
+  testKernelSearchers "coq"
+
   itHasExecuteTexts "coq" [i|Print true.|] [Just $ Array [
                                                String "Inductive bool : Set :=  true : bool | false : bool."
                                                ]]

@@ -18,6 +18,7 @@ import TestLib.JupyterTypes
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
+import TestLib.TestSearchers
 import UnliftIO.Concurrent
 
 
@@ -36,7 +37,9 @@ kernelSpec = NixKernelSpec {
   }
 
 tests :: TopSpec
-tests = describe "Postgres tests" $ introduceNixEnvironment [kernelSpec] [] "Postgres" $ introduceJupyterRunner $
+tests = describe "Postgres tests" $ introduceNixEnvironment [kernelSpec] [] "Postgres" $ introduceJupyterRunner $ do
+  testKernelSearchers "postgres"
+
   introducePostgres Nothing $ introducePostgresData $ do
     it "selects from test_table" $ do
       (_, ctx) <- getContext postgresDb

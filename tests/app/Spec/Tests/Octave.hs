@@ -6,6 +6,7 @@ import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
+import TestLib.TestSearchers
 
 
 kernelSpec = NixKernelSpec {
@@ -22,6 +23,8 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Octave" $ introduceNixEnvironment [kernelSpec] [] "Octave" $ introduceJupyterRunner $ do
+  testKernelSearchers "octave"
+
   testKernelStdout "octave" [__i|printf('%s', 'hi')|] "hi"
 
 

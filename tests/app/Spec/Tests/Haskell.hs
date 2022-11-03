@@ -23,6 +23,7 @@ import TestLib.JupyterTypes
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
+import TestLib.TestSearchers
 import TestLib.Types (HasNixEnvironment)
 import UnliftIO.Concurrent
 
@@ -60,6 +61,8 @@ haskellCommonTests lang = do
                                                      ])]
 
   describe [i|Haskell #{lang}|] $ introduceNixEnvironment [kernelSpec lang] [] "Haskell" $ introduceJupyterRunner $ do
+    testKernelSearchers lang
+
     describe "Kernel" $ do
       itHasDisplayDatas lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
 

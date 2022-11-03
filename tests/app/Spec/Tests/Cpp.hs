@@ -6,6 +6,7 @@ import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
+import TestLib.TestSearchers
 
 
 kernelSpec = NixKernelSpec {
@@ -22,6 +23,8 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "C++" $ introduceNixEnvironment [kernelSpec] [] "C++" $ introduceJupyterRunner $ do
+  testKernelSearchers "cpp11"
+
   testKernelStdout "cpp11" [__i|\#include <iostream>
                                 using namespace std;
                                 cout << "hi" << endl;|] "hi\n"

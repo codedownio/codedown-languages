@@ -82,7 +82,7 @@ listToAttrs (map (x:
       build = args@{
         packages ? []
         , languageServers ? []
-        , attrs ? ["ruby"]
+        , attrs ? ["ruby" x]
         , metaOnly ? false
       }:
         symlinkJoin {

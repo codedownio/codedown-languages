@@ -7,6 +7,7 @@ import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
+import TestLib.TestSearchers
 
 
 kernelSpec = NixKernelSpec {
@@ -23,6 +24,8 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ introduceJupyterRunner $ do
+  testKernelSearchers "rust"
+
   testKernelStdout "rust" [__i|println!("hi");|] "hi\n"
 
   testDiagnostics "rust-analyzer" "test.rs" [i|\n\n\nfoo = 42|] $ \diagnostics -> do

@@ -6,10 +6,11 @@ import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
+import TestLib.TestSearchers
 
 
 kernelSpec = NixKernelSpec {
-  nixKernelName = "julia-stable-bin"
+  nixKernelName = "julia"
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Julia"
   , nixKernelPackages = []
@@ -22,6 +23,8 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Julia" $ introduceNixEnvironment [kernelSpec] [] "Julia" $ introduceJupyterRunner $ do
+  testKernelSearchers "julia"
+
   testKernelStdout "julia" [i|print("hi")|] "hi\n"
 
 

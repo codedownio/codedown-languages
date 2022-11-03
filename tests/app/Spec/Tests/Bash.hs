@@ -8,6 +8,7 @@ import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
+import TestLib.TestSearchers
 
 
 kernelSpec = NixKernelSpec {
@@ -26,6 +27,8 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ introduceJupyterRunner $ do
+  testKernelSearchers "bash"
+
   testKernelStdout "bash" [i|echo hi|] "hi\n"
 
   -- testDiagnostics "shellcheck" "test.sh" [__i|FOO=42

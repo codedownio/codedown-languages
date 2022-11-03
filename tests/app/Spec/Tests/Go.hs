@@ -7,6 +7,7 @@ import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
+import TestLib.TestSearchers
 
 
 kernelSpec = NixKernelSpec {
@@ -14,7 +15,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Go"
   , nixKernelPackages = []
-  , nixKernelLanguageServers = [nameOnly "go-langserver"]
+  , nixKernelLanguageServers = [nameOnly "gopls"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
@@ -23,10 +24,12 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Go" $ introduceNixEnvironment [kernelSpec] [] "Go" $ introduceJupyterRunner $ do
+  testKernelSearchers "go"
+
   testKernelStdout "go" [__i|import("fmt")
                              fmt.Println("hi")|] "hi\n"
 
-  testDiagnostics "go-langserver" "test.go" [__i||] $ \diagnostics -> do
+  testDiagnostics "gopls" "test.go" [__i||] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
 
 main :: IO ()
