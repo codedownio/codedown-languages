@@ -2,6 +2,7 @@
 module Spec.Tests.Go (tests) where
 
 import Data.String.Interpolate
+import Language.LSP.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -29,8 +30,12 @@ tests = describe "Go" $ introduceNixEnvironment [kernelSpec] [] "Go" $ introduce
   testKernelStdout "go" [__i|import("fmt")
                              fmt.Println("hi")|] "hi\n"
 
-  testDiagnostics "gopls" "test.go" [__i||] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics []
+  testDiagnostics "gopls" "test.go" [__i|package main
+                                         import ("fmt")
+                                         func main() {
+                                             fmt.Println(foo)
+                                         }|] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics [(Range (Position 3 16) (Position 3 19), Just (InR "UndeclaredName"))]
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
