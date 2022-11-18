@@ -15,7 +15,7 @@ let
 
   bashLanguageServer = (callPackage ./bash-language-server {
     nodejs = nodejs-14_x;
-  })."bash-language-server-3.1.0";
+  })."bash-language-server-3.1.1";
 
   # manWithPages = (import ../shared.nix).manWithPages;
 
@@ -38,7 +38,6 @@ common.writeTextDirWithMeta bashLanguageServerWithMan.meta "lib/codedown/languag
   attrs = ["bash"];
   type = "stream";
   primary = true;
-  header_lines = ["# shellcheck shell=bash"];
   args = [
     "${bashLanguageServerWithMan}/bin/bash-language-server"
     "start"

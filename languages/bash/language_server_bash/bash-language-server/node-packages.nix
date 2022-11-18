@@ -637,13 +637,13 @@ let
   };
 in
 {
-  "bash-language-server-3.1.0" = nodeEnv.buildNodePackage {
+  "bash-language-server-3.1.1" = nodeEnv.buildNodePackage {
     name = "bash-language-server";
     packageName = "bash-language-server";
-    version = "3.1.0";
+    version = "3.1.1";
     src = fetchurl {
-      url = "https://registry.npmjs.org/bash-language-server/-/bash-language-server-3.1.0.tgz";
-      sha512 = "DaTlZD60S3ZldAkhch5oH1vxUn8joeFw73IOnwMwmZSlbQctaDrnP7DdDPRVrrQ3uhUQlaaOGPeJCsY/a+V6pg==";
+      url = "https://registry.npmjs.org/bash-language-server/-/bash-language-server-3.1.1.tgz";
+      sha512 = "Axniqj9zNdOxDFn8zjXSf5cxbkZSb+4cRtQ5YNUP4trOwj2goj5XMCN4osh1/1/hDv1/BNudlvTEr6uq8GeEgw==";
     };
     dependencies = [
       sources."ajv-6.12.6"
