@@ -1,8 +1,8 @@
 {
   description = "CodeDown languages";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/50c62eeda9df340ff6b83a0e2343a447af04237c";
-  inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/21de2b973f9fee595a7a1ac4693efff791245c34";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-22.05";
+  inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
