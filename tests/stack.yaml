@@ -11,13 +11,14 @@ nix:
 
 packages:
 - .
+# - /home/tom/tools/haskell-lsp/lsp-test
 
 extra-deps:
 - git: https://github.com/codedownio/lsp.git
-  commit: 8cb5f2140a935dfdb36f2ddc0f1c2b935e9af0b7
+  commit: 5a8415cfdb1a540be59743cf3df8643151fe557e # monad-logger rebased
   subdirs:
   - lsp
-  - lsp-test
   - lsp-types
+  - lsp-test
 
 - co-log-core-0.3.1.0@sha256:9794bdedd1391decd0e22bdfe2b11abcb42e6cff7a4531e1f8882890828f4e63,3816
