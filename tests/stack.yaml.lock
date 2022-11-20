@@ -31,6 +31,19 @@ packages:
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-types
 - completed:
+    commit: 5a8415cfdb1a540be59743cf3df8643151fe557e
+    git: https://github.com/codedownio/lsp.git
+    name: lsp-test
+    pantry-tree:
+      sha256: 1900e552dc81c7cc3e0756f234e419d18ff35708c76a9b6a1258bf965e0bf7da
+      size: 2134
+    subdir: lsp-test
+    version: 0.14.1.0
+  original:
+    commit: 5a8415cfdb1a540be59743cf3df8643151fe557e
+    git: https://github.com/codedownio/lsp.git
+    subdir: lsp-test
+- completed:
     hackage: co-log-core-0.3.1.0@sha256:9794bdedd1391decd0e22bdfe2b11abcb42e6cff7a4531e1f8882890828f4e63,3816
     pantry-tree:
       sha256: d4cc089c40c5052ee02f91eafa567e0a239908aabc561dfa6080ba3bfc8c25bd
