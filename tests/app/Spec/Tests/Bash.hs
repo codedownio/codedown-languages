@@ -37,8 +37,7 @@ tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ intro
 
   testDiagnostics "bash-language-server" "test.sh" [__i|FOO=42|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics [
-      (Range (Position 0 0) (Position 0 0), Just (InL 2148))
-      , (Range (Position 0 0) (Position 0 3), Just (InL 2034))
+      (Range (Position 0 0) (Position 0 3), Just (InL 2034))
       ]
 
 main :: IO ()
