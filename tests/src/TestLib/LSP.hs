@@ -140,6 +140,7 @@ withLspSession name filename code session = do
       let caps = fullCaps
                & set (workspace . _Just . workspaceFolders) Nothing
                & set (workspace . _Just . configuration) Nothing
+               & set (workspace . _Just . didChangeWatchedFiles . _Just . dynamicRegistration) (Just False)
 
       runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir $ do
         session
