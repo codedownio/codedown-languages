@@ -31,6 +31,7 @@ let
     description = safeEval (lib.attrByPath ["meta" "description"] "" v);
     display_name = safeEval (lib.attrByPath ["meta" "displayName"] "" v);
     icon = safeEval (lib.attrByPath ["meta" "icon"] "" v);
+    less_common = safeEval (lib.attrByPath ["meta" "lessCommon"] false v);
   }) packages));
 
 in
@@ -38,7 +39,7 @@ in
 rec {
   index = runCommand "search-index.db" { buildInputs = [nodejs sqlite]; inherit json; } ''
     echo | sqlite3 $out <<- EOF
-    CREATE VIRTUAL TABLE main using fts5(attr, name, version, description, display_name, icon);
+    CREATE VIRTUAL TABLE main using fts5(attr, name, version, description, display_name, icon, less_common);
 
     INSERT INTO main SELECT
       json_extract(value, '$.attr'),
@@ -46,7 +47,8 @@ rec {
       json_extract(value, '$.version'),
       json_extract(value, '$.description'),
       json_extract(value, '$.display_name'),
-      json_extract(value, '$.icon')
+      json_extract(value, '$.icon'),
+      json_extract(value, '$.less_common')
 
     FROM json_each(readfile('${json}'))
 
@@ -71,7 +73,7 @@ rec {
       fi
 
       offset=$((page_size * page))
-      ${sqlite}/bin/sqlite3 "${index}" "SELECT attr, name, description, display_name, icon, rank \
+      ${sqlite}/bin/sqlite3 "${index}" "SELECT attr, name, description, display_name, icon, less_common, rank \
         FROM main $filterClause \
         ORDER BY bm25(main, 100.0), version DESC \
         LIMIT $page_size \

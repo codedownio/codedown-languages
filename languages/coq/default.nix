@@ -34,6 +34,8 @@ let
     "coqPackages_8_20"
   ];
 
+  isLessCommon = candidate: !(lib.elem candidate ["coqPackages" "coqPackages_8_20"]);
+
 in
 
 lib.listToAttrs (map (x:
@@ -45,6 +47,7 @@ lib.listToAttrs (map (x:
         inherit baseName displayName;
         version = baseCoq.version;
         icon = coq_jupyter.sizedLogo "64";
+        lessCommon = isLessCommon x;
       };
 
   in {
