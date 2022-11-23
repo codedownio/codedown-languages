@@ -71,4 +71,4 @@ listToAttrs (map (x:
     };
   }
 
-) baseCandidates)
+) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))
