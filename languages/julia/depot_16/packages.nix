@@ -1345,14 +1345,6 @@
 };
   src = fetchgit { url = "https://github.com/JuliaBinaryWrappers/Ogg_jll.jl.git"; rev = "887579a3eb005446d514ab7aeac5d1d027658b8f"; sha256 = "0qxjbk48j9740n57lnz3d2zmb61j0lgy1gknaszkjxknsg5nxmxn"; };
 } {
-  name = "OpenBLAS_jll";
-  uuid = "4536629a-c528-5b80-bd46-f80d51c5b363";
-  path = "O/OpenBLAS_jll";
-  replaceUrlInManifest = null;
-  treehash = "None";
-  artifacts = {};
-  src = null;
-} {
   name = "OpenLibm_jll";
   uuid = "05823500-19ac-5b8b-9628-191a04bc5112";
   path = "O/OpenLibm_jll";
@@ -1918,9 +1910,9 @@
   uuid = "41fe7b60-77ed-43a1-b4f0-825fd5a5650d";
   path = "U/Unzip";
   replaceUrlInManifest = null;
-  treehash = "ca0969166a028236229f63514992fc073799bb78";
+  treehash = "34db80951901073501137bdbc3d5a8e7bbd06670";
   artifacts = {};
-  src = fetchgit { url = "https://github.com/bramtayl/Unzip.jl.git"; rev = "ca0969166a028236229f63514992fc073799bb78"; sha256 = "0i4rkvyd8br024s0sgs3crpi6za2f51m42whkx0jd22wiwg675vb"; };
+  src = fetchgit { url = "https://github.com/bramtayl/Unzip.jl.git"; rev = "34db80951901073501137bdbc3d5a8e7bbd06670"; sha256 = "0n6777rgkjnkmxb888sq4w775wzdg8355q4sy9y8h9378hkjjl46"; };
 } {
   name = "VersionParsing";
   uuid = "81def892-9a0e-5fdd-b105-ffc91e053289";
@@ -2750,14 +2742,6 @@
   }];
 };
   src = fetchgit { url = "https://github.com/JuliaBinaryWrappers/libass_jll.jl.git"; rev = "5982a94fcba20f02f42ace44b9894ee2b140fe47"; sha256 = "0ffl8gk9v7cf9ha4v2vjg56fgbgikbsgipibycc5464c7v3dni8d"; };
-} {
-  name = "libblastrampoline_jll";
-  uuid = "8e850b90-86db-534c-a0d3-1478176c7d93";
-  path = "L/libblastrampoline_jll";
-  replaceUrlInManifest = null;
-  treehash = "None";
-  artifacts = {};
-  src = null;
 } {
   name = "libfdk_aac_jll";
   uuid = "f638f0a6-7fb0-5443-88ba-1cc74229b280";
