@@ -53,7 +53,6 @@ data LanguageServerConfig = LanguageServerConfig {
   , lspConfigPrimary :: Maybe Bool
   , lspConfigArgs :: [Text]
   , lspConfigInitializationOptions :: Maybe A.Value
-  , lspConfigConfigurationSettings :: Maybe A.Value
   , lspConfigNotebookSuffix :: Text
   , lspConfigKernelName :: Maybe Text
   , lspConfigEnv :: Maybe (Map Text Text)
