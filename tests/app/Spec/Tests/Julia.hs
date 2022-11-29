@@ -17,7 +17,7 @@ tests = do
   juliaTests "julia-lts-bin"
 
 juliaTests :: Text -> TopSpec
-juliaTests lang = describe "Julia" $ introduceNixEnvironment [kernelSpec lang] [] [i|Julia (#{lang})|] $ introduceJupyterRunner $ do
+juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kernelSpec lang] [] [i|Julia (#{lang})|] $ introduceJupyterRunner $ do
   testKernelSearchers lang
   testKernelStdout lang [i|print("hi")|] "hi\n"
 
