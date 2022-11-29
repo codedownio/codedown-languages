@@ -24,7 +24,7 @@ import GHC.Int
 import Language.LSP.Test
 import Language.LSP.Types
 import qualified Language.LSP.Types.Capabilities as C
-import Language.LSP.Types.Lens
+import Language.LSP.Types.Lens as LSP
 import System.FilePath
 import System.IO
 import Test.Sandwich as Sandwich
@@ -149,6 +149,11 @@ assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
   where
     ranges = fmap (\x -> (x ^. range, x ^. code)) diagnostics
+
+assertDiagnosticRanges' :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)] -> ExampleT context m ()
+assertDiagnosticRanges' diagnostics desired = ranges `shouldBe` desired
+  where
+    ranges = fmap (\x -> (x ^. range, x ^. code, x ^. LSP.message)) diagnostics
 
 -- hoverShouldSatisfy :: MonadThrow m => Position -> (Maybe Hover -> ExampleT context m ()) -> ExampleT context m ()
 -- hoverShouldSatisfy pos pred = getHover (TextDocumentIdentifier (Uri undefined)) pos >>= pred
