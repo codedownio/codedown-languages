@@ -1,7 +1,9 @@
+{-# LANGUAGE RankNTypes #-}
 
 module Spec.Tests.Julia (tests) where
 
 import Data.String.Interpolate
+import Data.Text as T
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
@@ -9,10 +11,21 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 
 
-kernelSpec = NixKernelSpec {
-  nixKernelName = "julia"
+tests :: TopSpec
+tests = do
+  juliaTests "julia-stable-bin"
+  juliaTests "julia-lts-bin"
+
+juliaTests :: Text -> TopSpec
+juliaTests lang = describe "Julia" $ introduceNixEnvironment [kernelSpec lang] [] [i|Julia (#{lang})|] $ introduceJupyterRunner $ do
+  testKernelSearchers "julia"
+
+  testKernelStdout "julia" [i|print("hi")|] "hi\n"
+
+kernelSpec lang = NixKernelSpec {
+  nixKernelName = lang
   , nixKernelChannel = "codedown"
-  , nixKernelDisplayName = Just "Julia"
+  , nixKernelDisplayName = Just [i|Julia (#{lang})|]
   , nixKernelPackages = []
   , nixKernelLanguageServers = []
   , nixKernelExtraJupyterConfig = Nothing
@@ -20,13 +33,6 @@ kernelSpec = NixKernelSpec {
   , nixKernelIcon = Nothing
   , nixKernelSettings = Nothing
   }
-
-tests :: TopSpec
-tests = describe "Julia" $ introduceNixEnvironment [kernelSpec] [] "Julia" $ introduceJupyterRunner $ do
-  testKernelSearchers "julia"
-
-  testKernelStdout "julia" [i|print("hi")|] "hi\n"
-
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests

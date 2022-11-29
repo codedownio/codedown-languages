@@ -21,12 +21,17 @@ let
 
     "julia_16-bin"
     "julia_17-bin"
+    "julia_18-bin"
   ];
 
   validCandidate = x:
     (lib.hasAttr x pkgs)
     && (builtins.tryEval (pkgs."${x}".meta)).success
     && !(lib.attrByPath [x "meta" "broken"] false pkgs);
+
+  depot = x:
+    if lib.elem x ["julia_18-bin" "julia-stable" "julia-stable-bin"] then ./depot_18
+    else ./depot_16;
 
 in
 
@@ -45,6 +50,8 @@ listToAttrs (map (x:
       icon = ./logo-64x64.png;
     };
 
+    python = pkgs.python3;
+
   in {
     name = x;
     value = rec {
@@ -62,12 +69,10 @@ listToAttrs (map (x:
         , metaOnly ? false
       }:
         let
-          julia = callPackage ./depot {
-            julia = baseJulia;
-            python = pkgs.python3;
+          julia = callPackage (depot x) {
+            inherit baseJulia python;
           };
-          python = julia.python;
-          availableLanguageServers = metadata.languageServerOptions base python.pkgs;
+          availableLanguageServers = languageServerOptions;
         in
           symlinkJoin {
             name = "julia";
@@ -92,15 +97,3 @@ listToAttrs (map (x:
     };
   }
 ) (filter validCandidate baseCandidates))
-
-  # homeFolderPaths = runCommand "julia-home-folder" {inherit julia python;} ''
-  #   mkdir -p $out/home
-  #   cp ${./depot/Manifest.toml} $out/home/Manifest.toml
-  #   cp ${./depot/Project.toml} $out/home/Project.toml
-
-  #   mkdir -p $out/home/.julia/config
-  #   echo "using Pkg" >> $out/home/.julia/config/startup.jl
-  #   echo 'Pkg.activate("/home/user")' >> $out/home/.julia/config/startup.jl
-  # '';
-
-# extraGitIgnoreLines = [".julia"];

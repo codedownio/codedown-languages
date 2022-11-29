@@ -3,8 +3,8 @@
   curl,
   fetchurl,
   git,
-  stdenvNoCC,
   cacert,
+  fetchgit,
   jq,
   julia,
   lib,
@@ -13,11 +13,12 @@
   stdenv,
   writeText,
   makeWrapper,
-  fetchgit,
 
   # Arguments
   makeWrapperArgs ? "",
-  precompile ? true
+  precompile ? true,
+  autoActivate ? true,
+  extraBuildInputs ? []
 }:
 
 let
@@ -110,7 +111,7 @@ let
   '';
 
   depot = runCommand "julia-depot" {
-    buildInputs = [git curl julia];
+    buildInputs = [git curl julia] ++ extraBuildInputs;
     inherit registry precompile;
   } ''
     export HOME=$(pwd)
@@ -124,26 +125,34 @@ let
     mkdir -p $out/artifacts
     cp ${overridesToml} $out/artifacts/Overrides.toml
 
+    export JULIA_SSL_CA_ROOTS_PATH="${cacert}/etc/ssl/certs/ca-bundle.crt"
+
+    # Turn off auto precompile so it can be controlled by us below
+    export JULIA_PKG_PRECOMPILE_AUTO=0
+
     export JULIA_DEPOT_PATH=$out
     julia -e ' \
-      using Pkg
-      Pkg.Registry.add(RegistrySpec(path="${registry}"))
+      import Pkg
+      Pkg.Registry.add(Pkg.RegistrySpec(path="${registry}"))
 
       Pkg.activate(".")
       Pkg.instantiate()
 
+      if "precompile" in keys(ENV) && ENV["precompile"] != "0"
+        Pkg.precompile()
+      end
+
       # Remove the registry to save space
       Pkg.Registry.rm("General")
     '
-
-    if [[ -n "$precompile" ]]; then
-      julia -e ' \
-        using Pkg
-        Pkg.activate(".")
-        Pkg.precompile()
-      '
-    fi
   '';
+
+  startupJl = writeText "startup.jl" ''
+    using Pkg;
+    Pkg.activate("${depot}")
+  '';
+
+  autoActivateArgs = lib.optionalString autoActivate "--add-flags '-i ${startupJl}'";
 
 in
 
@@ -152,5 +161,6 @@ runCommand "julia-env" {
   buildInputs = [makeWrapper];
 } ''
   mkdir -p $out/bin
-  makeWrapper $julia/bin/julia $out/bin/julia --suffix JULIA_DEPOT_PATH : "$depot" $makeWrapperArgs
+  makeWrapper $julia/bin/julia $out/bin/julia ${autoActivateArgs} \
+    --suffix JULIA_DEPOT_PATH : "$depot" $makeWrapperArgs
 ''
