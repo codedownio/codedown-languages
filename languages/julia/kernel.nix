@@ -1,4 +1,5 @@
-{ callPackage
+{ lib
+, callPackage
 , python
 , julia
 , displayName
@@ -24,7 +25,7 @@ common.makeJupyterKernel {
       "${runJuliaKernel}"
       "{connection_file}"
     ];
-    language = "julia";
+    language = lib.head attrs;
     logo32 = ./logo-32x32.png;
     logo64 = ./logo-64x64.png;
     env = {

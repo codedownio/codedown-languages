@@ -64,7 +64,7 @@ listToAttrs (map (x:
       build = args@{
         packages ? []
         , languageServers ? []
-        , attrs ? ["julia"]
+        , attrs ? [x "julia"]
         , extensions ? ["jl"]
         , metaOnly ? false
       }:
