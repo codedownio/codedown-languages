@@ -55,10 +55,10 @@ rec {
     (callPackage ./languages/julia {})
     (callPackage ./languages/octave {})
     (callPackage ./languages/postgres {})
-    (callPackage ./languages/python {})
+    (pkgsUnstable.callPackage ./languages/python {})
     (callPackage ./languages/r {})
     (callPackage ./languages/ruby {})
-    (callPackage ./languages/rust {})
+    (pkgsUnstable.callPackage ./languages/rust {})
   ];
   languages = languagesFn false;
 
