@@ -19,7 +19,7 @@ tests = do
 juliaTests :: Text -> TopSpec
 juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kernelSpec lang] [] [i|Julia (#{lang})|] $ introduceJupyterRunner $ do
   testKernelSearchers lang
-  testKernelStdout lang [i|print("hi")|] "hi\n"
+  testKernelStdout lang [i|println("hi")|] "hi\n"
 
 kernelSpec lang = NixKernelSpec {
   nixKernelName = lang
