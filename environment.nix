@@ -47,14 +47,14 @@ codedown.mkCodeDownEnvironment {
     #   };
     # })
 
-    # ({
-    #   name = "julia-stable-bin";
-    #   channel = "codedown";
-    #   args = {
-    #     packages = [];
-    #     languageServers = [];
-    #   };
-    # })
+    ({
+      name = "julia-stable-bin";
+      channel = "codedown";
+      args = {
+        packages = [];
+        languageServers = [];
+      };
+    })
 
     ({
       name = "haskell-ghc8107";
