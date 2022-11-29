@@ -18,6 +18,12 @@ let
   baseCandidates = [
     "rust"
     "rust_1_63"
+    "rust_1_64"
+    "rust_1_65"
+    "rust_1_66"
+    "rust_1_67"
+    "rust_1_68"
+    "rust_1_69"
   ];
 
 in
@@ -29,9 +35,11 @@ listToAttrs (map (x:
     rust = getAttr x pkgs;
     rustPackages = rust.packages.stable;
 
+    displayName = "Rust " + rustPackages.rustc.version;
+
     meta = rustPackages.rustc.meta // {
       baseName = x;
-      displayName = "Rust";
+      inherit displayName;
       icon = ./logo-64x64.png;
     };
 
@@ -47,19 +55,20 @@ listToAttrs (map (x:
       build = args@{
         packages ? []
         , languageServers ? []
-        , attrs ? ["rust"]
+        , attrs ? [x "rust"]
         , extensions ? ["rs" "rlib"]
         , metaOnly ? false
       }: symlinkJoin {
         name = "rust";
         paths = [
           (callPackage ./kernel.nix {
-            inherit attrs extensions;
+            inherit displayName attrs extensions;
             evcxr = pkgs.evcxr.override {
               rustPlatform = rustPackages.rustPlatform;
               cargo = rustPackages.cargo;
             };
             rustLibSrc = rustPackages.rustPlatform.rustLibSrc;
+            inherit rustPackages;
           })
 
           (callPackage ./mode_info.nix { inherit attrs extensions; })

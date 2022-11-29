@@ -10,10 +10,8 @@
     # flake-utils.lib.eachDefaultSystem (system:
     flake-utils.lib.eachSystem ["x86_64-linux"] (system:
       let
-        overlays = [];
-
-        pkgs = import nixpkgs { inherit system overlays; };
-        pkgsUnstable = import nixpkgs-unstable { inherit system overlays; };
+        pkgs = import nixpkgs { inherit system; };
+        pkgsUnstable = import nixpkgs-unstable { inherit system; };
 
         channelSpecToChannel = name: channel:
           if (channel.tag == "fetch_from_github") then pkgs.fetchFromGitHub ((removeAttrs channel ["tag" "name"]))
