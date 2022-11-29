@@ -32,7 +32,6 @@ import TestLib.Types
 import TestLib.Util
 import UnliftIO.Directory
 import UnliftIO.Process
-import UnliftIO.Temporary
 
 
 introduceJupyterRunner :: (
