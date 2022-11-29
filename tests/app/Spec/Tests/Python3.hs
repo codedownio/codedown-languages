@@ -21,6 +21,9 @@ kernelSpec = NixKernelSpec {
   , nixKernelLanguageServers = [
       -- nameOnly "python-language-server"
       nameOnly "python-lsp-server"
+      , nameOnly "pylint"
+      , nameOnly "pyright"
+      , nameOnly "pycodestyle"
       ]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
@@ -38,6 +41,31 @@ tests = describe "Python 3" $ introduceNixEnvironment [kernelSpec] [] "Python 3"
   testKernelStdout "python3" [i|import tensorflow|] ""
 
   testDiagnostics "python-lsp-server" "test.py" [i|\n\n\nfoo = 42|] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics []
+
+  testDiagnostics "pylint" "test.py" [i|\n\n\nfoo = 42|] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics []
+
+  testDiagnostics "pyright" "test.py" [__i|\# pyright: strict
+                                           def f(x: int, y: str) -> None:
+                                             z = 1.0
+                                           f("asdf", 42)
+                                          |] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics [
+      (Range (Position 3 2) (Position 3 8), Just (InR "reportGeneralTypeIssues"))
+      , (Range (Position 3 10) (Position 3 12), Just (InR "reportGeneralTypeIssues"))
+
+      , (Range (Position 1 6) (Position 1 7), Nothing)
+      , (Range (Position 1 14) (Position 1 15), Nothing)
+
+      , (Range (Position 2 2) (Position 2 3), Nothing)
+      , (Range (Position 2 2) (Position 2 3), Just (InR "reportUnusedVariable"))
+      ]
+
+  testDiagnostics "pycodestyle" "test.py" [__i|def f(x: int, y: str) -> None:
+                                                 z = 1.0
+                                               f("asdf", 42)
+                                              |] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
 
     -- (Range (Position 3 8) (Position 3 8), Just (InR "W292"))

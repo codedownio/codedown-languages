@@ -41,4 +41,22 @@ common.writeTextDirWithMeta pyright.meta "lib/codedown/language-servers/python-p
   attrs = ["python"];
   type = "stream";
   args = ["${pyright}/bin/pyright-langserver" "--stdio"];
+
+  # Taken from https://github.com/emacs-lsp/lsp-pyright/blob/master/lsp-pyright.el
+  initialization_options = {
+    "pyright.disableLanguageServices" = true;
+    "pyright.disableOrganizeImports" = true;
+    "python.analysis.autoImportCompletions" = true;
+    "python.analysis.typeshedPaths" = true;
+    "python.analysis.stubPath" = true;
+    "python.analysis.useLibraryCodeForTypes" = true;
+    "python.analysis.diagnosticMode" = "openFilesOnly";
+    "python.analysis.typeCheckingMode" = "basic";
+    "python.analysis.logLevel" = "Trace"; # Information
+    "python.analysis.autoSearchPaths" = true;
+    "python.analysis.extraPaths" = ["/home/user"];
+    "python.pythonPath" = "${python}/bin/python";
+    # We need to send empty string, otherwise  pyright-langserver fails with parse error
+    # "python.venvPath" = "";
+  };
 }])
