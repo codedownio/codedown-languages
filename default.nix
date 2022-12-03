@@ -5,15 +5,15 @@ let
   pkgs = import (fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
-    rev = "50c62eeda9df340ff6b83a0e2343a447af04237c"; # release-22.05
-    sha256 = "00pvx1jykgz0k71wkgk60gfbchi7sa66m5xa89z3vcmsb04lfhin";
+    rev = "f42a45c015f28ac3beeb0df360e50cdbf495d44b"; # release-22.05
+    sha256 = "sha256-UjZlIrbHGlL3H3HZNPTxPSwJfr49jIfbPWCYxk0EQm4=";
   }) {};
 
   pkgsUnstable = import (fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
-    rev = "21de2b973f9fee595a7a1ac4693efff791245c34"; # nixpkgs-unstable
-    sha256 = "1kicpg62jsyh4blyykvbkq1vg4rv56k22qpp8kr9mj3fjabkrr27";
+    rev = "4c80e3665c019daaa91347fbcb4e5ae078cc39d3"; # nixpkgs-unstable
+    sha256 = "sha256-R46LmO8VWjYjaeGBKjBL1zmvB1ziO5mtv0fJzkNbXiY=";
   }) {};
 
 in
