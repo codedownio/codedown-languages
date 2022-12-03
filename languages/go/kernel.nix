@@ -1,9 +1,12 @@
-{ callPackage
+{ lib
+, callPackage
 , attrs
 , extensions
 , gophernotes
 , metaOnly
 }:
+
+with lib;
 
 let
   common = callPackage ../common.nix {};
@@ -17,7 +20,7 @@ common.makeJupyterKernelInner metaOnly {
       "${gophernotes}/bin/gophernotes"
       "{connection_file}"
     ];
-    language = "go";
+    language = head attrs;
     logo32 = ./logo-32x32.png;
     logo64 = ./logo-64x64.png;
     metadata = {

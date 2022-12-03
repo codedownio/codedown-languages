@@ -3,6 +3,8 @@
 , runCommand
 , makeWrapper
 , pkgs
+
+, attrs
 , kernelName
 
 , go
@@ -32,7 +34,7 @@ common.writeTextDirWithMeta gopls.meta "lib/codedown/language-servers/gopls.yaml
   notebook_suffix = ".go";
   kernel_name = kernelName;
   header_lines = ["package Notebook"];
-  attrs = ["go"];
+  attrs = attrs;
   type = "stream";
   args = ["${goplsWrapped}/bin/gopls"];
   env = {};
