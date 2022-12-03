@@ -34,7 +34,6 @@ mapAttrs (attr: value:
   let
     baseJulia = value.baseJulia;
     depot = value.depot;
-    languageServerOptions = value.languageServerOptions;
     lspDepot = value.lspDepot;
 
     displayName = "Julia " + baseJulia.version;
@@ -48,12 +47,21 @@ mapAttrs (attr: value:
 
     python = pkgs.python3;
 
+  in rec {
     packageOptions = {};
     packageSearch = common.searcher {};
 
-    languageServerSearch = common.searcher languageServerOptions;
+    languageServerOptions = julia: attrs: {
+      LanguageServer = callPackage ./language-server-LanguageServer.nix {
+        inherit julia attrs;
+        kernelName = attr;
+        juliaLsp = callPackage lspDepot {
+          inherit baseJulia python;
+        };
+      };
+    };
+    languageServerSearch = common.searcher (languageServerOptions baseJulia []);
 
-  in {
     build = args@{
       packages ? []
       , languageServers ? []
@@ -65,16 +73,6 @@ mapAttrs (attr: value:
         julia = callPackage depot {
           inherit baseJulia python;
         };
-
-        languageServerOptions = {
-          LanguageServer = callPackage ./language-server-LanguageServer.nix {
-            inherit julia attrs;
-            kernelName = attr;
-            juliaLsp = callPackage lspDepot {
-              inherit baseJulia python;
-            };
-          };
-        };
       in
         symlinkJoin {
           name = "julia";
@@ -84,12 +82,13 @@ mapAttrs (attr: value:
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [julia])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y languageServerOptions) languageServers))
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (languageServerOptions julia attrs)) languageServers))
           ;
 
           passthru = {
             args = args // { baseName = attr; };
-            inherit meta packageOptions languageServerOptions;
+            inherit meta packageOptions;
+            languageServerOptions = languageServerOptions julia attrs;
           };
         };
 
