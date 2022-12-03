@@ -27,7 +27,7 @@ let
     (callPackage ./languages/dot {})
     (callPackage ./languages/go {})
     (pkgsUnstable.callPackage ./languages/haskell {})
-    (callPackage ./languages/julia {})
+    (pkgsUnstable.callPackage ./languages/julia {})
     (callPackage ./languages/octave {})
     (callPackage ./languages/postgres {})
     (pkgsUnstable.callPackage ./languages/python {})
