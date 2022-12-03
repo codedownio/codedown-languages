@@ -1,25 +1,20 @@
-{ lib
-, callPackage
-, symlinkJoin
-, writeTextDir
-, pkgs
+{ pkgsStable
 , pkgsUnstable
-, fetchFromGitHub
-, requiredPackages ? [pkgs.nix-prefetch-git]
+, requiredPackages ? [pkgsStable.nix-prefetch-git]
 , system ? "x86_64-linux"
 }:
 
-with lib;
-
 let
-  common = callPackage ./languages/common.nix {};
+  common = pkgsStable.callPackage ./languages/common.nix {};
+
+  callPackage = pkgsStable.callPackage;
 
   # Languages
   # First argument controls whether attributes get filtered to the valid ones.
   # This can be expensive to evaluate for languages like Haskell where there are tons of
   # Stackage snapshots and one nix file for each. So, we don't bother with that when evaluating
   # the languages attrset normally--only when building the languagesSearcher.
-  languagesFn = filterToValid: zipAttrsWith (n: v: head v) [
+  languagesFn = filterToValid: pkgsStable.lib.zipAttrsWith (n: v: pkgsStable.lib.head v) [
     (callPackage ./languages/bash {})
     (callPackage ./languages/clojure {})
     (callPackage ./languages/coq {})
@@ -41,7 +36,7 @@ in
 rec {
   searcher = common.searcher;
 
-  nixpkgsSearcher = common.searcher pkgs;
+  nixpkgsSearcher = common.searcher pkgsStable;
 
   spellchecker = callPackage ./language_servers/markdown-spellcheck-lsp.nix {};
 

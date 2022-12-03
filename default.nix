@@ -2,7 +2,7 @@
 }:
 
 let
-  pkgs = import (fetchFromGitHub {
+  pkgsStable = import (fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
     rev = "f42a45c015f28ac3beeb0df360e50cdbf495d44b"; # release-22.05
@@ -18,4 +18,4 @@ let
 
 in
 
-pkgs.callPackage ./codedown.nix { inherit pkgsUnstable; }
+pkgsStable.callPackage ./codedown.nix { inherit pkgsStable pkgsUnstable; }

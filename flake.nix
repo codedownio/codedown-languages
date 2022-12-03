@@ -10,20 +10,15 @@
     # flake-utils.lib.eachDefaultSystem (system:
     flake-utils.lib.eachSystem ["x86_64-linux"] (system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgsStable = import nixpkgs { inherit system; };
         pkgsUnstable = import nixpkgs-unstable { inherit system; };
 
-        channelSpecToChannel = name: channel:
-          if (channel.tag == "fetch_from_github") then pkgs.fetchFromGitHub ((removeAttrs channel ["tag" "name"]))
-          else if (channel.tag == "fetch_git") then pkgs.fetchgit (removeAttrs channel ["tag" "name"])
-          else if (channel.tag == "path") then channel.path else null;
-
-        codedown = pkgs.callPackage ./codedown.nix { inherit pkgsUnstable; };
+        codedown = import ./codedown.nix { inherit pkgsStable pkgsUnstable; };
 
       in
         rec {
           packages = codedown // (rec {
-            jupyter-runner = with pkgs; let
+            jupyter-runner = with pkgsStable; let
               pythonEnv = python38.withPackages (ps: with ps; [papermill]);
               packages = [coreutils findutils pythonEnv];
               in
@@ -38,7 +33,7 @@
               overlays = {};
             };
 
-            notebook = with pkgs; python3.pkgs.toPythonModule (
+            notebook = with pkgsStable; python3.pkgs.toPythonModule (
               python3.pkgs.notebook.overridePythonAttrs(oldAttrs: {
                 makeWrapperArgs = ["--set JUPYTER_PATH ${environment}/lib/codedown"];
               })
