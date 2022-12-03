@@ -15,8 +15,8 @@ import TestLib.TestSearchers
 tests :: TopSpec
 tests = do
   juliaTests "julia"
-  juliaTests "julia_16"
-  juliaTests "julia_18"
+  juliaTests "julia16"
+  juliaTests "julia18"
 
 juliaTests :: Text -> TopSpec
 juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kernelSpec lang] [] [i|Julia (#{lang})|] $ introduceJupyterRunner $ do

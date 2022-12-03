@@ -15,7 +15,7 @@ packages:
 
 extra-deps:
 - git: https://github.com/codedownio/lsp.git
-  commit: bcf40a0a932e58f75e45fba47f2c1bdd96882a23 # monad-logger rebased
+  commit: 10b3eeda227f79a6f267bc0b094c3de044261efe # monad-logger rebased
   subdirs:
   - lsp
   - lsp-types
