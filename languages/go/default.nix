@@ -59,7 +59,8 @@ listToAttrs (map (x:
             ++ (if metaOnly then [] else [
               go
             ])
-            ++ (if metaOnly then [] else (map (y: builtins.getAttr y languageServerOptions) languageServers));
+            ++ (if metaOnly then [] else (map (y: builtins.getAttr y languageServerOptions) languageServers))
+            ;
 
             passthru = {
               inherit meta packageOptions languageServerOptions;
