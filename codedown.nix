@@ -15,6 +15,28 @@ let
   common = callPackage ./languages/common.nix {};
   shellsCommon = callPackage ./shells/common.nix {};
 
+  # Languages
+  # First argument controls whether attributes get filtered to the valid ones.
+  # This can be expensive to evaluate for languages like Haskell where there are tons of
+  # Stackage snapshots and one nix file for each. So, we don't bother with that when evaluating
+  # the languages attrset normally--only when building the languagesSearcher.
+  languagesFn = filterToValid: zipAttrsWith (n: v: head v) [
+    (callPackage ./languages/bash {})
+    (callPackage ./languages/clojure {})
+    (callPackage ./languages/coq {})
+    (callPackage ./languages/cpp {})
+    (callPackage ./languages/dot {})
+    (callPackage ./languages/go {})
+    (pkgsUnstable.callPackage ./languages/haskell {})
+    (callPackage ./languages/julia {})
+    (callPackage ./languages/octave {})
+    (callPackage ./languages/postgres {})
+    (pkgsUnstable.callPackage ./languages/python {})
+    (callPackage ./languages/r {})
+    (callPackage ./languages/ruby {})
+    (pkgsUnstable.callPackage ./languages/rust {})
+  ];
+
 in
 
 rec {
@@ -39,29 +61,7 @@ rec {
   availableExporters = exporters;
   exportersSearcher = common.searcher' "exporters." exporters;
 
-  # Languages
-  # First argument controls whether attributes get filtered to the valid ones.
-  # This can be expensive to evaluate for languages like Haskell where there are tons of
-  # Stackage snapshots and one nix file for each. So, we don't bother with that when evaluating
-  # the languages attrset normally--only when building the languagesSearcher.
-  languagesFn = filterToValid: zipAttrsWith (n: v: head v) [
-    (callPackage ./languages/bash {})
-    (callPackage ./languages/clojure {})
-    (callPackage ./languages/coq {})
-    (callPackage ./languages/cpp {})
-    (callPackage ./languages/dot {})
-    (callPackage ./languages/go {})
-    (pkgsUnstable.callPackage ./languages/haskell {})
-    (callPackage ./languages/julia {})
-    (callPackage ./languages/octave {})
-    (callPackage ./languages/postgres {})
-    (pkgsUnstable.callPackage ./languages/python {})
-    (callPackage ./languages/r {})
-    (callPackage ./languages/ruby {})
-    (pkgsUnstable.callPackage ./languages/rust {})
-  ];
   languages = languagesFn false;
-
   languagesSearcher = common.searcher (languagesFn true);
 
   # Build tools
