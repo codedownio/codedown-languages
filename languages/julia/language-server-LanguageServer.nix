@@ -35,8 +35,11 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
     "${juliaLsp}/bin/julia"
     "--startup-file=no"
     "--history-file=no"
-    "-e" "using LanguageServer; runserver()"
-    julia.project # Project for the kernel
+    "-e"
+    ''using LanguageServer; import SymbolServer; server = LanguageServer.LanguageServerInstance(stdin, stdout, "${julia.depot}", "${julia.project}", nothing, "/tmp/.julia/symbolstorev2-lsp-julia"); server.runlinter = true; run(server);''
+
+    # "using LanguageServer; runserver()"
+    # julia.project # Project for the kernel
   ];
   env = {
     "JULIA_DEPOT_PATH" = julia.depot; # Depot for the kernel
