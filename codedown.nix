@@ -66,4 +66,6 @@ rec {
   mkCodeDownEnvironment = callPackage ./codedown/mkCodeDownEnvironment.nix {
     inherit requiredPackages languages;
   };
+
+  validateCodeDownEnvironment = callPackage ./codedown/validateCodeDownEnvironment.nix {};
 }
