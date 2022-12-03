@@ -68,13 +68,13 @@ mapAttrs (attr: value:
 
         languageServerOptions = {
           LanguageServer = callPackage ./language-server-LanguageServer.nix {
-            inherit baseJulia attrs;
-            depot = callPackage lspDepot {
+            inherit julia attrs;
+            kernelName = attr;
+            juliaLsp = callPackage lspDepot {
               inherit baseJulia python;
             };
           };
         };
-        availableLanguageServers = languageServerOptions;
       in
         symlinkJoin {
           name = "julia";
@@ -82,11 +82,9 @@ mapAttrs (attr: value:
           paths = [
             (callPackage ./kernel.nix { inherit julia python attrs extensions displayName; })
             (callPackage ./mode_info.nix { inherit attrs extensions; })
-            (writeTextDir "lib/codedown/language-servers/julia.yaml" (
-              pkgs.lib.generators.toYAML {} (map (x: x.config) (map (x: getAttr x availableLanguageServers) languageServers))
-            ))
           ]
           ++ (if metaOnly then [] else [julia])
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y languageServerOptions) languageServers))
           ;
 
           passthru = {

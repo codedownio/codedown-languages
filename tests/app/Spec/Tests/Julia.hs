@@ -6,6 +6,7 @@ import Data.String.Interpolate
 import Data.Text as T
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
+import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
@@ -13,20 +14,24 @@ import TestLib.TestSearchers
 
 tests :: TopSpec
 tests = do
-  juliaTests "julia-stable-bin"
-  juliaTests "julia-lts-bin"
+  juliaTests "julia"
+  juliaTests "julia_16"
+  juliaTests "julia_18"
 
 juliaTests :: Text -> TopSpec
 juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kernelSpec lang] [] [i|Julia (#{lang})|] $ introduceJupyterRunner $ do
   testKernelSearchers lang
   testKernelStdout lang [i|println("hi")|] "hi\n"
 
+  testDiagnostics "LanguageServer" "test.jl" [i|printlnz("HI")|] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics []
+
 kernelSpec lang = NixKernelSpec {
   nixKernelName = lang
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just [i|Julia (#{lang})|]
   , nixKernelPackages = []
-  , nixKernelLanguageServers = []
+  , nixKernelLanguageServers = [nameOnly "LanguageServer"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing

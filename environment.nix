@@ -49,11 +49,11 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
-      name = "julia-stable-bin";
+      name = "julia";
       channel = "codedown";
       args = {
         packages = [];
-        languageServers = [];
+        languageServers = ["LanguageServer"];
       };
     })
 
