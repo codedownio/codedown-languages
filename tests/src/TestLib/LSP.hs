@@ -117,7 +117,8 @@ withLspSession name filename code session = do
     Just x -> return x
   info [i|LSP config: #{A.encode config}|]
 
-  let lspCommand = T.unpack $ T.unwords (lspConfigArgs config)
+  let cmd:args = fmap T.unpack $ lspConfigArgs config
+  let lspCommand = proc cmd args
   info [i|LSP command: #{lspCommand}|]
 
   withTempDirectory currentFolder (T.unpack (name <> "_home")) $ \homeDir -> do
