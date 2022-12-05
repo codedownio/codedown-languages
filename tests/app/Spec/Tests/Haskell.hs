@@ -130,13 +130,16 @@ doSession' filename code cb = do
   withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) documentHighlightCode $ do
     cb (T.unpack filename)
 
+documentHighlightCode :: Text
 documentHighlightCode = [__i|foo = "hello"
                              putStrLn foo|]
 
+hoverCode :: Text
 hoverCode = [__i|foo = "hello"
                  putStrLn foo
                  import Data.Aeson|]
 
+etaExpandCode :: Text
 etaExpandCode = [__i|module Foo where
 
                      baz :: Int -> Int
