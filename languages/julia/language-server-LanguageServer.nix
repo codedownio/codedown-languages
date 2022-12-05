@@ -25,14 +25,17 @@ let
     mkdir tmp_depot
     export JULIA_DEPOT_PATH=$(pwd)/tmp_depot:${julia.depot}
     julia --history-file=no -e ' \
-      using SymbolServer
+      using SymbolServer, LanguageServer.SymbolServer
 
-      # TODO: do this programmatically
       using Pkg
       Pkg.activate("${julia.project}")
-      using IJulia, Plots
+      for installed in keys(Pkg.installed())
+        ex = Meta.parse("using $installed")
+        eval(ex)
+      end
+      server = LanguageServer.LanguageServerInstance(stdin, stdout, "${julia.project}", "${julia.depot}", nothing, ENV["out"])
 
-      getstore(SymbolServerInstance("${julia.depot}", ENV["out"]), "${julia.project}")
+      # getstore(SymbolServerInstance("${julia.depot}", ENV["out"]), "${julia.project}")
     '
   '';
 
