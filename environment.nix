@@ -67,31 +67,22 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
+      name = "haskell-ghc902";
+      channel = "codedown";
+      args = {
+        packages = ["aeson"];
+        languageServers = ["haskell-language-server"];
+      };
+    })
+
+    ({
       name = "haskell-ghc924";
       channel = "codedown";
       args = {
         packages = ["aeson"];
-        languageServers = [];
+        languageServers = ["haskell-language-server"];
       };
     })
-
-    # ({
-    #   name = "haskell-ghc902";
-    #   channel = "codedown";
-    #   args = {
-    #     packages = ["aeson"];
-    #     languageServers = ["haskell-language-server"];
-    #   };
-    # })
-
-    # ({
-    #   name = "haskell-ghc922";
-    #   channel = "codedown";
-    #   args = {
-    #     packages = ["aeson"];
-    #     languageServers = ["haskell-language-server"];
-    #   };
-    # })
 
     ({
       name = "R";
@@ -115,7 +106,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
-      name = "python38";
+      name = "python3";
       channel = "codedown";
       args = {
         packages = ["matplotlib" "scipy" "rope"];
@@ -127,7 +118,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     # ({
-    #   name = "pypy27";
+    #   name = "pypy3";
     #   channel = "codedown";
     #   args = {
     #     packages = [];
