@@ -19,6 +19,23 @@ let
   #     --set JULIA_DEPOT_PATH ${depot}
   # '';
 
+  symbolServerStore = runCommand "symbol-server-store" { buildInputs = [juliaLsp]; } ''
+    mkdir $out
+
+    mkdir tmp_depot
+    export JULIA_DEPOT_PATH=$(pwd)/tmp_depot:${julia.depot}
+    julia --history-file=no -e ' \
+      using SymbolServer
+
+      # TODO: do this programmatically
+      using Pkg
+      Pkg.activate("${julia.project}")
+      using IJulia, Plots
+
+      getstore(SymbolServerInstance("${julia.depot}", ENV["out"]), "${julia.project}")
+    '
+  '';
+
 in
 
 common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-LanguageServerJl.yaml" (lib.generators.toYAML {} [{
@@ -43,5 +60,6 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
   ];
   env = {
     "JULIA_DEPOT_PATH" = julia.depot; # Depot for the kernel
+    "SYMBOL_SERVER_STORE" = symbolServerStore;
   };
 }])
