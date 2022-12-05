@@ -33,6 +33,7 @@ import TestLib.Types
 import UnliftIO.Async
 import UnliftIO.Directory
 import UnliftIO.Environment (getEnvironment)
+import UnliftIO.Exception
 import UnliftIO.Process
 import UnliftIO.Temporary
 
@@ -143,9 +144,9 @@ withLspSession name filename code session = do
                & set (workspace . _Just . didChangeWatchedFiles . _Just . dynamicRegistration) (Just False)
                & set (workspace . _Just . didChangeConfiguration . _Just . dynamicRegistration) (Just False)
 
-      runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir $ do
-        session
-
+      handle (\(e :: SessionException) -> expectationFailure [i|LSP session failed with SessionException: #{e}|]) $ do
+        runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir $ do
+          session
 
 assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT context m ()
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
