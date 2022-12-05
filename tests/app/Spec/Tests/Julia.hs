@@ -4,6 +4,7 @@ module Spec.Tests.Julia (tests) where
 
 import Data.String.Interpolate
 import Data.Text as T
+import Language.LSP.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -24,7 +25,7 @@ juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kerne
   testKernelStdout lang [i|println("hi")|] "hi\n"
 
   testDiagnostics "LanguageServer" "test.jl" [i|printlnz("HI")|] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics []
+    assertDiagnosticRanges diagnostics [(Range (Position 3 16) (Position 3 19), Just (InR "UndeclaredName"))]
 
 kernelSpec lang = NixKernelSpec {
   nixKernelName = lang
