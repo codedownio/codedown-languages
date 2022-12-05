@@ -37,6 +37,11 @@ listToAttrs (map (x:
       packageOptions = {};
       packageSearch = common.searcher packageOptions;
 
+      languageServerOptions = attrs: {
+        gopls = callPackage ./language-server-gopls.nix { inherit go attrs; kernelName = x; };
+      };
+      languageServerSearch = common.searcher (languageServerOptions []);
+
       build = args@{
         packages ? []
         , languageServers ? []
@@ -44,30 +49,25 @@ listToAttrs (map (x:
         , extensions ? ["go"]
         , metaOnly ? false
       }:
-        let
-          languageServerOptions = {
-            gopls = callPackage ./language-server-gopls.nix { inherit go attrs; kernelName = x; };
-          };
-          languageServerSearch = common.searcher languageServerOptions;
-        in
-          symlinkJoin {
-            name = "go";
-            paths = [
-              (callPackage ./kernel.nix { inherit attrs extensions metaOnly; })
-              (callPackage ./mode_info.nix { inherit attrs extensions; })
-            ]
-            ++ (if metaOnly then [] else [
-              go
-            ])
-            ++ (if metaOnly then [] else (map (y: builtins.getAttr y languageServerOptions) languageServers))
-            ;
+        symlinkJoin {
+          name = "go";
+          paths = [
+            (callPackage ./kernel.nix { inherit attrs extensions metaOnly; })
+            (callPackage ./mode_info.nix { inherit attrs extensions; })
+          ]
+          ++ (if metaOnly then [] else [
+            go
+          ])
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (languageServerOptions attrs)) languageServers))
+          ;
 
-            passthru = {
-              inherit meta packageOptions languageServerOptions;
-              args = args // { baseName = x; };
-              repls = repls go;
-            };
+          passthru = {
+            inherit meta packageOptions;
+            languageServerOptions = languageServerOptions attrs;
+            args = args // { baseName = x; };
+            repls = repls go;
           };
+        };
 
       inherit meta;
     };
