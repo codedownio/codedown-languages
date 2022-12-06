@@ -39,9 +39,7 @@ testKernelSearchers' kernel = do
 testBuild expr = do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
-  withFile "/dev/null" WriteMode $ \devNullHandle -> do
-    p <- createProcessWithLogging $ (proc "nix" ["build", expr, "--json"]) {
-      cwd = Just rootDir
-      , std_err = UseHandle devNullHandle
-      }
-    waitForProcess p >>= (`shouldBe` ExitSuccess)
+  p <- createProcessWithLogging $ (proc "nix" ["build", expr, "--json"]) {
+    cwd = Just rootDir
+    }
+  waitForProcess p >>= (`shouldBe` ExitSuccess)
