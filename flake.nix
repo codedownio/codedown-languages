@@ -1,7 +1,7 @@
 {
   description = "CodeDown languages";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-22.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-22.11";
   inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -19,7 +19,7 @@
         rec {
           packages = codedown // (rec {
             jupyter-runner = with pkgsStable; let
-              pythonEnv = python38.withPackages (ps: with ps; [papermill]);
+              pythonEnv = python3.withPackages (ps: with ps; [papermill]);
               packages = [coreutils findutils pythonEnv];
               in
                 runCommand "papermill" { buildInputs = [makeWrapper]; } ''
