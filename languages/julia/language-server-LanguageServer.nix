@@ -25,17 +25,17 @@ let
     mkdir tmp_depot
     export JULIA_DEPOT_PATH=$(pwd)/tmp_depot:${julia.depot}
     julia --history-file=no -e ' \
-      using SymbolServer, LanguageServer.SymbolServer
+      using LanguageServer.SymbolServer
 
-      using Pkg
-      Pkg.activate("${julia.project}")
-      for installed in keys(Pkg.installed())
-        ex = Meta.parse("using $installed")
-        eval(ex)
-      end
-      server = LanguageServer.LanguageServerInstance(stdin, stdout, "${julia.project}", "${julia.depot}", nothing, ENV["out"])
+      # using Pkg
+      # Pkg.activate("${julia.project}")
+      # for installed in keys(Pkg.installed())
+      #   ex = Meta.parse("using $installed")
+      #   eval(ex)
+      # end
+      # server = LanguageServer.LanguageServerInstance(stdin, stdout, "${julia.project}", "${julia.depot}", nothing, ENV["out"])
 
-      # getstore(SymbolServerInstance("${julia.depot}", ENV["out"]), "${julia.project}")
+      getstore(SymbolServerInstance("${julia.depot}", ENV["out"]), "${julia.project}")
     '
   '';
 
@@ -63,6 +63,6 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
   ];
   env = {
     "JULIA_DEPOT_PATH" = julia.depot; # Depot for the kernel
-    "SYMBOL_SERVER_STORE" = symbolServerStore;
+    # "SYMBOL_SERVER_STORE" = symbolServerStore;
   };
 }])

@@ -1,12 +1,22 @@
 { lib
-, pkgs
+, fetchFromGitHub
+, callPackage
+, runCommand
+, makeWrapper
+
 , haskell-language-server
+
+# Needed by haskell-language-server's wrapper, introduced in
+# https://github.com/haskell/haskell-language-server/pull/2675
+, coreutils
+, findutils
+, gnused
+
 , kernelName
 , ghc
 }:
 
-with pkgs;
-with pkgs.lib;
+with lib;
 
 let
   common = callPackage ../../common.nix {};
@@ -14,14 +24,20 @@ let
   hnlsSrc = fetchFromGitHub {
     owner = "codedownio";
     repo = "haskell-notebook-language-server";
-    rev = "687f4d83fd2585a081499194d0bc1393153de5a5";
-    sha256 = "1cihypr8pbi20ibbdqcj3apzbqgcnfrp2vch4472r43l0hvk7gcx";
+    rev = "c6fb35affedb0834344a565b8d74613e11d668cf";
+    sha256 = "FQx5Uefv0KSb9StVHiJl/ymuR71guyFGnI+SfVPiy8c=";
   };
   # hnlsSrc = /home/tom/tools/haskell-notebook-language-server;
 
   hnls = ghc.callPackage hnlsSrc {};
 
   exe = hnls;
+
+  hlsWrapped = runCommand "haskell-language-server-${haskell-language-server.version}-wrapped" { buildInputs = [makeWrapper]; } ''
+    mkdir -p $out/bin
+    makeWrapper ${haskell-language-server}/bin/haskell-language-server $out/bin/haskell-language-server \
+      --suffix PATH ':' ${lib.makeBinPath [coreutils findutils gnused]}
+  '';
 
   config = raw:
     {
@@ -37,12 +53,12 @@ let
       primary = true;
       args = if raw
              then [
-               "${haskell-language-server}/bin/haskell-language-server"
+               "${hlsWrapped}/bin/haskell-language-server"
                "--lsp"
              ]
              else [
                "${exe}/bin/haskell-notebook-language-server"
-               "--wrapped-hls" "${haskell-language-server}/bin/haskell-language-server"
+               "--wrapped-hls" "${hlsWrapped}/bin/haskell-language-server"
                "--hls-args" "--lsp"
              ];
       env = {};
