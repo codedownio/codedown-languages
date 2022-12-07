@@ -14,15 +14,22 @@
 }:
 
 let
-  safeEval = e: let
+  safeEval = safeEval' "";
+  safeEval' = default: e: let
     evaluated = builtins.tryEval e;
   in
-    if evaluated.success then evaluated.value else "";
+    if evaluated.success then evaluated.value else default;
 
   common = callPackage ../../languages/common.nix {};
 
   numVersionComponents = 5;
   componentPadLength = 3;
+
+  filteredPackages = with lib; filterAttrs (name: value: safeEval' false (
+    isDerivation(value)
+    &&
+    (lib.attrByPath ["meta" "name"] "" value != "")
+  )) packages;
 
   json = writeText "packages-index-yaml.json" (lib.generators.toJSON {} (lib.mapAttrsToList (k: v: {
     attr = attrPrefix + k;
@@ -32,7 +39,7 @@ let
     display_name = safeEval (lib.attrByPath ["meta" "displayName"] "" v);
     icon = safeEval (lib.attrByPath ["meta" "icon"] "" v);
     less_common = safeEval (lib.attrByPath ["meta" "lessCommon"] false v);
-  }) packages));
+  }) filteredPackages));
 
 in
 
