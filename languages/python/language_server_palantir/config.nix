@@ -26,18 +26,19 @@ let
 
   # manylinux1 = callPackage ./manylinux1.nix { inherit python; };
 
-  pythonEnv = (pythonWithPackages (ps: [ps.python-language-server])).override {
-    makeWrapperArgs = [
-      # Append libs needed at runtime for manylinux1 compliance
-      # "--set" "LD_LIBRARY_PATH" (makeLibraryPath manylinux1.libs)
+  python = (pythonWithPackages (ps: [ps.python-language-server]));
+  # python = (pythonWithPackages (ps: [ps.python-language-server])).override {
+  #   makeWrapperArgs = [
+  #     # Append libs needed at runtime for manylinux1 compliance
+  #     # "--set" "LD_LIBRARY_PATH" (makeLibraryPath manylinux1.libs)
 
-      # Ensure that %%bash magic uses the Nix-provided bash rather than a system one
-      "--prefix" "PATH" ":" "${bash}/bin"
+  #     # Ensure that %%bash magic uses the Nix-provided bash rather than a system one
+  #     "--prefix" "PATH" ":" "${bash}/bin"
 
-      # "--suffix" "NIX_PYTHONPATH" ":" "/home/user/.local/lib/${pythonName}/site-packages"
-    ];
-    # ignoreCollisions = python == pkgs.python27;
-  };
+  #     # "--suffix" "NIX_PYTHONPATH" ":" "/home/user/.local/lib/${pythonName}/site-packages"
+  #   ];
+  #   # ignoreCollisions = python == pkgs.python27;
+  # };
 
 in
 
@@ -45,12 +46,12 @@ common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedow
   (lib.generators.toYAML {} [{
     name = "python-language-server";
     display_name = "Python Language Server";
-    description = pythonEnv.pkgs.python-language-server.meta.description;
+    description = python.pkgs.python-language-server.meta.description;
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;
     attrs = ["python"];
     type = "stream";
-    args = ["${pythonEnv}/bin/python" "-m" "pyls"];
+    args = ["${python}/bin/python" "-m" "pyls"];
     initialization_options = import ../pylsp_initialization_options.nix "pyls";
   }])

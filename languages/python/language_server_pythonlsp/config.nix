@@ -26,19 +26,20 @@ let
 
   # manylinux1 = callPackage ./manylinux1.nix { inherit python; };
 
-  python = (pythonWithPackages (ps: [python-lsp-server])).buildEnv.override {
-    permitUserSite = false;
-    makeWrapperArgs = [
-      # Append libs needed at runtime for manylinux1 compliance
-      # "--set" "LD_LIBRARY_PATH" (makeLibraryPath manylinux1.libs)
+  python = (pythonWithPackages (ps: [ps.python-lsp-server]));
+  # python = (pythonWithPackages (ps: [ps.python-lsp-server])).buildEnv.override {
+  #   permitUserSite = false;
+  #   makeWrapperArgs = [
+  #     # Append libs needed at runtime for manylinux1 compliance
+  #     # "--set" "LD_LIBRARY_PATH" (makeLibraryPath manylinux1.libs)
 
-      # Ensure that %%bash magic uses the Nix-provided bash rather than a system one
-      "--prefix" "PATH" ":" "${bash}/bin"
+  #     # Ensure that %%bash magic uses the Nix-provided bash rather than a system one
+  #     "--prefix" "PATH" ":" "${bash}/bin"
 
-      # "--suffix" "NIX_PYTHONPATH" ":" "/home/user/.local/lib/${pythonName}/site-packages"
-    ];
-    # ignoreCollisions = python == pkgs.python27;
-  };
+  #     # "--suffix" "NIX_PYTHONPATH" ":" "/home/user/.local/lib/${pythonName}/site-packages"
+  #   ];
+  #   # ignoreCollisions = python == pkgs.python27;
+  # };
 
 in
 
