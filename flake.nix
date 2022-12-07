@@ -17,10 +17,13 @@
 
       in
         rec {
-          packages = codedown // (rec {
-            jupyter-runner = with pkgsStable; let
-              pythonEnv = python3.withPackages (ps: with ps; [papermill]);
-              packages = [coreutils findutils pythonEnv];
+          packages = rec {
+            inherit (codedown) nixpkgsStableSearcher spellchecker shellsSearcher exportersSearcher languagesSearcher;
+
+            jupyter-runner = with pkgsStable;
+              let
+                pythonEnv = python3.withPackages (ps: with ps; [papermill]);
+                packages = [coreutils findutils pythonEnv];
               in
                 runCommand "papermill" { buildInputs = [makeWrapper]; } ''
                   makeWrapper ${pythonEnv}/bin/papermill $out \
@@ -38,7 +41,7 @@
                 makeWrapperArgs = ["--set JUPYTER_PATH ${environment}/lib/codedown"];
               })
             );
-          });
+          };
         }
     );
 }

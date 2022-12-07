@@ -36,7 +36,7 @@ in
 rec {
   searcher = common.searcher;
 
-  nixpkgsSearcher = common.searcher pkgsStable;
+  nixpkgsStableSearcher = common.searcher pkgsStable;
 
   spellchecker = callPackage ./language_servers/markdown-spellcheck-lsp.nix {};
 
