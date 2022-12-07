@@ -85,7 +85,7 @@ haskellCommonTests lang = do
                                               |] $ \diagnostics -> do
         assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
-      it "document highlight" $ doSession documentHighlightCode $ \filename -> do
+      it "document highlight" $ doNotebookSession documentHighlightCode $ \filename -> do
         ident <- openDoc filename "haskell"
         let desired = [
               DocumentHighlight (Range (Position 0 0) (Position 0 3)) (Just HkWrite)
@@ -94,39 +94,38 @@ haskellCommonTests lang = do
         getHighlights ident (Position 0 1) >>= (`shouldBe` List desired)
 
       describe "hover" $ do
-        it "hovers foo" $ doSession' "Test.hs" hoverCode $ \filename -> do
+        it "hovers foo" $ doNotebookSession hoverCode $ \filename -> do
           ident <- openDoc filename "haskell"
           hover <- getHoverOrException ident (Position 0 1)
           allHoverText hover `textShouldContain` [i|foo|]
-          allHoverText hover `textShouldContain` [i|main.ipynb:1:1|]
+          allHoverText hover `textShouldContain` [i|main.ipynb.hs:1:1|]
 
-        it "hovers putStrLn" $ doSession hoverCode $ \filename -> do
+        it "hovers putStrLn" $ doNotebookSession hoverCode $ \filename -> do
           ident <- openDoc filename "haskell"
           hover <- getHoverOrException ident (Position 1 1)
           (hover ^. range) `shouldBe` Just (Range (Position 1 0) (Position 1 8))
           let HoverContents (MarkupContent {..}) = hover ^. contents
           _value `textShouldContain` "putStrLn :: String -> IO ()"
 
-      it "symbols" $ doSession documentHighlightCode $ \filename -> do
+      it "symbols" $ doNotebookSession documentHighlightCode $ \filename -> do
         ident <- openDoc filename "haskell"
         Left documentSymbols <- getDocumentSymbols ident
         fmap (^. name) documentSymbols `shouldBe` ["foo"]
 
-      it "code actions" $ doSession documentHighlightCode $ \filename -> do
+      it "code actions" $ doNotebookSession documentHighlightCode $ \filename -> do
         ident <- openDoc filename "haskell"
         actions <- getCodeActions ident (Range (Position 1 0) (Position 1 8))
         actions `shouldBe` []
 
-doSession :: (
+doNotebookSession :: (
   MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
   ) => Text -> (FilePath -> Session (ExampleT context m) a) -> ExampleT context m a
-doSession = doSession' "main.ipynb"
+doNotebookSession = doSession' "main.ipynb"
 
 doSession' :: (
   MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
   ) => Text -> Text -> (FilePath -> Session (ExampleT context m) a) -> ExampleT context m a
 doSession' filename code cb = do
-  let filename :: Text = "main.ipynb"
   withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) documentHighlightCode $ do
     cb (T.unpack filename)
 
