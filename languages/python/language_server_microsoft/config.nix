@@ -1,6 +1,6 @@
 { stdenv
 , coreutils
-, python
+, pythonWithPackages
 , python-language-server
 , callPackage
 , lib
@@ -11,6 +11,8 @@ with lib;
 
 let
   common = callPackage ../../common.nix {};
+
+  python = pythonWithPackages (_: []);
 
   initialization_options = {
     interpreter = {

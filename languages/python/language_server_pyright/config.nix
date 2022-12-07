@@ -1,6 +1,6 @@
 { lib
 , pkgs
-, python
+, pythonWithPackages
 , pyright
 , writeTextDir
 , kernelName
@@ -12,16 +12,12 @@ with pkgs.lib;
 let
   common = callPackage ../../common.nix {};
 
-  # Make a special Python environment with all the default packages, so we can get a site-packages
-  # path containing them all to pass to the language server
-  pythonEnv = python.buildEnv.override {
-
-  };
+  pythonEnv = pythonWithPackages (_: []);
 
   pyrightWrapped = runCommand "pyright-withenv" { inherit pythonEnv; buildInputs = [makeWrapper]; } ''
     mkdir -p $out/bin
     makeWrapper ${pyright}/bin/pyright-langserver $out/bin/pyright-langserver \
-                --set PYTHONPATH $pythonEnv/${pythonEnv.sitePackages}
+      --set PYTHONPATH $pythonEnv/${pythonEnv.sitePackages}
   '';
 
 in

@@ -29,5 +29,7 @@ common.writeTextDirWithMeta rust-analyzer.meta "lib/codedown/language-servers/ru
     attrs = ["rust"];
     type = "stream";
     args = ["${rust-analyzer}/bin/rust-analyzer"];
-    initialization_options = {};
+    initialization_options = {
+      "rust-analyzer.linkedProjects" = [];
+    };
   }])

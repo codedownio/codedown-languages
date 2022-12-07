@@ -1,6 +1,6 @@
 { stdenv
 , pkgs
-, python
+, pythonWithPackages
 , kernelName
 , packages ? []
 }:
@@ -15,11 +15,7 @@ let
     nodejs = pkgs.nodejs-14_x;
   })."diagnostic-languageserver-git+https://github.com/codedownio/diagnostic-languageserver.git#0171e0867e0c340c287bfd60c348425585e21eeb";
 
-  # Make a special Python environment with all the default packages, so we can get a site-packages
-  # path containing them all to pass to the language server
-  pythonEnv = python.buildEnv.override {
-    extraLibs = [python.pkgs.pycodestyle] ++ packages;
-  };
+  python = pythonWithPackages (ps: [ps.pycodestyle]);
 
 in
 
@@ -37,15 +33,15 @@ common.writeTextDirWithMeta python.pkgs.pycodestyle.meta "lib/codedown/language-
     # Not sure whether to do this using an environment variable or initialization option
     env = {
       PYTHONPATH = lib.concatStringsSep ":" [
-        "${pythonEnv}/${pythonEnv.sitePackages}"
-        "/home/user/.local/${pythonEnv.sitePackages}"
+        "${python}/${python.sitePackages}"
+        "/home/user/.local/${python.sitePackages}"
       ];
     };
     initialization_options = {
       linters = {
         pycodestyle = {
           sourceName = "pycodestyle";
-          command = "${pythonEnv.pkgs.pycodestyle}/bin/pycodestyle";
+          command = "${python.pkgs.pycodestyle}/bin/pycodestyle";
           args = [
             "%file"
           ];

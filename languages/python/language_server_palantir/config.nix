@@ -2,7 +2,7 @@
 , lib
 , pkgs
 , callPackage
-, python
+, pythonWithPackages
 , bash
 , kernelName
 }:
@@ -26,9 +26,7 @@ let
 
   # manylinux1 = callPackage ./manylinux1.nix { inherit python; };
 
-  pythonEnv = python.buildEnv.override {
-    extraLibs = [python.pkgs.python-language-server];
-    permitUserSite = false;
+  pythonEnv = (pythonWithPackages (ps: [ps.python-language-server])).override {
     makeWrapperArgs = [
       # Append libs needed at runtime for manylinux1 compliance
       # "--set" "LD_LIBRARY_PATH" (makeLibraryPath manylinux1.libs)
@@ -38,7 +36,7 @@ let
 
       # "--suffix" "NIX_PYTHONPATH" ":" "/home/user/.local/lib/${pythonName}/site-packages"
     ];
-    ignoreCollisions = python == pkgs.python27;
+    # ignoreCollisions = python == pkgs.python27;
   };
 
 in
@@ -47,7 +45,7 @@ common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedow
   (lib.generators.toYAML {} [{
     name = "python-language-server";
     display_name = "Python Language Server";
-    description = python.pkgs.python-language-server.meta.description;
+    description = pythonEnv.pkgs.python-language-server.meta.description;
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;

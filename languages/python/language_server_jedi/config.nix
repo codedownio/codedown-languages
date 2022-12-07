@@ -1,6 +1,6 @@
 { lib
 , pkgs
-, python
+, pythonWithPackages
 , writeTextDir
 , kernelName
 }:
@@ -11,13 +11,11 @@ with pkgs.lib;
 let
   common = callPackage ../../common.nix {};
 
-  jediLanguageServer = callPackage ./jedi-language-server {python=python;};
-
-  # Make a special Python environment with all the default packages, so we can get a site-packages
-  # path containing them all to pass to the language server
-  pythonEnv = python.buildEnv.override {
-    extraLibs = [jediLanguageServer];
+  jediLanguageServer = callPackage ./jedi-language-server {
+    python = pythonWithPackages (_: []);
   };
+
+  pythonEnv = pythonWithPackages (_: [jediLanguageServer]);
 
 in
 

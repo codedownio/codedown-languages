@@ -2,7 +2,7 @@
 , lib
 , pkgs
 , callPackage
-, python
+, pythonWithPackages
 , bash
 , kernelName
 }:
@@ -26,8 +26,7 @@ let
 
   # manylinux1 = callPackage ./manylinux1.nix { inherit python; };
 
-  pythonEnv = python.buildEnv.override {
-    extraLibs = [python.pkgs.python-lsp-server];
+  python = (pythonWithPackages (ps: [python-lsp-server])).buildEnv.override {
     permitUserSite = false;
     makeWrapperArgs = [
       # Append libs needed at runtime for manylinux1 compliance
@@ -38,7 +37,7 @@ let
 
       # "--suffix" "NIX_PYTHONPATH" ":" "/home/user/.local/lib/${pythonName}/site-packages"
     ];
-    ignoreCollisions = python == pkgs.python27;
+    # ignoreCollisions = python == pkgs.python27;
   };
 
 in
@@ -53,6 +52,6 @@ common.writeTextDirWithMeta python.pkgs.python-lsp-server.meta "lib/codedown/lan
     kernel_name = kernelName;
     attrs = ["python"];
     type = "stream";
-    args = ["${pythonEnv}/bin/python" "-m" "pylsp"];
+    args = ["${python}/bin/python" "-m" "pylsp"];
     initialization_options = import ../pylsp_initialization_options.nix "pylsp";
   }])

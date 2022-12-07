@@ -1,6 +1,6 @@
 { stdenv
 , pkgs
-, python
+, pythonWithPackages
 , kernelName
 }:
 
@@ -14,11 +14,7 @@ let
     nodejs = pkgs.nodejs-14_x;
   })."diagnostic-languageserver-git+https://github.com/codedownio/diagnostic-languageserver.git#0171e0867e0c340c287bfd60c348425585e21eeb";
 
-  # Make a special Python environment with all the default packages, so we can get a site-packages
-  # path containing them all to pass to the language server
-  pythonEnv = python.buildEnv.override {
-    extraLibs = [python.pkgs.flake8];
-  };
+  python = pythonWithPackages (ps: [ps.flake8]);
 
 in
 
@@ -36,15 +32,15 @@ common.writeTextDirWithMeta python.pkgs.flake8.meta "lib/codedown/language-serve
     # Not sure whether to do this using an environment variable or initialization option
     env = {
       PYTHONPATH = lib.concatStringsSep ":" [
-        "${pythonEnv}/${pythonEnv.sitePackages}"
-        "/home/user/.local/${pythonEnv.sitePackages}"
+        "${python}/${python.sitePackages}"
+        "/home/user/.local/${python.sitePackages}"
       ];
     };
     initialization_options = {
       linters = {
         flake8 = {
           sourceName = "flake8";
-          command = "${pythonEnv.pkgs.flake8}/bin/flake8";
+          command = "${python.pkgs.flake8}/bin/flake8";
           args = [
             "%file"
           ];

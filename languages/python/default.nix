@@ -8,22 +8,26 @@
 let
   common = callPackage ../common.nix {};
 
-  allLanguageServerOptions = python: kernelName: {
-    # Primary language servers
-    jedi = (callPackage ./language_server_jedi/config.nix { inherit python kernelName; });
-    pyright = (callPackage ./language_server_pyright/config.nix { inherit python kernelName; });
+  allLanguageServerOptions = pythonWithPackages: kernelName:
+    let
+      basePython = pythonWithPackages (_: []);
+    in
+      {
+        # Primary language servers
+        jedi = (callPackage ./language_server_jedi/config.nix { inherit pythonWithPackages kernelName; });
+        pyright = (callPackage ./language_server_pyright/config.nix { inherit pythonWithPackages kernelName; });
 
-    # Secondary language servers (for diagnostics, formatting, etc.)
-    pylint = (callPackage ./language_server_pylint/config.nix { inherit python kernelName; });
-    flake8 = (callPackage ./language_server_flake8/config.nix { inherit python kernelName; });
-    pycodestyle = (callPackage ./language_server_pycodestyle/config.nix { inherit python kernelName; });
-  } // (lib.optionalAttrs (lib.hasAttr "python-language-server" pkgs) {
-    microsoft = callPackage ./language_server_microsoft/config.nix { inherit python kernelName; };
-  }) // (lib.optionalAttrs ((lib.hasAttr "python-lsp-server" python.pkgs) && (lib.versionAtLeast python.pythonVersion "3.7")) {
-    python-lsp-server = callPackage ./language_server_pythonlsp/config.nix { inherit python kernelName; };
-  }) // (lib.optionalAttrs (lib.hasAttr "python-language-server" python.pkgs) {
-    python-language-server = callPackage ./language_server_palantir/config.nix { inherit python kernelName; };
-  });
+        # Secondary language servers (for diagnostics, formatting, etc.)
+        pylint = (callPackage ./language_server_pylint/config.nix { inherit pythonWithPackages kernelName; });
+        flake8 = (callPackage ./language_server_flake8/config.nix { inherit pythonWithPackages kernelName; });
+        pycodestyle = (callPackage ./language_server_pycodestyle/config.nix { inherit pythonWithPackages kernelName; });
+      } // (lib.optionalAttrs (lib.hasAttr "python-language-server" pkgs) {
+        microsoft = callPackage ./language_server_microsoft/config.nix { inherit pythonWithPackages kernelName; };
+      }) // (lib.optionalAttrs ((lib.hasAttr "python-lsp-server" basePython.pkgs) && (lib.versionAtLeast basePython.pythonVersion "3.7")) {
+        python-lsp-server = callPackage ./language_server_pythonlsp/config.nix { inherit pythonWithPackages kernelName; };
+      }) // (lib.optionalAttrs (lib.hasAttr "python-language-server" basePython.pkgs) {
+        python-language-server = callPackage ./language_server_palantir/config.nix { inherit pythonWithPackages kernelName; };
+      });
 
   repls = python: {
     ipython = {
@@ -60,7 +64,7 @@ lib.listToAttrs (map (x:
       packageOptions = basePython.pkgs;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = allLanguageServerOptions basePython "python";
+      languageServerOptions = allLanguageServerOptions basePython.withPackages "python";
       languageServerSearch = common.searcher languageServerOptions;
 
       settingsSchema = [
@@ -94,18 +98,11 @@ lib.listToAttrs (map (x:
       }:
         let
           settingsToUse = defaultSettings // settings;
-
           ps = packageOptions;
-
-          # Uncomment the following to set permitUserSite for ipython, but note it makes ipython and dependencies (like jupyter stuff)
-          # get built (and tested, which sometimes hangs!) instead of downloaded from cache
-          # ps = packageOptions.override {
-          #   overrides = self: super: {
-          #     ipython = basePython.pkgs.ipython.overridePythonAttrs (old: { permitUserSite = settingsToUse.permitUserSite; });
-          #   };
-          # };
-
-          python = basePython.withPackages (_: [ps.ipykernel ps.ipywidgets] ++ (map (x: builtins.getAttr x ps) packages));
+          allPackages = [ps.ipykernel ps.ipywidgets]
+                        ++ (map (x: builtins.getAttr x ps) packages);
+          python = basePython.withPackages (_: allPackages);
+          pythonWithPackages = f: basePython.withPackages (_: allPackages ++ f ps);
 
         in symlinkJoin {
           name = x;
@@ -119,7 +116,7 @@ lib.listToAttrs (map (x:
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [python ps.ipython])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions python x)) languageServers))
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions pythonWithPackages x)) languageServers))
           ;
 
           passthru = {
@@ -134,7 +131,3 @@ lib.listToAttrs (map (x:
     };
   }
 ) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))
-
-
-  # languageServer = writeTextDir "lib/codedown/language-servers/python.yaml" (pkgs.lib.generators.toYAML {} (map (x: x.config) (languageServers availableLanguageServers)));
-  # extraGitIgnoreLines = [".ipython"];
