@@ -46,17 +46,26 @@ rec {
     bash = callPackage ./shells/bash {};
   };
   availableShells = shells;
-  shellsSearcher = common.searcher' "shells." shells;
+  shellsSearcher = common.searcher' {
+    attrPrefix = "shells.";
+    packages = shells;
+  };
 
   exporters = {
     nbconvert-small = callPackage ./exporters/nbconvert.nix { size = "small"; };
     nbconvert-large = callPackage ./exporters/nbconvert.nix { size = "large"; };
   };
   availableExporters = exporters;
-  exportersSearcher = common.searcher' "exporters." exporters;
+  exportersSearcher = common.searcher' {
+    attrPrefix = "exporters.";
+    packages = exporters;
+  };
 
   languages = languagesFn false;
-  languagesSearcher = common.searcher (languagesFn true);
+  languagesSearcher = common.searcher' {
+    packages = languagesFn true;
+    packageMustBeDerivation = false;
+  };
 
   mkCodeDownEnvironment = callPackage ./codedown/mkCodeDownEnvironment.nix {
     inherit requiredPackages languages;

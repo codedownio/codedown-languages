@@ -64,9 +64,7 @@ rec {
   # }).searcher;
 
   searcher = packages: (callPackage ../tools/sqlite-indexer { inherit packages; }).searcher;
-  searcher' = attrPrefix: packages: (callPackage ../tools/sqlite-indexer {
-    inherit packages attrPrefix;
-  }).searcher;
+  searcher' = args: (callPackage ../tools/sqlite-indexer args).searcher;
 
   lexicographyVersionNumber = lexicographyVersionNumber' 5 3;
   lexicographyVersionNumber' = maxComponents: componentLength: s:

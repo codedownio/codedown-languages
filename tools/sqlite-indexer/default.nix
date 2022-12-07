@@ -11,6 +11,9 @@
 , writeShellScript
 , name ? ""
 , attrPrefix ? ""
+
+, packageMustBeDerivation ? true
+, packageMustHaveName ? true
 }:
 
 let
@@ -26,9 +29,9 @@ let
   componentPadLength = 3;
 
   filteredPackages = with lib; filterAttrs (name: value: safeEval' false (
-    isDerivation(value)
+    (!packageMustBeDerivation || isDerivation(value))
     &&
-    (lib.attrByPath ["meta" "name"] "" value != "")
+    (!packageMustHaveName || (lib.attrByPath ["meta" "name"] "" value != ""))
   )) packages;
 
   json = writeText "packages-index-yaml.json" (lib.generators.toJSON {} (lib.mapAttrsToList (k: v: {
@@ -56,12 +59,7 @@ rec {
       json_extract(value, '$.display_name'),
       json_extract(value, '$.icon'),
       json_extract(value, '$.less_common')
-
-    FROM json_each(readfile('${json}'))
-
-    -- Avoid picking up override and overrideDerivation
-    -- TODO: prevent these from ending up in json in the first place.
-    WHERE NOT json_extract(value, '$.attr') LIKE 'override%';
+    FROM json_each(readfile('${json}'));
 
     INSERT INTO main(main) VALUES('optimize');
 
@@ -80,11 +78,16 @@ rec {
       fi
 
       offset=$((page_size * page))
-      ${sqlite}/bin/sqlite3 "${index}" "SELECT attr, name, description, display_name, icon, less_common, rank \
+      result=$(${sqlite}/bin/sqlite3 "${index}" "SELECT attr, name, description, display_name, icon, less_common, rank \
         FROM main $filterClause \
         ORDER BY bm25(main, 100.0), lower(name), version DESC \
         LIMIT $page_size \
         OFFSET $offset;" -json
+      )
+      # SQLite doesn't print an array in JSON mode when there are no results. So, do that for it.
+      [[ -z "$result" ]] && result="[]";
+      echo -n "$result"
+
       echo ""
     done
   '';
