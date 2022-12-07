@@ -39,6 +39,8 @@
           packages = rec {
             inherit (codedown) spellchecker nixpkgsStableSearcher shellsSearcher exportersSearcher languagesSearcher;
 
+            inherit (codedown) languages;
+
             jupyter-runner = with pkgsStable;
               let
                 pythonEnv = python3.withPackages (ps: with ps; [papermill]);
