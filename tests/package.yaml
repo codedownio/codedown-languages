@@ -27,6 +27,8 @@ dependencies:
 - aeson
 - aeson-qq
 - bytestring
+- conduit
+- conduit-aeson
 - containers
 - data-default
 - directory

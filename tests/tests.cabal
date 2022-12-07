@@ -51,6 +51,8 @@ library
     , aeson-qq
     , base >=4.7 && <5
     , bytestring
+    , conduit
+    , conduit-aeson
     , containers
     , data-default
     , directory
@@ -98,6 +100,7 @@ executable tests-exe
       Spec.Tests.R
       Spec.Tests.Ruby
       Spec.Tests.Rust
+      Spec.Tests.Searchers
       Spec.Tests.Spellchecker
       Paths_tests
   hs-source-dirs:
@@ -122,6 +125,8 @@ executable tests-exe
     , aeson-qq
     , base >=4.7 && <5
     , bytestring
+    , conduit
+    , conduit-aeson
     , containers
     , data-default
     , directory

@@ -1,15 +1,20 @@
 
 module TestLib.TestSearchers where
 
+import Conduit as C
 import Control.Monad
 import Control.Monad.Catch (MonadMask, MonadThrow)
 import Control.Monad.IO.Unlift
+import Control.Monad.Logger
 import Control.Monad.Trans.Control (MonadBaseControl)
 import qualified Data.Aeson as A
 import Data.ByteString.Lazy.Char8 as BL
+import Data.Conduit.Aeson as C
 import qualified Data.HashMap.Strict as HM
 import Data.String.Interpolate
 import Data.Text as T
+import qualified Data.Text.IO as T
+import qualified Data.Vector as V
 import qualified System.Directory as SD
 import System.Exit
 import System.FilePath
@@ -36,6 +41,7 @@ testKernelSearchers' kernel = do
   testBuild [i|.\#languages."#{kernel}".packageSearch|]
   testBuild [i|.\#languages."#{kernel}".languageServerSearch|]
 
+testBuild :: (MonadIO m, MonadThrow m, MonadBaseControl IO m, MonadLogger m) => String -> m ()
 testBuild expr = do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
@@ -43,3 +49,29 @@ testBuild expr = do
     cwd = Just rootDir
     }
   waitForProcess p >>= (`shouldBe` ExitSuccess)
+
+testSearcherHasNonemptyResults :: (MonadUnliftIO m, MonadThrow m, MonadLogger m, MonadFail m) => String -> m ()
+testSearcherHasNonemptyResults expr = searcherResults expr >>= \case
+  xs | Prelude.length xs > 0 -> return ()
+  x -> expectationFailure [i|Expected searcher to output an array with >=1 elem, but got #{x}|]
+
+searcherResults :: (MonadUnliftIO m, MonadThrow m, MonadLogger m, MonadFail m) => String -> m [A.Object]
+searcherResults expr = do
+  rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
+
+  let cp = (proc "nix" ["run", expr]) {
+        cwd = Just rootDir
+        , std_in = CreatePipe
+        , std_out = CreatePipe
+        , std_err = CreatePipe
+        , create_group = True
+        , close_fds = True
+        }
+
+  withCreateProcess cp $ \(Just hin) (Just hout) (Just herr) p -> do
+    liftIO $ T.hPutStrLn hin "50"
+    liftIO $ T.hPutStrLn hin "0"
+    liftIO $ T.hPutStrLn hin ""
+    liftIO $ hFlush hin
+
+    runConduit $ sourceHandle hout .| C.conduitArray .| sinkList

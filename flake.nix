@@ -17,8 +17,27 @@
 
       in
         rec {
+          apps = {
+            languagesSearcher = {
+              type = "app";
+              program = "${self.packages.${system}.languagesSearcher}";
+            };
+            exportersSearcher = {
+              type = "app";
+              program = "${self.packages.${system}.exportersSearcher}";
+            };
+            shellsSearcher = {
+              type = "app";
+              program = "${self.packages.${system}.shellsSearcher}";
+            };
+            nixpkgsStableSearcher = {
+              type = "app";
+              program = "${self.packages.${system}.nixpkgsStableSearcher}";
+            };
+          };
+
           packages = rec {
-            inherit (codedown) nixpkgsStableSearcher spellchecker shellsSearcher exportersSearcher languagesSearcher;
+            inherit (codedown) spellchecker nixpkgsStableSearcher shellsSearcher exportersSearcher languagesSearcher;
 
             jupyter-runner = with pkgsStable;
               let
