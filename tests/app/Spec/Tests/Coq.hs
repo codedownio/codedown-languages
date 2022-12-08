@@ -19,7 +19,7 @@ kernelSpec = NixKernelSpec {
   nixKernelName = "coq"
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Coq"
-  , nixKernelPackages = []
+  , nixKernelPackages = [nameOnly "ceres"]
   , nixKernelLanguageServers = [
       -- nameOnly "coq-language-server"
       ]
@@ -32,6 +32,8 @@ kernelSpec = NixKernelSpec {
 tests :: TopSpec
 tests = describe "Coq" $ introduceNixEnvironment [kernelSpec] [] "Coq" $ introduceJupyterRunner $ do
   testKernelSearchers "coq"
+
+  itHasExecuteTexts "coq" [i|From Ceres Require Import Ceres.|] [Just $ Array []]
 
   itHasExecuteTexts "coq" [i|Print true.|] [Just $ Array [
                                                String "Inductive bool : Set :=  true : bool | false : bool."

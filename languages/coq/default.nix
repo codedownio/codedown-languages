@@ -82,13 +82,14 @@ lib.listToAttrs (map (x:
             (callPackage ./kernel.nix {
               inherit coq displayName attrs extensions metaOnly;
               enableVariableInspector = settingsToUse.enableVariableInspector;
+              chosenPackages = map (x: builtins.getAttr x packageOptions) packages;
             })
 
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [
             coq
-          ] ++ (map (x: builtins.getAttr x packageOptions) packages))
+          ])
           ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions coq baseName)) languageServers));
 
           passthru = {

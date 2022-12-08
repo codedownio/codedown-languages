@@ -2,8 +2,11 @@
 , pkgs
 , callPackage
 , coq
+
 , displayName
 , enableVariableInspector
+
+, chosenPackages
 , attrs
 , extensions
 , metaOnly ? false
@@ -46,6 +49,9 @@ common.makeJupyterKernelInner metaOnly (
 
           priority = 1;
         };
+      };
+      env = {
+        COQPATH = concatStringsSep ":" (map (x: "${x}/lib/coq/${coq.coq-version}/user-contrib/") chosenPackages);
       };
     };
   }]
