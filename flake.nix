@@ -34,6 +34,10 @@
               type = "app";
               program = "${self.packages.${system}.nixpkgsStableSearcher}";
             };
+            notebook = {
+              type = "app";
+              program = "${self.packages.${system}.notebook}/bin/jupyter-notebook";
+            };
           };
 
           packages = rec {
