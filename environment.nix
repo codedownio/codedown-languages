@@ -169,7 +169,7 @@ codedown.mkCodeDownEnvironment {
       name = "coq";
       channel = "codedown";
       args = {
-        packages = [];
+        packages = ["ceres"];
         languageServers = [];
       };
     })

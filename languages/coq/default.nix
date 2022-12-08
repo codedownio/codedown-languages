@@ -73,9 +73,6 @@ lib.listToAttrs (map (x:
         let
           settingsToUse = defaultSettings // settings;
 
-          ps = packageOptions;
-
-          # coq = baseCoq.withPackages (_: [ps.ipykernel ps.ipywidgets] ++ (map (x: builtins.getAttr x ps) packages));
           coq = baseCoq;
 
         in symlinkJoin {
@@ -91,7 +88,7 @@ lib.listToAttrs (map (x:
           ]
           ++ (if metaOnly then [] else [
             coq
-          ])
+          ] ++ (map (x: builtins.getAttr x packageOptions) packages))
           ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions coq baseName)) languageServers));
 
           passthru = {
