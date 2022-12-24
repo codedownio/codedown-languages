@@ -45,7 +45,6 @@ common.makeJupyterKernelInner metaOnly (
           inherit attrs extensions;
 
           # variable_inspector = if enableVariableInspector then variableInspector else null;
-          variable_inspector = null;
 
           priority = 1;
         };
