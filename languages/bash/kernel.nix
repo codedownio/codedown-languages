@@ -1,6 +1,8 @@
-{ callPackage
+{ lib
+, callPackage
 , python3
 , bash
+
 , attrs
 , extensions
 , metaOnly ? false
@@ -25,7 +27,7 @@ common.makeJupyterKernelInner metaOnly {
       "-f"
       "{connection_file}"
     ];
-    language = "bash";
+    language = lib.head attrs;
     logo32 = ./bash.png;
     logo64 = ./bash.png;
     metadata = {
