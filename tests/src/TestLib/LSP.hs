@@ -175,3 +175,6 @@ allHoverContentsText (HoverContentsMS (List mss)) = mconcat $ fmap markedStringT
     markedStringToText (PlainString t) = t
     markedStringToText (CodeString (LanguageString _ t)) = t
 allHoverContentsText (HoverContents (MarkupContent _ t)) = t
+
+containsAll :: Text -> [Text] -> Bool
+containsAll haystack = Prelude.all (`T.isInfixOf` haystack)

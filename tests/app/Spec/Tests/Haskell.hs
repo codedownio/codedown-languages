@@ -6,6 +6,7 @@
 module Spec.Tests.Haskell (tests) where
 
 import Control.Lens ((^.))
+import Control.Monad
 import Control.Monad.Catch (MonadThrow, onException)
 import Control.Monad.IO.Unlift
 import Control.Monad.Trans.Control (MonadBaseControl)
@@ -14,7 +15,7 @@ import qualified Data.Map as M
 import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Vector as V
-import Language.LSP.Test
+import Language.LSP.Test hiding (message)
 import Language.LSP.Types
 import Language.LSP.Types.Lens
 import Test.Sandwich as Sandwich
@@ -84,6 +85,15 @@ haskellCommonTests lang = do
                                                putStrLn "HI"
                                               |] $ \diagnostics -> do
         assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
+
+      testDiagnostics lsName "main.ipynb" [__i|-- Some comment
+                                               import Data.ByteString.Lazy.Char8 as BL
+                                               foo = bar
+
+                                               putStrLn "HI"
+                                              |] $ \diagnostics -> case [(x ^. range, x ^. message) | x <- diagnostics] of
+        [(Range (Position 4 0) (Position 4 8), x)] | containsAll x ["Ambiguous occurrence", "putStrLn"] -> return ()
+        xs -> expectationFailure [i|Unexpected diagnostics: #{xs}|]
 
       it "document highlight" $ doNotebookSession documentHighlightCode $ \filename -> do
         ident <- openDoc filename "haskell"
@@ -155,7 +165,7 @@ kernelSpec lang = NixKernelSpec {
   nixKernelName = lang
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just [i|Haskell (#{lang})|]
-  , nixKernelPackages = []
+  , nixKernelPackages = [nameOnly "aeson", nameOnly "bytestring"]
   , nixKernelLanguageServers = [nameOnly "haskell-language-server"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
