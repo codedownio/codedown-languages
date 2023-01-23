@@ -70,7 +70,7 @@ testDiagnostics :: (
   , MonadUnliftIO m
   , MonadThrow m
   ) => Text -> FilePath -> Text -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
-testDiagnostics name filename code cb = it [i|#{name}: #{show code}|] $ do
+testDiagnostics name filename code cb = it [i|#{name}, #{filename}: #{show code}|] $ do
   withRunInIO $ \runInIO ->
     runInIO $ withLspSession name filename code $ do
       openDoc filename name
