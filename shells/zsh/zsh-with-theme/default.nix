@@ -26,7 +26,7 @@ stdenv.mkDerivation {
     sed -i 's/robbyrussell/half-life/g' .zshrc
 
     # Colorful welcome message
-    # cat ${./color.sh} >> .zshrc
+    cat ${./color.sh} >> .zshrc
 
     # Source the user's .zshrc if present
     echo "[ -f ~/.zshrc ] && source ~/.zshrc" >> .zshrc
