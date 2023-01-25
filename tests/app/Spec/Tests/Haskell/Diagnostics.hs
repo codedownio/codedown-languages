@@ -54,6 +54,12 @@ haskellDiagnosticsTests lsName = describe "Diagnostics" $ do
                                            deriveJSON defaultOptions ''Foo|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics [(Range (Position 1 0) (Position 1 32), Just (InR "refact:Unused LANGUAGE pragma"))]
 
+  testDiagnostics lsName "main.ipynb" [__i|import Data.Aeson.TH
+                                           :set -XTemplateHaskell
+                                           data Foo = Bar | Baz
+                                           deriveJSON defaultOptions ''Foo|] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics [(Range (Position 1 0) (Position 1 0), Just (InR "refact:Unused LANGUAGE pragma"))]
+
   testDiagnostics lsName "main.ipynb" [__i|-- Some comment
                                            import Data.ByteString.Lazy.Char8 as BL
                                            foo = bar
