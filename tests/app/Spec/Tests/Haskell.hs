@@ -18,6 +18,7 @@ import qualified Data.Vector as V
 import Language.LSP.Test hiding (message)
 import Language.LSP.Types
 import Language.LSP.Types.Lens
+import Spec.Tests.Haskell.Diagnostics
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.JupyterTypes
@@ -71,29 +72,7 @@ haskellCommonTests lang = do
       itHasDisplayDatas lang etaExpandCode []
 
     describe "LSP" $ do
-      testDiagnostics lsName "Foo.hs" [__i|module Foo where
-                                           foo = bar
-                                          |] $ \diagnostics -> do
-        assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
-
-      testDiagnostics lsName "Foo.hs" etaExpandCode $ \diagnostics -> do
-        assertDiagnosticRanges diagnostics [(Range (Position 6 0) (Position 6 14), Just (InR "refact:Eta reduce"))]
-
-      testDiagnostics lsName "main.ipynb" [__i|-- Some comment
-                                               foo = bar
-
-                                               putStrLn "HI"
-                                              |] $ \diagnostics -> do
-        assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
-
-      testDiagnostics lsName "main.ipynb" [__i|-- Some comment
-                                               import Data.ByteString.Lazy.Char8 as BL
-                                               foo = bar
-
-                                               putStrLn "HI"
-                                              |] $ \diagnostics -> case [(x ^. range, x ^. message) | x <- diagnostics] of
-        [(Range (Position 4 0) (Position 4 8), x)] | containsAll x ["Ambiguous occurrence", "putStrLn"] -> return ()
-        xs -> expectationFailure [i|Unexpected diagnostics: #{xs}|]
+      haskellDiagnosticsTests lsName
 
       it "document highlight" $ doNotebookSession documentHighlightCode $ \filename -> do
         ident <- openDoc filename "haskell"
@@ -147,16 +126,6 @@ hoverCode :: Text
 hoverCode = [__i|foo = "hello"
                  putStrLn foo
                  import Data.Aeson|]
-
-etaExpandCode :: Text
-etaExpandCode = [__i|module Foo where
-
-                     baz :: Int -> Int
-                     baz x = x + 1
-
-                     baz2 :: Int -> Int
-                     baz2 x = baz x
-                    |]
 
 lsName :: Text
 lsName = "haskell-language-server"
