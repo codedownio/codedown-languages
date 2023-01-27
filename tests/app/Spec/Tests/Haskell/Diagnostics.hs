@@ -50,15 +50,20 @@ haskellDiagnosticsTests lsName = describe "Diagnostics" $ do
 
   testDiagnostics lsName "main.ipynb" [__i|import Data.Aeson.TH
                                            {-\# LANGUAGE TemplateHaskell \#-}
+                                           foo = bar -- This should be the only diagnostic we get
                                            data Foo = Bar | Baz
-                                           deriveJSON defaultOptions ''Foo|] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics [(Range (Position 1 0) (Position 1 32), Just (InR "refact:Unused LANGUAGE pragma"))]
+                                           $(deriveJSON defaultOptions ''Foo)|] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics [(Range (Position 2 6) (Position 2 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
-  testDiagnostics lsName "main.ipynb" [__i|import Data.Aeson.TH
+  testDiagnostics lsName "main.ipynb" [__i|import Data.Aeson as A
+                                           import Data.Aeson.TH
                                            :set -XTemplateHaskell
+                                           foo = bar -- This should be the only diagnostic we get
                                            data Foo = Bar | Baz
-                                           deriveJSON defaultOptions ''Foo|] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics [(Range (Position 1 0) (Position 1 0), Just (InR "refact:Unused LANGUAGE pragma"))]
+                                           $(deriveJSON defaultOptions ''Foo)
+                                           import Data.ByteString.Lazy.Char8 as BL
+                                           Prelude.putStrLn $ BL.unpack $ A.encode Bar|] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics [(Range (Position 3 6) (Position 3 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
   testDiagnostics lsName "main.ipynb" [__i|-- Some comment
                                            import Data.ByteString.Lazy.Char8 as BL
