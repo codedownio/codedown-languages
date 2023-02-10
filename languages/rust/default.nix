@@ -5,7 +5,7 @@
 , symlinkJoin
 }:
 
-with pkgs.lib;
+with lib;
 
 let
   common = callPackage ../common.nix {};
