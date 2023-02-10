@@ -3,8 +3,6 @@
 , writeTextDir
 , writeShellScriptBin
 , callPackage
-, makeWrapper
-, stdenv
 }:
 
 with lib;
