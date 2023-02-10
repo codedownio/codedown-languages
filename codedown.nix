@@ -72,4 +72,7 @@ rec {
   };
 
   validateCodeDownEnvironment = callPackage ./codedown/validateCodeDownEnvironment.nix {};
+
+  # Exposed so it's easier to compute build dependencies in the presence of IFD
+  inherit pkgsStable pkgsUnstable requiredPackages;
 }
