@@ -1,5 +1,5 @@
 { fetchFromGitHub
-}:
+}@args:
 
 let
   pkgsStable = import (fetchFromGitHub {
