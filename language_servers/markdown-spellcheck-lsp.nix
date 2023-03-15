@@ -1,5 +1,4 @@
 { lib
-, writeText
 , callPackage
 , hunspell
 , hunspellDicts
@@ -9,21 +8,11 @@
 , unixtools
 , nodejs-14_x
 }:
+
 with lib.lists;
 
 let
-  config = writeText "language_servers.yaml" (lib.generators.toYAML {} [{
-    name = "spellchecker";
-    extensions = ["md" "ipynb"];
-    attrs = ["markdown"];
-    type = "stream";
-    icon = ./pen-alt.svg;
-    notebook_suffix = ".spellchecker";
-    args = [
-      "${contents}/bin/markdown-spellcheck-lsp"
-      "--stdio"
-    ];
-  }]);
+  common = callPackage ../languages/common.nix {};
 
   server = (callPackage ./markdown-spellcheck-lsp {
     nodejs = nodejs-14_x;
@@ -40,14 +29,20 @@ let
     mkdir -p $out/bin
     makeWrapper ${server}/bin/markdown-spellcheck-lsp $out/bin/markdown-spellcheck-lsp \
                 --set LANG en_US.UTF-8 \
-                --suffix PATH ':' ${customHunspell}/bin
+                --prefix PATH ':' ${customHunspell}/bin
   '';
 
 in
 
-runCommand "codedown-spellchecker" {
-  meta = hunspell.meta;
-} ''
-  mkdir -p $out/lib/codedown/language-servers
-  cp ${config} $out/lib/codedown/language-servers/hunspell-spellchecker.yaml
-''
+common.writeTextDirWithMeta hunspell.meta "lib/codedown/language-servers/codedown-spellchecker.yaml" (lib.generators.toYAML {} [{
+  name = "spellchecker";
+  extensions = ["md" "ipynb"];
+  attrs = ["markdown"];
+  type = "stream";
+  icon = ./pen-alt.svg;
+  notebook_suffix = ".spellchecker";
+  args = [
+    "${contents}/bin/markdown-spellcheck-lsp"
+    "--stdio"
+  ];
+}])
