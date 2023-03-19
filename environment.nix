@@ -113,7 +113,7 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["matplotlib" "scipy" "rope"];
-        languageServers = ["jedi" "pyright" "pylint" "flake8" "pycodestyle" "microsoft" "python-lsp-server"];
+        languageServers = ["jedi" "pyright" "pylint" "flake8" "pycodestyle" "python-lsp-server"];
         settings = {
           permitUserSite = false;
         };
