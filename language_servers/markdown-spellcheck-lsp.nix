@@ -16,7 +16,7 @@ let
 
   server = (callPackage ./markdown-spellcheck-lsp {
     nodejs = nodejs-14_x;
-  })."markdown-spellcheck-lsp-git+https://github.com/codedownio/markdown-spellcheck-lsp.git#f73a9c864b38d276a3c9474fe547d708c51fe1b3";
+  })."markdown-spellcheck-lsp-git+https://github.com/codedownio/markdown-spellcheck-lsp.git#c7b08c83fca94a0abc2604199ea02dacc6e267aa";
 
   contents = runCommand "markdown-spellcheck-lsp-wrapped" {
     buildInputs = [makeWrapper];
@@ -24,7 +24,7 @@ let
   } ''
     mkdir -p $out/bin
     makeWrapper ${server}/bin/markdown-spellcheck-lsp $out/bin/markdown-spellcheck-lsp \
-                --set LANG en_US.UTF-8
+      --set LANG en_US.UTF-8
   '';
 
 in

@@ -3194,14 +3194,14 @@ let
   };
 in
 {
-  "markdown-spellcheck-lsp-git+https://github.com/codedownio/markdown-spellcheck-lsp.git#f73a9c864b38d276a3c9474fe547d708c51fe1b3" = nodeEnv.buildNodePackage {
+  "markdown-spellcheck-lsp-git+https://github.com/codedownio/markdown-spellcheck-lsp.git#c7b08c83fca94a0abc2604199ea02dacc6e267aa" = nodeEnv.buildNodePackage {
     name = "markdown-spellcheck-lsp";
     packageName = "markdown-spellcheck-lsp";
     version = "0.4.0";
     src = fetchgit {
       url = "https://github.com/codedownio/markdown-spellcheck-lsp.git";
-      rev = "f73a9c864b38d276a3c9474fe547d708c51fe1b3";
-      sha256 = "a6c2277d4e026d35de7e2848149c27c0388dbbcc887ff7212c2356c91fe31fee";
+      rev = "c7b08c83fca94a0abc2604199ea02dacc6e267aa";
+      sha256 = "d5928cb00101856f9029a1794a43c33bc098922e63d8cfffe56939d61e6840e5";
     };
     dependencies = [
       sources."@babel/code-frame-7.18.6"
