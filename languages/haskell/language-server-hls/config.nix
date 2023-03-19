@@ -14,6 +14,8 @@
 
 , kernelName
 , ghc
+
+, settings
 }:
 
 with lib;
@@ -24,8 +26,8 @@ let
   hnlsSrc = fetchFromGitHub {
     owner = "codedownio";
     repo = "haskell-notebook-language-server";
-    rev = "06d5cc0f10efb7edac952c9280206476691806de";
-    sha256 = "1dg69FHmOFg/FhcO08oqfW621Kovfde5VszkF0lChcc=";
+    rev = "939b8e72ed07e5f748f385f9dc8350a1d1d82cd2";
+    sha256 = "sha256-96rg4UF2JebTN1oMxFy89csM68NYtnW8KBmS8/t13vQ=";
   };
   # hnlsSrc = /home/tom/tools/haskell-notebook-language-server;
 
@@ -50,16 +52,15 @@ let
     attrs = if raw then [] else ["haskell"];
     type = "stream";
     primary = true;
-    args = if raw
-           then [
-             "${hlsWrapped}/bin/haskell-language-server"
-             "--lsp"
-           ]
-           else [
-             "${exe}/bin/haskell-notebook-language-server"
-             "--wrapped-hls" "${hlsWrapped}/bin/haskell-language-server"
-             "--hls-args" "--lsp"
-           ];
+    args = if raw then [
+      "${hlsWrapped}/bin/haskell-language-server"
+      "--lsp"
+    ] else [
+      "${exe}/bin/haskell-notebook-language-server"
+      "--wrapped-hls" "${hlsWrapped}/bin/haskell-language-server"
+      "--hls-args" "--lsp"
+    ]
+    ++ lib.optionals settings.debug ["--log-level" "debug"];
     env = {};
   };
 

@@ -72,6 +72,9 @@ codedown.mkCodeDownEnvironment {
       args = {
         packages = ["aeson"];
         languageServers = ["haskell-language-server"];
+        settings = {
+          "haskell-language-server.debug" = true;
+        };
       };
     })
 

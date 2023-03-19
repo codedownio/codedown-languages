@@ -23,15 +23,27 @@ let
       type = "boolean";
       defaultValue = false;
     }
+
+    # haskell-language-server.
+    {
+      target = "haskell-language-server.debug";
+      title = "Haskell-language-server: enable debug output";
+      description = "Print verbose debug output.";
+      type = "boolean";
+      defaultValue = false;
+    }
   ];
   defaultSettings = {
     enableHlintOutput = false;
+    "haskell-language-server.debug" = false;
   };
 
-  hls = snapshot: ghc: kernelName: callPackage ./language-server-hls/config.nix {
+  hls = snapshot: ghc: kernelName: focusedSettings: callPackage ./language-server-hls/config.nix {
     inherit kernelName;
 
     ghc = snapshot;
+
+    settings = focusedSettings;
 
     haskell-language-server = stdenv.mkDerivation {
       pname = "haskell-language-server-wrapped";
@@ -53,8 +65,8 @@ let
     };
   };
 
-  allLanguageServerOptions = snapshot: ghc: kernelName: {
-    haskell-language-server = hls snapshot ghc kernelName;
+  allLanguageServerOptions = snapshot: ghc: kernelName: focusedSettings: {
+    haskell-language-server = hls snapshot ghc kernelName focusedSettings;
   };
 
   compilers = {
@@ -147,7 +159,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [ghc])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions snapshot ghc meta.baseName)) languageServers))
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions snapshot ghc meta.baseName (common.focusSettings "haskell-language-server." settingsToUse))) languageServers))
           ;
 
           passthru = {

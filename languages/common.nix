@@ -82,4 +82,12 @@ rec {
     evaluated = builtins.tryEval (getAttr x set);
   in
     if evaluated.success then true else false);
+
+  focusSettings = prefix: settings: with lib; let
+    filtered = lib.filterAttrs (n: _: hasPrefix prefix n) settings;
+  in
+    listToAttrs (mapAttrsToList (n: v: {
+      name = removePrefix prefix n;
+      value = v;
+    }) filtered);
 }
