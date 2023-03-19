@@ -39,30 +39,29 @@ let
       --suffix PATH ':' ${lib.makeBinPath [coreutils findutils gnused]}
   '';
 
-  config = raw:
-    {
-      name = "haskell-language-server${if raw then "-raw" else ""}";
-      display_name = "Haskell Language Server";
-      description = haskell-language-server.meta.description;
-      icon = ./icon_64x64.png;
-      extensions = if raw then ["hs"] else [];
-      notebook_suffix = if raw then ".hs" else "";
-      kernel_name = kernelName;
-      attrs = if raw then [] else ["haskell"];
-      type = "stream";
-      primary = true;
-      args = if raw
-             then [
-               "${hlsWrapped}/bin/haskell-language-server"
-               "--lsp"
-             ]
-             else [
-               "${exe}/bin/haskell-notebook-language-server"
-               "--wrapped-hls" "${hlsWrapped}/bin/haskell-language-server"
-               "--hls-args" "--lsp"
-             ];
-      env = {};
-    };
+  config = raw: {
+    name = "haskell-language-server${if raw then "-raw" else ""}";
+    display_name = "Haskell Language Server";
+    description = haskell-language-server.meta.description;
+    icon = ./icon_64x64.png;
+    extensions = if raw then ["hs"] else [];
+    notebook_suffix = if raw then ".hs" else "";
+    kernel_name = kernelName;
+    attrs = if raw then [] else ["haskell"];
+    type = "stream";
+    primary = true;
+    args = if raw
+           then [
+             "${hlsWrapped}/bin/haskell-language-server"
+             "--lsp"
+           ]
+           else [
+             "${exe}/bin/haskell-notebook-language-server"
+             "--wrapped-hls" "${hlsWrapped}/bin/haskell-language-server"
+             "--hls-args" "--lsp"
+           ];
+    env = {};
+  };
 
 in
 
