@@ -67,6 +67,10 @@ rec {
     packageMustBeDerivation = false;
   };
 
+  settingsSchemas = pkgsStable.lib.mapAttrs (attr: value:
+    common.safeEval (pkgsStable.lib.attrByPath ["meta" "settingsSchema"] [] value)
+  ) languages;
+
   mkCodeDownEnvironment = callPackage ./codedown/mkCodeDownEnvironment.nix {
     inherit requiredPackages languages;
   };
