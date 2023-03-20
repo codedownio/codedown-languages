@@ -33,10 +33,6 @@ let
       defaultValue = false;
     }
   ];
-  defaultSettings = {
-    enableHlintOutput = false;
-    "haskell-language-server.debug" = false;
-  };
 
   hls = snapshot: ghc: kernelName: focusedSettings: callPackage ./language-server-hls/config.nix {
     inherit kernelName;
@@ -130,11 +126,11 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
         , languageServers ? []
         , attrs ? [meta.baseName "haskell"]
         , extensions ? ["hs"]
-        , settings ? defaultSettings
+        , settings ? {}
         , metaOnly ? false
       }:
         let
-          settingsToUse = defaultSettings // settings;
+          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
           ghc = snapshot.ghcWithPackages (ps:
             [ps.directory]
             ++ (map (x: builtins.getAttr x ps) packages)

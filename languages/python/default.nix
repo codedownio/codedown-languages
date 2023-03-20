@@ -83,21 +83,17 @@ lib.listToAttrs (map (x:
           defaultValue = true;
         }
       ];
-      defaultSettings = {
-        permitUserSite = false;
-        enableVariableInspector = true;
-      };
 
       build = args@{
         packages ? []
         , languageServers ? []
         , attrs ? [x "python"]
         , extensions ? ["py"]
-        , settings ? defaultSettings
+        , settings ? {}
         , metaOnly ? false
       }:
         let
-          settingsToUse = defaultSettings // settings;
+          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
           ps = packageOptions;
           allPackages = [ps.ipykernel ps.ipywidgets]
                         ++ (map (x: builtins.getAttr x ps) packages);

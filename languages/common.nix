@@ -90,4 +90,9 @@ rec {
       name = removePrefix prefix n;
       value = v;
     }) filtered);
+
+  makeDefaultSettings = settingsSchema: listToAttrs (map (item: {
+    name = item.target;
+    value = item.defaultValue;
+  }) settingsSchema);
 }
