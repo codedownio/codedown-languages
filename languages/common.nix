@@ -83,6 +83,12 @@ rec {
   in
     if evaluated.success then true else false);
 
+  safeEval = safeEval' "";
+  safeEval' = default: e: let
+    evaluated = builtins.tryEval e;
+  in
+    if evaluated.success then evaluated.value else default;
+
   focusSettings = prefix: settings: with lib; let
     filtered = lib.filterAttrs (n: _: hasPrefix prefix n) settings;
   in

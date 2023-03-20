@@ -17,18 +17,12 @@
 }:
 
 let
-  safeEval = safeEval' "";
-  safeEval' = default: e: let
-    evaluated = builtins.tryEval e;
-  in
-    if evaluated.success then evaluated.value else default;
-
   common = callPackage ../../languages/common.nix {};
 
   numVersionComponents = 5;
   componentPadLength = 3;
 
-  filteredPackages = with lib; filterAttrs (name: value: safeEval' false (
+  filteredPackages = with lib; filterAttrs (name: value: common.safeEval' false (
     (!packageMustBeDerivation || isDerivation(value))
     &&
     (!packageMustHaveName || (lib.attrByPath ["meta" "name"] "" value != ""))
@@ -36,13 +30,13 @@ let
 
   json = writeText "packages-index-yaml.json" (lib.generators.toJSON {} (lib.mapAttrsToList (k: v: {
     attr = attrPrefix + k;
-    name = safeEval (lib.attrByPath ["meta" "name"] "" v);
-    version = safeEval (common.lexicographyVersionNumber' numVersionComponents componentPadLength (lib.attrByPath ["meta" "version"] "" v));
-    description = safeEval (lib.attrByPath ["meta" "description"] "" v);
-    display_name = safeEval (lib.attrByPath ["meta" "displayName"] "" v);
-    icon = safeEval (lib.attrByPath ["meta" "icon"] "" v);
-    less_common = safeEval (lib.attrByPath ["meta" "lessCommon"] false v);
-    settings_schema = safeEval (lib.attrByPath ["meta" "settingsSchema"] "[]" v);
+    name = common.safeEval (lib.attrByPath ["meta" "name"] "" v);
+    version = common.safeEval (common.lexicographyVersionNumber' numVersionComponents componentPadLength (lib.attrByPath ["meta" "version"] "" v));
+    description = common.safeEval (lib.attrByPath ["meta" "description"] "" v);
+    display_name = common.safeEval (lib.attrByPath ["meta" "displayName"] "" v);
+    icon = common.safeEval (lib.attrByPath ["meta" "icon"] "" v);
+    less_common = common.safeEval (lib.attrByPath ["meta" "lessCommon"] false v);
+    settings_schema = common.safeEval (lib.attrByPath ["meta" "settingsSchema"] "[]" v);
   }) filteredPackages));
 
 in
