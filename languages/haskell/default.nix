@@ -107,7 +107,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
       baseName = "haskell-" + compilerName;
       name = "haskell-" + compilerName;
       description = "An advanced, purely functional programming language (GHC ${version})";
-      inherit version displayName;
+      inherit version displayName settingsSchema;
       icon = ./haskell-logo-64x64.png;
     };
 
