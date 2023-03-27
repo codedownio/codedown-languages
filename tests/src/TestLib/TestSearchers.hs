@@ -45,7 +45,7 @@ testBuild :: (MonadIO m, MonadThrow m, MonadBaseControl IO m, MonadLogger m) => 
 testBuild expr = do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
-  p <- createProcessWithLogging $ (proc "nix" ["build", expr, "--json"]) {
+  p <- createProcessWithLogging $ (proc "nix" ["build", expr, "--json", "--no-link"]) {
     cwd = Just rootDir
     }
   waitForProcess p >>= (`shouldBe` ExitSuccess)
