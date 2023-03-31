@@ -26,12 +26,14 @@ let
   hnlsSrc = fetchFromGitHub {
     owner = "codedownio";
     repo = "haskell-notebook-language-server";
-    rev = "939b8e72ed07e5f748f385f9dc8350a1d1d82cd2";
-    sha256 = "sha256-96rg4UF2JebTN1oMxFy89csM68NYtnW8KBmS8/t13vQ=";
+    rev = "8cf6c4100c428a4302838cda4fb812797823d788";
+    sha256 = "0x2jhy9dqxgm85559rrqbn72j4v15abs1w5sy073gk5w8yp30d01";
   };
   # hnlsSrc = /home/tom/tools/haskell-notebook-language-server;
 
-  hnls = ghc.callPackage hnlsSrc {};
+  hnls = ghc.callPackage hnlsSrc {
+    myers-diff = ghc.callPackage ./myers-diff.nix {};
+  };
 
   exe = hnls;
 
