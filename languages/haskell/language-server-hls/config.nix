@@ -26,8 +26,8 @@ let
   hnlsSrc = fetchFromGitHub {
     owner = "codedownio";
     repo = "haskell-notebook-language-server";
-    rev = "372e2f28afd89032be0bcf5371ec4793d0359a5f";
-    sha256 = "0fffab4dr2sq3q48kdp2bj6m6zb0mj2s5f6vdf03xa8k5kdka5vf";
+    rev = "405db7d41ce0d821ab276460659a257fb3a2ab01";
+    sha256 = "0z1jsxjvbhbn35yy5qyxv6pvv1mmrnh6g09gdw9bdzdj1w7i4g2i";
   };
   # hnlsSrc = /home/tom/tools/haskell-notebook-language-server;
 
