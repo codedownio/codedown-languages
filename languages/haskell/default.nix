@@ -72,7 +72,7 @@ let
     ghc8107 = haskell.packages.ghc8107;
     ghc902 = haskell.packages.ghc902;
 
-    ghc924 = haskell.packages.ghc924.override {
+    ghc925 = haskell.packages.ghc925.override {
       overrides = self: super: {
         ghc-parser = self.callCabal2nix "ghc-parser" (builtins.fetchTarball {
           url = "https://hackage.haskell.org/package/ghc-parser-0.2.4.0/ghc-parser-0.2.4.0.tar.gz";

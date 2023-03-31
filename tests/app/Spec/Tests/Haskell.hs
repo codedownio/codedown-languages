@@ -45,7 +45,7 @@ tests = do
 
   haskellCommonTests "haskell-ghc8107"
   haskellCommonTests "haskell-ghc902"
-  haskellCommonTests "haskell-ghc924"
+  haskellCommonTests "haskell-ghc925"
 
   -- haskellCommonTests "haskell-ghc942"
 
