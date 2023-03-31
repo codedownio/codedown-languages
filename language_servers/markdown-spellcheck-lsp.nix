@@ -34,7 +34,7 @@ common.writeTextDirWithMeta hunspell.meta "lib/codedown/language-servers/codedow
   extensions = ["md" "ipynb"];
   attrs = ["markdown"];
   type = "stream";
-  icon = ./pen-alt.svg;
+  icon = ./pen-alt.png;
   notebook_suffix = ".spellchecker";
   args = [
     "${contents}/bin/markdown-spellcheck-lsp"
