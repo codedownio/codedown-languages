@@ -118,7 +118,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
         let meta = (attrByPath ["components" "library" "meta"] null value); in
         if meta == null then value else value // { inherit meta; }) packageOptions);
 
-      languageServerOptions = allLanguageServerOptions snapshot (snapshot.ghcWithPackages (ps: [])) "haskell";
+      languageServerOptions = allLanguageServerOptions snapshot (snapshot.ghcWithPackages (ps: [])) "haskell" {};
       languageServerSearch = common.searcher languageServerOptions;
 
       build = args@{
