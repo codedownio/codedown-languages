@@ -51,21 +51,6 @@ in
 lib.listToAttrs (map (x:
   let basePython = lib.getAttr x pkgs;
       displayName = "Python " + basePython.version;
-      meta = basePython.meta // {
-        baseName = x;
-        inherit displayName;
-        version = basePython.version;
-        icon = ./logo-64x64.png;
-      };
-
-  in {
-    name = x;
-    value = rec {
-      packageOptions = basePython.pkgs;
-      packageSearch = common.searcher packageOptions;
-
-      languageServerOptions = allLanguageServerOptions basePython.withPackages "python";
-      languageServerSearch = common.searcher languageServerOptions;
 
       settingsSchema = [
         {
@@ -83,6 +68,22 @@ lib.listToAttrs (map (x:
           defaultValue = true;
         }
       ];
+
+      meta = basePython.meta // {
+        baseName = x;
+        inherit displayName settingsSchema;
+        version = basePython.version;
+        icon = ./logo-64x64.png;
+      };
+
+  in {
+    name = x;
+    value = rec {
+      packageOptions = basePython.pkgs;
+      packageSearch = common.searcher packageOptions;
+
+      languageServerOptions = allLanguageServerOptions basePython.withPackages "python";
+      languageServerSearch = common.searcher languageServerOptions;
 
       build = args@{
         packages ? []
