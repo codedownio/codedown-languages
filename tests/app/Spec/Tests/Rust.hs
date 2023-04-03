@@ -26,7 +26,7 @@ tests :: TopSpec
 tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ introduceJupyterRunner $ do
   testKernelSearchers "rust"
 
-  testKernelStdout "rust" [__i|println!("hi");|] "hi\n"
+  testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
   testDiagnostics "rust-analyzer" "test.rs" [i|\n\n\nfoo = 42|] $ \diagnostics -> do
     return ()
