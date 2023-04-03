@@ -72,7 +72,9 @@ let
     ghc8107 = haskell.packages.ghc8107;
     ghc902 = haskell.packages.ghc902;
 
-    ghc925 = haskell.packages.ghc925.override {
+    # Don't update to ghc925 due to https://gitlab.haskell.org/ghc/ghc/-/issues/22425
+    # Wait for GHC 9.2.6 which has the fix: https://www.haskell.org/ghc/blog/20230210-ghc-9.2.6-released.html
+    ghc924 = haskell.packages.ghc924.override {
       overrides = self: super: {
         ghc-parser = self.callCabal2nix "ghc-parser" (builtins.fetchTarball {
           url = "https://hackage.haskell.org/package/ghc-parser-0.2.4.0/ghc-parser-0.2.4.0.tar.gz";
