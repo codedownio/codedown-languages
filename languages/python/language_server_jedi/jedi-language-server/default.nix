@@ -6,7 +6,7 @@
 }:
 
 let
-  lsprotocol = callPackage ./lsprotocol.nix {};
+  lsprotocol = python.pkgs.callPackage ./lsprotocol.nix {};
 
   pygls = python.pkgs.buildPythonPackage rec {
     pname = "pygls";
@@ -19,7 +19,9 @@ let
 
     buildInputs = with python.pkgs; [toml setuptools setuptools_scm wheel typeguard lsprotocol];
 
-    propagatedBuildInputs = with python.pkgs; [toml setuptools setuptools_scm wheel];
+    propagatedBuildInputs = with python.pkgs; [toml typeguard lsprotocol];
+
+    doCheck = false;
   };
 
 in
@@ -28,31 +30,29 @@ python.pkgs.buildPythonPackage rec {
   pname = "jedi-language-server";
   version = "0.40.0";
 
-  # src = /home/tom/tools/jedi-language-server/dist/jedi-language-server-0.13.2.tar.gz;
-
-  # src = fetchPypi {
-  #   inherit pname version;
-  #   sha256 = "1as2v71qdzjwgxy0jq4bpbxz4n5pbc6f5wia6qy0kyl3wy95gib6";
-  # };
-
   src = fetchurl {
     url = "https://files.pythonhosted.org/packages/d5/8e/837dcde35d5f516677417c0e744fd1c345a1bd66c2a0acb5d51086a61d65/jedi_language_server-0.40.0.tar.gz";
     sha256 = "1mjsmjqs8brmqg8ia14bh2s99v6f5xki3hl4ybqs1a5n60lsxjxs";
   };
 
-  # format = "pyproject";
-  # src = pkgs.fetchFromGitHub {
-  #   owner = "thomasjm";
-  #   repo = "jedi-language-server";
-  #   rev = "93dd85780173b8159e040cc92a05dbb7aab325f1";
-  #   sha256 = "0bhwj1m8d73fh7413q6p5vh2vggp0w1nn50j5qaa5nqxd5vkxvam";
-  # };
+  buildInputs = with python.pkgs; [
+    pygls click jedi toml pydantic docstring-to-markdown
+    poetry
+  ];
 
-  buildInputs = with python.pkgs; [pygls click jedi poetry toml];
+  nativeCheckInputs = with python.pkgs; [
+    pytest
+  ];
 
-  propagatedBuildInputs = with python.pkgs; [pygls click jedi toml];
+  propagatedBuildInputs = with python.pkgs; [
+    pygls click jedi toml pydantic docstring-to-markdown
+  ];
 
   doCheck = false;
+
+  pythonImportsCheck = [
+    "jedi_language_server"
+  ];
 
   meta = with lib; {
     homepage = https://github.com/pappasam/jedi-language-server;

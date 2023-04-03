@@ -1,4 +1,5 @@
 { lib
+, runCommand
 , attrs
 , buildPythonPackage
 , cattrs
@@ -11,19 +12,33 @@
 , pythonOlder
 }:
 
-buildPythonPackage rec {
-  pname = "lsprotocol";
-  version = "2023.0.0a1";
-  format = "pyproject";
-
-  disabled = pythonOlder "3.7";
-
-  src = fetchFromGitHub {
+let
+  lsprotocol = fetchFromGitHub {
     owner = "microsoft";
     repo = "lsprotocol";
     rev = "1b53edab382e5daf3dd9ee8732729b8f934fa6e1";
     sha256 = "14xwi7q1dzb0ykviszj5mypnb1addd47af2b6agbjfvdsfgjmyw1";
   };
+
+in
+
+buildPythonPackage rec {
+  pname = "lsprotocol";
+  version = "2023.0.0a1";
+  format = "pyproject";
+  src = runCommand "lsprotocol-source" {} "cp -r ${lsprotocol}/packages/python $out";
+
+  # pname = "lsprotocol";
+  # version = "2022.0.0a10";
+  # format = "pyproject";
+  # src = fetchFromGitHub {
+  #   owner = "microsoft";
+  #   repo = pname;
+  #   rev = "refs/tags/${version}";
+  #   hash = "sha256-IAFNEWpBRVAGcJNIV1bog9K2nANRw/qJfCJ9+Wu/yJc=";
+  # };
+
+  disabled = pythonOlder "3.7";
 
   nativeBuildInputs = [
     flit-core
@@ -38,6 +53,8 @@ buildPythonPackage rec {
   nativeCheckInputs = [
     pytest
   ];
+
+  doCheck = false;
 
   checkInputs = [
     jsonschema
