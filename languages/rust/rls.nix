@@ -1,4 +1,7 @@
-{ writeText, lib, rustPackages }:
+{ lib
+, writeTextDir
+, rustPackages
+}:
 
 writeTextDir "language-servers.yaml" (lib.generators.toYAML {} [{
   name = "rust";

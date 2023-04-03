@@ -23,6 +23,7 @@ common.writeTextDirWithMeta rust-analyzer.meta "lib/codedown/language-servers/ru
     name = "rust-analyzer";
     display_name = "rust-analyzer";
     description = rust-analyzer.meta.description;
+    icon = ./logo-64x64.png;
     extensions = ["rs" "rlib"];
     notebook_suffix = ".rs";
     kernel_name = kernelName;
