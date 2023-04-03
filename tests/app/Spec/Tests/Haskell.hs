@@ -115,7 +115,7 @@ doSession' :: (
   MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
   ) => Text -> Text -> (FilePath -> Session (ExampleT context m) a) -> ExampleT context m a
 doSession' filename code cb = do
-  withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) documentHighlightCode $ do
+  withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) documentHighlightCode [] $ do
     cb (T.unpack filename)
 
 documentHighlightCode :: Text

@@ -12,6 +12,7 @@ import Control.Monad.Logger
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.Aeson as A
 import Data.Aeson.TH as A
+import qualified Data.ByteString as B
 import Data.Default
 import qualified Data.List as L
 import Data.Map (Map)
@@ -70,9 +71,19 @@ testDiagnostics :: (
   , MonadUnliftIO m
   , MonadThrow m
   ) => Text -> FilePath -> Text -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
-testDiagnostics name filename code cb = it [i|#{name}, #{filename}: #{show code}|] $ do
+testDiagnostics name filename code = testDiagnostics' name filename code []
+
+testDiagnostics' :: (
+  HasNixEnvironment context
+  , HasBaseContext context
+  , MonadIO m
+  , MonadBaseControl IO m
+  , MonadUnliftIO m
+  , MonadThrow m
+  ) => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
+testDiagnostics' name filename code extraFiles cb = it [i|#{name}, #{filename}: #{show code}|] $ do
   withRunInIO $ \runInIO ->
-    runInIO $ withLspSession name filename code $ do
+    runInIO $ withLspSession name filename code extraFiles $ do
       openDoc filename name
       diagnostics <- waitForDiagnostics
       liftIO $ runInIO $ info [i|Got diagnostics: #{A.encode diagnostics}|]
@@ -88,7 +99,7 @@ itHasHoverSatisfying :: (
   ) => Text -> FilePath -> Text -> Position -> (Hover -> ExampleT context m ()) -> SpecFree context m ()
 itHasHoverSatisfying name filename code pos cb = it [i|#{name}: #{show code}|] $ do
   maybeHover <- withRunInIO $ \runInIO ->
-    runInIO $ withLspSession name filename code $ do
+    runInIO $ withLspSession name filename code [] $ do
       ident <- openDoc filename "haskell"
       getHover ident pos
   case maybeHover of
@@ -102,8 +113,8 @@ withLspSession :: (
   , MonadBaseControl IO m
   , MonadUnliftIO m
   , MonadThrow m
-  ) => Text -> FilePath -> Text -> Session (ExampleT context m) a -> ExampleT context m a
-withLspSession name filename code session = do
+  ) => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> Session (ExampleT context m) a -> ExampleT context m a
+withLspSession name filename code extraFiles session = do
   Just currentFolder <- getCurrentFolder
 
   languageServersPath <- (</> "lib" </> "codedown" </> "language-servers") <$> getContext nixEnvironment
@@ -124,6 +135,15 @@ withLspSession name filename code session = do
 
   withTempDirectory currentFolder (T.unpack (name <> "_home")) $ \homeDir -> do
     withTempDirectory currentFolder (T.unpack name) $ \dataDir -> do
+      forM_ extraFiles $ \(path, bytes) -> do
+        unless (isAbsolute path) $ do
+          case takeDirectory path of
+            "." -> return ()
+            initialDirs -> do
+              createDirectoryIfMissing True (dataDir </> initialDirs)
+          debug [i|Writing extra file: #{dataDir </> path}|]
+          liftIO $ B.writeFile (dataDir </> path) bytes
+
       liftIO $ T.writeFile (dataDir </> filename) code
 
       let sessionConfig = def { lspConfig = lspConfigInitializationOptions config

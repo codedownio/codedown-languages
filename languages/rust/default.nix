@@ -60,6 +60,7 @@ listToAttrs (map (x:
         , metaOnly ? false
       }: symlinkJoin {
         name = "rust";
+
         paths = [
           (callPackage ./kernel.nix {
             inherit displayName attrs extensions;
@@ -77,6 +78,7 @@ listToAttrs (map (x:
           rustPackages.rustc rustPackages.cargo pkgs.gcc
           (map (y: builtins.getAttr y (allLanguageServerOptions rust x)) languageServers)
         ]);
+
         passthru = {
           args = args // { baseName = x; };
           inherit meta packageOptions languageServerOptions;

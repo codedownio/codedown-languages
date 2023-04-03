@@ -28,9 +28,32 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
 
   testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
-  testDiagnostics "rust-analyzer" "test.rs" [i|\n\n\nfoo = 42|] $ \diagnostics -> do
+  -- testDiagnostics "rust-analyzer" "test.rs" [__i|struct A { a: u8, b: u8 }
+  --                                                let a = A { a: 10 };
+  --                                               |] $ \diagnostics -> do
+  --   info [i|Got diagnostics: #{diagnostics}|]
+  --   return ()
+
+  testDiagnostics' "rust-analyzer" "src/test.rs" [__i|fn foo() {
+
+                                                      }
+                                                     |] extraFiles $ \diagnostics -> do
+    info [i|Got diagnostics: #{diagnostics}|]
     return ()
 
+
+extraFiles = [
+  ("Cargo.toml", [__i|[package]
+                      name = "rust_test"
+                      version = "0.1.0"
+                      edition = "2018"
+                     |])
+  , ("src/main.rs", [__i|fn main() {
+                             println!("Hello, world!");
+                         }
+                        |])
+
+  ]
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
