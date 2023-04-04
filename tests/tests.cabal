@@ -92,10 +92,12 @@ executable tests-exe
       Spec.Tests.Cpp
       Spec.Tests.Go
       Spec.Tests.Haskell
+      Spec.Tests.Haskell.CodeActions
       Spec.Tests.Haskell.Common
       Spec.Tests.Haskell.Diagnostics
       Spec.Tests.Haskell.DocumentHighlight
       Spec.Tests.Haskell.Hover
+      Spec.Tests.Haskell.Symbols
       Spec.Tests.Julia
       Spec.Tests.Octave
       Spec.Tests.Postgres

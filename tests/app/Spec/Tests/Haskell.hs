@@ -1,32 +1,24 @@
 {-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 
 module Spec.Tests.Haskell (tests) where
 
-import Control.Lens ((^.))
 import Data.Aeson as A
 import qualified Data.Map as M
 import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Vector as V
-import Language.LSP.Test hiding (message)
-import Language.LSP.Types
-import Language.LSP.Types.Lens hiding (actions)
+import Spec.Tests.Haskell.CodeActions
 import Spec.Tests.Haskell.Common
 import Spec.Tests.Haskell.Diagnostics
 import Spec.Tests.Haskell.DocumentHighlight
 import Spec.Tests.Haskell.Hover
+import Spec.Tests.Haskell.Symbols
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.JupyterTypes
 import TestLib.NixEnvironmentContext
 import TestLib.TestSearchers
-
-#if MIN_VERSION_aeson(2,0,0)
-#else
-import qualified Data.HashMap.Strict        as HM
-#endif
 
 
 tests :: TopSpec
@@ -65,9 +57,10 @@ haskellCommonTests lang = do
       itHasDisplayDatas lang etaExpandCode []
 
     describe "LSP" $ do
-      haskellDiagnosticsTests lsName
-
+      codeActionsTests
+      diagnosticsTests lsName
       documentHighlightTests
+      symbolsTests
 
       describe "statements" $ do
         it "doesn't choke on a single-line statement" $ do
@@ -77,22 +70,6 @@ haskellCommonTests lang = do
           pending
 
       hoverTests
-
-      it "symbols" $ doNotebookSession documentHighlightCode $ \filename -> do
-        ident <- openDoc filename "haskell"
-        Left documentSymbols <- getDocumentSymbols ident
-        fmap (^. name) documentSymbols `shouldBe` ["foo"]
-
-      describe "code actions" $ do
-        it "gets no code actions for putStrLn" $ doNotebookSession documentHighlightCode $ \filename -> do
-          ident <- openDoc filename "haskell"
-          actions <- getCodeActions ident (Range (Position 1 0) (Position 1 8))
-          actions `shouldBe` []
-
-        it "gets code actions for foo" $ doNotebookSession documentHighlightCode $ \filename -> do
-          ident <- openDoc filename "haskell"
-          actions <- getCodeActions ident (Range (Position 1 0) (Position 1 8))
-          actions `shouldBe` []
 
 
 main :: IO ()

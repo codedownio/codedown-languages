@@ -17,10 +17,10 @@ import Test.Sandwich as Sandwich
 import TestLib.LSP
 
 
-haskellDiagnosticsTests :: (
+diagnosticsTests :: (
   Sandwich.HasLabel context "nixEnvironment" FilePath, HasBaseContext context, MonadBaseControl IO m, MonadUnliftIO m, MonadThrow m
   ) => Text -> SpecFree context m ()
-haskellDiagnosticsTests lsName = describe "Diagnostics" $ do
+diagnosticsTests lsName = describe "Diagnostics" $ do
   testDiagnostics lsName "Foo.hs" [__i|module Foo where
                                        foo = bar
                                       |] $ \diagnostics -> do
