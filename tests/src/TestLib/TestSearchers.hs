@@ -1,28 +1,19 @@
+{-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 
 module TestLib.TestSearchers where
 
 import Conduit as C
-import Control.Monad
-import Control.Monad.Catch (MonadMask, MonadThrow)
-import Control.Monad.IO.Unlift
+import Control.Monad.Catch (MonadMask)
 import Control.Monad.Logger
 import Control.Monad.Trans.Control (MonadBaseControl)
 import qualified Data.Aeson as A
-import Data.ByteString.Lazy.Char8 as BL
 import Data.Conduit.Aeson as C
-import qualified Data.HashMap.Strict as HM
 import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Text.IO as T
-import qualified Data.Vector as V
-import qualified System.Directory as SD
 import System.Exit
 import System.FilePath
 import Test.Sandwich
-import TestLib.Aeson
-import TestLib.NixRendering
-import TestLib.NixTypes
-import TestLib.Types
 import TestLib.Util
 import UnliftIO.Directory
 import UnliftIO.IO
@@ -68,7 +59,7 @@ searcherResults expr = do
         , close_fds = True
         }
 
-  withCreateProcess cp $ \(Just hin) (Just hout) (Just herr) p -> do
+  withCreateProcess cp $ \(Just hin) (Just hout) (Just _herr) _p -> do
     liftIO $ T.hPutStrLn hin "50"
     liftIO $ T.hPutStrLn hin "0"
     liftIO $ T.hPutStrLn hin ""

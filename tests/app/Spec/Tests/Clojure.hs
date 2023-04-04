@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 
 module Spec.Tests.Clojure (tests) where
 
@@ -10,6 +11,7 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 
 
+kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
   nixKernelName = "clojure"
   , nixKernelChannel = "codedown"

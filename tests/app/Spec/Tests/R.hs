@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 
 module Spec.Tests.R (tests) where
 
@@ -9,6 +10,7 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 
 
+kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
   nixKernelName = "R"
   , nixKernelChannel = "codedown"

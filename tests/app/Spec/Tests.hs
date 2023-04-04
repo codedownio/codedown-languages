@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -F -pgmF sandwich-discover -optF --module-prefix=Spec. #-}
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
 module Spec.Tests where
 
@@ -9,7 +10,7 @@ import Control.Monad
 import Control.Monad.Catch
 import Control.Monad.IO.Class
 import Control.Monad.Trans.Control (MonadBaseControl)
-import Options.Applicative
+import Options.Applicative hiding (action)
 import Test.Sandwich
 
 #insert_test_imports

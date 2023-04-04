@@ -1,10 +1,9 @@
+{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 
 module Spec.Tests.Python3 (tests) where
 
-import Control.Lens
 import Data.String.Interpolate
 import Language.LSP.Types
-import Language.LSP.Types.Lens
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -13,6 +12,7 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 
 
+kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
   nixKernelName = "python3"
   , nixKernelChannel = "codedown"

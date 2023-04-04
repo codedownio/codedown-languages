@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-record-updates #-}
 
 module TestLib.Types where
 

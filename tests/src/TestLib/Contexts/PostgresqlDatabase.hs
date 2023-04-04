@@ -22,7 +22,6 @@ import Control.Monad.Logger
 import Control.Monad.Reader
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Control.Retry
-import qualified Data.ByteString.Char8 as BS8
 import Data.List as L
 import Data.Map as M
 import Data.Maybe
@@ -37,7 +36,6 @@ import GHC.Stack
 import Network.Socket (PortNumber)
 import Safe
 import System.Exit
-import System.IO
 import System.Process
 import qualified System.Random as R
 import Test.Sandwich
@@ -88,12 +86,12 @@ withPostgresDatabase labels maybeContainerName action = do
   -- ds <- getDockerState False
 
   bracket (createPostgresDatabase labels maybeContainerName)
-          (\(_, _, _, _, _, _containerID, containerName, networkName) -> timeAction "cleanup Postgres database" $ do
+          (\(_, _, _, _, _, _containerID, containerName, _networkName) -> timeAction "cleanup Postgres database" $ do
               info [i|Doing docker rm -f #{containerName}|]
               void $ liftIO $ readCreateProcess (shell [i|docker rm -f #{containerName}|]) ""
               -- void $ removeNetwork ds networkName
           )
-          (\args@(_, _, _, _, _, _, _, networkName) -> do
+          (\args@(_, _, _, _, _, _, _, _networkName) -> do
               ctx <- waitForPostgresDatabase args
               -- testInContainer <- liftIO isInContainer
               -- let wrapper = if testInContainer then withJoinOwnContainerToNetwork ds networkName else id

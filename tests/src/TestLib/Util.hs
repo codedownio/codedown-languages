@@ -20,13 +20,13 @@ import qualified Data.HashMap.Strict        as HM
 
 
 findFirstParentMatching :: (MonadIO m, MonadThrow m) => (FilePath -> m Bool) -> m FilePath
-findFirstParentMatching pred = getCurrentDirectory >>= findFirstParentMatching' pred
+findFirstParentMatching cb = getCurrentDirectory >>= findFirstParentMatching' cb
 
 findFirstParentMatching' :: (MonadIO m, MonadThrow m) => (FilePath -> m Bool) -> FilePath -> m FilePath
-findFirstParentMatching' pred startingAt = pred startingAt >>= \case
+findFirstParentMatching' cb startingAt = cb startingAt >>= \case
   True -> return startingAt
   False -> case takeDirectory startingAt of
-    parent | parent /= startingAt -> findFirstParentMatching' pred parent
+    parent | parent /= startingAt -> findFirstParentMatching' cb parent
     parent -> expectationFailure [i|Couldn't find parent folder (could no longer traverse up at '#{parent}')|]
 
 #if MIN_VERSION_aeson(2,0,0)

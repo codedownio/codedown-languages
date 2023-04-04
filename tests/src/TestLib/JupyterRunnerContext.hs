@@ -11,7 +11,6 @@ import Control.Monad.Reader
 import Control.Monad.Trans.Control (MonadBaseControl)
 import qualified Data.Aeson as A
 import Data.ByteString.Lazy.Char8 as BL
-import qualified Data.HashMap.Strict as HM
 import qualified Data.List as L
 import Data.Map (Map)
 import qualified Data.Map as M
@@ -19,15 +18,10 @@ import Data.String.Interpolate
 import Data.Text as T
 import Data.Text.IO as T
 import qualified Data.Vector as V
-import System.Directory (getSymbolicLinkTarget)
 import System.Exit
 import System.FilePath
 import Test.Sandwich
-import Test.Sandwich.Logging
-import TestLib.Aeson
 import TestLib.JupyterTypes
-import TestLib.NixRendering
-import TestLib.NixTypes
 import TestLib.Types
 import TestLib.Util
 import UnliftIO.Directory
@@ -47,6 +41,7 @@ introduceJupyterRunner = introduceWith [i|Jupyter runner|] jupyterRunner $ \acti
   createProcessWithLogging cp >>= waitForProcess >>= (`shouldBe` ExitSuccess)
   void $ action runnerPath
 
+parseJson :: V.Vector A.Value -> Maybe Text
 parseJson ((flip (V.!?) 0) -> Just (A.Object (aesonLookup "outputs" -> Just (A.Object (aesonLookup "out" -> Just (A.String t)))))) = Just t
 parseJson _ = Nothing
 
@@ -68,7 +63,7 @@ testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] 
 
 testKernelStdout' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> Text -> ExampleT context m ()
 testKernelStdout' kernel code desired = do
-  runKernelCode kernel code $ \notebookFile outputNotebookFile outFile errFile -> do
+  runKernelCode kernel code $ \_notebookFile _outputNotebookFile outFile _errFile -> do
     doesFileExist outFile >>= \case
       True -> liftIO (T.readFile outFile) >>= (`shouldBe` desired)
       False -> "" `shouldBe` desired
@@ -88,9 +83,9 @@ displayTextsShouldBe kernel code desired = displayDatasShouldSatisfy kernel code
 displayDatasShouldSatisfy :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> ([Map MimeType A.Value] -> ExampleT context m ()) -> ExampleT context m ()
-displayDatasShouldSatisfy kernel code pred = notebookShouldSatisfy kernel code $ \(JupyterNotebook {..}) -> do
+displayDatasShouldSatisfy kernel code cb = notebookShouldSatisfy kernel code $ \(JupyterNotebook {..}) -> do
   let outputs = mconcat [codeOutputs | CodeCell {..} <- notebookCells]
-  pred ([displayDataData | DisplayDataOutput {..} <- outputs])
+  cb ([displayDataData | DisplayDataOutput {..} <- outputs])
 
 -- * Execute result helpers
 
@@ -109,20 +104,20 @@ executeTextsShouldBe kernel code desired = executeResultsShouldSatisfy kernel co
 executeResultsShouldSatisfy :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> ([Map MimeType A.Value] -> ExampleT context m ()) -> ExampleT context m ()
-executeResultsShouldSatisfy kernel code pred = notebookShouldSatisfy kernel code $ \(JupyterNotebook {..}) -> do
+executeResultsShouldSatisfy kernel code cb = notebookShouldSatisfy kernel code $ \(JupyterNotebook {..}) -> do
   let outputs = mconcat [codeOutputs | CodeCell {..} <- notebookCells]
-  pred ([executeResultData | ExecuteResultOutput {..} <- outputs])
+  cb ([executeResultData | ExecuteResultOutput {..} <- outputs])
 
 -- * Core notebook helper
 
 notebookShouldSatisfy :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> (JupyterNotebook -> ExampleT context m ()) -> ExampleT context m ()
-notebookShouldSatisfy kernel code pred = do
-  runKernelCode kernel code $ \notebookFile outputNotebookFile outFile errFile -> do
+notebookShouldSatisfy kernel code cb = do
+  runKernelCode kernel code $ \notebookFile outputNotebookFile _outFile _errFile -> do
     liftIO (A.eitherDecodeFileStrict outputNotebookFile) >>= \case
       Left err -> expectationFailure [i|Failed to decode notebook '#{notebookFile}': #{err}|]
-      Right nb -> pred nb
+      Right nb -> cb nb
 
 runKernelCode :: (
   (HasJupyterRunnerContext context, JupyterRunnerMonad m)
@@ -168,6 +163,7 @@ runKernelCode kernel code cb = do
   cb notebook (runDir </> "out.ipynb") outFile errFile
 
 
+notebookWithCode :: Text -> Text -> A.Value
 notebookWithCode kernel code = A.object [
   ("nbformat", A.Number 4)
   , ("nbformat_minor", A.Number 2)
@@ -190,11 +186,11 @@ notebookWithCode kernel code = A.object [
                   ("cell_type", A.String "code")
                   , ("metadata", A.object [])
                   , ("execution_count", A.Null)
-                  , ("source", A.Array (V.fromList (fmap A.String lines)))
+                  , ("source", A.Array (V.fromList (fmap A.String ls)))
                   , ("outputs", A.Array [])
                   ]])
   ]
 
   where
     rawLines = T.splitOn "\n" code
-    lines = [x <> "\n" | x <- L.init rawLines] <> [L.last rawLines]
+    ls = [x <> "\n" | x <- L.init rawLines] <> [L.last rawLines]

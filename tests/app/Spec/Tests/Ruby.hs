@@ -1,4 +1,6 @@
 {-# LANGUAGE RankNTypes #-}
+{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 
 module Spec.Tests.Ruby (tests) where
 
@@ -6,7 +8,7 @@ import Control.Lens
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Types
-import Language.LSP.Types.Lens
+import Language.LSP.Types.Lens hiding (hover, text)
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -36,6 +38,7 @@ kernelTests lang = do
       text `textShouldContain` "$stdout.puts(obj"
       text `textShouldContain` "Returns:"
 
+kernelSpec :: Text -> NixKernelSpec
 kernelSpec lang = NixKernelSpec {
   nixKernelName = lang
   , nixKernelChannel = "codedown"

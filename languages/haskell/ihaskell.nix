@@ -15,8 +15,8 @@ let
   src = fetchFromGitHub {
     owner = "gibiansky";
     repo = "IHaskell";
-    rev = "e3f8da423d6b032331beebd2caea90c3b6dfd7e4";
-    sha256 = "sha256-3VrcaSAtTrUt2tmdwoEHjn1ZkuZGKPOsOi2tq++y0uc=";
+    rev = "8afa4e22c5724da89fec85a599ee129ab5b4cb9a";
+    sha256 = "0rkvqrpnsyp33x8mzh1v48vm96bpmza14nl6ah1sgjfbp86ihi8p";
   };
 
   displays = self: builtins.listToAttrs (

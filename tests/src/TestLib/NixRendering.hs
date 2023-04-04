@@ -1,17 +1,16 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Replace case with maybe" #-}
 
 module TestLib.NixRendering where
 
 import Data.Aeson as A
-import Data.Aeson.TH
 import Data.Maybe
 import Data.String.Interpolate
 import Data.Text
 import qualified Data.Text as T
 import qualified Data.Vector as V
-import Test.Sandwich
 import TestLib.Aeson
 import TestLib.NixTypes
 
@@ -120,10 +119,12 @@ aesonToNix (A.Bool True) = "true"
 aesonToNix (A.Bool False) = "false"
 aesonToNix (A.Array xs) = "[" <> T.intercalate " " (fmap aesonToNix (V.toList xs)) <> "]"
 aesonToNix (A.String s) = [i|''#{s}''|]
+aesonToNix (A.Number n) = [i|#{n}|]
+aesonToNix A.Null = [i|null|]
 aesonToNix (A.Object os) = let
-  lines = [[i|#{k} = #{aesonToNix v};|] | (k, v) <- HM.toList os]
+  ls = [[i|#{k} = #{aesonToNix v};|] | (k, v) <- HM.toList os]
     in [__i|{
-              #{T.intercalate "\n" lines}
+              #{T.intercalate "\n" ls}
             }|]
 
 indentTo :: Int -> Text -> Text

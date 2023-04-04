@@ -5,7 +5,6 @@ module TestLib.NixTypes where
 import Data.Aeson as A
 import Data.Aeson.TH
 import Data.Text
-import Test.Sandwich
 import TestLib.Aeson
 
 

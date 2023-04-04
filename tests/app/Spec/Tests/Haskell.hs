@@ -1,15 +1,10 @@
-{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE CPP #-}
+{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 
 module Spec.Tests.Haskell (tests) where
 
 import Control.Lens ((^.))
-import Control.Monad
-import Control.Monad.Catch (MonadThrow, onException)
-import Control.Monad.IO.Unlift
-import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.Aeson as A
 import qualified Data.Map as M
 import Data.String.Interpolate
@@ -17,20 +12,18 @@ import Data.Text as T
 import qualified Data.Vector as V
 import Language.LSP.Test hiding (message)
 import Language.LSP.Types
-import Language.LSP.Types.Lens
+import Language.LSP.Types.Lens hiding (actions)
+import Spec.Tests.Haskell.Common
 import Spec.Tests.Haskell.Diagnostics
+import Spec.Tests.Haskell.DocumentHighlight
+import Spec.Tests.Haskell.Hover
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.JupyterTypes
-import TestLib.LSP
 import TestLib.NixEnvironmentContext
-import TestLib.NixTypes
 import TestLib.TestSearchers
-import TestLib.Types (HasNixEnvironment)
-import UnliftIO.Concurrent
 
 #if MIN_VERSION_aeson(2,0,0)
-import qualified Data.Aeson.KeyMap          as HM
 #else
 import qualified Data.HashMap.Strict        as HM
 #endif
@@ -74,79 +67,32 @@ haskellCommonTests lang = do
     describe "LSP" $ do
       haskellDiagnosticsTests lsName
 
-      it "document highlight" $ doNotebookSession documentHighlightCode $ \filename -> do
-        ident <- openDoc filename "haskell"
-        let desired = [
-              DocumentHighlight (Range (Position 0 0) (Position 0 3)) (Just HkWrite)
-              , DocumentHighlight (Range (Position 1 9) (Position 1 12)) (Just HkRead)
-              ]
-        getHighlights ident (Position 0 1) >>= (`shouldBe` List desired)
+      documentHighlightTests
 
-      describe "hover" $ do
-        it "hovers foo" $ doNotebookSession hoverCode $ \filename -> do
-          ident <- openDoc filename "haskell"
-          hover <- getHoverOrException ident (Position 0 1)
-          allHoverText hover `textShouldContain` [i|foo|]
-          allHoverText hover `textShouldContain` [i|main.ipynb.hs:1:1|]
+      describe "statements" $ do
+        it "doesn't choke on a single-line statement" $ do
+          pending
 
-        it "hovers putStrLn" $ doNotebookSession hoverCode $ \filename -> do
-          ident <- openDoc filename "haskell"
-          hover <- getHoverOrException ident (Position 1 1)
-          (hover ^. range) `shouldBe` Just (Range (Position 1 0) (Position 1 8))
-          let HoverContents (MarkupContent {..}) = hover ^. contents
-          _value `textShouldContain` "putStrLn :: String -> IO ()"
+        it "doesn't choke on a multi-line statement" $ do
+          pending
+
+      hoverTests
 
       it "symbols" $ doNotebookSession documentHighlightCode $ \filename -> do
         ident <- openDoc filename "haskell"
         Left documentSymbols <- getDocumentSymbols ident
         fmap (^. name) documentSymbols `shouldBe` ["foo"]
 
-      it "code actions" $ doNotebookSession documentHighlightCode $ \filename -> do
-        ident <- openDoc filename "haskell"
-        actions <- getCodeActions ident (Range (Position 1 0) (Position 1 8))
-        actions `shouldBe` []
+      describe "code actions" $ do
+        it "gets no code actions for putStrLn" $ doNotebookSession documentHighlightCode $ \filename -> do
+          ident <- openDoc filename "haskell"
+          actions <- getCodeActions ident (Range (Position 1 0) (Position 1 8))
+          actions `shouldBe` []
 
-doNotebookSession :: (
-  MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
-  ) => Text -> (FilePath -> Session (ExampleT context m) a) -> ExampleT context m a
-doNotebookSession = doSession' "main.ipynb"
-
-doSession' :: (
-  MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
-  ) => Text -> Text -> (FilePath -> Session (ExampleT context m) a) -> ExampleT context m a
-doSession' filename code cb = do
-  withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) documentHighlightCode [] $ do
-    cb (T.unpack filename)
-
-documentHighlightCode :: Text
-documentHighlightCode = [__i|foo = "hello"
-                             putStrLn foo|]
-
-hoverCode :: Text
-hoverCode = [__i|foo = "hello"
-                 putStrLn foo
-                 import Data.Aeson|]
-
-lsName :: Text
-lsName = "haskell-language-server"
-
-kernelSpec lang = NixKernelSpec {
-  nixKernelName = lang
-  , nixKernelChannel = "codedown"
-  , nixKernelDisplayName = Just [i|Haskell (#{lang})|]
-  , nixKernelPackages = [nameOnly "aeson", nameOnly "bytestring"]
-  , nixKernelLanguageServers = [nameOnly "haskell-language-server"]
-  , nixKernelExtraJupyterConfig = Nothing
-  , nixKernelMeta = Nothing
-  , nixKernelIcon = Nothing
-  , nixKernelSettings = Nothing
-  }
-
-kernelSpecWithHlintOutput lang = (kernelSpec lang) {
-  nixKernelSettings = Just $ HM.fromList [
-      ("enableHlintOutput", A.Bool True)
-      ]
-  }
+        it "gets code actions for foo" $ doNotebookSession documentHighlightCode $ \filename -> do
+          ident <- openDoc filename "haskell"
+          actions <- getCodeActions ident (Range (Position 1 0) (Position 1 8))
+          actions `shouldBe` []
 
 
 main :: IO ()

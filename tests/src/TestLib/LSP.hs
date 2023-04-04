@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE NumericUnderscores #-}
 {-# OPTIONS_GHC -fno-warn-deprecations #-} -- For PlainString, CodeString, etc.
+{-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 
 module TestLib.LSP where
 
@@ -24,19 +25,16 @@ import qualified Data.Text.IO as T
 import GHC.Int
 import Language.LSP.Test
 import Language.LSP.Types
-import qualified Language.LSP.Types.Capabilities as C
-import Language.LSP.Types.Lens as LSP
+import Language.LSP.Types.Lens as LSP hiding (diagnostics, hover, name)
 import System.FilePath
-import System.IO
+import System.IO.Temp (createTempDirectory)
 import Test.Sandwich as Sandwich
 import TestLib.Aeson
 import TestLib.Types
-import UnliftIO.Async
 import UnliftIO.Directory
 import UnliftIO.Environment (getEnvironment)
 import UnliftIO.Exception
 import UnliftIO.Process
-import UnliftIO.Temporary
 
 
 data LanguageServerType = LanguageServerTypeTcp
@@ -71,7 +69,7 @@ testDiagnostics :: (
   , MonadUnliftIO m
   , MonadThrow m
   ) => Text -> FilePath -> Text -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
-testDiagnostics name filename code = testDiagnostics' name filename code []
+testDiagnostics name filename codeToTest = testDiagnostics' name filename codeToTest []
 
 testDiagnostics' :: (
   HasNixEnvironment context
@@ -81,10 +79,10 @@ testDiagnostics' :: (
   , MonadUnliftIO m
   , MonadThrow m
   ) => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
-testDiagnostics' name filename code extraFiles cb = it [i|#{name}, #{filename}: #{show code}|] $ do
+testDiagnostics' name filename codeToTest extraFiles cb = it [i|#{name}, #{filename} with #{show codeToTest}|] $ do
   withRunInIO $ \runInIO ->
-    runInIO $ withLspSession name filename code extraFiles $ do
-      openDoc filename name
+    runInIO $ withLspSession name filename codeToTest extraFiles $ do
+      _ <- openDoc filename name
       diagnostics <- waitForDiagnostics
       liftIO $ runInIO $ info [i|Got diagnostics: #{A.encode diagnostics}|]
       liftIO $ runInIO $ cb diagnostics
@@ -97,9 +95,9 @@ itHasHoverSatisfying :: (
   , MonadUnliftIO m
   , MonadThrow m
   ) => Text -> FilePath -> Text -> Position -> (Hover -> ExampleT context m ()) -> SpecFree context m ()
-itHasHoverSatisfying name filename code pos cb = it [i|#{name}: #{show code}|] $ do
+itHasHoverSatisfying name filename codeToTest pos cb = it [i|#{name}: #{show codeToTest}|] $ do
   maybeHover <- withRunInIO $ \runInIO ->
-    runInIO $ withLspSession name filename code [] $ do
+    runInIO $ withLspSession name filename codeToTest [] $ do
       ident <- openDoc filename "haskell"
       getHover ident pos
   case maybeHover of
@@ -114,7 +112,7 @@ withLspSession :: (
   , MonadUnliftIO m
   , MonadThrow m
   ) => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> Session (ExampleT context m) a -> ExampleT context m a
-withLspSession name filename code extraFiles session = do
+withLspSession name filename codeToTest extraFiles session = do
   Just currentFolder <- getCurrentFolder
 
   languageServersPath <- (</> "lib" </> "codedown" </> "language-servers") <$> getContext nixEnvironment
@@ -133,40 +131,41 @@ withLspSession name filename code extraFiles session = do
   let lspCommand = proc cmd args
   info [i|LSP command: #{lspCommand}|]
 
-  withTempDirectory currentFolder (T.unpack (name <> "_home")) $ \homeDir -> do
-    withTempDirectory currentFolder (T.unpack name) $ \dataDir -> do
-      forM_ extraFiles $ \(path, bytes) -> do
-        unless (isAbsolute path) $ do
-          case takeDirectory path of
-            "." -> return ()
-            initialDirs -> do
-              createDirectoryIfMissing True (dataDir </> initialDirs)
-          debug [i|Writing extra file: #{dataDir </> path}|]
-          liftIO $ B.writeFile (dataDir </> path) bytes
+  homeDir <- liftIO $ createTempDirectory currentFolder (T.unpack (name <> "_home"))
+  dataDir <- liftIO $ createTempDirectory currentFolder (T.unpack name)
 
-      liftIO $ T.writeFile (dataDir </> filename) code
+  forM_ extraFiles $ \(path, bytes) -> do
+    unless (isAbsolute path) $ do
+      case takeDirectory path of
+        "." -> return ()
+        initialDirs -> do
+          createDirectoryIfMissing True (dataDir </> initialDirs)
+      debug [i|Writing extra file: #{dataDir </> path}|]
+      liftIO $ B.writeFile (dataDir </> path) bytes
 
-      let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
-                              , logStdErr = True
-                              , logMessages = True
-                              }
+  liftIO $ T.writeFile (dataDir </> filename) codeToTest
 
-      env <- getEnvironment
-      let cleanEnv = [(k, v) | (k, v) <- env, k /= "PATH", k /= "HOME", k /= "GHC_PACKAGE_PATH"]
-      let finalEnv = ("HOME", homeDir) : cleanEnv
-      info [i|finalEnv: #{finalEnv}|]
-      let modifyCp cp = cp { env = Just [] } -- Just finalEnv
+  let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
+                          , logStdErr = True
+                          , logMessages = True
+                          }
 
-      -- We don't support certain server-to-client requests, since the waitForDiagnostics doesn't handle them
-      let caps = fullCaps
-               & set (workspace . _Just . workspaceFolders) Nothing
-               & set (workspace . _Just . configuration) Nothing
-               & set (workspace . _Just . didChangeWatchedFiles . _Just . dynamicRegistration) (Just False)
-               & set (workspace . _Just . didChangeConfiguration . _Just . dynamicRegistration) (Just False)
+  env <- getEnvironment
+  let cleanEnv = [(k, v) | (k, v) <- env, k /= "PATH", k /= "HOME", k /= "GHC_PACKAGE_PATH"]
+  let finalEnv = ("HOME", homeDir) : cleanEnv
+  info [i|finalEnv: #{finalEnv}|]
+  let modifyCp cp = cp { env = Just [] } -- Just finalEnv
 
-      handle (\(e :: SessionException) -> expectationFailure [i|LSP session failed with SessionException: #{e}|]) $ do
-        runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir $ do
-          session
+  -- We don't support certain server-to-client requests, since the waitForDiagnostics doesn't handle them
+  let caps = fullCaps
+           & set (workspace . _Just . workspaceFolders) Nothing
+           & set (workspace . _Just . configuration) Nothing
+           & set (workspace . _Just . didChangeWatchedFiles . _Just . dynamicRegistration) (Just False)
+           & set (workspace . _Just . didChangeConfiguration . _Just . dynamicRegistration) (Just False)
+
+  handle (\(e :: SessionException) -> expectationFailure [i|LSP session failed with SessionException: #{e}|]) $ do
+    runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir $ do
+      session
 
 assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT context m ()
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired

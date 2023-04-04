@@ -1,10 +1,10 @@
 {-# LANGUAGE RankNTypes #-}
+{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 
 module Spec.Tests.Julia (tests) where
 
 import Data.String.Interpolate
 import Data.Text as T
-import Language.LSP.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -28,6 +28,7 @@ juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kerne
     assertDiagnosticRanges diagnostics []
     -- assertDiagnosticRanges diagnostics [(Range (Position 3 16) (Position 3 19), Just (InR "UndeclaredName"))]
 
+kernelSpec :: Text -> NixKernelSpec
 kernelSpec lang = NixKernelSpec {
   nixKernelName = lang
   , nixKernelChannel = "codedown"

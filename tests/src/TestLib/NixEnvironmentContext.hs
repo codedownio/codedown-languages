@@ -2,19 +2,17 @@
 module TestLib.NixEnvironmentContext where
 
 import Control.Monad
-import Control.Monad.Catch (MonadMask, MonadThrow)
+import Control.Monad.Catch (MonadMask)
 import Control.Monad.IO.Unlift
 import Control.Monad.Trans.Control (MonadBaseControl)
 import qualified Data.Aeson as A
 import Data.ByteString.Lazy.Char8 as BL
-import qualified Data.HashMap.Strict as HM
 import Data.String.Interpolate
 import Data.Text as T
 import qualified System.Directory as SD
 import System.Exit
 import System.FilePath
 import Test.Sandwich
-import TestLib.Aeson
 import TestLib.NixRendering
 import TestLib.NixTypes
 import TestLib.Types

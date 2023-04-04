@@ -1,20 +1,18 @@
 {-# LANGUAGE OverloadedLists #-}
+{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 
 module Spec.Tests.Coq (tests) where
 
-import Control.Lens
 import Data.Aeson
 import Data.String.Interpolate
-import Language.LSP.Types
-import Language.LSP.Types.Lens
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
-import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 
 
+kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
   nixKernelName = "coq"
   , nixKernelChannel = "codedown"

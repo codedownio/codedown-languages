@@ -1,5 +1,7 @@
 { lib
 , callPackage
+, runCommand
+, fetchFromGitHub
 , stdenv
 , symlinkJoin
 , makeWrapper
@@ -83,7 +85,25 @@ let
       };
     };
 
-    # ghc942 = haskell.packages.ghc942; # base-compat not building
+    ghc943 = haskell.packages.ghc943.override {
+      overrides = self: super: {
+        ghc-parser = let
+          ihaskell-source = (fetchFromGitHub {
+            owner = "IHaskell";
+            repo = "IHaskell";
+            rev = "8afa4e22c5724da89fec85a599ee129ab5b4cb9a";
+            sha256 = "0rkvqrpnsyp33x8mzh1v48vm96bpmza14nl6ah1sgjfbp86ihi8p";
+          });
+
+          ghc-parser-source = runCommand "ghc-parser-source" {} ''
+            cp -r ${ihaskell-source}/ghc-parser $out
+          '';
+
+          in
+
+          self.callCabal2nix "ghc-parser" ghc-parser-source {};
+      };
+    };
   };
 
   repls = ghc: {

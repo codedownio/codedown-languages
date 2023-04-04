@@ -1,6 +1,8 @@
+{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 
 module Spec.Tests.Rust (tests) where
 
+import Data.ByteString
 import Data.String.Interpolate
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
@@ -10,6 +12,7 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 
 
+kernelSpec:: NixKernelSpec
 kernelSpec = NixKernelSpec {
   nixKernelName = "rust"
   , nixKernelChannel = "codedown"
@@ -34,14 +37,19 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
   --   info [i|Got diagnostics: #{diagnostics}|]
   --   return ()
 
-  testDiagnostics' "rust-analyzer" "src/test.rs" [__i|fn foo() {
+  testDiagnostics' "rust-analyzer" "src/main.rs" [__i|fn foo() {
 
+                                                      }
+
+                                                      fn main() {
+                                                          println!("Hello, world!");
                                                       }
                                                      |] extraFiles $ \diagnostics -> do
     info [i|Got diagnostics: #{diagnostics}|]
     return ()
 
 
+extraFiles :: [(FilePath, ByteString)]
 extraFiles = [
   ("Cargo.toml", [__i|[package]
                       name = "rust_test"

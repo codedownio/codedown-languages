@@ -22,44 +22,47 @@ default-extensions:
 - ViewPatterns
 - NumericUnderscores
 
+ghc-options:
+- -Wunused-packages
+- -Wall
+
 dependencies:
 - base >= 4.7 && < 5
 - aeson
-- aeson-qq
 - bytestring
-- conduit
-- conduit-aeson
 - containers
-- data-default
-- directory
 - exceptions
-- filepath
 - hashable # Only needed for aeson < 2
 - lens
 - lsp-test
 - lsp-types
 - monad-control
-- monad-logger
-- mtl
-- network
-- optparse-applicative
-- postgresql-libpq
-- postgresql-simple
-- process
-- random
-- resource-pool
-- retry
-- safe
 - sandwich
 - string-interpolate
 - text
-- unliftio
 - unliftio-core
-- unordered-containers
 - vector
 
 library:
   source-dirs: src
+  dependencies:
+  - conduit
+  - conduit-aeson
+  - data-default
+  - directory
+  - filepath
+  - monad-logger
+  - mtl
+  - network
+  - postgresql-libpq
+  - postgresql-simple
+  - process
+  - random
+  - resource-pool
+  - retry
+  - safe
+  - temporary
+  - unliftio
 
 executables:
   tests-exe:
@@ -69,6 +72,7 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    dependencies:
-    - tests
     build-tools: sandwich:sandwich-discover
+    dependencies:
+    - optparse-applicative
+    - tests

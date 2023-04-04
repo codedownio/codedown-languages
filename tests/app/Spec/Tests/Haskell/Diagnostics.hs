@@ -6,27 +6,15 @@
 module Spec.Tests.Haskell.Diagnostics where
 
 import Control.Lens ((^.))
-import Control.Monad
-import Control.Monad.Catch (MonadThrow, onException)
+import Control.Monad.Catch (MonadThrow)
 import Control.Monad.IO.Unlift
 import Control.Monad.Trans.Control (MonadBaseControl)
-import Data.Aeson as A
-import qualified Data.Map as M
 import Data.String.Interpolate
 import Data.Text as T
-import qualified Data.Vector as V
-import Language.LSP.Test hiding (message)
 import Language.LSP.Types
-import Language.LSP.Types.Lens
+import Language.LSP.Types.Lens hiding (diagnostics)
 import Test.Sandwich as Sandwich
-import TestLib.JupyterRunnerContext
-import TestLib.JupyterTypes
 import TestLib.LSP
-import TestLib.NixEnvironmentContext
-import TestLib.NixTypes
-import TestLib.TestSearchers
-import TestLib.Types (HasNixEnvironment)
-import UnliftIO.Concurrent
 
 
 haskellDiagnosticsTests :: (

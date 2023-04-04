@@ -2,6 +2,7 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-record-updates #-}
 
 module TestLib.JupyterTypes where
 
@@ -9,7 +10,6 @@ import Data.Aeson as A
 import Data.Aeson.TH as A
 import Data.Char (toLower)
 import Data.Map
-import Data.Monoid
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Vector as V

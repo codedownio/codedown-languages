@@ -1,27 +1,23 @@
 {-# LANGUAGE RankNTypes #-}
+{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 
 module Spec.Tests.Postgres (tests) where
 
-import Control.Lens
 import Data.Aeson as A
 import qualified Data.Map as M
 import Data.String.Interpolate
-import Data.Text
 import qualified Data.Vector as V
-import Language.LSP.Types
-import Language.LSP.Types.Lens
 import Test.Sandwich as Sandwich
 import TestLib.Contexts.PostgresqlData
 import TestLib.Contexts.PostgresqlDatabase
 import TestLib.JupyterRunnerContext
 import TestLib.JupyterTypes
-import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
-import UnliftIO.Concurrent
 
 
+kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
   nixKernelName = "postgres"
   , nixKernelChannel = "codedown"
