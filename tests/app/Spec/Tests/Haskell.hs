@@ -13,6 +13,7 @@ import Spec.Tests.Haskell.Common
 import Spec.Tests.Haskell.Diagnostics
 import Spec.Tests.Haskell.DocumentHighlight
 import Spec.Tests.Haskell.Hover
+import Spec.Tests.Haskell.Statements
 import Spec.Tests.Haskell.Symbols
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
@@ -47,29 +48,23 @@ haskellCommonTests lang = do
                                                      , String "baz2 = baz"
                                                      ])]
 
-  describe [i|Haskell #{lang}|] $ introduceNixEnvironment [kernelSpec lang] [] "Haskell" $ introduceJupyterRunner $ do
-    testKernelSearchers lang
+  describe [i|Haskell #{lang}|] $ introduceNixEnvironment [kernelSpec lang] [] "Haskell" $ do
+    introduceJupyterRunner $ do
+      testKernelSearchers lang
 
-    describe "Kernel" $ do
-      itHasDisplayDatas lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
+      describe "Kernel" $ do
+        itHasDisplayDatas lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
 
-      -- We shouldn't get hlint output by default
-      itHasDisplayDatas lang etaExpandCode []
+        -- We shouldn't get hlint output by default
+        itHasDisplayDatas lang etaExpandCode []
 
     describe "LSP" $ do
       codeActionsTests
       diagnosticsTests lsName
       documentHighlightTests
-      symbolsTests
-
-      describe "statements" $ do
-        it "doesn't choke on a single-line statement" $ do
-          pending
-
-        it "doesn't choke on a multi-line statement" $ do
-          pending
-
       hoverTests
+      statementsTests
+      symbolsTests
 
 
 main :: IO ()

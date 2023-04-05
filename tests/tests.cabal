@@ -97,6 +97,7 @@ executable tests-exe
       Spec.Tests.Haskell.Diagnostics
       Spec.Tests.Haskell.DocumentHighlight
       Spec.Tests.Haskell.Hover
+      Spec.Tests.Haskell.Statements
       Spec.Tests.Haskell.Symbols
       Spec.Tests.Julia
       Spec.Tests.Octave

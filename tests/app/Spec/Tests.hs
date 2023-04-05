@@ -44,15 +44,16 @@ describeParallel :: (
   MonadBaseControl IO m, MonadIO m, MonadMask m, HasParallelSemaphore context
   ) => String -> SpecFree context m () -> SpecFree context m ()
 describeParallel s = (describe' (defaultNodeOptions { nodeOptionsRecordTime = False
-                                                   , nodeOptionsVisibilityThreshold = 50 })) s
+                                                    , nodeOptionsVisibilityThreshold = 50 })) s
                    . (parallel' (defaultNodeOptions { nodeOptionsRecordTime = False
-                                                    , nodeOptionsVisibilityThreshold = 125 }))
+                                                    , nodeOptionsVisibilityThreshold = 125
+                                                    , nodeOptionsCreateFolder = False }))
 
 withParallelSemaphore :: forall context m. (
   MonadBaseControl IO m, MonadIO m, MonadMask m, HasParallelSemaphore context
   ) => FilePath -> SpecFree context m () -> SpecFree context m ()
-withParallelSemaphore _ = around' (defaultNodeOptions { nodeOptionsRecordTime = False, nodeOptionsVisibilityThreshold = 125 }) "claim semaphore" $ \action -> do
+withParallelSemaphore _ = around' (defaultNodeOptions { nodeOptionsRecordTime = False
+                                                      , nodeOptionsVisibilityThreshold = 125
+                                                      , nodeOptionsCreateFolder = False }) "claim semaphore" $ \action -> do
   s <- getContext parallelSemaphore
   bracket_ (liftIO $ waitQSem s) (liftIO $ signalQSem s) (void action)
-
-    -- $(getSpecFromFolder defaultGetSpecFromFolderOptions)
