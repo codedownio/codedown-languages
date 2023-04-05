@@ -24,6 +24,8 @@ statementsTests = describe "Statements" $ do
       getHighlights ident (Position 0 1) >>= (`shouldBe` List documentHighlightResults)
 
     testDiagnostics lsName "main.ipynb" statementsCode $ \diagnostics -> do
+      -- Note: normally the server wouldn't send empty diagnostics. But the statement inserts "= unsafePerformIO $ ",
+      -- which causes it to emit a "redundant bracket" diagnostic, which then gets filtered out by untransformPosition
       diagnostics `shouldBe` []
 
   describe "Multi-line" $ do
@@ -33,7 +35,7 @@ statementsTests = describe "Statements" $ do
 
     testDiagnostics lsName "main.ipynb" statementsCodeMultiline $ \diagnostics -> do
       info [i|Got diagnostics: #{diagnostics}|]
-      diagnostics `shouldBe` []
+      assertDiagnosticRanges diagnostics [(Range (Position 1 9) (Position 1 14), Just (InR "refact:Redundant bracket"))]
 
 statementsCode :: Text
 statementsCode = [__i|foo = "hello"
@@ -45,7 +47,7 @@ statementsCode = [__i|foo = "hello"
 
 statementsCodeMultiline :: Text
 statementsCodeMultiline = [__i|foo = "hello"
-                               putStrLn foo
+                               putStrLn (foo)
                                import System.IO
                                :set -XScopedTypeVariables
                                num :: Int <- do
