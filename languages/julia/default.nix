@@ -1,5 +1,7 @@
 { lib
-, pkgs
+, julia_16-bin
+, julia_18-bin
+, python3
 , callPackage
 , writeTextDir
 , stdenv
@@ -10,21 +12,20 @@
 let
   common = callPackage ../common.nix {};
 
+  juliaWithPackages = callPackage ../common.nix {};
+
   baseCandidates = rec {
     julia = julia18;
 
-    julia16 = {
-      baseJulia = pkgs.julia_16-bin;
-      depot = ./depot_16;
-      lspDepot = ./depot_LanguageServer_16;
-    };
+    julia16 = juliaWithPackages.override { julia = julia_16-bin; };
 
-    julia18 = {
-      baseJulia = pkgs.julia_18-bin;
-      depot = ./depot_18;
-      lspDepot = ./depot_LanguageServer_18;
-    };
+    julia18 = juliaWithPackages.override { julia = julia_18-bin; };
   };
+
+  packageSet = lib.listToAttrs (map (x: {
+    name = x;
+    value = {};
+  }) (import ./julia-modules/package-names.nix));
 
 in
 
@@ -32,9 +33,7 @@ with lib;
 
 mapAttrs (attr: value:
   let
-    baseJulia = value.baseJulia;
-    depot = value.depot;
-    lspDepot = value.lspDepot;
+    baseJulia = (value []).julia;
 
     displayName = "Julia " + baseJulia.version;
 
@@ -49,15 +48,12 @@ mapAttrs (attr: value:
 
   in rec {
     packageOptions = {};
-    packageSearch = common.searcher {};
+    packageSearch = common.searcher packageSet;
 
     languageServerOptions = julia: attrs: {
       LanguageServer = callPackage ./language-server-LanguageServer.nix {
         inherit julia attrs;
         kernelName = attr;
-        juliaLsp = callPackage lspDepot {
-          inherit baseJulia python;
-        };
       };
     };
     languageServerSearch = common.searcher (languageServerOptions baseJulia []);
@@ -70,12 +66,10 @@ mapAttrs (attr: value:
       , metaOnly ? false
     }:
       let
-        julia = callPackage depot {
-          inherit baseJulia python;
-        };
+        julia = value packages;
       in
         symlinkJoin {
-          name = "julia";
+          name = attr;
 
           paths = [
             (callPackage ./kernel.nix { inherit julia python attrs extensions displayName; })
