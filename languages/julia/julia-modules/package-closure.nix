@@ -10,6 +10,14 @@ runCommand "julia-package.yml" { buildInputs = [julia]; } ''
   export HOME=$(pwd)/home
   export OUT="$out"
 
+  echo "Resolving Julia packages with the following inputs"
+  echo "Julia: ${julia}"
+  echo "Registry: ${augmentedRegistry}"
+  echo "Packages: ${lib.generators.toJSON {} packageNames}"
+
+  # Prevent a warning where Julia tries to download package server info
+  export JULIA_PKG_SERVER=""
+
   julia -e ' \
     import Pkg
     Pkg.Registry.add(Pkg.RegistrySpec(path="${augmentedRegistry}"))
@@ -18,7 +26,7 @@ runCommand "julia-package.yml" { buildInputs = [julia]; } ''
     import Pkg.Types: PackageSpec, VersionSpec, PRESERVE_NONE, project_deps_resolve!, registry_resolve!, stdlib_resolve!, ensure_resolved
     import Pkg.Operations: assert_can_add, _resolve, update_package_add
 
-    input = ${lib.generators.toJSON {} packageNames}
+    input = unique(${lib.generators.toJSON {} packageNames})
     pkgs = [PackageSpec(pkg) for pkg in input]
     foreach(handle_package_input!, pkgs)
 
