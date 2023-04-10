@@ -54,7 +54,7 @@ mapAttrs (attr: value:
       LanguageServer = callPackage ./language-server-LanguageServer.nix {
         inherit julia attrs;
         kernelName = attr;
-        juliaLsp = value ["LanguageServer"];
+        juliaLsp = value ["LanguageServer" "SymbolServer"];
       };
     };
     languageServerSearch = common.searcher (languageServerOptions baseJulia []);
@@ -67,7 +67,7 @@ mapAttrs (attr: value:
       , metaOnly ? false
     }:
       let
-        julia = value packages;
+        julia = value (["IJulia"] ++ packages);
       in
         symlinkJoin {
           name = attr;
