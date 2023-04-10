@@ -17,7 +17,7 @@ import Test.Sandwich
 
 
 tests :: TopSpecWithOptions' SpecialOptions
-tests = introduce "Introduce parallel semaphore" parallelSemaphore getQSem (const $ return ()) $ $(getSpecFromFolder $ defaultGetSpecFromFolderOptions {
+tests = introduce' (defaultNodeOptions { nodeOptionsCreateFolder = False }) "Introduce parallel semaphore" parallelSemaphore getQSem (const $ return ()) $ $(getSpecFromFolder $ defaultGetSpecFromFolderOptions {
   getSpecCombiner = 'describeParallel
   , getSpecIndividualSpecHooks = 'withParallelSemaphore
   , getSpecWarnOnParseError = NoWarnOnParseError
