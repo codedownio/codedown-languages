@@ -6,8 +6,8 @@ let
   pkgsStable = import (fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
-    rev = "6d3fc36c541ae715d43db5c1355890f39024b26f"; # nixpkgs-rev
-    sha256 = "sha256-cRsIC0Ft5McBSia0rDdJIHy3muWqKn3rvjFx92DU2dY="; # nixpkgs-sha256
+    rev = "3079baffea86d39727f653cc517d627b23a67f30"; # nixpkgs-rev
+    sha256 = "1rnd98d7z9x8qfi0acg1acbb9nm91a9l4grqp92f6nr6wfj723b3"; # nixpkgs-sha256
   }) {};
 
   pkgsUnstable = import (fetchFromGitHub {
