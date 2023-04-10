@@ -1,6 +1,6 @@
 { lib
 , julia_16-bin
-, julia_18-bin
+, julia_18
 , python3
 , callPackage
 , writeTextDir
@@ -12,14 +12,14 @@
 let
   common = callPackage ../common.nix {};
 
-  juliaWithPackages = callPackage ../common.nix {};
+  juliaWithPackages = callPackage ./julia-modules {};
 
   baseCandidates = rec {
     julia = julia18;
 
     julia16 = juliaWithPackages.override { julia = julia_16-bin; };
 
-    julia18 = juliaWithPackages.override { julia = julia_18-bin; };
+    julia18 = juliaWithPackages.override { julia = julia_18; };
   };
 
   packageSet = lib.listToAttrs (map (x: {
@@ -44,7 +44,7 @@ mapAttrs (attr: value:
       icon = ./logo-64x64.png;
     };
 
-    python = pkgs.python3;
+    python = python3;
 
   in rec {
     packageOptions = {};
@@ -54,6 +54,7 @@ mapAttrs (attr: value:
       LanguageServer = callPackage ./language-server-LanguageServer.nix {
         inherit julia attrs;
         kernelName = attr;
+        juliaLsp = value ["LanguageServer"];
       };
     };
     languageServerSearch = common.searcher (languageServerOptions baseJulia []);

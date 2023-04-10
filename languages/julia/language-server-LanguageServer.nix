@@ -23,7 +23,7 @@ let
     mkdir $out
 
     mkdir tmp_depot
-    export JULIA_DEPOT_PATH=$(pwd)/tmp_depot:${julia.depot}
+    export JULIA_DEPOT_PATH=$(pwd)/tmp_depot:${julia.projectAndDepot}/depot
     julia --history-file=no -e ' \
       using LanguageServer.SymbolServer
 
@@ -33,9 +33,9 @@ let
       #   ex = Meta.parse("using $installed")
       #   eval(ex)
       # end
-      # server = LanguageServer.LanguageServerInstance(stdin, stdout, "${julia.project}", "${julia.depot}", nothing, ENV["out"])
+      # server = LanguageServer.LanguageServerInstance(stdin, stdout, "${julia.projectAndDepot}/project", "${julia.projectAndDepot}/depot", nothing, ENV["out"])
 
-      getstore(SymbolServerInstance("${julia.depot}", ENV["out"]), "${julia.project}")
+      getstore(SymbolServerInstance("${julia.projectAndDepot}/depot", ENV["out"]), "${julia.projectAndDepot}/project")
     '
   '';
 
@@ -56,13 +56,13 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
     "--startup-file=no"
     "--history-file=no"
     "-e"
-    ''using LanguageServer; import SymbolServer; server = LanguageServer.LanguageServerInstance(stdin, stdout, "${julia.depot}", "${julia.project}", nothing, "/tmp/.julia/symbolstorev2-lsp-julia"); server.runlinter = true; run(server);''
+    ''using LanguageServer; import SymbolServer; server = LanguageServer.LanguageServerInstance(stdin, stdout, "${julia.projectAndDepot}/depot", "${julia.projectAndDepot}/project", nothing, "/tmp/.julia/symbolstorev2-lsp-julia"); server.runlinter = true; run(server);''
 
     # "using LanguageServer; runserver()"
     # julia.project # Project for the kernel
   ];
   env = {
-    "JULIA_DEPOT_PATH" = julia.depot; # Depot for the kernel
+    "JULIA_DEPOT_PATH" = "${julia.projectAndDepot}/depot"; # Depot for the kernel
     # "SYMBOL_SERVER_STORE" = symbolServerStore;
   };
 }])

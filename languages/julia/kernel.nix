@@ -16,7 +16,7 @@ let
   common = callPackage ../common.nix {};
 
   runJuliaKernel = writeShellScript "run-julia-kernel.sh" ''
-    kernelFilePath=$(find ${julia.depot}/packages/IJulia -name kernel.jl)
+    kernelFilePath=$(find ${julia.projectAndDepot}/depot/packages/IJulia -name kernel.jl)
     ${julia}/bin/julia -i --startup-file=yes --color=yes $kernelFilePath $1
   '';
 
