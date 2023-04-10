@@ -94,6 +94,7 @@ let
   # Build a Julia project and depot. The project contains Project.toml/Manifest.toml, while the
   # depot contains package build products (including the precompiled libraries, if precompile=true)
   projectAndDepot = callPackage ./depot.nix {
+    inherit julia;
     inherit extraLibs overridesToml packageNames precompile;
     registry = minimalRegistry;
   };
