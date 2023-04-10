@@ -34,7 +34,6 @@ let
   #   ...
   # }
   dependencies = runCommand "julia-sources.nix" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml]))]; } ''
-    export OUT="$out"
     python ${./sources_nix.py} \
       "${augmentedRegistry}" \
       "${closureYaml}" \
@@ -85,7 +84,12 @@ let
   '';
 
   # Import the artifacts Nix to build Overrides.toml (IFD)
-  overridesToml = import artifactsNix { inherit fetchurl stdenv writeTextFile; };
+  overridesTomlRaw = import artifactsNix { inherit fetchurl stdenv writeTextFile; };
+  overridesToml = runCommand "Overrides.toml" { buildInputs = [(python3.withPackages (ps: with ps; [toml]))]; } ''
+    python ${./dedup_overrides.py} \
+      "${overridesTomlRaw}" \
+      "$out"
+  '';
 
   # Build a Julia project and depot. The project contains Project.toml/Manifest.toml, while the
   # depot contains package build products (including the precompiled libraries, if precompile=true)
@@ -99,9 +103,6 @@ in
 runCommand "julia-${julia.version}-env" {
   buildInputs = [makeWrapper];
 
-  # Expose the base Julia
-  inherit julia;
-
   # Expose the steps we used along the way in case the user wants to use them, for example to build
   # expressions and build them separately to avoid IFD.
   inherit dependencies;
@@ -109,6 +110,7 @@ runCommand "julia-${julia.version}-env" {
   inherit minimalRegistry;
   inherit artifactsNix;
   inherit overridesToml;
+  inherit overridesTomlRaw;
   inherit projectAndDepot;
 } ''
   mkdir -p $out/bin

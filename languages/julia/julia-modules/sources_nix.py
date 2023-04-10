@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import os
 from pathlib import Path
 import shutil
 import sys
@@ -16,7 +15,7 @@ with open(desired_packages_path, "r") as f:
 
 registry = toml.load(registry_path / "Registry.toml")
 
-with open(os.environ["OUT"], "w") as f:
+with open(out_path, "w") as f:
   f.write("{fetchgit}:\n")
   f.write("{\n")
   for pkg in desired_packages:

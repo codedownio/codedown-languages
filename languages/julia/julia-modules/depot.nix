@@ -17,6 +17,7 @@ runCommand "julia-depot" {
   export HOME=$(pwd)
 
   echo "Using registry $registry"
+  echo "Using overrides ${overridesToml}"
 
   mkdir -p $out/project
   export JULIA_PROJECT="$out/project"
