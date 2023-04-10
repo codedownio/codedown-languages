@@ -26,7 +26,7 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Clojure" $ introduceNixEnvironment [kernelSpec] [] "Clojure" $ introduceJupyterRunner $ do
-  testKernelSearchers "clojure"
+  testKernelSearchersBuild "clojure"
 
   testKernelStdout "clojure" [__i|(println "hi")|] "hi\n"
 

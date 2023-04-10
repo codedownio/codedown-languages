@@ -28,7 +28,7 @@ tests = describe "Ruby" $ do
 kernelTests :: Text -> TopSpec
 kernelTests lang = do
   describe (T.unpack lang) $ introduceNixEnvironment [kernelSpec lang] [] [i|Ruby (#{lang})|] $ introduceJupyterRunner $ do
-    testKernelSearchers lang
+    testKernelSearchersNonempty lang
 
     testKernelStdout lang [__i|puts "hi"|] "hi\n"
 

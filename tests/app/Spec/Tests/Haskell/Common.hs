@@ -45,7 +45,9 @@ kernelSpec lang = NixKernelSpec {
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Nothing
+  , nixKernelSettings = Just $ HM.fromList [
+      ("haskell-language-server.debug", A.Bool True)
+      ]
   }
 
 kernelSpecWithHlintOutput :: Text -> NixKernelSpec

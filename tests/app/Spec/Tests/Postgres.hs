@@ -34,7 +34,7 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Postgres tests" $ introduceNixEnvironment [kernelSpec] [] "Postgres" $ introduceJupyterRunner $ do
-  testKernelSearchers "postgres"
+  testKernelSearchersBuild "postgres"
 
   introducePostgres Nothing $ introducePostgresData $ do
     it "selects from test_table" $ do

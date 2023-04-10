@@ -7,10 +7,13 @@ import Control.Monad.Catch (MonadMask)
 import Control.Monad.Logger
 import Control.Monad.Trans.Control (MonadBaseControl)
 import qualified Data.Aeson as A
+import qualified Data.ByteString.Lazy.Char8 as BL8
 import Data.Conduit.Aeson as C
+import qualified Data.List as L
 import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Text.IO as T
+import qualified Data.Vector as V
 import System.Exit
 import System.FilePath
 import Test.Sandwich
@@ -20,17 +23,24 @@ import UnliftIO.IO
 import UnliftIO.Process
 
 
-testKernelSearchers :: (
+-- Testing for successful build
+
+testKernelSearchersBuild :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => Text -> SpecFree context m ()
-testKernelSearchers kernel = it [i|#{kernel}: package and LSP searchers build|] $ testKernelSearchers' kernel
+testKernelSearchersBuild kernel = it [i|#{kernel}: package and LSP searchers build|] $ do
+  testPackageSearchBuild kernel
+  testLanguageServerSearchBuild kernel
 
-testKernelSearchers' :: (
+testPackageSearchBuild :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => Text -> ExampleT context m ()
-testKernelSearchers' kernel = do
-  testBuild [i|.\#languages."#{kernel}".packageSearch|]
-  testBuild [i|.\#languages."#{kernel}".languageServerSearch|]
+testPackageSearchBuild kernel = testBuild [i|.\#languages."#{kernel}".packageSearch|]
+
+testLanguageServerSearchBuild :: (
+  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  ) => Text -> ExampleT context m ()
+testLanguageServerSearchBuild kernel = testBuild [i|.\#languages."#{kernel}".languageServerSearch|]
 
 testBuild :: (MonadIO m, MonadThrow m, MonadBaseControl IO m, MonadLogger m) => String -> m ()
 testBuild expr = do
@@ -41,16 +51,41 @@ testBuild expr = do
     }
   waitForProcess p >>= (`shouldBe` ExitSuccess)
 
+-- Testing for nonempty results
+
+-- | A stronger version of testKernelSearchersBuild
+testKernelSearchersNonempty :: (
+  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  ) => Text -> SpecFree context m ()
+testKernelSearchersNonempty kernel = describe [i|#{kernel}: package and LSP searchers build and have results|] $ do
+  it "package searcher" $ testPackageSearchNonempty kernel
+  it "LSP searcher" $ testLanguageServerSearchNonempty kernel
+
+testPackageSearchNonempty :: (
+  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  ) => Text -> ExampleT context m ()
+testPackageSearchNonempty kernel = testSearcherHasNonemptyResults [i|.\#languages."#{kernel}".packageSearch|]
+
+testLanguageServerSearchNonempty :: (
+  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  ) => Text -> ExampleT context m ()
+testLanguageServerSearchNonempty kernel = testSearcherHasNonemptyResults [i|.\#languages."#{kernel}".languageServerSearch|]
+
 testSearcherHasNonemptyResults :: (MonadUnliftIO m, MonadThrow m, MonadLogger m, MonadFail m) => String -> m ()
 testSearcherHasNonemptyResults expr = searcherResults expr >>= \case
-  xs | Prelude.length xs > 0 -> return ()
+  xs | not (L.null xs) -> return ()
   x -> expectationFailure [i|Expected searcher to output an array with >=1 elem, but got #{x}|]
 
 searcherResults :: (MonadUnliftIO m, MonadThrow m, MonadLogger m, MonadFail m) => String -> m [A.Object]
 searcherResults expr = do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
-  let cp = (proc "nix" ["run", expr]) {
+  built <- ((A.eitherDecode . BL8.pack) <$> readCreateProcess ((proc "nix" ["build", expr, "--no-link", "--json"]) { cwd = Just rootDir, std_err = CreatePipe }) "") >>= \case
+    Left err -> expectationFailure [i|Failed to decode JSON: #{err}|]
+    Right (A.Array ((V.! 0) -> (A.Object (aesonLookup "outputs" -> Just (A.Object (aesonLookup "out" -> Just (A.String x))))))) -> pure x
+    Right x -> expectationFailure [i|Unexpected JSON: #{x}|]
+
+  let cp = (proc (T.unpack built) []) {
         cwd = Just rootDir
         , std_in = CreatePipe
         , std_out = CreatePipe

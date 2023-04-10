@@ -27,7 +27,7 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ introduceJupyterRunner $ do
-  testKernelSearchers "rust"
+  testKernelSearchersBuild "rust"
 
   testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
@@ -37,13 +37,20 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
   --   info [i|Got diagnostics: #{diagnostics}|]
   --   return ()
 
-  testDiagnostics' "rust-analyzer" "src/main.rs" [__i|fn foo() {
+  -- testDiagnostics' "rust-analyzer" "src/main.rs" [__i|fn foo() {
 
-                                                      }
+  --                                                     }
 
-                                                      fn main() {
-                                                          println!("Hello, world!");
-                                                      }
+  --                                                     fn main() {
+  --                                                         println!("Hello, world!");
+  --                                                     }
+  --                                                    |] extraFiles $ \diagnostics -> do
+  --   info [i|Got diagnostics: #{diagnostics}|]
+  --   return ()
+
+  testDiagnostics' "rust-analyzer" "src/main.rs" [__i|println!("Hello world");
+                                                      eprintln!("Hello error");
+                                                      format!("Hello {}", "world")
                                                      |] extraFiles $ \diagnostics -> do
     info [i|Got diagnostics: #{diagnostics}|]
     return ()

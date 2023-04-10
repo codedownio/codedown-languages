@@ -25,7 +25,7 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "C++" $ introduceNixEnvironment [kernelSpec] [] "C++" $ introduceJupyterRunner $ do
-  testKernelSearchers "cpp11"
+  testKernelSearchersBuild "cpp11"
 
   testKernelStdout "cpp11" [__i|\#include <iostream>
                                 using namespace std;

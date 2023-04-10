@@ -25,7 +25,7 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "R" $ introduceNixEnvironment [kernelSpec] [] "R" $ introduceJupyterRunner $ do
-  testKernelSearchers "R"
+  testKernelSearchersNonempty "R"
 
   testKernelStdout "R" [__i|cat("hi")|] "hi"
   testKernelStdout "R" [__i|print("hi")|] [i|[1] "hi"\n|]

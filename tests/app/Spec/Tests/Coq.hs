@@ -29,7 +29,7 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Coq" $ introduceNixEnvironment [kernelSpec] [] "Coq" $ introduceJupyterRunner $ do
-  testKernelSearchers "coq"
+  testKernelSearchersBuild "coq"
 
   itHasExecuteTexts "coq" [i|From Ceres Require Import Ceres.|] [Just $ Array []]
 

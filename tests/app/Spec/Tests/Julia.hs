@@ -21,7 +21,8 @@ tests = do
 
 juliaTests :: Text -> TopSpec
 juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kernelSpec lang] [] [i|Julia (#{lang})|] $ introduceJupyterRunner $ do
-  testKernelSearchers lang
+  testKernelSearchersNonempty lang
+
   testKernelStdout lang [i|println("hi")|] "hi\n"
 
   testDiagnostics "LanguageServer" "test.jl" [i|printlnz("HI")|] $ \diagnostics -> do

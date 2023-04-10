@@ -27,7 +27,7 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Go" $ introduceNixEnvironment [kernelSpec] [] "Go" $ introduceJupyterRunner $ do
-  testKernelSearchers "go"
+  testKernelSearchersBuild "go"
 
   testKernelStdout "go" [__i|import("fmt")
                              fmt.Println("hi")|] "hi\n"

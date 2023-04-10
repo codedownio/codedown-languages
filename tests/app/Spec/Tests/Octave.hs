@@ -25,7 +25,7 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Octave" $ introduceNixEnvironment [kernelSpec] [] "Octave" $ introduceJupyterRunner $ do
-  testKernelSearchers "octave"
+  testKernelSearchersNonempty "octave"
 
   testKernelStdout "octave" [__i|printf('%s', 'hi')|] "hi"
 

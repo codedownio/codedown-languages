@@ -53,8 +53,7 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["JSON3"];
-        # languageServers = ["LanguageServer"];
-        languageServers = [];
+        languageServers = ["LanguageServer"];
       };
     })
 
