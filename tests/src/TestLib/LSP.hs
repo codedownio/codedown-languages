@@ -25,7 +25,7 @@ import qualified Data.Text.IO as T
 import GHC.Int
 import Language.LSP.Test
 import Language.LSP.Types
-import Language.LSP.Types.Lens as LSP hiding (diagnostics, hover, name)
+import Language.LSP.Types.Lens as LSP hiding (diagnostics, hover, label, name)
 import System.FilePath
 import System.IO.Temp (createTempDirectory)
 import Test.Sandwich as Sandwich
@@ -79,7 +79,17 @@ testDiagnostics' :: (
   , MonadUnliftIO m
   , MonadThrow m
   ) => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
-testDiagnostics' name filename codeToTest extraFiles cb = it [i|#{name}, #{filename} with #{show codeToTest}|] $ do
+testDiagnostics' name filename codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest}|] name filename codeToTest
+
+testDiagnostics'' :: (
+  HasNixEnvironment context
+  , HasBaseContext context
+  , MonadIO m
+  , MonadBaseControl IO m
+  , MonadUnliftIO m
+  , MonadThrow m
+  ) => String -> Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
+testDiagnostics'' label name filename codeToTest extraFiles cb = it label $ do
   withRunInIO $ \runInIO ->
     runInIO $ withLspSession name filename codeToTest extraFiles $ do
       _ <- openDoc filename name
