@@ -3,15 +3,19 @@
 , cacert
 , curl
 , julia
+, python3
+
+, closureYaml
 , extraLibs
 , overridesToml
 , packageNames
+, packageImplications
 , precompile
 , registry
 }:
 
 runCommand "julia-depot" {
-    buildInputs = [curl julia] ++ extraLibs;
+    buildInputs = [curl julia (python3.withPackages (ps: with ps; [pyyaml]))] ++ extraLibs;
     inherit precompile registry;
   } ''
   export HOME=$(pwd)
@@ -40,12 +44,26 @@ runCommand "julia-depot" {
   # Prevent a warning where Julia tries to download package server info
   export JULIA_PKG_SERVER=""
 
+  # See if we need to add any extra package names based on the closure
+  # and the packageImplications. We're using the full closure YAML here since
+  # it's available, which is slightly weird, but it should work just as well
+  # for finding the extra packages we need to add
+  python ${./find_package_implications.py} "${closureYaml}" '${lib.generators.toJSON {} packageImplications}' extra_package_names.txt
+
   julia -e ' \
     import Pkg
     Pkg.Registry.add(Pkg.RegistrySpec(path="${registry}"))
 
-    # Pkg.Artifacts.load_overrides(;force=true)
-    Pkg.add(unique(${lib.generators.toJSON {} packageNames}))
+    input = ${lib.generators.toJSON {} packageNames}
+
+    if isfile("extra_package_names.txt")
+      append!(input, readlines("extra_package_names.txt"))
+    end
+
+    input = unique(input)
+
+    println("Adding packages: " * join(input, " "))
+    Pkg.add(input)
     Pkg.instantiate()
 
     if "precompile" in keys(ENV) && ENV["precompile"] != "0"

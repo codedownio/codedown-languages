@@ -14,3 +14,6 @@ OUTPUT="$(nix build \
 
 rm -f ./package-names.nix
 cp "$OUTPUT" ./package-names.nix
+
+chmod u+w ./package-names.nix
+echo "" >> ./package-names.nix

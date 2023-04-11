@@ -23,9 +23,38 @@ let
   # entry is augmented with a Nix sha256 hash
   augmentedRegistry = callPackage ./registry.nix {};
 
+  # Some Julia packages require access to Python. Provide a Nixpkgs version so it
+  # doesn't try to install its own.
+  pythonToUse = let
+    extraPythonPackages = ((callPackage ./extra-python-packages.nix { inherit python3; }).getExtraPythonPackages packageNames);
+  in (if extraPythonPackages == [] then python3 else python3.withPackages (ps:
+    (map (pkg: lib.getAttr pkg ps) extraPythonPackages))
+  );
+
+  # Start by wrapping Julia so it has access to Python and any other extra libs.
+  # Also, prevent various packages (CondaPkg.jl, PythonCall.jl) from trying to do network calls.
+  juliaWrapped = runCommand "julia-${julia.version}-wrapped" { buildInputs = [makeWrapper]; inherit makeWrapperArgs; } ''
+    mkdir -p $out/bin
+    makeWrapper ${julia}/bin/julia $out/bin/julia \
+      --suffix LD_LIBRARY_PATH : "${lib.makeLibraryPath extraLibs}" \
+      --set PYTHONHOME "${pythonToUse}" \
+      --prefix PYTHONPATH : "${pythonToUse}/${pythonToUse.sitePackages}" \
+      --set PYTHON ${pythonToUse}/bin/python $makeWrapperArgs \
+      --set JULIA_CONDAPKG_OFFLINE yes \
+      --set JULIA_CONDAPKG_BACKEND Null \
+      --set JULIA_PYTHONCALL_EXE "@PyCall"
+  '';
+
+  # If our closure ends up with certain packages, add others.
+  packageImplications = {
+    # Because we want to put PythonCall in PyCall mode so it doesn't try to download
+    # Python packages
+    PythonCall = ["PyCall"];
+  };
+
   # Invoke Julia resolution logic to determine the full dependency closure
   closureYaml = callPackage ./package-closure.nix {
-    inherit julia augmentedRegistry packageNames;
+    inherit augmentedRegistry julia packageNames packageImplications;
   };
 
   # Generate a Nix file consisting of a map from dependency UUID --> fetchgit call:
@@ -78,7 +107,7 @@ let
   artifactsNix = runCommand "julia-artifacts.nix" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml]))]; } ''
     python ${./extract_artifacts.py} \
       "${dependenciesYaml}" \
-      "${julia}/bin/julia" \
+      "${juliaWrapped}/bin/julia" \
       "${./extract_artifacts.jl}" \
       "$out"
   '';
@@ -94,8 +123,8 @@ let
   # Build a Julia project and depot. The project contains Project.toml/Manifest.toml, while the
   # depot contains package build products (including the precompiled libraries, if precompile=true)
   projectAndDepot = callPackage ./depot.nix {
-    inherit julia;
-    inherit extraLibs overridesToml packageNames precompile;
+    inherit closureYaml extraLibs overridesToml packageNames packageImplications precompile;
+    julia = juliaWrapped;
     registry = minimalRegistry;
   };
 
@@ -105,6 +134,7 @@ runCommand "julia-${julia.version}-env" {
   buildInputs = [makeWrapper];
 
   inherit julia;
+  inherit juliaWrapped;
 
   # Expose the steps we used along the way in case the user wants to use them, for example to build
   # expressions and build them separately to avoid IFD.
@@ -117,10 +147,7 @@ runCommand "julia-${julia.version}-env" {
   inherit projectAndDepot;
 } ''
   mkdir -p $out/bin
-  makeWrapper ${julia}/bin/julia $out/bin/julia \
-    --suffix LD_LIBRARY_PATH : "${lib.makeLibraryPath extraLibs}" \
-    --set PYTHON ${python3}/bin/python \
+  makeWrapper ${juliaWrapped}/bin/julia $out/bin/julia \
     --suffix JULIA_DEPOT_PATH : "${projectAndDepot}/depot" \
-    --suffix JULIA_PROJECT : "${projectAndDepot}/project" \
-    --suffix PATH : ${python3}/bin $makeWrapperArgs
+    --suffix JULIA_PROJECT : "${projectAndDepot}/project"
 ''
