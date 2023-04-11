@@ -1,10 +1,15 @@
 {-# LANGUAGE RankNTypes #-}
 {-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 
 module Spec.Tests.Julia (tests) where
 
+import Control.Lens hiding (List)
 import Data.String.Interpolate
 import Data.Text as T
+import Language.LSP.Test hiding (message)
+import Language.LSP.Types
+import Language.LSP.Types.Lens hiding (diagnostics, hover, text)
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -25,16 +30,38 @@ juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kerne
 
   testKernelStdout lang [i|println("hi")|] "hi\n"
 
-  testDiagnostics "LanguageServer" "test.jl" [i|printlnz("HI")|] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics []
-    -- assertDiagnosticRanges diagnostics [(Range (Position 3 16) (Position 3 19), Just (InR "UndeclaredName"))]
+  testDiagnostics lsName "test.jl" [i|printlnzzzz("HI"|] $ \diagnostics -> do
+    -- assertDiagnosticRanges diagnostics []
+    assertDiagnosticRanges diagnostics [(Range (Position 0 0) (Position 0 11), Just (InR "UndeclaredName"))]
+
+  itHasHoverSatisfying lsName "test.jl" [__i|print("hi")|] (Position 0 2) $ \hover -> do
+    let HoverContents (MarkupContent MkMarkdown text) = hover ^. contents
+    text `textShouldContain` "Write to `io` (or to the default output stream"
+
+  it "highlights foo" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
+    ident <- openDoc filename "haskell"
+    getHighlights ident (Position 0 1) >>= (`shouldBe` List documentHighlightResults)
+
+
+documentHighlightCode :: Text
+documentHighlightCode = [__i|foo = "hello"
+                             println(foo)|]
+
+documentHighlightResults :: [DocumentHighlight]
+documentHighlightResults = [
+  DocumentHighlight (Range (Position 0 0) (Position 0 3)) (Just HkWrite)
+  , DocumentHighlight (Range (Position 1 9) (Position 1 12)) (Just HkRead)
+  ]
+
+lsName :: Text
+lsName = "LanguageServer"
 
 kernelSpec :: Text -> NixKernelSpec
 kernelSpec lang = NixKernelSpec {
   nixKernelName = lang
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just [i|Julia (#{lang})|]
-  , nixKernelPackages = []
+  , nixKernelPackages = [nameOnly "JSON3"]
   , nixKernelLanguageServers = [nameOnly "LanguageServer"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing

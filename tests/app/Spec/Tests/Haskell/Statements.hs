@@ -19,7 +19,7 @@ statementsTests :: (
   ) => SpecFree context m ()
 statementsTests = describe "Statements" $ do
   describe "Single-line" $ do
-    it "doesn't choke" $ doNotebookSession statementsCode $ \filename -> do
+    it "doesn't choke" $ doNotebookSession lsName statementsCode $ \filename -> do
       ident <- openDoc filename "haskell"
       getHighlights ident (Position 0 1) >>= (`shouldBe` List documentHighlightResults)
 
@@ -29,7 +29,7 @@ statementsTests = describe "Statements" $ do
       diagnostics `shouldBe` []
 
   describe "Multi-line" $ do
-    it "doesn't choke" $ doNotebookSession statementsCode $ \filename -> do
+    it "doesn't choke" $ doNotebookSession lsName statementsCode $ \filename -> do
       ident <- openDoc filename "haskell"
       getHighlights ident (Position 0 1) >>= (`shouldBe` List documentHighlightResults)
 

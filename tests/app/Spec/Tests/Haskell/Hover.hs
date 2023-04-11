@@ -20,13 +20,13 @@ hoverTests :: (
   Sandwich.HasLabel context "nixEnvironment" FilePath, HasBaseContext context, MonadBaseControl IO m, MonadUnliftIO m, MonadThrow m
   ) => SpecFree context m ()
 hoverTests = describe "Hover" $ do
-  it "hovers foo" $ doNotebookSession hoverCode $ \filename -> do
+  it "hovers foo" $ doNotebookSession lsName hoverCode $ \filename -> do
     ident <- openDoc filename "haskell"
     hover <- getHoverOrException ident (Position 0 1)
     allHoverText hover `textShouldContain` [i|foo|]
     allHoverText hover `textShouldContain` [i|main.ipynb.hs:1:1|]
 
-  it "hovers putStrLn" $ doNotebookSession hoverCode $ \filename -> do
+  it "hovers putStrLn" $ doNotebookSession lsName hoverCode $ \filename -> do
     ident <- openDoc filename "haskell"
     hover <- getHoverOrException ident (Position 1 1)
     (hover ^. range) `shouldBe` Just (Range (Position 1 0) (Position 1 8))

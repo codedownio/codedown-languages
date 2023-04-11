@@ -61,6 +61,18 @@ data LanguageServerConfig = LanguageServerConfig {
   } deriving (Show, Eq)
 deriveJSON toSnake2 ''LanguageServerConfig
 
+doNotebookSession :: (
+  MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
+  ) => Text -> Text -> (FilePath -> Session (ExampleT context m) a) -> ExampleT context m a
+doNotebookSession = doSession' "main.ipynb"
+
+doSession' :: (
+  MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
+  ) => Text -> Text -> Text -> (FilePath -> Session (ExampleT context m) a) -> ExampleT context m a
+doSession' filename lsName codeToUse cb = do
+  withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) codeToUse [] $ do
+    cb (T.unpack filename)
+
 testDiagnostics :: (
   HasNixEnvironment context
   , HasBaseContext context

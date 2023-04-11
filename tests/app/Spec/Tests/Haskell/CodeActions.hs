@@ -12,18 +12,19 @@ import Language.LSP.Types
 import Language.LSP.Types.Lens hiding (actions)
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
+import TestLib.LSP
 
 
 codeActionsTests :: (
   Sandwich.HasLabel context "nixEnvironment" FilePath, HasBaseContext context, MonadBaseControl IO m, MonadUnliftIO m, MonadThrow m
   ) => SpecFree context m ()
 codeActionsTests = describe "Code actions" $ do
-  it "gets no code actions for putStrLn" $ doNotebookSession codeActionsCode $ \filename -> do
+  it "gets no code actions for putStrLn" $ doNotebookSession lsName codeActionsCode $ \filename -> do
     ident <- openDoc filename "haskell"
     actions <- getCodeActions ident (Range (Position 1 0) (Position 1 8))
     actions `shouldBe` []
 
-  it "gets code actions for foo" $ doNotebookSession codeActionsCode $ \filename -> do
+  it "gets code actions for foo" $ doNotebookSession lsName codeActionsCode $ \filename -> do
     ident <- openDoc filename "haskell"
     actions <- getCodeActions ident (Range (Position 0 0) (Position 0 3))
     fmap getTitle actions `shouldBe` ["Unfold foo"

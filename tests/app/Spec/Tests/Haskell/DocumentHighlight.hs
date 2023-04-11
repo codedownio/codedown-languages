@@ -10,13 +10,14 @@ import Language.LSP.Test hiding (message)
 import Language.LSP.Types
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
+import TestLib.LSP
 
 
 documentHighlightTests :: (
   Sandwich.HasLabel context "nixEnvironment" FilePath, HasBaseContext context, MonadBaseControl IO m, MonadUnliftIO m, MonadThrow m
   ) => SpecFree context m ()
 documentHighlightTests = describe "Document highlight" $ do
-  it "highlights foo" $ doNotebookSession documentHighlightCode $ \filename -> do
+  it "highlights foo" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
     ident <- openDoc filename "haskell"
     getHighlights ident (Position 0 1) >>= (`shouldBe` List documentHighlightResults)
 
