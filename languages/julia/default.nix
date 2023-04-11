@@ -24,7 +24,12 @@ let
 
   packageSet = lib.listToAttrs (map (x: {
     name = x;
-    value = {};
+    value = {
+      meta = {
+        name = x;
+        displayName = x;
+      };
+    };
   }) (import ./julia-modules/package-names.nix));
 
 in
@@ -48,7 +53,10 @@ mapAttrs (attr: value:
 
   in rec {
     packageOptions = {};
-    packageSearch = common.searcher packageSet;
+    packageSearch = common.searcher' {
+      packages = packageSet;
+      packageMustBeDerivation = false;
+    };
 
     languageServerOptions = julia: attrs: {
       LanguageServer = callPackage ./language-server-LanguageServer.nix {
