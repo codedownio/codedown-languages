@@ -91,7 +91,7 @@ testDiagnostics' :: (
   , MonadUnliftIO m
   , MonadThrow m
   ) => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
-testDiagnostics' name filename codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest}|] name filename codeToTest
+testDiagnostics' name filename codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest} (diagnostics)|] name filename codeToTest
 
 testDiagnostics'' :: (
   HasNixEnvironment context
@@ -117,7 +117,7 @@ itHasHoverSatisfying :: (
   , MonadUnliftIO m
   , MonadThrow m
   ) => Text -> FilePath -> Text -> Position -> (Hover -> ExampleT context m ()) -> SpecFree context m ()
-itHasHoverSatisfying name filename codeToTest pos cb = it [i|#{name}: #{show codeToTest}|] $ do
+itHasHoverSatisfying name filename codeToTest pos cb = it [i|#{name}: #{show codeToTest} (hover)|] $ do
   maybeHover <- withRunInIO $ \runInIO ->
     runInIO $ withLspSession name filename codeToTest [] $ do
       ident <- openDoc filename "haskell"

@@ -30,17 +30,18 @@ juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kerne
 
   testKernelStdout lang [i|println("hi")|] "hi\n"
 
-  testDiagnostics lsName "test.jl" [i|printlnzzzz("HI"|] $ \diagnostics -> do
-    -- assertDiagnosticRanges diagnostics []
-    assertDiagnosticRanges diagnostics [(Range (Position 0 0) (Position 0 11), Just (InR "UndeclaredName"))]
+  describe "LSP" $ do
+    testDiagnostics lsName "test.jl" [i|printlnzzzz("HI"|] $ \diagnostics -> do
+      -- assertDiagnosticRanges diagnostics []
+      assertDiagnosticRanges diagnostics [(Range (Position 0 0) (Position 0 11), Just (InR "UndeclaredName"))]
 
-  itHasHoverSatisfying lsName "test.jl" [__i|print("hi")|] (Position 0 2) $ \hover -> do
-    let HoverContents (MarkupContent MkMarkdown text) = hover ^. contents
-    text `textShouldContain` "Write to `io` (or to the default output stream"
+    itHasHoverSatisfying lsName "test.jl" [__i|print("hi")|] (Position 0 2) $ \hover -> do
+      let HoverContents (MarkupContent MkMarkdown text) = hover ^. contents
+      text `textShouldContain` "Write to `io` (or to the default output stream"
 
-  it "highlights foo" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
-    ident <- openDoc filename "haskell"
-    getHighlights ident (Position 0 1) >>= (`shouldBe` List documentHighlightResults)
+    it "highlights foo" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
+      ident <- openDoc filename "haskell"
+      getHighlights ident (Position 0 1) >>= (`shouldBe` List documentHighlightResults)
 
 
 documentHighlightCode :: Text
@@ -50,7 +51,7 @@ documentHighlightCode = [__i|foo = "hello"
 documentHighlightResults :: [DocumentHighlight]
 documentHighlightResults = [
   DocumentHighlight (Range (Position 0 0) (Position 0 3)) (Just HkWrite)
-  , DocumentHighlight (Range (Position 1 9) (Position 1 12)) (Just HkRead)
+  , DocumentHighlight (Range (Position 1 8) (Position 1 11)) (Just HkRead)
   ]
 
 lsName :: Text
