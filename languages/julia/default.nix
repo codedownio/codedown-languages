@@ -55,7 +55,7 @@ mapAttrs (attr: value:
 
     meta = baseJulia.meta // {
       baseName = attr;
-      inherit displayName;
+      inherit displayName settingsSchema;
       version = baseJulia.version;
       icon = ./logo-64x64.png;
     };
