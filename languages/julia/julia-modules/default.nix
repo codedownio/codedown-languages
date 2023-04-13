@@ -13,6 +13,7 @@
 , julia
 , extraLibs ? []
 , precompile ? true
+, setDefaultDepot ? true
 , makeWrapperArgs ? ""
 }:
 
@@ -57,9 +58,14 @@ let
     inherit augmentedRegistry julia packageNames packageImplications;
   };
 
-  # Generate a Nix file consisting of a map from dependency UUID --> fetchgit call:
+  # Generate a Nix file consisting of a map from dependency UUID --> package info with fetchgit call:
   # {
-  #   "77ba4419-2d1f-58cd-9bb1-8ffee604a2e3" = fetchgit {...};
+  #   "77ba4419-2d1f-58cd-9bb1-8ffee604a2e3" = {
+  #     src = fetchgit {...};
+  #     name = "...";
+  #     version = "...";
+  #     treehash = "...";
+  #   };
   #   ...
   # }
   dependencies = runCommand "julia-sources.nix" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml]))]; } ''
@@ -76,14 +82,14 @@ let
   #   "77ba4419-2d1f-58cd-9bb1-8ffee604a2e3":"/nix/store/...-NaNMath.jl-0877504",
   #   ...
   # }
-  dependenciesYaml = writeTextFile {
-    name = "julia-dependencies.yml";
+  dependencyUuidToRepo = writeTextFile {
+    name = "dependency-uuid-to-repo.yml";
     text = lib.generators.toYAML {} (lib.mapAttrs repoify (import dependencies { inherit fetchgit; }));
   };
-  repoify = name: src:
-    runCommand ''julia-${name}-repoified'' {buildInputs = [git];} ''
+  repoify = uuid: info:
+    runCommand ''julia-${info.name}-${info.version}'' {buildInputs = [git];} ''
       mkdir -p $out
-      cp -r ${src}/. $out
+      cp -r ${info.src}/. $out
       cd $out
       git init
       git add . -f
@@ -98,7 +104,7 @@ let
     python ${./minimal_registry.py} \
       "${augmentedRegistry}" \
       "${closureYaml}" \
-      "${dependenciesYaml}" \
+      "${dependencyUuidToRepo}" \
       "$out"
   '';
 
@@ -106,7 +112,7 @@ let
   # produces the desired Overrides.toml.
   artifactsNix = runCommand "julia-artifacts.nix" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml]))]; } ''
     python ${./extract_artifacts.py} \
-      "${dependenciesYaml}" \
+      "${dependencyUuidToRepo}" \
       "${juliaWrapped}/bin/julia" \
       "${./extract_artifacts.jl}" \
       "$out"
@@ -139,15 +145,21 @@ runCommand "julia-${julia.version}-env" {
   # Expose the steps we used along the way in case the user wants to use them, for example to build
   # expressions and build them separately to avoid IFD.
   inherit dependencies;
-  inherit dependenciesYaml;
+  dependencyUuidToInfo = writeTextFile {
+    name = "dependency-uuid-to-info.yml";
+    text = lib.generators.toYAML {} (import dependencies { inherit fetchgit; });
+  };
+  inherit dependencyUuidToRepo;
   inherit minimalRegistry;
   inherit artifactsNix;
   inherit overridesToml;
   inherit overridesTomlRaw;
   inherit projectAndDepot;
-} ''
+} (''
   mkdir -p $out/bin
   makeWrapper ${juliaWrapped}/bin/julia $out/bin/julia \
     --suffix JULIA_DEPOT_PATH : "${projectAndDepot}/depot" \
-    --suffix JULIA_PROJECT : "${projectAndDepot}/project"
-''
+    --set-default JULIA_PROJECT "${projectAndDepot}/project"
+'' + lib.optionalString setDefaultDepot ''
+  sed -i '2 i\JULIA_DEPOT_PATH=''${JULIA_DEPOT_PATH-"$HOME/.julia"}' $out/bin/julia
+'')

@@ -12,7 +12,7 @@ out_path = Path(sys.argv[3])
 
 package_implications = json.loads(package_implications_json)
 with open(dependencies_path) as f:
-  desired_packages = yaml.safe_load(f)
+  desired_packages = yaml.safe_load(f) or []
 
 extra_package_names = []
 for pkg in desired_packages:

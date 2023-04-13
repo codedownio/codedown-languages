@@ -15,7 +15,7 @@ dependencies_path = Path(sys.argv[3])
 out_path = Path(sys.argv[4])
 
 with open(desired_packages_path, "r") as f:
-  desired_packages = yaml.safe_load(f)
+  desired_packages = yaml.safe_load(f) or []
 
 uuid_to_versions = defaultdict(list)
 for pkg in desired_packages:

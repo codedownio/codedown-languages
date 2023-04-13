@@ -54,7 +54,7 @@ runCommand "julia-depot" {
     import Pkg
     Pkg.Registry.add(Pkg.RegistrySpec(path="${registry}"))
 
-    input = ${lib.generators.toJSON {} packageNames}
+    input::Vector{String} = ${lib.generators.toJSON {} packageNames}
 
     if isfile("extra_package_names.txt")
       append!(input, readlines("extra_package_names.txt"))
@@ -62,12 +62,14 @@ runCommand "julia-depot" {
 
     input = unique(input)
 
-    println("Adding packages: " * join(input, " "))
-    Pkg.add(input)
-    Pkg.instantiate()
+    if !isempty(input)
+      println("Adding packages: " * join(input, " "))
+      Pkg.add(input)
+      Pkg.instantiate()
 
-    if "precompile" in keys(ENV) && ENV["precompile"] != "0"
-      Pkg.precompile()
+      if "precompile" in keys(ENV) && ENV["precompile"] != "0"
+        Pkg.precompile()
+      end
     end
 
     # Remove the registry to save space

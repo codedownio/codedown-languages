@@ -8,6 +8,7 @@ with lib;
 
 rec {
   packageMapping = {
+    ExcelFiles = ["xlrd"];
     PyPlot = ["matplotlib"];
     PythonPlot = ["matplotlib"];
     SymPy = ["sympy"];
