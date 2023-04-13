@@ -14,6 +14,17 @@ let
 
   juliaWithPackages = callPackage ./julia-modules {};
 
+  settingsSchema = [
+    # LanguageServer.
+    {
+      target = "LanguageServer.index";
+      title = "LanguageServer: auto-index packages when building environment";
+      description = "Automatically build SymbolServer.jl indices when realizing environment (may increase build time).";
+      type = "boolean";
+      defaultValue = true;
+    }
+  ];
+
   baseCandidates = rec {
     julia = julia18;
 
@@ -58,24 +69,26 @@ mapAttrs (attr: value:
       packageMustBeDerivation = false;
     };
 
-    languageServerOptions = julia: attrs: {
+    languageServerOptions = attrs: julia: packageNames: settings: {
       LanguageServer = callPackage ./language-server-LanguageServer.nix {
-        inherit julia attrs;
+        inherit attrs julia packageNames settings;
         kernelName = attr;
         juliaLsp = value ["LanguageServer" "SymbolServer"];
       };
     };
-    languageServerSearch = common.searcher (languageServerOptions baseJulia []);
+    languageServerSearch = common.searcher (languageServerOptions [] baseJulia [] (common.makeDefaultSettings settingsSchema));
 
     build = args@{
       packages ? []
       , languageServers ? []
       , attrs ? [attr "julia"]
       , extensions ? ["jl"]
+      , settings ? {}
       , metaOnly ? false
     }:
       let
         julia = value (["IJulia"] ++ packages);
+        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
       in
         symlinkJoin {
           name = attr;
@@ -85,7 +98,7 @@ mapAttrs (attr: value:
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [julia])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (languageServerOptions julia attrs)) languageServers))
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (languageServerOptions attrs julia packages (common.focusSettings "LanguageServer." settingsToUse))) languageServers))
           ;
 
           passthru = {

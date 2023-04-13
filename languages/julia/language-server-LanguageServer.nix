@@ -7,11 +7,15 @@
 , attrs
 , julia
 , kernelName
+, packageNames
 , juliaLsp # Julia set up with LanguageServer.jl containing depot
+, settings
 }:
 
 let
   common = callPackage ../common.nix {};
+
+  juliaIndices = callPackage ./julia-modules/indexing {};
 
 in
 
@@ -37,10 +41,8 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
       server = LanguageServer.LanguageServerInstance(
         stdin, stdout,
         "${julia.projectAndDepot}/project", "${julia.projectAndDepot}/depot",
-        nothing, "/tmp/symbolstorev2", false
+        nothing, ${if settings.index then ''"${juliaIndices packageNames}"'' else "nothing"}, false
       ); server.runlinter = true; run(server);''
   ];
-  env = {
-    # "SYMBOL_SERVER_STORE_TEST" = symbolServerStore;
-  };
+  env = {};
 }])
