@@ -15,6 +15,7 @@ import Data.Aeson as A
 import Data.Aeson.TH as A
 import qualified Data.ByteString as B
 import Data.Default
+import Data.Function
 import qualified Data.List as L
 import Data.Map (Map)
 import qualified Data.Set as S
@@ -61,46 +62,30 @@ data LanguageServerConfig = LanguageServerConfig {
   } deriving (Show, Eq)
 deriveJSON toSnake2 ''LanguageServerConfig
 
-doNotebookSession :: (
-  MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
-  ) => Text -> Text -> (FilePath -> Session (ExampleT context m) a) -> ExampleT context m a
+type LspContext ctx m = (
+  HasNixEnvironment ctx
+  , HasBaseContext ctx
+  , MonadIO m
+  , MonadBaseControl IO m
+  , MonadUnliftIO m
+  , MonadThrow m
+  )
+
+doNotebookSession :: LspContext ctx m => Text -> Text -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
 doNotebookSession = doSession' "main.ipynb"
 
-doSession' :: (
-  MonadUnliftIO m, HasNixEnvironment context, HasBaseContext context, MonadBaseControl IO m, MonadThrow m
-  ) => Text -> Text -> Text -> (FilePath -> Session (ExampleT context m) a) -> ExampleT context m a
+doSession' :: LspContext ctx m => Text -> Text -> Text -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
 doSession' filename lsName codeToUse cb = do
   withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) codeToUse [] $ do
     cb (T.unpack filename)
 
-testDiagnostics :: (
-  HasNixEnvironment context
-  , HasBaseContext context
-  , MonadIO m
-  , MonadBaseControl IO m
-  , MonadUnliftIO m
-  , MonadThrow m
-  ) => Text -> FilePath -> Text -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
+testDiagnostics :: LspContext ctx m => Text -> FilePath -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics name filename codeToTest = testDiagnostics' name filename codeToTest []
 
-testDiagnostics' :: (
-  HasNixEnvironment context
-  , HasBaseContext context
-  , MonadIO m
-  , MonadBaseControl IO m
-  , MonadUnliftIO m
-  , MonadThrow m
-  ) => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
+testDiagnostics' :: LspContext ctx m => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics' name filename codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest} (diagnostics)|] name filename codeToTest
 
-testDiagnostics'' :: (
-  HasNixEnvironment context
-  , HasBaseContext context
-  , MonadIO m
-  , MonadBaseControl IO m
-  , MonadUnliftIO m
-  , MonadThrow m
-  ) => String -> Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT context m ()) -> SpecFree context m ()
+testDiagnostics'' :: LspContext ctx m => String -> Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics'' label name filename codeToTest extraFiles cb = it label $ do
   withRunInIO $ \runInIO ->
     runInIO $ withLspSession name filename codeToTest extraFiles $ do
@@ -109,14 +94,7 @@ testDiagnostics'' label name filename codeToTest extraFiles cb = it label $ do
       liftIO $ runInIO $ info [i|Got diagnostics: #{A.encode diagnostics}|]
       liftIO $ runInIO $ cb diagnostics
 
-itHasHoverSatisfying :: (
-  HasNixEnvironment context
-  , HasBaseContext context
-  , MonadIO m
-  , MonadBaseControl IO m
-  , MonadUnliftIO m
-  , MonadThrow m
-  ) => Text -> FilePath -> Text -> Position -> (Hover -> ExampleT context m ()) -> SpecFree context m ()
+itHasHoverSatisfying :: LspContext ctx m => Text -> FilePath -> Text -> Position -> (Hover -> ExampleT ctx m ()) -> SpecFree ctx m ()
 itHasHoverSatisfying name filename codeToTest pos cb = it [i|#{name}: #{show codeToTest} (hover)|] $ do
   maybeHover <- withRunInIO $ \runInIO ->
     runInIO $ withLspSession name filename codeToTest [] $ do
@@ -126,14 +104,7 @@ itHasHoverSatisfying name filename codeToTest pos cb = it [i|#{name}: #{show cod
     Nothing -> expectationFailure [i|Expected a hover.|]
     Just x -> cb x
 
-withLspSession :: (
-  HasNixEnvironment context
-  , HasBaseContext context
-  , MonadIO m
-  , MonadBaseControl IO m
-  , MonadUnliftIO m
-  , MonadThrow m
-  ) => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> Session (ExampleT context m) a -> ExampleT context m a
+withLspSession :: LspContext ctx m => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> Session (ExampleT ctx m) a -> ExampleT ctx m a
 withLspSession name filename codeToTest extraFiles session = do
   Just currentFolder <- getCurrentFolder
 
@@ -189,17 +160,17 @@ withLspSession name filename codeToTest extraFiles session = do
     runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir $ do
       session
 
-assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT context m ()
+assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
   where
     ranges = fmap (\x -> (x ^. range, x ^. code)) diagnostics
 
-assertDiagnosticRanges' :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)] -> ExampleT context m ()
+assertDiagnosticRanges' :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)] -> ExampleT ctx m ()
 assertDiagnosticRanges' diagnostics desired = ranges `shouldBe` desired
   where
     ranges = fmap (\x -> (x ^. range, x ^. code, x ^. LSP.message)) diagnostics
 
--- hoverShouldSatisfy :: MonadThrow m => Position -> (Maybe Hover -> ExampleT context m ()) -> ExampleT context m ()
+-- hoverShouldSatisfy :: MonadThrow m => Position -> (Maybe Hover -> ExampleT ctx m ()) -> ExampleT ctx m ()
 -- hoverShouldSatisfy pos pred = getHover (TextDocumentIdentifier (Uri undefined)) pos >>= pred
 
 getHoverOrException :: (MonadLoggerIO m, MonadThrow m) => TextDocumentIdentifier -> Position -> Session m Hover
