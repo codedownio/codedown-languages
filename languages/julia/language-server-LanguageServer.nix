@@ -45,4 +45,30 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
       ); server.runlinter = true; run(server);''
   ];
   env = {};
+
+  # TODO: expose these as settings?
+  initialization_options = {
+    "julia.format.indent" = true;
+    "julia.format.indents" = true;
+    "julia.format.ops" = true;
+    "julia.format.tuples" = true;
+    "julia.format.curly" = true;
+    "julia.format.calls" = true;
+    "julia.format.iterOps" = true;
+    "julia.format.comments" = true;
+    "julia.format.docs" = true;
+    "julia.format.kw" = true;
+    "julia.lint.run" = true;
+    "julia.lint.missingrefs" = true;
+    "julia.lint.call" = true;
+    "julia.lint.iter" = true;
+    "julia.lint.constif" = true;
+    "julia.lint.lazyif" = true;
+    "julia.lint.datadecl" = true;
+    "julia.lint.typeparam" = true;
+    "julia.lint.modname" = true;
+    "julia.lint.pirates" = true;
+    "julia.lint.useoffuncargs" = true;
+    "julia.lint.nothingcomp" = true;
+  };
 }])
