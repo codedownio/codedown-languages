@@ -47,7 +47,7 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
   env = {};
 
   # TODO: expose these as settings?
-  workspace_configuration = {
+  initialization_options = {
     "julia.format.indent" = true;
     "julia.format.indents" = true;
     "julia.format.ops" = true;
