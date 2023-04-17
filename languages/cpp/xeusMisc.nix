@@ -1,4 +1,5 @@
-{ clangStdenv
+{ callPackage
+, clangStdenv
 , fetchFromGitHub
 , cmake
 , xtl
@@ -8,20 +9,41 @@
 , gfortran
 }:
 
+let
+  xtl = callPackage ./libs/xtl.nix {};
+
+in
+
 rec {
   xtensor = clangStdenv.mkDerivation {
     pname = "xtensor";
-    version = "0.20.8";
+    version = "0.24.6";
 
     src = fetchFromGitHub {
       owner = "QuantStack";
       repo = "xtensor";
-      rev = "b2d81961ac1b335bf2c362e6b7f792ebacb8abf8";
-      sha256 = "06fyqfdrjmgqb83s7sahff74ld2mp9v168iciq0cr3fypg6kh54v";
+      rev = "e534928cc30eb3a4a05539747d98e1d6868c2d62";
+      sha256 = "0gf5m5p61981pv7yh5425lcv8dci948ri37hn1zlli7xg54x0g3i";
+      # date = "2023-03-20T10:44:36+01:00";
     };
 
     nativeBuildInputs = [ cmake ];
-    buildInputs = [ xtl ];
+    buildInputs = [ xtl xsimd ];
+  };
+
+  xsimd = clangStdenv.mkDerivation {
+    pname = "xsimd";
+    version = "0.10.0";
+
+    src = fetchFromGitHub {
+      owner = "xtensor-stack";
+      repo = "xsimd";
+      rev = "e12bf0a928bd6668ff701db55803a9e316cb386c";
+      sha256 = "0da9m25l2r177r1zlj5k721v0573irpcxl298db37bmyqxnhmv7r";
+    };
+
+    nativeBuildInputs = [ cmake ];
+    buildInputs = [ xtl xsimd ];
   };
 
   xtensorBlas = clangStdenv.mkDerivation {

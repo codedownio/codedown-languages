@@ -1,29 +1,34 @@
-{ clangStdenv
+{ lib
+, callPackage
+, clangStdenv
 , fetchFromGitHub
 , cmake
 , zeromq
 , libuuid
 , cling
-, pugixml
 , gcc
 , ncurses
 , zlib
 , openssl
-, llvm_5
-, llvmPackages_5
+, llvm_9
 , git
 }:
 
+let
+  xtl = callPackage ./libs/xtl.nix {};
+
+in
+
 rec {
-  xeus = clangStdenv.mkDerivation {
-    pname = "xeus";
-    version = "0.24.1";
+  xeus-zmq = clangStdenv.mkDerivation {
+    pname = "xeus-zmq";
+    version = "1.0.2";
 
     src = fetchFromGitHub {
-      owner = "QuantStack";
-      repo = "xeus";
-      rev = "424b7cd177886906a59eee535b7de59088461910";
-      sha256 = "0a3kalcz65mgjjqcri6rd0gb5fvd37b4d176dxi39i0w9z3iqbsg";
+      owner = "jupyter-xeus";
+      repo = "xeus-zmq";
+      rev = "51d1c3d8c69d38d8be3a8c56748504306bf72796";
+      sha256 = "1xb90jlrk19zqdbin847lwf2b9p4r9llc63x8843cbmciq27yjp9";
     };
 
     nativeBuildInputs = [ cmake ];
@@ -31,29 +36,15 @@ rec {
     propagatedBuildInputs = [ nlohmannJson ];
   };
 
-  xtl = clangStdenv.mkDerivation {
-    pname = "xtl";
-    version = "0.6.5";
-
-    src = fetchFromGitHub {
-      owner = "QuantStack";
-      repo = "xtl";
-      rev = "0d1f896ba90664248279baaea0059699cff5ab9b";
-      sha256 = "1nsgm7kz3w34ksiaj2ixd9wl477c5lbxbd9cz89yyqvikp3p8pyr";
-    };
-
-    nativeBuildInputs = [ cmake ];
-  };
-
   nlohmannJson = clangStdenv.mkDerivation {
     pname = "nlohmannJson";
-    version = "3.6.1";
+    version = "3.11.2";
 
     src = fetchFromGitHub {
       owner = "nlohmann";
       repo = "json";
-      rev = "1126c9ca74fdea22d2ce3a065ac0fcb5792cbdaf";
-      sha256 = "1dgx3j9pb0f52dh73z8dpwdy79bra1qi5vpl66b9inq4gamf813z";
+      rev = "bc889afb4c5bf1c0d8ee29ef35eaaf4c8bef8a5d";
+      sha256 = "0g6rfsbkvrxmacchz4kbr741yybj7mls3r4hgyfdd3pdbqhn2is9";
     };
 
     nativeBuildInputs = [ cmake ];
@@ -76,15 +67,43 @@ rec {
     buildInputs = [ zeromq ];
   };
 
-  cxxopts = clangStdenv.mkDerivation {
-    pname = "cxxopts";
-    version = "2.1.2";
+  cpp-argparse = clangStdenv.mkDerivation {
+    pname = "cpp-argparse";
+    version = "2.9";
 
     src = fetchFromGitHub {
-      owner = "jarro2783";
-      repo = "cxxopts";
-      rev = "a0de9f3ba1035a3c4f5ffcd960cb94e4e12d40c5";
-      sha256 = "0zsvb14gl2qv6y7mvqj6xc78czrma1hnwh548r204h7dnhyp5lyk";
+      owner = "p-ranav";
+      repo = "argparse";
+      rev = "997da9255618311d1fcb0135ce86022729d1f1cb";
+      sha256 = "1wdpy45qcipfyw9bbr9s42v67b88bkyniy76yvh0grp2wf8zidxx";
+    };
+
+    postPatch = ''
+      substituteInPlace CMakeLists.txt \
+        --replace '$'{CMAKE_INSTALL_LIBDIR_ARCHIND} '$'{CMAKE_INSTALL_LIBDIR}
+      substituteInPlace packaging/pkgconfig.pc.in \
+        --replace '$'{prefix}/@CMAKE_INSTALL_INCLUDEDIR@ @CMAKE_INSTALL_FULL_INCLUDEDIR@
+    '';
+
+    nativeBuildInputs = [ cmake ];
+
+    meta = with lib; {
+      description = "Argument Parser for Modern C++";
+      homepage = "https://github.com/p-ranav/argparse";
+      platforms = platforms.unix;
+      license = licenses.mit;
+    };
+  };
+
+  pugixml = clangStdenv.mkDerivation {
+    pname = "pugixml";
+    version = "1.8.1";
+
+    src = fetchFromGitHub {
+      owner = "zeux";
+      repo = "pugixml";
+      rev = "d2deb420bc70369faa12785df2b5dd4d390e523d";
+      sha256 = "1zi1qp0gj40dhvxpgjgr3zwb8cdqf0kq1gnhxy4bl8b7b0vx7f1d";
     };
 
     nativeBuildInputs = [ cmake ];
@@ -92,13 +111,13 @@ rec {
 
   xeusCling = clangStdenv.mkDerivation {
     pname = "xeusCling";
-    version = "0.10.0";
+    version = "0.15.1";
 
     src = fetchFromGitHub {
       owner = "QuantStack";
       repo = "xeus-cling";
-      rev = "f2df30e80ba2ca88ed8850231372e31ad5ec3ea6";
-      sha256 = "0qs03815li31p9w2rmd1max7la24k4d7fcax76iafy8hdjgsnzfm";
+      rev = "c088a4a2181c1aa1b7c5b71b4107a32ff00d56f9";
+      sha256 = "19dr7xxk3w61frh1qkpnswqk1ccwbqqhj75ryjan1n8gb7b11jc9";
     };
 
     patches = [
@@ -106,6 +125,6 @@ rec {
     ];
 
     nativeBuildInputs = [ cmake ];
-    buildInputs = [ zeromq cppzmq xeus libuuid xtl cling pugixml cxxopts ncurses zlib openssl llvm_5 ];
+    buildInputs = [ zeromq cppzmq xeus-zmq libuuid xtl cling pugixml cpp-argparse ncurses zlib openssl llvm_9 ];
   };
 }
