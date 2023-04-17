@@ -1,7 +1,6 @@
 { lib
 , callPackage
 , blas
-, cling
 , attrs
 , extensions
 }:
@@ -11,7 +10,7 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  # cling = callPackage ./cling.nix {};
+  cling = callPackage ./cling {};
   xeusStuff = callPackage ./xeusCling.nix { cling = cling.unwrapped; };
   xeusMisc = callPackage ./xeusMisc.nix {xtl = xeusStuff.xtl;};
 

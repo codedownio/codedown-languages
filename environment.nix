@@ -38,15 +38,15 @@ codedown.mkCodeDownEnvironment {
       };
     })
 
-    # ({
-    #   name = "cpp11";
-    #   channel = "codedown";
-    #   args = {
-    #     packages = [];
-    #     languageServers = [];
-    #     attrs = ["cpp11" "cpp"];
-    #   };
-    # })
+    ({
+      name = "cpp11";
+      channel = "codedown";
+      args = {
+        packages = [];
+        languageServers = [];
+        attrs = ["cpp11" "cpp"];
+      };
+    })
 
     ({
       name = "julia";

@@ -1,4 +1,6 @@
-{ lib, writeText }:
+{ lib
+, writeTextDir
+}:
 
 writeTextDir "language-servers.yaml" (lib.generators.toYAML {} [{
   name = "ccls";
