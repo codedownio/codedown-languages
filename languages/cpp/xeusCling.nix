@@ -15,6 +15,7 @@
 }:
 
 let
+  cppzmq = callPackage ./libs/cppzmq.nix {};
   xtl = callPackage ./libs/xtl.nix {};
 
 in
@@ -33,38 +34,7 @@ rec {
 
     nativeBuildInputs = [ cmake ];
     buildInputs = [ zeromq cppzmq openssl xtl libuuid ];
-    propagatedBuildInputs = [ nlohmannJson ];
-  };
-
-  nlohmannJson = clangStdenv.mkDerivation {
-    pname = "nlohmannJson";
-    version = "3.11.2";
-
-    src = fetchFromGitHub {
-      owner = "nlohmann";
-      repo = "json";
-      rev = "bc889afb4c5bf1c0d8ee29ef35eaaf4c8bef8a5d";
-      sha256 = "0g6rfsbkvrxmacchz4kbr741yybj7mls3r4hgyfdd3pdbqhn2is9";
-    };
-
-    nativeBuildInputs = [ cmake ];
-  };
-
-  cppzmq = clangStdenv.mkDerivation {
-    pname = "cppzmq";
-    version = "4.4.1";
-
-    src = fetchFromGitHub {
-      owner = "zeromq";
-      repo = "cppzmq";
-      rev = "f5b36e563598d48fcc0d82e589d3596afef945ae";
-      sha256 = "15dgkv51csfkafplf0n0vqbjdr4pxqxq44dln0dcizhsn1p0a57q";
-    };
-
-    cmakeFlags = ["-DCPPZMQ_BUILD_TESTS=OFF"];
-
-    nativeBuildInputs = [ cmake git ];
-    buildInputs = [ zeromq ];
+    propagatedBuildInputs = [ (callPackage ./libs/nlohmann-json.nix {}) ];
   };
 
   cpp-argparse = clangStdenv.mkDerivation {

@@ -12,25 +12,6 @@
 let
   xtl = callPackage ./libs/xtl.nix {};
 
-in
-
-rec {
-  xtensor = clangStdenv.mkDerivation {
-    pname = "xtensor";
-    version = "0.24.6";
-
-    src = fetchFromGitHub {
-      owner = "QuantStack";
-      repo = "xtensor";
-      rev = "e534928cc30eb3a4a05539747d98e1d6868c2d62";
-      sha256 = "0gf5m5p61981pv7yh5425lcv8dci948ri37hn1zlli7xg54x0g3i";
-      # date = "2023-03-20T10:44:36+01:00";
-    };
-
-    nativeBuildInputs = [ cmake ];
-    buildInputs = [ xtl xsimd ];
-  };
-
   xsimd = clangStdenv.mkDerivation {
     pname = "xsimd";
     version = "0.10.0";
@@ -43,18 +24,36 @@ rec {
     };
 
     nativeBuildInputs = [ cmake ];
+    buildInputs = [ xtl ];
+  };
+
+in
+
+rec {
+  xtensor = clangStdenv.mkDerivation {
+    pname = "xtensor";
+    version = "0.24.6";
+
+    src = fetchFromGitHub {
+      owner = "QuantStack";
+      repo = "xtensor";
+      rev = "e534928cc30eb3a4a05539747d98e1d6868c2d62";
+      sha256 = "0gf5m5p61981pv7yh5425lcv8dci948ri37hn1zlli7xg54x0g3i";
+    };
+
+    nativeBuildInputs = [ cmake ];
     buildInputs = [ xtl xsimd ];
   };
 
   xtensorBlas = clangStdenv.mkDerivation {
     pname = "xtensor-blas";
-    version = "0.16.1";
+    version = "0.20.0";
 
     src = fetchFromGitHub {
-      owner = "QuantStack";
+      owner = "xtensor-stack";
       repo = "xtensor-blas";
-      rev = "1eb29c84608b60c21c50771bd2b02001d624cd2e";
-      sha256 = "1yr821qnfqkqcv3416c9wcyhbcli635x3nwm04nc91jhwg4pmx2j";
+      rev = "66ab0fa7cd53d0b914f89d4d451576a9240ea457";
+      sha256 = "0j4xvafxbxkb1gf966858kqkkcxkcwy8232xmq682gz8pld378c0";
     };
 
     nativeBuildInputs = [ cmake ];
