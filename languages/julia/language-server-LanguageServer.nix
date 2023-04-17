@@ -46,6 +46,10 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
   ];
   env = {};
 
+  # Necessary because LanguageServer.jl cares about this value
+  # (does different things if it's in ["markdown", "juliamarkdown"])
+  language_id = "julia";
+
   # TODO: expose these as settings?
   initialization_options = {
     "julia.format.indent" = true;
