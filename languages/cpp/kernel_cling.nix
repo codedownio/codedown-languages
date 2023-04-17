@@ -12,10 +12,6 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  cling = callPackage ./cling {};
-  xeusStuff = callPackage ./xeus/xeusCling.nix { cling = cling.unwrapped; };
-  xeusMisc = callPackage ./xeus/xeusMisc.nix {xtl = xeusStuff.xtl;};
-
   clingKernel = python3Packages.buildPythonApplication {
     pname = "jupyter-cling-kernel";
     version = "0.9";
@@ -38,14 +34,14 @@ displayName: std: attrName: logo64: common.makeJupyterKernel (
           "-resource-dir" "${cling}"
 
           # Be able to use libraries installed by Nix
-          "-I" "/home/user/.nix-profile/include"
-          "-L" "/home/user/.nix-profile/lib"
+          # "-I" "/home/user/.nix-profile/include"
+          # "-L" "/home/user/.nix-profile/lib"
 
           # xtensor and xtensor-blas (used in sample notebook)
-          "-idirafter" "${xeusMisc.xtensor}/include"
-          "-idirafter" "${xeusMisc.xtensorBlas}/include"
-          "-L" "${xeusMisc.liblapackShared}/lib"
-          "-L" "${blas}/lib"
+          # "-idirafter" "${xeusMisc.xtensor}/include"
+          # "-idirafter" "${xeusMisc.xtensorBlas}/include"
+          # "-L" "${xeusMisc.liblapackShared}/lib"
+          # "-L" "${blas}/lib"
         ]
         ++ [
           "-f" "{connection_file}"
@@ -61,7 +57,7 @@ displayName: std: attrName: logo64: common.makeJupyterKernel (
         };
       };
       env = {
-        "JUPYTER_CLING_KERNEL" = "${clingKernel}";
+        # "JUPYTER_CLING_KERNEL" = "${clingKernel}";
       };
     };
   }]

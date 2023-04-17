@@ -79,7 +79,7 @@ if cling == null then {} else
             name = x;
             paths = [
               cling
-              ((callPackage ./kernel.nix { inherit attrs extensions; }) (getAttr x displayNames) (getAttr x stds) x (getAttr x icons)) # TODO: pass the other args normally
+              ((callPackage ./kernel_xeus.nix { inherit attrs extensions; }) (getAttr x displayNames) (getAttr x stds) x (getAttr x icons)) # TODO: pass the other args normally
               (callPackage ./mode_info.nix { inherit attrs extensions; })
             ];
             passthru = {
