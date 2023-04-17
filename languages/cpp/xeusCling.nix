@@ -16,26 +16,13 @@
 
 let
   cppzmq = callPackage ./libs/cppzmq.nix {};
+  xeus = callPackage ./libs/xeus.nix {};
+  xeus-zmq = callPackage ./libs/xeus-zmq.nix {};
   xtl = callPackage ./libs/xtl.nix {};
 
 in
 
 rec {
-  xeus-zmq = clangStdenv.mkDerivation {
-    pname = "xeus-zmq";
-    version = "1.0.2";
-
-    src = fetchFromGitHub {
-      owner = "jupyter-xeus";
-      repo = "xeus-zmq";
-      rev = "51d1c3d8c69d38d8be3a8c56748504306bf72796";
-      sha256 = "1xb90jlrk19zqdbin847lwf2b9p4r9llc63x8843cbmciq27yjp9";
-    };
-
-    nativeBuildInputs = [ cmake ];
-    buildInputs = [ zeromq cppzmq openssl xtl libuuid ];
-    propagatedBuildInputs = [ (callPackage ./libs/nlohmann-json.nix {}) ];
-  };
 
   cpp-argparse = clangStdenv.mkDerivation {
     pname = "cpp-argparse";
@@ -95,6 +82,20 @@ rec {
     ];
 
     nativeBuildInputs = [ cmake ];
-    buildInputs = [ zeromq cppzmq xeus-zmq libuuid xtl cling pugixml cpp-argparse ncurses zlib openssl llvm_9 ];
+    buildInputs = [
+      cling
+      cpp-argparse
+      cppzmq
+      libuuid
+      llvm_9
+      ncurses
+      openssl
+      pugixml
+      xeus-zmq
+      xeus
+      xtl
+      zeromq
+      zlib
+    ];
   };
 }
