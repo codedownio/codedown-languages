@@ -77,9 +77,9 @@ rec {
       sha256 = "19dr7xxk3w61frh1qkpnswqk1ccwbqqhj75ryjan1n8gb7b11jc9";
     };
 
-    patches = [
-      ./xeus-cling.patch
-    ];
+    # patches = [
+    #   ./xeus-cling.patch
+    # ];
 
     nativeBuildInputs = [ cmake ];
     buildInputs = [

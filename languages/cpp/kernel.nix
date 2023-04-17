@@ -1,6 +1,8 @@
 { lib
 , callPackage
 , blas
+, python3Packages
+
 , attrs
 , extensions
 }:
@@ -11,15 +13,15 @@ let
   common = callPackage ../common.nix {};
 
   cling = callPackage ./cling {};
-  xeusStuff = callPackage ./xeusCling.nix { cling = cling.unwrapped; };
-  xeusMisc = callPackage ./xeusMisc.nix {xtl = xeusStuff.xtl;};
+  xeusStuff = callPackage ./xeus/xeusCling.nix { cling = cling.unwrapped; };
+  xeusMisc = callPackage ./xeus/xeusMisc.nix {xtl = xeusStuff.xtl;};
 
-  # clingKernel = python38Packages.buildPythonApplication {
-  #   pname = "jupyter-cling-kernel";
-  #   version = "0.7";
-  #   src = "${cling}/share/cling/Jupyter/kernel";
-  #   propagatedBuildInputs = with python38Packages; [ipykernel traitlets cling];
-  # };
+  clingKernel = python3Packages.buildPythonApplication {
+    pname = "jupyter-cling-kernel";
+    version = "0.9";
+    src = "${cling}/share/cling/Jupyter/kernel";
+    propagatedBuildInputs = with python3Packages; [ipykernel traitlets cling];
+  };
 
 in
 
@@ -57,6 +59,9 @@ displayName: std: attrName: logo64: common.makeJupyterKernel (
           inherit attrs extensions;
           priority = 1;
         };
+      };
+      env = {
+        "JUPYTER_CLING_KERNEL" = "${clingKernel}";
       };
     };
   }]
