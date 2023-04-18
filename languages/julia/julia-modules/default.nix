@@ -6,6 +6,7 @@
 , fetchurl
 , git
 , makeWrapper
+, writeText
 , writeTextFile
 , python3
 , stdenv
@@ -15,6 +16,7 @@
 , precompile ? true
 , setDefaultDepot ? true
 , makeWrapperArgs ? ""
+, packageOverrides ? {}
 }:
 
 packageNames:
@@ -68,7 +70,7 @@ let
   #   };
   #   ...
   # }
-  dependencies = runCommand "julia-sources.nix" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml]))]; } ''
+  dependencies = runCommand "julia-sources.nix" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml])) git]; } ''
     python ${./sources_nix.py} \
       "${augmentedRegistry}" \
       "${closureYaml}" \
@@ -82,28 +84,31 @@ let
   #   "77ba4419-2d1f-58cd-9bb1-8ffee604a2e3":"/nix/store/...-NaNMath.jl-0877504",
   #   ...
   # }
+  # This is also the point where we apply the packageOverrides.
   dependencyUuidToRepo = writeTextFile {
     name = "dependency-uuid-to-repo.yml";
     text = lib.generators.toYAML {} (lib.mapAttrs repoify (import dependencies { inherit fetchgit; }));
   };
   repoify = uuid: info:
-    runCommand ''julia-${info.name}-${info.version}'' {buildInputs = [git];} ''
-      mkdir -p $out
-      cp -r ${info.src}/. $out
-      cd $out
-      git init
-      git add . -f
-      git config user.email "julia2nix@localhost"
-      git config user.name "julia2nix"
-      git commit -m "Dummy commit"
-    '';
+    let src = if lib.hasAttr info.name packageOverrides then lib.getAttr info.name packageOverrides else info.src; in
+      runCommand ''julia-${info.name}-${info.version}'' {buildInputs = [git];} ''
+        mkdir -p $out
+        cp -r ${src}/. $out
+        cd $out
+        git init
+        git add . -f
+        git config user.email "julia2nix@localhost"
+        git config user.name "julia2nix"
+        git commit -m "Dummy commit"
+      '';
 
   # Given the augmented registry, closure info yaml, and dependency path yaml, construct a complete
   # Julia registry containing all the necessary packages
-  minimalRegistry = runCommand "minimal-julia-registry" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml]))]; } ''
+  minimalRegistry = runCommand "minimal-julia-registry" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml])) git]; } ''
     python ${./minimal_registry.py} \
       "${augmentedRegistry}" \
       "${closureYaml}" \
+      '${lib.generators.toJSON {} (lib.attrNames packageOverrides)}' \
       "${dependencyUuidToRepo}" \
       "$out"
   '';

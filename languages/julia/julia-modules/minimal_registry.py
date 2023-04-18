@@ -1,18 +1,21 @@
-#!/usr/bin/env python3
 
 from collections import defaultdict
 import copy
+import json
 import os
 from pathlib import Path
 import shutil
+import subprocess
 import sys
+import tempfile
 import toml
 import yaml
 
 registry_path = Path(sys.argv[1])
 desired_packages_path = Path(sys.argv[2])
-dependencies_path = Path(sys.argv[3])
-out_path = Path(sys.argv[4])
+package_overrides = json.loads(sys.argv[3])
+dependencies_path = Path(sys.argv[4])
+out_path = Path(sys.argv[5])
 
 with open(desired_packages_path, "r") as f:
   desired_packages = yaml.safe_load(f) or []
@@ -30,7 +33,6 @@ os.makedirs(out_path)
 with open(out_path / "Registry.toml", "w") as f:
     toml.dump(registry, f)
 
-
 for (uuid, versions) in uuid_to_versions.items():
     if not uuid in registry["packages"]: continue
 
@@ -47,6 +49,17 @@ for (uuid, versions) in uuid_to_versions.items():
     versions_to_keep = {k: v for k, v in all_versions.items() if k in versions}
     for k, v in versions_to_keep.items():
         del v["nix-sha256"]
+    name = registry_info["name"]
+    if name in package_overrides and uuid in uuid_to_store_path:
+      # Fill in the tree hash of the overridden repo
+      with tempfile.TemporaryDirectory() as home_dir:
+        env_with_home = os.environ.copy()
+        env_with_home["HOME"] = home_dir
+        subprocess.check_output(["git", "config", "--global", "--add", "safe.directory", uuid_to_store_path[uuid]], env=env_with_home)
+        lines = subprocess.check_output(["git", "log", "--pretty=raw"], cwd=uuid_to_store_path[uuid], env=env_with_home).decode().split("\n")
+        commit_info = dict([x.split() for x in lines if len(x.split()) == 2])
+        for v in versions_to_keep.values():
+            v["git-tree-sha1"] = commit_info["tree"]
     with open(out_path / path / "Versions.toml", "w") as f:
         toml.dump(versions_to_keep, f)
 
