@@ -33,11 +33,11 @@ tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ intro
 
   testKernelStdout "bash" [i|echo hi|] "hi\n"
 
-  -- testDiagnostics "shellcheck" "test.sh" [__i|FOO=42
+  -- testDiagnostics "shellcheck" "test.sh" Nothing [__i|FOO=42
   --                                            |] $ \diagnostics -> do
   --   assertDiagnosticRanges diagnostics []
 
-  testDiagnostics "bash-language-server" "test.sh" [__i|FOO=42|] $ \diagnostics -> do
+  testDiagnostics "bash-language-server" "test.sh" Nothing [__i|FOO=42|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics [
       (Range (Position 0 0) (Position 0 3), Just (InL 2034))
       ]

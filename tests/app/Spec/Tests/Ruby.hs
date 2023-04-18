@@ -32,7 +32,7 @@ kernelTests lang = do
 
     testKernelStdout lang [__i|puts "hi"|] "hi\n"
 
-    itHasHoverSatisfying "solargraph" "test.rb" [__i|puts "hi"|] (Position 0 2) $ \hover -> do
+    itHasHoverSatisfying "solargraph" "test.rb" Nothing [__i|puts "hi"|] (Position 0 2) $ \hover -> do
       let HoverContents (MarkupContent MkMarkdown text) = hover ^. contents
       text `textShouldContain` "Kernel#puts"
       text `textShouldContain` "$stdout.puts(obj"

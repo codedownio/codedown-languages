@@ -31,11 +31,11 @@ juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kerne
   testKernelStdout lang [i|println("hi")|] "hi\n"
 
   describe "LSP" $ do
-    testDiagnostics lsName "test.jl" [i|printlnzzzz("HI"|] $ \diagnostics -> do
-      -- assertDiagnosticRanges diagnostics []
+    -- TODO: try this with retry, it might be working now
+    testDiagnostics lsName "test.jl" (Just "julia") [i|printlnzzzz("HI")\n\n|] $ \diagnostics -> do
       assertDiagnosticRanges diagnostics [(Range (Position 0 0) (Position 0 11), Just (InR "UndeclaredName"))]
 
-    itHasHoverSatisfying lsName "test.jl" [__i|print("hi")|] (Position 0 2) $ \hover -> do
+    itHasHoverSatisfying lsName "test.jl" Nothing [__i|print("hi")|] (Position 0 2) $ \hover -> do
       let HoverContents (MarkupContent MkMarkdown text) = hover ^. contents
       text `textShouldContain` "Write to `io` (or to the default output stream"
 

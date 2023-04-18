@@ -17,10 +17,10 @@ otherPackages = [
 
 tests :: TopSpec
 tests = describe "Spellchecker" $ introduceNixEnvironment [] otherPackages "Python 3" $ do
-  testDiagnostics "spellchecker" "test.md" [i|\# This is mispelled|] $ \diagnostics -> do
+  testDiagnostics "spellchecker" "test.md" Nothing [i|\# This is mispelled|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics [(Range (Position 0 10) (Position 0 19), Nothing)]
 
-  testDiagnostics "spellchecker" "test.md" [i|I've done a thing.|] $ \diagnostics -> do
+  testDiagnostics "spellchecker" "test.md" Nothing [i|I've done a thing.|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
 
 main :: IO ()

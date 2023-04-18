@@ -38,21 +38,21 @@ tests = describe "Python 3" $ introduceNixEnvironment [kernelSpec] [] "Python 3"
   testKernelStdout "python3" [i|print(42)|] "42\n"
   testKernelStdout "python3" [i|import tensorflow|] ""
 
-  testDiagnostics "python-lsp-server" "test.py" [i|\n\n\nfoo = 42|] $ \diagnostics -> do
+  testDiagnostics "python-lsp-server" "test.py" Nothing [i|\n\n\nfoo = 42|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
 
-  testDiagnostics "pylint" "test.py" [i|\n\n\nfoo = 42|] $ \diagnostics -> do
+  testDiagnostics "pylint" "test.py" Nothing [i|\n\n\nfoo = 42|] $ \diagnostics -> do
     assertDiagnosticRanges' diagnostics [
       (Range (Position 3 0) (Position 3 0), Nothing, "Final newline missing (C0304:missing-final-newline)")
       , (Range (Position 0 0) (Position 0 0), Nothing, "Missing module docstring (C0114:missing-module-docstring)")
       , (Range (Position 3 0) (Position 3 0), Nothing, "Disallowed name \"foo\" (C0104:disallowed-name)")
       ]
 
-  testDiagnostics "pyright" "test.py" [__i|\# pyright: strict
-                                           def f(x: int, y: str) -> None:
-                                             z = 1.0
-                                           f("asdf", 42)
-                                          |] $ \diagnostics -> do
+  testDiagnostics "pyright" "test.py" Nothing [__i|\# pyright: strict
+                                                   def f(x: int, y: str) -> None:
+                                                     z = 1.0
+                                                   f("asdf", 42)
+                                                  |] $ \diagnostics -> do
     assertDiagnosticRanges' diagnostics [
       (Range (Position 3 2) (Position 3 8), Just (InR "reportGeneralTypeIssues"), "Argument of type \"Literal['asdf']\" cannot be assigned to parameter \"x\" of type \"int\" in function \"f\"\n\160\160\"Literal['asdf']\" is incompatible with \"int\"")
       , (Range (Position 3 10) (Position 3 12), Just (InR "reportGeneralTypeIssues"), "Argument of type \"Literal[42]\" cannot be assigned to parameter \"y\" of type \"str\" in function \"f\"\n\160\160\"Literal[42]\" is incompatible with \"str\"")
@@ -64,10 +64,10 @@ tests = describe "Python 3" $ introduceNixEnvironment [kernelSpec] [] "Python 3"
       , (Range (Position 2 2) (Position 2 3), Just (InR "reportUnusedVariable"), "Variable \"z\" is not accessed")
       ]
 
-  testDiagnostics "pycodestyle" "test.py" [__i|def f(x: int, y: str) -> None:
-                                                 z = 1.0
-                                               f("asdf", 42)
-                                              |] $ \diagnostics -> do
+  testDiagnostics "pycodestyle" "test.py" Nothing [__i|def f(x: int, y: str) -> None:
+                                                         z = 1.0
+                                                       f("asdf", 42)
+                                                      |] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
 
 

@@ -23,7 +23,7 @@ statementsTests = describe "Statements" $ do
       ident <- openDoc filename "haskell"
       getHighlights ident (Position 0 1) >>= (`shouldBe` List documentHighlightResults)
 
-    testDiagnostics lsName "main.ipynb" statementsCode $ \diagnostics -> do
+    testDiagnostics lsName "main.ipynb" Nothing statementsCode $ \diagnostics -> do
       -- Note: normally the server wouldn't send empty diagnostics. But the statement inserts "= unsafePerformIO $ ",
       -- which causes it to emit a "redundant bracket" diagnostic, which then gets filtered out by untransformPosition
       diagnostics `shouldBe` []
@@ -33,7 +33,7 @@ statementsTests = describe "Statements" $ do
       ident <- openDoc filename "haskell"
       getHighlights ident (Position 0 1) >>= (`shouldBe` List documentHighlightResults)
 
-    testDiagnostics lsName "main.ipynb" statementsCodeMultiline $ \diagnostics -> do
+    testDiagnostics lsName "main.ipynb" Nothing statementsCodeMultiline $ \diagnostics -> do
       info [i|Got diagnostics: #{diagnostics}|]
       assertDiagnosticRanges diagnostics [(Range (Position 1 9) (Position 1 14), Just (InR "refact:Redundant bracket"))]
 

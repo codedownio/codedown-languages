@@ -31,13 +31,13 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
 
   testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
-  -- testDiagnostics "rust-analyzer" "test.rs" [__i|struct A { a: u8, b: u8 }
-  --                                                let a = A { a: 10 };
-  --                                               |] $ \diagnostics -> do
+  -- testDiagnostics "rust-analyzer" "test.rs" Nothing [__i|struct A { a: u8, b: u8 }
+  --                                                        let a = A { a: 10 };
+  --                                                       |] $ \diagnostics -> do
   --   info [i|Got diagnostics: #{diagnostics}|]
   --   return ()
 
-  -- testDiagnostics' "rust-analyzer" "src/main.rs" [__i|fn foo() {
+  -- testDiagnostics' "rust-analyzer" "src/main.rs" Nothing [__i|fn foo() {
 
   --                                                     }
 
@@ -48,10 +48,10 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
   --   info [i|Got diagnostics: #{diagnostics}|]
   --   return ()
 
-  testDiagnostics' "rust-analyzer" "src/main.rs" [__i|println!("Hello world");
-                                                      eprintln!("Hello error");
-                                                      format!("Hello {}", "world")
-                                                     |] extraFiles $ \diagnostics -> do
+  testDiagnostics' "rust-analyzer" "src/main.rs" Nothing [__i|println!("Hello world");
+                                                              eprintln!("Hello error");
+                                                              format!("Hello {}", "world")
+                                                             |] extraFiles $ \diagnostics -> do
     info [i|Got diagnostics: #{diagnostics}|]
     return ()
 

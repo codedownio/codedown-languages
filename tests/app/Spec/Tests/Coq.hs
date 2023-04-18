@@ -37,7 +37,7 @@ tests = describe "Coq" $ introduceNixEnvironment [kernelSpec] [] "Coq" $ introdu
                                                String "Inductive bool : Set :=  true : bool | false : bool."
                                                ]]
 
-  -- testDiagnostics "coq-lsp-server" "test.v" [i||] $ \diagnostics -> do
+  -- testDiagnostics "coq-lsp-server" "test.v" Nothing [i||] $ \diagnostics -> do
   --   assertDiagnosticRanges diagnostics []
 
 
