@@ -46,6 +46,7 @@ library
       RecordWildCards
       ViewPatterns
       NumericUnderscores
+      MultiWayIf
   ghc-options: -Wunused-packages -Wall
   build-depends:
       aeson
@@ -77,6 +78,7 @@ library
     , string-interpolate
     , temporary
     , text
+    , time
     , unliftio
     , unliftio-core
     , vector
@@ -123,6 +125,7 @@ executable tests-exe
       RecordWildCards
       ViewPatterns
       NumericUnderscores
+      MultiWayIf
   ghc-options: -Wunused-packages -Wall -threaded -rtsopts -with-rtsopts=-N
   build-tool-depends:
       sandwich:sandwich-discover

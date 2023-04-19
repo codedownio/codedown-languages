@@ -24,6 +24,7 @@ import Data.String.Interpolate
 import qualified Data.Text as T hiding (filter)
 import Data.Text hiding (filter)
 import qualified Data.Text.IO as T
+import Data.Time
 import GHC.Int
 import Language.LSP.Test
 import Language.LSP.Types
@@ -92,10 +93,16 @@ testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb =
   withRunInIO $ \runInIO ->
     runInIO $ withLspSession name filename codeToTest extraFiles $ do
       _ <- openDoc filename (fromMaybe name maybeLanguageId)
-      forever $ do
+
+      startTime <- liftIO getCurrentTime
+      fix $ \loop -> do
         diagnostics <- waitForDiagnostics
-        liftIO $ runInIO $ info [i|Got diagnostics: #{A.encode diagnostics}|]
-      liftIO $ runInIO $ cb []
+        liftIO (try (runInIO $ cb diagnostics)) >>= \case
+          Left (_ :: FailureReason) -> do
+            now <- liftIO getCurrentTime
+            if | (diffUTCTime now startTime) > (120 * 60 * 1000000) -> return ()
+               | otherwise -> loop
+          Right () -> return ()
 
 itHasHoverSatisfying :: LspContext ctx m => Text -> FilePath -> Maybe Text -> Text -> Position -> (Hover -> ExampleT ctx m ()) -> SpecFree ctx m ()
 itHasHoverSatisfying name filename maybeLanguageId codeToTest pos cb = it [i|#{name}: #{show codeToTest} (hover)|] $ do
@@ -160,8 +167,7 @@ withLspSession name filename codeToTest extraFiles session = do
            & set (workspace . _Just . didChangeConfiguration . _Just . dynamicRegistration) (Just False)
 
   handle (\(e :: SessionException) -> expectationFailure [i|LSP session failed with SessionException: #{e}|]) $ do
-    runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir $ do
-      session
+    runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir session
 
 assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired

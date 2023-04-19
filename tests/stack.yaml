@@ -1,5 +1,5 @@
 
-resolver: lts-20.17
+resolver: lts-20.18
 
 nix:
   enable: false

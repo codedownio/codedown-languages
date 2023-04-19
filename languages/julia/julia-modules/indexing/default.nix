@@ -9,8 +9,6 @@ packageNames:
 let
   juliaWithPackages = callPackage ../. { precompile = false; };
 
-  dependencyUuidToInfo = (juliaWithPackages packageNames).dependencyUuidToInfo;
-
   juliaSymbolServer = juliaWithPackages (["SymbolServer"] ++ packageNames);
 
   symbolStoreNix = runCommand "julia-indexes.nix" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml]))]; } ''
@@ -18,7 +16,7 @@ let
     symbolServerSource=$(dirname "$indexpackage")
 
     python ${./index_packages.py} \
-      "${dependencyUuidToInfo}" \
+      "${(juliaWithPackages packageNames).dependencyUuidToInfoYaml}" \
       '${lib.generators.toJSON {} packageNames}' \
       "${juliaSymbolServer}/bin/julia" \
       "$symbolServerSource" \

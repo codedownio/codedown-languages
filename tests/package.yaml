@@ -21,6 +21,7 @@ default-extensions:
 - RecordWildCards
 - ViewPatterns
 - NumericUnderscores
+- MultiWayIf
 
 ghc-options:
 - -Wunused-packages
@@ -62,6 +63,7 @@ library:
   - retry
   - safe
   - temporary
+  - time
   - unliftio
 
 executables:
