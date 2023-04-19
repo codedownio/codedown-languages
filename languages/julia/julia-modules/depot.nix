@@ -48,7 +48,7 @@ runCommand "julia-depot" {
   # and the packageImplications. We're using the full closure YAML here since
   # it's available, which is slightly weird, but it should work just as well
   # for finding the extra packages we need to add
-  python ${./find_package_implications.py} "${closureYaml}" '${lib.generators.toJSON {} packageImplications}' extra_package_names.txt
+  python ${./python}/find_package_implications.py "${closureYaml}" '${lib.generators.toJSON {} packageImplications}' extra_package_names.txt
 
   julia -e ' \
     import Pkg

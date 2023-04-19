@@ -5,6 +5,7 @@
 
 , augmentedRegistry
 , packageNames
+, packageOverrides
 , packageImplications
 }:
 
@@ -45,6 +46,16 @@ let
     import Pkg.Operations: _resolve, assert_can_add, update_package_add
 
     foreach(handle_package_input!, pkgs)
+
+    # The handle_package_input! call above clears pkg.path, so we have to appy package overrides after
+    overrides = Dict{String, String}(${builtins.concatStringsSep ", " (lib.mapAttrsToList (name: path: ''"${name}" => "${path}"'') packageOverrides)})
+    println("Package overrides: ")
+    println(overrides)
+    for pkg in pkgs
+      if pkg.name in keys(overrides)
+        pkg.path = overrides[pkg.name]
+      end
+    end
 
     project_deps_resolve!(ctx.env, pkgs)
     registry_resolve!(ctx.registries, pkgs)
@@ -88,9 +99,9 @@ let
 
     open(ENV["out"], "w") do io
       for spec in pkgs
-          println(io, "- name: " * spec.name)
-          println(io, "  uuid: " * string(spec.uuid))
-          println(io, "  version: " * string(spec.version))
+        println(io, "- name: " * spec.name)
+        println(io, "  uuid: " * string(spec.uuid))
+        println(io, "  version: " * string(spec.version))
       end
     end
   '';
@@ -111,7 +122,7 @@ runCommand "julia-package.yml" { buildInputs = [julia (python3.withPackages (ps:
 
   # See if we need to add any extra package names based on the closure
   # and the packageImplications
-  python ${./find_package_implications.py} "$out" '${lib.generators.toJSON {} packageImplications}' extra_package_names.txt
+  python ${./python}/find_package_implications.py "$out" '${lib.generators.toJSON {} packageImplications}' extra_package_names.txt
 
   if [ -f extra_package_names.txt ]; then
     echo "Re-resolving with additional package names"
