@@ -22,6 +22,11 @@
 packageNames:
 
 let
+  util = callPackage ./util.nix {};
+
+in
+
+let
   # Special registry which is equal to JuliaRegistries/General, but every Versions.toml
   # entry is augmented with a Nix sha256 hash
   augmentedRegistry = callPackage ./registry.nix {};
@@ -56,23 +61,11 @@ let
   };
 
   # Invoke Julia resolution logic to determine the full dependency closure
-  packageOverridesRepoified = lib.mapAttrs repoifySimple packageOverrides;
+  packageOverridesRepoified = lib.mapAttrs util.repoifySimple packageOverrides;
   closureYaml = callPackage ./package-closure.nix {
     inherit augmentedRegistry julia packageNames packageImplications;
     packageOverrides = packageOverridesRepoified;
   };
-  repoifySimple = name: path: runCommand ''${name}-repoified'' {buildInputs = [git];} ''
-    mkdir -p $out
-    cp -r ${path}/. $out
-    cd $out
-    chmod -R u+w .
-    rm -rf .git
-    git init
-    git add . -f
-    git config user.email "julia2nix@localhost"
-    git config user.name "julia2nix"
-    git commit -m "Dummy commit"
-  '';
 
   # Generate a Nix file consisting of a map from dependency UUID --> package info with fetchgit call:
   # {
@@ -103,20 +96,7 @@ let
   dependencyUuidToInfo = import dependencies { inherit fetchgit; };
   fillInOverrideSrc = uuid: info:
     if lib.hasAttr info.name packageOverrides then (info // { src = lib.getAttr info.name packageOverrides; }) else info;
-  repoify = uuid: info:
-    runCommand ''julia-${info.name}-${info.version}'' {buildInputs = [git];} ''
-      mkdir -p $out
-      cp -r ${info.src}/. $out
-      cd $out
-      chmod -R u+w .
-      rm -rf .git
-      git init
-      git add . -f
-      git config user.email "julia2nix@localhost"
-      git config user.name "julia2nix"
-      git commit -m "Dummy commit"
-    '';
-  dependencyUuidToRepo = lib.mapAttrs repoify (lib.mapAttrs fillInOverrideSrc dependencyUuidToInfo);
+  dependencyUuidToRepo = lib.mapAttrs util.repoifyInfo (lib.mapAttrs fillInOverrideSrc dependencyUuidToInfo);
   dependencyUuidToRepoYaml = writeTextFile {
     name = "dependency-uuid-to-repo.yml";
     text = lib.generators.toYAML {} dependencyUuidToRepo;

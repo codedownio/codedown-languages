@@ -26,21 +26,12 @@ let
     }
   ];
 
-  packageOverrides = {
-    "LanguageServer" = fetchFromGitHub {
-      owner = "julia-vscode";
-      repo = "LanguageServer.jl";
-      rev = "bbaae16bbf9a2ff7a30588a5bc8ba00b2cd58d5a";
-      sha256 = "0icxss8dzmwlwk4xy4bwxbx9kzn8gmqi6wazivcr7z97gxyihfvn";
-    };
-  };
-
   baseCandidates = rec {
     julia = julia18;
 
-    julia16 = juliaWithPackages.override { inherit packageOverrides; julia = julia_16-bin; };
+    julia16 = juliaWithPackages.override { julia = julia_16-bin; };
 
-    julia18 = juliaWithPackages.override { inherit packageOverrides; julia = julia_18; };
+    julia18 = juliaWithPackages.override { julia = julia_18; };
   };
 
   packageSet = lib.listToAttrs (map (x: {
