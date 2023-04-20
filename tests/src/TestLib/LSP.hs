@@ -101,7 +101,7 @@ testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb =
           Left (x :: FailureReason) -> do
             warn [i|testDiagnostics'' failure: #{x}|]
             now <- liftIO getCurrentTime
-            if | (diffUTCTime now startTime) > (120 * 60 * 1000000) -> return ()
+            if | (diffUTCTime now startTime) > (120 * 60 * 1_000_000) -> return ()
                | otherwise -> loop
           Right () -> return ()
 
