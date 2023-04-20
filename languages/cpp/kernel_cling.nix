@@ -1,38 +1,49 @@
 { lib
-, callPackage
 , blas
-, python3Packages
+, callPackage
+, gnused
+, makeWrapper
+, python3
+, runCommand
 
 , attrs
 , extensions
+, logo64
+, std
+
+, metaOnly
 }:
 
 with lib;
 
 let
+  cling = callPackage ./cling {};
+
   common = callPackage ../common.nix {};
 
-  clingKernel = python3Packages.buildPythonApplication {
-    pname = "jupyter-cling-kernel";
-    version = "0.9";
-    src = "${cling}/share/cling/Jupyter/kernel";
-    propagatedBuildInputs = with python3Packages; [ipykernel traitlets cling];
-  };
+  python = python3.withPackages (ps: with ps; [ipykernel traitlets]);
+
+  pythonWrapped = runCommand "python-cling-wrapped" { buildInputs = [makeWrapper]; } ''
+    mkdir -p $out/bin
+    makeWrapper ${python}/bin/python $out/bin/python \
+      --prefix PATH ":" ${cling.unwrapped}/bin \
+      --prefix PATH ":" ${gnused}/bin
+  '';
 
 in
 
-displayName: std: attrName: logo64: common.makeJupyterKernel (
+displayName: attrName: common.makeJupyterKernel (
   listToAttrs [{
     name = attrName;
     value = {
       displayName = displayName;
       argv =
-        # ["${clingKernel}/bin/jupyter-cling-kernel"]
-        ["${xeusStuff.xeusCling}/bin/xcpp"]
-        ++ cling.flags
+        [
+          "${pythonWrapped}/bin/python"
+          "${cling.unwrapped}/share/Jupyter/kernel/clingkernel.py"
+        ]
+        # ++ cling.flags
         ++ [
-          "-resource-dir" "${cling}"
-
           # Be able to use libraries installed by Nix
           # "-I" "/home/user/.nix-profile/include"
           # "-L" "/home/user/.nix-profile/lib"
@@ -43,10 +54,11 @@ displayName: std: attrName: logo64: common.makeJupyterKernel (
           # "-L" "${xeusMisc.liblapackShared}/lib"
           # "-L" "${blas}/lib"
         ]
-        ++ [
-          "-f" "{connection_file}"
-          "--std=${std}"
-        ];
+        # ++ [
+        #   "-f" "{connection_file}"
+        #   "--std=${std}"
+        # ]
+      ;
       language = attrName;
       logo32 = null;
       logo64 = logo64;
@@ -56,9 +68,7 @@ displayName: std: attrName: logo64: common.makeJupyterKernel (
           priority = 1;
         };
       };
-      env = {
-        # "JUPYTER_CLING_KERNEL" = "${clingKernel}";
-      };
+      env = {};
     };
   }]
 )

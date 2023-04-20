@@ -5,6 +5,10 @@
 
 , attrs
 , extensions
+, logo64
+, std
+
+, metaOnly
 }:
 
 with lib;
@@ -25,7 +29,7 @@ let
 
 in
 
-displayName: std: attrName: logo64: common.makeJupyterKernel (
+displayName: attrName: common.makeJupyterKernel (
   listToAttrs [{
     name = attrName;
     value = {

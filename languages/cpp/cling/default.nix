@@ -81,6 +81,11 @@ let
       # "--trace-expand"
     ];
 
+    postInstall = ''
+      mkdir -p $out/share/Jupyter
+      cp -r /build/clang/tools/cling/tools/Jupyter/kernel $out/share/Jupyter
+    '';
+
     meta = with lib; {
       description = "The Interactive C++ Interpreter";
       homepage = "https://root.cern/cling/";
@@ -116,7 +121,7 @@ let
   compilerIncludeFlags = runCommand "compiler-include-flags.txt" {} ''
     export LC_ALL=C
     ${stdenv.cc}/bin/c++ -xc++ -E -v /dev/null 2>&1 | sed -n -e '/^.include/,''${' -e '/^ \/.*++/p' -e '}' > tmp
-    sed -e 's/^/-isystem /' -i tmp
+    sed -e 's/^/-cxx-isystem /' -i tmp
     tr '\n' ' ' < tmp > $out
   '';
 

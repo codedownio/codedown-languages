@@ -59,6 +59,9 @@ if cling == null then {} else
         icon = getAttr x icons;
       };
 
+      logo64 = getAttr x icons;
+      std = getAttr x stds;
+
     in {
       name = x;
       value = rec {
@@ -78,10 +81,13 @@ if cling == null then {} else
           symlinkJoin {
             name = x;
             paths = [
-              cling
-              ((callPackage ./kernel_xeus.nix { inherit attrs extensions; }) (getAttr x displayNames) (getAttr x stds) x (getAttr x icons)) # TODO: pass the other args normally
+              ((callPackage ./kernel_cling.nix { inherit attrs extensions logo64 std metaOnly; }) (getAttr x displayNames) x)
+              # ((callPackage ./kernel_xeus.nix { inherit attrs extensions logo64 std metaOnly; }) (getAttr x displayNames) x)
               (callPackage ./mode_info.nix { inherit attrs extensions; })
-            ];
+            ]
+            ++ (if metaOnly then [] else [cling])
+            ;
+
             passthru = {
               inherit meta packageOptions languageServerOptions;
               args = args // { baseName = x; };
