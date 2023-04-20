@@ -61,6 +61,18 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
+      name = "julia16";
+      channel = "codedown";
+      args = {
+        packages = ["JSON3" "Plots"];
+        # languageServers = ["LanguageServer"];
+        # settings = {
+        #     "LanguageServer.index" = true;
+        # };
+      };
+    })
+
+    ({
       name = "haskell-ghc8107";
       channel = "codedown";
       args = {
