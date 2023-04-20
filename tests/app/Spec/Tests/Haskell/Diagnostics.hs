@@ -13,8 +13,10 @@ import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Types
 import Language.LSP.Types.Lens hiding (diagnostics)
+import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
 import TestLib.LSP
+import TestLib.NixEnvironmentContext
 
 
 diagnosticsTests :: (
@@ -22,8 +24,8 @@ diagnosticsTests :: (
   ) => Text -> SpecFree context m ()
 diagnosticsTests lsName = describe "Diagnostics" $ do
   testDiagnostics lsName "Foo.hs" Nothing [__i|module Foo where
-                                       foo = bar
-                                      |] $ \diagnostics -> do
+                                               foo = bar
+                                              |] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
   testDiagnostics lsName "Foo.hs" Nothing etaExpandCode $ \diagnostics -> do
@@ -72,3 +74,8 @@ etaExpandCode = [__i|module Foo where
                      baz2 :: Int -> Int
                      baz2 x = baz x
                     |]
+
+main :: IO ()
+main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
+  introduceNixEnvironment [kernelSpec "haskell-ghc924"] [] "Haskell" $
+    diagnosticsTests lsName
