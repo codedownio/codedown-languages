@@ -44,7 +44,9 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
         nothing, ${if settings.index then ''"${juliaIndices packageNames}"'' else "nothing"}, false
       ); server.runlinter = true; run(server);''
   ];
-  env = {};
+  env = {} // (lib.optionals settings.debug {
+    "JULIA_DEBUG" = "LanguageServer";
+  });
 
   # Necessary because LanguageServer.jl cares about this value
   # (does different things if it's in ["markdown", "juliamarkdown"])

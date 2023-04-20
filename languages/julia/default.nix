@@ -24,6 +24,13 @@ let
       type = "boolean";
       defaultValue = true;
     }
+    {
+      target = "LanguageServer.debug";
+      title = "LanguageServer: stderr debugging";
+      description = "Set log level to debug for stderr output.";
+      type = "boolean";
+      defaultValue = true;
+    }
   ];
 
   baseCandidates = rec {
