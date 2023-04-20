@@ -158,7 +158,8 @@ withLspSession name filename codeToTest extraFiles session = do
   let cleanEnv = [(k, v) | (k, v) <- env, k /= "PATH", k /= "HOME", k /= "GHC_PACKAGE_PATH"]
   let finalEnv = ("HOME", homeDir) : cleanEnv
   info [i|finalEnv: #{finalEnv}|]
-  let modifyCp cp = cp { env = Just [] } -- Just finalEnv
+  let modifyCp cp = cp { env = Just [] -- Just finalEnv
+                       , cwd = Just homeDir }
 
   -- We don't support certain server-to-client requests, since the waitForDiagnostics doesn't handle them
   let caps = fullCaps
