@@ -31,8 +31,10 @@ juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kerne
   testKernelStdout lang [i|println("hi")|] "hi\n"
 
   describe "LSP" $ do
-    -- TODO: try this with retry, it might be working now
     testDiagnostics lsName "test.jl" (Just "julia") [i|printlnzzzz("HI")\n\n|] $ \diagnostics -> do
+      assertDiagnosticRanges' diagnostics [(Range (Position 0 0) (Position 0 11), Nothing, "Missing reference: printlnzzzz")]
+
+    testDiagnostics lsName "test.jl" (Just "julia") [i|printlnzzzz("HI")|] $ \diagnostics -> do
       assertDiagnosticRanges' diagnostics [(Range (Position 0 0) (Position 0 11), Nothing, "Missing reference: printlnzzzz")]
 
     itHasHoverSatisfying lsName "test.jl" Nothing [__i|print("hi")|] (Position 0 2) $ \hover -> do
