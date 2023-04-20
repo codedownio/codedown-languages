@@ -38,11 +38,11 @@ with lib;
     packages = map (name: {
       inherit name;
       meta = attrByPath [name "meta"] null x.passthru.packageOptions;
-    }) x.passthru.args.packages;
+    }) (x.passthru.args.packages or []);
     language_servers = map (name: {
       inherit name;
       meta = attrByPath [name "meta"] null x.passthru.languageServerOptions;
-    }) x.passthru.args.languageServers;
+    }) (x.passthru.args.languageServers or []);
     settings_schema = attrByPath ["passthru" "settingsSchema"] null x;
     settings = attrByPath ["passthru" "settings"] null x;
   }) kernels;
