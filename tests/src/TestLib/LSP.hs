@@ -98,7 +98,8 @@ testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb =
       fix $ \loop -> do
         diagnostics <- waitForDiagnostics
         liftIO (try (runInIO $ cb diagnostics)) >>= \case
-          Left (_ :: FailureReason) -> do
+          Left (x :: FailureReason) -> do
+            warn [i|testDiagnostics'' failure: #{x}|]
             now <- liftIO getCurrentTime
             if | (diffUTCTime now startTime) > (120 * 60 * 1000000) -> return ()
                | otherwise -> loop
