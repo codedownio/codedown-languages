@@ -54,7 +54,7 @@ runCommand "julia-depot" {
     import Pkg
     Pkg.Registry.add(Pkg.RegistrySpec(path="${registry}"))
 
-    input::Vector{String} = ${lib.generators.toJSON {} packageNames}
+    input = ${lib.generators.toJSON {} packageNames} ::Vector{String}
 
     if isfile("extra_package_names.txt")
       append!(input, readlines("extra_package_names.txt"))
