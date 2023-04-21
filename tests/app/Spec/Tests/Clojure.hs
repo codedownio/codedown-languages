@@ -3,6 +3,7 @@
 module Spec.Tests.Clojure (tests) where
 
 import Data.String.Interpolate
+import Language.LSP.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -31,7 +32,7 @@ tests = describe "Clojure" $ introduceNixEnvironment [kernelSpec] [] "Clojure" $
   testKernelStdout "clojure" [__i|(println "hi")|] "hi\n"
 
   testDiagnostics "clojure-lsp" "test.clj" Nothing [__i|(foo 42)|] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics []
+    assertDiagnosticRanges diagnostics [(Range (Position 0 1) (Position 0 4), Just (InR "unresolved-symbol"))]
 
 
 main :: IO ()
