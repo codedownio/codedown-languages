@@ -27,9 +27,9 @@ let
     {
       target = "LanguageServer.debug";
       title = "LanguageServer: stderr debugging";
-      description = "Set log level to debug for stderr output.";
+      description = "Log debug messages to stderr.";
       type = "boolean";
-      defaultValue = true;
+      defaultValue = false;
     }
   ];
 
