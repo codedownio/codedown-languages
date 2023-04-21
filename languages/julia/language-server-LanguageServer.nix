@@ -22,7 +22,7 @@ in
 common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-LanguageServerJl.yaml" (lib.generators.toYAML {} [{
   name = "LanguageServer";
   display_name = "LanguageServer.jl";
-  description = "TODO";
+  description = "An implementation of the Microsoft Language Server Protocol for the Julia language";
   icon = ./logo-64x64.png;
   extensions = ["jl"];
   notebook_suffix = ".jl";
