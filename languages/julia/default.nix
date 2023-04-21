@@ -33,12 +33,21 @@ let
     }
   ];
 
+  packageOverrides = {
+    "LanguageServer" = fetchFromGitHub {
+      owner = "thomasjm";
+      repo = "LanguageServer.jl";
+      rev = "c600f8a6089da45968640a28a4604487ff81834f";
+      sha256 = "1f51q2sm7xvcya6pwsiqd0rf1pl3w50cfgc089mavnnnyjv42gs8";
+    };
+  };
+
   baseCandidates = rec {
     julia = julia18;
 
-    julia16 = juliaWithPackages.override { julia = julia_16-bin; };
+    julia16 = juliaWithPackages.override { inherit packageOverrides; julia = julia_16-bin; };
 
-    julia18 = juliaWithPackages.override { julia = julia_18; };
+    julia18 = juliaWithPackages.override { inherit packageOverrides; julia = julia_18; };
   };
 
   packageSet = lib.listToAttrs (map (x: {
