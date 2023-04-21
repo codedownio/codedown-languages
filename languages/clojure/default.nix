@@ -80,16 +80,3 @@ listToAttrs (map (x:
   }
 
 ) (filter (x: (common.hasAttrSafe x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates))
-
-
-  # languageServer = writeTextDir "lib/codedown/language-servers/clojure.yaml" (lib.generators.toYAML {} [{
-  #   name = "clojure";
-  #   extensions = ["clj"];
-  #   attrs = ["clojure"];
-  #   type = "stream";
-  #   args = ["${clojure-lsp}/bin/clojure-lsp"];
-  #   initialization_options = {
-  #     "src-paths" = ["/home/user" "/home/user/src" "/home/user/test"];
-  #   };
-  #   notebook_suffix = ".clj";
-  # }]);
