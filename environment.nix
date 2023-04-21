@@ -55,7 +55,7 @@ codedown.mkCodeDownEnvironment {
         languageServers = ["LanguageServer"];
         settings = {
             "LanguageServer.index" = true;
-            "LanguageServer.debug" = true;
+            "LanguageServer.debug" = false;
         };
       };
     })

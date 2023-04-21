@@ -44,7 +44,7 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
         nothing, ${if settings.index then ''"${juliaIndices packageNames}"'' else "nothing"}, false
       ); server.runlinter = true; run(server);''
   ];
-  env = {} // (lib.optionals settings.debug {
+  env = {} // (lib.optionalAttrs settings.debug {
     "JULIA_DEBUG" = "LanguageServer";
   });
 
