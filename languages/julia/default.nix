@@ -37,8 +37,8 @@ let
     "LanguageServer" = fetchFromGitHub {
       owner = "thomasjm";
       repo = "LanguageServer.jl";
-      rev = "c600f8a6089da45968640a28a4604487ff81834f";
-      sha256 = "1f51q2sm7xvcya6pwsiqd0rf1pl3w50cfgc089mavnnnyjv42gs8";
+      rev = "3ddfffefb2d1d384d40ec90c81d73013448a0c46";
+      sha256 = "0giaihi90imfdv4jh2l0jm1hkfdj5nzg108kvncmkciizw3b02ik";
     };
   };
 
