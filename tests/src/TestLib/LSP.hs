@@ -13,11 +13,13 @@ import Control.Monad.Logger
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.Aeson as A
 import Data.Aeson.TH as A
+import Data.Bifunctor
 import qualified Data.ByteString as B
 import Data.Default
 import Data.Function
 import qualified Data.List as L
 import Data.Map (Map)
+import qualified Data.Map as M
 import Data.Maybe
 import qualified Data.Set as S
 import Data.String.Interpolate
@@ -155,10 +157,12 @@ withLspSession name filename codeToTest extraFiles session = do
                           }
 
   env <- getEnvironment
-  let cleanEnv = [(k, v) | (k, v) <- env, k /= "PATH", k /= "HOME", k /= "GHC_PACKAGE_PATH"]
-  let finalEnv = ("HOME", homeDir) : cleanEnv
-  info [i|finalEnv: #{finalEnv}|]
-  let modifyCp cp = cp { env = Just [] -- Just finalEnv
+  -- let cleanEnv = [(k, v) | (k, v) <- env, k /= "PATH", k /= "HOME", k /= "GHC_PACKAGE_PATH"]
+  let cleanEnv = [(k, v) | (k, v) <- env, k /= "GHC_PACKAGE_PATH"]
+  let configEnv = maybe mempty (fmap (first T.unpack . second T.unpack) . M.toList) (lspConfigEnv config)
+  let finalEnv = ("HOME", homeDir) : (configEnv <> cleanEnv)
+  info [i|Language server environment: #{finalEnv}|]
+  let modifyCp cp = cp { env = Just finalEnv
                        , cwd = Just homeDir }
 
   -- We don't support certain server-to-client requests, since the waitForDiagnostics doesn't handle them
