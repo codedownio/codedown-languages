@@ -17,6 +17,9 @@ import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 
+-- import Data.Aeson as A
+-- import TestLib.Util
+
 
 tests :: TopSpec
 tests = do
@@ -70,6 +73,9 @@ kernelSpec lang = NixKernelSpec {
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Nothing
+  -- , nixKernelSettings = Just (aesonFromList [
+  --                                ("LanguageServer.debug", A.Bool True)
+  --                                ])
   }
 
 main :: IO ()

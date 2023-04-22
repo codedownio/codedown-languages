@@ -4,6 +4,7 @@ module TestLib.Util where
 
 import Control.Monad.Catch (MonadThrow)
 import Control.Monad.IO.Unlift
+import Data.Aeson (Value)
 import Data.String.Interpolate
 import Data.Text as T
 import System.FilePath
@@ -35,4 +36,12 @@ aesonLookup = HM.lookup . A.fromText
 #else
 aesonLookup :: (Eq k, Hashable k) => k -> HM.HashMap k v -> Maybe v
 aesonLookup = HM.lookup
+#endif
+
+#if MIN_VERSION_aeson(2,0,0)
+aesonFromList :: [(Text, Value)] -> HM.KeyMap Value
+aesonFromList xs = HM.fromList [(A.fromText k, v) | (k, v) <- xs]
+#else
+aesonFromList :: (Eq k, Hashable k) => [(Text, Value)] -> HM.HashMap A.Key v
+aesonFromList = HM.fromList
 #endif
