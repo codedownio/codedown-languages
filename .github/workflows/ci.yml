@@ -27,20 +27,7 @@ jobs:
         export NIX_PATH=nixpkgs=$(nix eval --raw .#nixpkgsPath.x86_64-linux)
         export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
         echo "Got path: $PATH"
-        stack run --nix --no-nix-pure -- --print
-
-    # - name: Build tests
-    #   run: |
-    #     cd tests
-    #     nix build
-
-    # - name: Run tests
-    #   run: |
-    #     cd tests
-
-    #     export NIX_PATH=nixpkgs=$(nix eval --raw .#nixpkgsPath.x86_64-linux)
-
-    #     ./result/bin/tests-exe \
-    #       --print-failures \
-    #       --fixed-root $TEST_ROOT
-    #     # --markdown-summary $GITHUB_STEP_SUMMARY
+        stack run --nix --no-nix-pure -- \
+          --print \
+          --fixed-root "$TEST_ROOT" \
+          --markdown-summary "$GITHUB_STEP_SUMMARY"
