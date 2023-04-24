@@ -24,6 +24,12 @@ jobs:
     - name: Build tests
       run: |
         cd tests
+
+        export NIX_PATH=nixpkgs=$(nix eval --raw .#nixpkgsPath.x86_64-linux)
+
+        export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
+        echo "Got path: $PATH"
+
         stack install --nix --no-nix-pure
 
     - name: Run tests
@@ -31,9 +37,6 @@ jobs:
         cd tests
 
         export NIX_PATH=nixpkgs=$(nix eval --raw .#nixpkgsPath.x86_64-linux)
-
-        export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
-        echo "Got path: $PATH"
 
         tests-exe \
           --print \
