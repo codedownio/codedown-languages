@@ -38,6 +38,9 @@ jobs:
 
         export NIX_PATH=nixpkgs=$(nix eval --raw .#nixpkgsPath.x86_64-linux)
 
+        export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
+        echo "Got path: $PATH"
+
         stack run --nix --no-nix-pure -- \
           --print-failures \
           --fixed-root "$TEST_ROOT" \
