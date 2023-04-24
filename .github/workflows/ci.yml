@@ -21,13 +21,21 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Run tests with Stack
+    - name: Build tests
       run: |
         cd tests
+        stack install --nix --no-nix-pure
+
+    - name: Run tests
+      run: |
+        cd tests
+
         export NIX_PATH=nixpkgs=$(nix eval --raw .#nixpkgsPath.x86_64-linux)
+
         export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
         echo "Got path: $PATH"
-        stack run --nix --no-nix-pure -- \
+
+        tests-exe \
           --print \
           --fixed-root "$TEST_ROOT" \
           --markdown-summary "$GITHUB_STEP_SUMMARY"
