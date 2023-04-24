@@ -48,7 +48,7 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
   --   info [i|Got diagnostics: #{diagnostics}|]
   --   return ()
 
-  testDiagnostics' "rust-analyzer" "src/main.rs" Nothing [__i|println!("Hello world");
+  testDiagnostics' "rust-analyzer" "src/test.rs" Nothing [__i|println!("Hello world");
                                                               eprintln!("Hello error");
                                                               format!("Hello {}", "world")
                                                              |] extraFiles $ \diagnostics -> do
@@ -63,11 +63,8 @@ extraFiles = [
                       version = "0.1.0"
                       edition = "2018"
                      |])
-  , ("src/main.rs", [__i|fn main() {
-                             println!("Hello, world!");
-                         }
+  , ("src/main.rs", [__i|mod test;
                         |])
-
   ]
 
 main :: IO ()
