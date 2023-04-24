@@ -38,7 +38,7 @@ jobs:
 
         export NIX_PATH=nixpkgs=$(nix eval --raw .#nixpkgsPath.x86_64-linux)
 
-        tests-exe \
+        .local/bin/tests-exe \
           --print \
           --fixed-root "$TEST_ROOT" \
           --markdown-summary "$GITHUB_STEP_SUMMARY"
