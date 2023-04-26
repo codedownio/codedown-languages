@@ -10,8 +10,22 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  allLanguageServerOptions = rust: kernelName: {
-    rust-analyzer = callPackage ./language_server_rust_analyzer/config.nix { inherit rust kernelName; };
+  settingsSchema = [
+    # rust-analyzer.
+    {
+      target = "rust-analyzer.debug";
+      title = "Rust-analyzer: enable debug output";
+      description = "Print verbose debug output.";
+      type = "boolean";
+      defaultValue = false;
+    }
+  ];
+
+  allLanguageServerOptions = rust: kernelName: focusedSettings: {
+    rust-analyzer = callPackage ./language_server_rust_analyzer/config.nix {
+      inherit rust kernelName;
+      settings = focusedSettings;
+    };
   };
 
   # Note: update this when the base Nixpkgs is bumped
@@ -49,7 +63,7 @@ listToAttrs (map (x:
       packageOptions = rustPackages;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = allLanguageServerOptions rust "rust";
+      languageServerOptions = allLanguageServerOptions rust "rust" (common.makeDefaultSettings settingsSchema);
       languageServerSearch = common.searcher languageServerOptions;
 
       build = args@{
@@ -57,8 +71,11 @@ listToAttrs (map (x:
         , languageServers ? []
         , attrs ? [x "rust"]
         , extensions ? ["rs" "rlib"]
+        , settings ? {}
         , metaOnly ? false
-      }: symlinkJoin {
+      }: let
+        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+      in symlinkJoin {
         name = "rust";
 
         paths = [
@@ -76,7 +93,7 @@ listToAttrs (map (x:
         ]
         ++ (if metaOnly then [] else [
           rustPackages.rustc rustPackages.cargo pkgs.gcc
-          (map (y: builtins.getAttr y (allLanguageServerOptions rust x)) languageServers)
+          (map (y: builtins.getAttr y (allLanguageServerOptions rust x (common.focusSettings "rust-analyzer." settingsToUse))) languageServers)
         ]);
 
         passthru = {

@@ -2,6 +2,7 @@
 
 module Spec.Tests.Rust (tests) where
 
+import Data.Aeson as A
 import Data.ByteString
 import Data.String.Interpolate
 import Test.Sandwich as Sandwich
@@ -10,20 +11,8 @@ import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Util
 
-
-kernelSpec:: NixKernelSpec
-kernelSpec = NixKernelSpec {
-  nixKernelName = "rust"
-  , nixKernelChannel = "codedown"
-  , nixKernelDisplayName = Just "Rust"
-  , nixKernelPackages = []
-  , nixKernelLanguageServers = [nameOnly "rust-analyzer"]
-  , nixKernelExtraJupyterConfig = Nothing
-  , nixKernelMeta = Nothing
-  , nixKernelIcon = Nothing
-  , nixKernelSettings = Nothing
-  }
 
 tests :: TopSpec
 tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ introduceJupyterRunner $ do
@@ -48,12 +37,19 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
   --   info [i|Got diagnostics: #{diagnostics}|]
   --   return ()
 
-  testDiagnostics' "rust-analyzer" "src/test.rs" Nothing [__i|println!("Hello world");
-                                                              eprintln!("Hello error");
-                                                              format!("Hello {}", "world")
-                                                             |] extraFiles $ \diagnostics -> do
+  testDiagnostics' "rust-analyzer" "main.ipynb" Nothing [__i|println!("Hello world");
+                                                             eprintln!("Hello error");
+                                                             format!("Hello {}", "world")
+                                                            |] extraFiles $ \diagnostics -> do
     info [i|Got diagnostics: #{diagnostics}|]
     return ()
+
+  -- testDiagnostics' "rust-analyzer" "test.rs" Nothing [__i|println!("Hello world");
+  --                                                         eprintln!("Hello error");
+  --                                                         format!("Hello {}", "world")
+  --                                                        |] extraFiles $ \diagnostics -> do
+  --   info [i|Got diagnostics: #{diagnostics}|]
+  --   return ()
 
 
 extraFiles :: [(FilePath, ByteString)]
@@ -62,10 +58,27 @@ extraFiles = [
                       name = "rust_test"
                       version = "0.1.0"
                       edition = "2018"
+
+                      [lib]
+                      path = "./lib.rs"
                      |])
-  , ("src/main.rs", [__i|mod test;
-                        |])
+  , ("lib.rs", [__i|mod main;|])
   ]
+
+kernelSpec:: NixKernelSpec
+kernelSpec = NixKernelSpec {
+  nixKernelName = "rust"
+  , nixKernelChannel = "codedown"
+  , nixKernelDisplayName = Just "Rust"
+  , nixKernelPackages = []
+  , nixKernelLanguageServers = [nameOnly "rust-analyzer"]
+  , nixKernelExtraJupyterConfig = Nothing
+  , nixKernelMeta = Nothing
+  , nixKernelIcon = Nothing
+  , nixKernelSettings = Just (aesonFromList [
+                                 ("rust-analyzer.debug", A.Bool True)
+                                 ])
+  }
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
