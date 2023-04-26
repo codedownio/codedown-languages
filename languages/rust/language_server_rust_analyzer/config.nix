@@ -1,5 +1,6 @@
 { lib
 , callPackage
+, coreutils
 , fetchFromGitHub
 , runCommand
 , stdenv
@@ -69,7 +70,7 @@ let
       ];
     };
     env = {
-
+      "PATH" = lib.makeBinPath [coreutils rust.packages.stable.cargo];
     };
   };
 
