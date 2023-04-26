@@ -95,6 +95,7 @@ testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb =
   withRunInIO $ \runInIO ->
     runInIO $ withLspSession name filename codeToTest extraFiles $ do
       _ <- openDoc filename (fromMaybe name maybeLanguageId)
+      -- _ <- openDoc' filename (fromMaybe name maybeLanguageId) codeToTest
 
       startTime <- liftIO getCurrentTime
       fix $ \loop -> do
@@ -151,6 +152,7 @@ withLspSession name filename codeToTest extraFiles session = do
 
   createDirectoryIfMissing True (dataDir </> takeDirectory filename)
 
+  -- Comment this and use openDoc' above to simulate an unsaved document
   liftIO $ T.writeFile (dataDir </> filename) codeToTest
 
   let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
