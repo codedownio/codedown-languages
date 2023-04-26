@@ -17,13 +17,13 @@ with lib;
 let
   common = callPackage ../../common.nix {};
 
-  # rnlsSrc = fetchFromGitHub {
-  #   owner = "codedownio";
-  #   repo = "rust-notebook-language-server";
-  #   rev = "d80e47a03ea8bce6c186463d4220fea91475cc51";
-  #   sha256 = "14j8cc29ahjbq3m7a4g0939sv3mhb0skhy18r663lky5grkiw6aw";
-  # };
-  rnlsSrc = /home/tom/tools/rust-notebook-language-server;
+  rnlsSrc = fetchFromGitHub {
+    owner = "codedownio";
+    repo = "rust-notebook-language-server";
+    rev = "f64fc377db592ef64ead6f8a34fd483f0846846e";
+    sha256 = "06lvi4yd37dlbvf2n8whq6hfjw5m5532x0fg17yv0lk91wfcikn2";
+  };
+  # rnlsSrc = /home/tom/tools/rust-notebook-language-server;
 
   ghc = haskell.packages.ghc924;
 
@@ -49,8 +49,8 @@ let
     display_name = "rust-analyzer";
     description = rustAnalyzerToUse.meta.description;
     icon = ./logo-64x64.png;
-    extensions = ["rs" "rlib"];
-    notebook_suffix = ".rs";
+    extensions = if raw then ["rs" "rlib"] else [];
+    notebook_suffix = if raw then ".rs" else "";
     kernel_name = kernelName;
     attrs = if raw then [] else ["rust"];
     type = "stream";

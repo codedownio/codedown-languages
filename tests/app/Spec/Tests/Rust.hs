@@ -37,10 +37,10 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
   --   info [i|Got diagnostics: #{diagnostics}|]
   --   return ()
 
-  testDiagnostics' "rust-analyzer" "main.ipynb" Nothing [__i|println!("Hello world");
-                                                             eprintln!("Hello error");
-                                                             format!("Hello {}", "world")
-                                                            |] extraFiles $ \diagnostics -> do
+  testDiagnostics "rust-analyzer" "main.ipynb" Nothing [__i|println!("Hello world");
+                                                            eprintln!("Hello error");
+                                                            format!("Hello {}", "world")
+                                                           |] $ \diagnostics -> do
     info [i|Got diagnostics: #{diagnostics}|]
     return ()
 
@@ -51,19 +51,6 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
   --   info [i|Got diagnostics: #{diagnostics}|]
   --   return ()
 
-
-extraFiles :: [(FilePath, ByteString)]
-extraFiles = [
-  ("Cargo.toml", [__i|[package]
-                      name = "rust_test"
-                      version = "0.1.0"
-                      edition = "2018"
-
-                      [lib]
-                      path = "./lib.rs"
-                     |])
-  , ("lib.rs", [__i|mod main;|])
-  ]
 
 kernelSpec:: NixKernelSpec
 kernelSpec = NixKernelSpec {
