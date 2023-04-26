@@ -149,7 +149,7 @@ withLspSession name filename codeToTest extraFiles session = do
       debug [i|Writing extra file: #{dataDir </> path}|]
       liftIO $ B.writeFile (dataDir </> path) bytes
 
-  createDirectoryIfMissing True (dataDir </> (takeDirectory filename))
+  createDirectoryIfMissing True (dataDir </> takeDirectory filename)
 
   liftIO $ T.writeFile (dataDir </> filename) codeToTest
 
