@@ -1,6 +1,6 @@
 { pkgsStable
 , pkgsUnstable
-, requiredPackages ? [pkgsStable.nix-prefetch-git]
+, requiredPackages ? []
 , system ? "x86_64-linux"
 }:
 
