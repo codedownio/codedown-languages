@@ -72,9 +72,23 @@ rec {
       fi
 
       offset=$((page_size * page))
-      result=$(${sqlite}/bin/sqlite3 "${index}" "SELECT attr, name, description, display_name, icon, less_common, rank \
+      result=$(${sqlite}/bin/sqlite3 "${index}" "SELECT
+          attr,
+          attr = '$query' as attr_matches,
+          name,
+          name = '$query' as name_matches,
+          description,
+          display_name,
+          icon,
+          less_common,
+          rank \
         FROM main $filterClause \
-        ORDER BY bm25(main, 100.0), lower(name), version DESC \
+        ORDER BY \
+          attr_matches DESC, \
+          name_matches DESC, \
+          bm25(main, 100.0, 1.0, 1.0, 1.0, 1.0) ASC, \
+          lower(name) ASC,
+          version DESC \
         LIMIT $page_size \
         OFFSET $offset;" -json
       )
