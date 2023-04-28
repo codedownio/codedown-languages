@@ -68,7 +68,10 @@ rec {
 
       filterClause=""
       if [[ -n "$query" ]]; then
-        filterClause="WHERE main MATCH '$query'"
+        # Escape any double quotes in the query SQL-style, then surround the whole thing in double
+        # quotes to form an FTS string; see
+        # https://www.sqlite.org/fts5.html#full_text_query_syntax
+        filterClause="WHERE main MATCH ('\"' || REPLACE('$query', '\"', '\"\"') || '\"')";
       fi
 
       offset=$((page_size * page))
