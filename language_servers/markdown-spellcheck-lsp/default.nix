@@ -31,6 +31,10 @@ let
       sha256 = "13baqdxq8m1rvcqpdx5kwwk32xppwv9k29d2w55ash48akk3v1ij";
     };
 
+    # patches = [
+    #   ./static-nodehun.patch
+    # ];
+
     dontConfigure = true;
     dontFixup = true;
 
@@ -51,7 +55,9 @@ let
   '';
 
   nodehun = (callPackage nodehunWithNix { nodejs = nodejs-14_x; }).package.override {
-    preRebuild = "npm run build -- --tarball ${nodeHeaders}";
+    preRebuild = ''
+      npm run build -- --tarball ${nodeHeaders}
+    '';
     buildInputs = [python3 nodePackages.node-gyp stdenv];
   };
 
