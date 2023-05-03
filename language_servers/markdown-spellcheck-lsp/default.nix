@@ -31,10 +31,6 @@ let
       sha256 = "13baqdxq8m1rvcqpdx5kwwk32xppwv9k29d2w55ash48akk3v1ij";
     };
 
-    # patches = [
-    #   ./static-nodehun.patch
-    # ];
-
     dontConfigure = true;
     dontFixup = true;
 
@@ -58,7 +54,23 @@ let
     preRebuild = ''
       npm run build -- --tarball ${nodeHeaders}
     '';
+
     buildInputs = [python3 nodePackages.node-gyp stdenv];
+
+    disallowedReferences = [ nodejs ];
+
+    postInstall = ''
+      # Only keep the necessary parts of build/Release to reduce closure size
+      cd $out/lib/node_modules/nodehun
+      mv build build_old
+      mkdir build
+      cp -r build_old/Release build/
+      rm -rf build_old
+      rm -rf build/Release/.deps
+
+      # Remove a development script to eliminate runtime dependency on node
+      rm node_modules/node-addon-api/tools/conversion.js
+    '';
   };
 
   indexJs = stdenv.mkDerivation {
