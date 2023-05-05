@@ -77,8 +77,8 @@ let
     name = "markdown-spellcheck-lsp-index.js";
 
     src = fetchTarball {
-      url = https://github.com/codedownio/markdown-spellcheck-lsp/releases/download/v0.4.0/markdown-spellcheck-lsp.tar.gz;
-      sha256 = "sha256:1zwsm2rwsz9lbn4wrmajrm8fqx0yffzqqx8wknp9sj4vchmy5vcv";
+      url = https://github.com/codedownio/markdown-spellcheck-lsp/releases/download/v0.5.0/markdown-spellcheck-lsp.tar.gz;
+      sha256 = "sha256:020kvqcv38d2nxcj6wgi1wamnpfdwqzss4fm3w3svwcn5ki22psz";
     };
 
     buildPhase = "true";
