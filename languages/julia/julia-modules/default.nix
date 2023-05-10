@@ -12,6 +12,7 @@
 , stdenv
 
 , julia
+
 , extraLibs ? []
 , precompile ? true
 , setDefaultDepot ? true
@@ -35,9 +36,8 @@ let
   # doesn't try to install its own.
   pythonToUse = let
     extraPythonPackages = ((callPackage ./extra-python-packages.nix { inherit python3; }).getExtraPythonPackages packageNames);
-  in (if extraPythonPackages == [] then python3 else python3.withPackages (ps:
-    (map (pkg: lib.getAttr pkg ps) extraPythonPackages))
-  );
+  in (if extraPythonPackages == [] then python3
+      else util.addPackagesToPython python3 (map (pkg: lib.getAttr pkg python3.pkgs) extraPythonPackages));
 
   # Start by wrapping Julia so it has access to Python and any other extra libs.
   # Also, prevent various packages (CondaPkg.jl, PythonCall.jl) from trying to do network calls.

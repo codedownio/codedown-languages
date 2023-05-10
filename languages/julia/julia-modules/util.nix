@@ -3,6 +3,16 @@
 }:
 
 {
+  # Add packages to a Python environment. Works if you pass something like either
+  # a) python3
+  # b) python3.withPackages (ps: [...])
+  # See https://github.com/NixOS/nixpkgs/pull/97467#issuecomment-689315186
+  addPackagesToPython = python: packages:
+    if python ? "env" then python.override (old: {
+      extraLibs = old.extraLibs ++ packages;
+    })
+    else python.withPackages (ps: packages);
+
   # Convert an ordinary source checkout into a repo with a single commit
   repoifySimple = name: path:
     runCommand ''${name}-repoified'' {buildInputs = [git];} ''
