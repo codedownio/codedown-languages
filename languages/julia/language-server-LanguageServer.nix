@@ -46,6 +46,7 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
   ];
   env = {} // (lib.optionalAttrs settings.debug {
     "JULIA_DEBUG" = "LanguageServer";
+    "JULIA_DEPOT_PATH" = "/home/.julia";
   });
 
   # Necessary because LanguageServer.jl cares about this value
