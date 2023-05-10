@@ -7,7 +7,7 @@ module TestLib.LSP where
 
 import Control.Lens hiding (List)
 import Control.Monad
-import Control.Monad.Catch (MonadThrow)
+import Control.Monad.Catch as C (MonadCatch, MonadThrow)
 import Control.Monad.IO.Unlift
 import Control.Monad.Logger
 import Control.Monad.Trans.Control (MonadBaseControl)
@@ -39,6 +39,7 @@ import TestLib.Types
 import UnliftIO.Directory
 import UnliftIO.Environment (getEnvironment)
 import UnliftIO.Exception
+import UnliftIO.MVar
 import UnliftIO.Process
 
 
@@ -84,29 +85,42 @@ doSession' filename lsName codeToUse cb = do
   withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) codeToUse [] $ do
     cb (T.unpack filename)
 
-testDiagnostics :: LspContext ctx m => Text -> FilePath -> Maybe Text -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnostics :: (LspContext ctx m, MonadCatch m) => Text -> FilePath -> Maybe Text -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics name filename maybeLanguageId codeToTest = testDiagnostics' name filename maybeLanguageId codeToTest []
 
-testDiagnostics' :: LspContext ctx m => Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnostics' :: (LspContext ctx m, MonadCatch m) => Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics' name filename maybeLanguageId codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest} (diagnostics)|] name filename maybeLanguageId codeToTest
 
-testDiagnostics'' :: LspContext ctx m => String -> Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnostics'' :: (LspContext ctx m, MonadCatch m) => String -> Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb = it label $ do
+  lastFailureReason <- newMVar Nothing
   withRunInIO $ \runInIO ->
-    runInIO $ withLspSession name filename codeToTest extraFiles $ do
+    runInIO $ withLspSession' (handle (handleFn lastFailureReason)) name filename codeToTest extraFiles $ do
       _ <- openDoc filename (fromMaybe name maybeLanguageId)
       -- _ <- openDoc' filename (fromMaybe name maybeLanguageId) codeToTest
 
       startTime <- liftIO getCurrentTime
       fix $ \loop -> do
         diagnostics <- waitForDiagnostics
+
         liftIO (try (runInIO $ cb diagnostics)) >>= \case
           Left (x :: FailureReason) -> do
             warn [i|testDiagnostics'' failure: #{x}|]
+            _ <- liftIO $ modifyMVar_ lastFailureReason (const $ return $ Just x)
             now <- liftIO getCurrentTime
             if | (diffUTCTime now startTime) > (120 * 60 * 1_000_000) -> return ()
                | otherwise -> loop
           Right () -> return ()
+  where
+    handleFn :: (MonadCatch n, MonadIO n, MonadLogger n) => MVar (Maybe FailureReason) -> SessionException -> n a
+    handleFn lastFailureReason e@(Timeout {}) = readMVar lastFailureReason >>= \case
+      Nothing -> do
+        warn [i|Had empty failure reason|]
+        throwIO e
+      Just x -> do
+        warn [i|Had failure reason: #{x}|]
+        throwIO x
+    handleFn _ e = expectationFailure [i|LSP session failed with SessionException: #{e}|]
 
 itHasHoverSatisfying :: LspContext ctx m => Text -> FilePath -> Maybe Text -> Text -> Position -> (Hover -> ExampleT ctx m ()) -> SpecFree ctx m ()
 itHasHoverSatisfying name filename maybeLanguageId codeToTest pos cb = it [i|#{name}: #{show codeToTest} (hover)|] $ do
@@ -118,8 +132,16 @@ itHasHoverSatisfying name filename maybeLanguageId codeToTest pos cb = it [i|#{n
     Nothing -> expectationFailure [i|Expected a hover.|]
     Just x -> cb x
 
-withLspSession :: LspContext ctx m => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> Session (ExampleT ctx m) a -> ExampleT ctx m a
-withLspSession name filename codeToTest extraFiles session = do
+
+withLspSession :: (
+  LspContext ctx m
+  ) => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> Session (ExampleT ctx m) a -> ExampleT ctx m a
+withLspSession = withLspSession' (handle (\(e :: SessionException) -> expectationFailure [i|LSP session failed with SessionException: #{e}|]))
+
+withLspSession' :: (
+  LspContext ctx m
+  ) => (ExampleT ctx m a -> ExampleT ctx m a) -> Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> Session (ExampleT ctx m) a -> ExampleT ctx m a
+withLspSession' handleFn name filename codeToTest extraFiles session = do
   Just currentFolder <- getCurrentFolder
 
   languageServersPath <- (</> "lib" </> "codedown" </> "language-servers") <$> getContext nixEnvironment
@@ -176,8 +198,7 @@ withLspSession name filename codeToTest extraFiles session = do
            & set (workspace . _Just . didChangeWatchedFiles . _Just . dynamicRegistration) (Just False)
            & set (workspace . _Just . didChangeConfiguration . _Just . dynamicRegistration) (Just False)
 
-  handle (\(e :: SessionException) -> expectationFailure [i|LSP session failed with SessionException: #{e}|]) $ do
-    runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir session
+  handleFn $ runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir session
 
 assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired

@@ -17,8 +17,8 @@ import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 
--- import Data.Aeson as A
--- import TestLib.Util
+import Data.Aeson as A
+import TestLib.Util
 
 
 tests :: TopSpec
@@ -34,8 +34,18 @@ juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kerne
   testKernelStdout lang [i|println("hi")|] "hi\n"
 
   describe "LSP" $ do
-    testDiagnostics lsName "test.jl" (Just "julia") [i|printlnzzzz("HI")\n\n|] $ \diagnostics -> do
-      assertDiagnosticRanges' diagnostics [(Range (Position 0 0) (Position 0 11), Nothing, "Missing reference: printlnzzzz")]
+    testDiagnostics lsName "test.jl" (Just "julia") [__i|using JSON3
+                                                         printlnzzzz("HI")
+                                                        |] $ \diagnostics -> do
+      assertDiagnosticRanges' diagnostics [(Range (Position 1 0) (Position 1 11), Nothing, "Missing reference: printlnzzzz")]
+
+    testDiagnostics lsName "test.jl" (Just "julia") [__i|using Plots
+                                                         xx = range(0, 10, length=100)
+                                                         y = sin.(xx)
+                                                         plot(xx, y)
+                                                         printlnzzzz("HI")
+                                                        |] $ \diagnostics -> do
+      assertDiagnosticRanges' diagnostics [(Range (Position 4 0) (Position 4 11), Nothing, "Missing reference: printlnzzzz")]
 
     testDiagnostics lsName "test.jl" (Just "julia") [i|printlnzzzz("HI")|] $ \diagnostics -> do
       assertDiagnosticRanges' diagnostics [(Range (Position 0 0) (Position 0 11), Nothing, "Missing reference: printlnzzzz")]
@@ -67,15 +77,14 @@ kernelSpec lang = NixKernelSpec {
   nixKernelName = lang
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just [i|Julia (#{lang})|]
-  , nixKernelPackages = [nameOnly "JSON3"]
+  , nixKernelPackages = [nameOnly "JSON3", nameOnly "Plots"]
   , nixKernelLanguageServers = [nameOnly "LanguageServer"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Nothing
-  -- , nixKernelSettings = Just (aesonFromList [
-  --                                ("LanguageServer.debug", A.Bool True)
-  --                                ])
+  , nixKernelSettings = Just $ aesonFromList [
+      ("LanguageServer.debug", A.Bool True)
+      ]
   }
 
 main :: IO ()

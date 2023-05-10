@@ -6,7 +6,7 @@
 module Spec.Tests.Haskell.Diagnostics where
 
 import Control.Lens ((^.))
-import Control.Monad.Catch (MonadThrow)
+import Control.Monad.Catch (MonadCatch, MonadThrow)
 import Control.Monad.IO.Unlift
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.String.Interpolate
@@ -20,7 +20,7 @@ import TestLib.NixEnvironmentContext
 
 
 diagnosticsTests :: (
-  Sandwich.HasLabel context "nixEnvironment" FilePath, HasBaseContext context, MonadBaseControl IO m, MonadUnliftIO m, MonadThrow m
+  Sandwich.HasLabel context "nixEnvironment" FilePath, HasBaseContext context, MonadBaseControl IO m, MonadUnliftIO m, MonadThrow m, MonadCatch m
   ) => Text -> SpecFree context m ()
 diagnosticsTests lsName = describe "Diagnostics" $ do
   testDiagnostics lsName "Foo.hs" Nothing [__i|module Foo where
