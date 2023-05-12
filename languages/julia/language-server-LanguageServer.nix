@@ -36,13 +36,20 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
     "--project=${juliaLsp.projectAndDepot}/project"
     "-e"
 
-    ''using LanguageServer; LanguageServer.SymbolServer;
-      mkpath("/tmp/symbolstorev2")
+    ''using LanguageServer, LanguageServer.SymbolServer;
       server = LanguageServer.LanguageServerInstance(
-        stdin, stdout,
-        "${julia.projectAndDepot}/project", "${julia.projectAndDepot}/depot",
-        nothing, ${if settings.index then ''"${juliaIndices packageNames}"'' else "nothing"}, false
-      ); server.runlinter = true; run(server);''
+        stdin,
+        stdout,
+        "${julia.projectAndDepot}/project",
+        "${julia.projectAndDepot}/depot",
+        nothing,
+        ${if settings.index then ''"${juliaIndices packageNames}"'' else "nothing"},
+        false,
+        nothing
+      );
+      server.runlinter = true;
+      run(server);
+    ''
   ];
   env = {} // (lib.optionalAttrs settings.debug {
     "JULIA_DEBUG" = "LanguageServer";

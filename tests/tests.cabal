@@ -59,7 +59,6 @@ library
     , directory
     , exceptions
     , filepath
-    , hashable
     , lens
     , lsp-test
     , lsp-types
@@ -102,6 +101,7 @@ executable tests-exe
       Spec.Tests.Haskell.Statements
       Spec.Tests.Haskell.Symbols
       Spec.Tests.Julia
+      Spec.Tests.Julia.Diagnostics
       Spec.Tests.Octave
       Spec.Tests.Postgres
       Spec.Tests.Python3
@@ -135,7 +135,6 @@ executable tests-exe
     , bytestring
     , containers
     , exceptions
-    , hashable
     , lens
     , lsp-test
     , lsp-types

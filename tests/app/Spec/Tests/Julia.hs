@@ -10,6 +10,7 @@ import Data.Text as T
 import Language.LSP.Test hiding (message)
 import Language.LSP.Types
 import Language.LSP.Types.Lens hiding (diagnostics, hover, text)
+import Spec.Tests.Julia.Diagnostics
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -34,21 +35,7 @@ juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kerne
   testKernelStdout lang [i|println("hi")|] "hi\n"
 
   describe "LSP" $ do
-    testDiagnostics lsName "test.jl" (Just "julia") [__i|using JSON3
-                                                         printlnzzzz("HI")
-                                                        |] $ \diagnostics -> do
-      assertDiagnosticRanges' diagnostics [(Range (Position 1 0) (Position 1 11), Nothing, "Missing reference: printlnzzzz")]
-
-    testDiagnostics lsName "test.jl" (Just "julia") [__i|using Plots
-                                                         xx = range(0, 10, length=100)
-                                                         y = sin.(xx)
-                                                         plot(xx, y)
-                                                         printlnzzzz("HI")
-                                                        |] $ \diagnostics -> do
-      assertDiagnosticRanges' diagnostics [(Range (Position 4 0) (Position 4 11), Nothing, "Missing reference: printlnzzzz")]
-
-    testDiagnostics lsName "test.jl" (Just "julia") [i|printlnzzzz("HI")|] $ \diagnostics -> do
-      assertDiagnosticRanges' diagnostics [(Range (Position 0 0) (Position 0 11), Nothing, "Missing reference: printlnzzzz")]
+    diagnosticsTests lsName
 
     itHasHoverSatisfying lsName "test.jl" Nothing [__i|print("hi")|] (Position 0 2) $ \hover -> do
       let HoverContents (MarkupContent MkMarkdown text) = hover ^. contents
@@ -77,13 +64,19 @@ kernelSpec lang = NixKernelSpec {
   nixKernelName = lang
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just [i|Julia (#{lang})|]
-  , nixKernelPackages = [nameOnly "JSON3", nameOnly "Plots"]
+  -- , nixKernelPackages = [nameOnly "JSON3", nameOnly "Plots"]
+  , nixKernelPackages = [
+      nameOnly "JSON3"
+      , nameOnly "Plots"
+      , nameOnly "Roots"
+      ]
   , nixKernelLanguageServers = [nameOnly "LanguageServer"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Just $ aesonFromList [
       ("LanguageServer.debug", A.Bool True)
+      , ("LanguageServer.index", A.Bool True)
       ]
   }
 

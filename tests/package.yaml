@@ -33,7 +33,6 @@ dependencies:
 - bytestring
 - containers
 - exceptions
-- hashable # Only needed for aeson < 2
 - lens
 - lsp-test
 - lsp-types
@@ -43,6 +42,8 @@ dependencies:
 - text
 - unliftio-core
 - vector
+
+# - hashable # Only needed for aeson < 2
 
 library:
   source-dirs: src
