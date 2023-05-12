@@ -40,7 +40,22 @@ let
       rev = "3a000de8d80b2d374d46517a813882ff1aeb895c";
       sha256 = "Z3RckYs08YsoPnWkcPZzaN5JD10EdkUyxHO788yvXF4=";
     };
+    "StaticLint" = fetchFromGitHub {
+      owner = "julia-vscode";
+      repo = "StaticLint.jl";
+      rev = "8334959b9fe1a7f3169621a250eb8ff98db64775";
+      sha256 = "gd/VKBgyIW+6PYXBPbPmxLcDqW7tI3G9ZtiFOlYBtms=";
+    };
+    "SymbolServer" = fetchFromGitHub {
+      owner = "julia-vscode";
+      repo = "SymbolServer.jl";
+      rev = "3162b6a1b53d7036c53e24c3cc2fe21b90acf67a";
+      sha256 = "BeTrUNZ3OaoIJ8KIPskZWuCaaA3iA4vPjTJwX+BK+Sk=";
+    };
+
     # "LanguageServer" = /home/tom/tools/LanguageServer.jl;
+    # "StaticLint" = /home/tom/tools/StaticLint.jl;
+    # "SymbolServer" = /home/tom/tools/SymbolServer.jl;
   };
 
   baseCandidates = rec {

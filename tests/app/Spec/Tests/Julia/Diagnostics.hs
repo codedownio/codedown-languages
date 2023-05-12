@@ -42,6 +42,7 @@ diagnosticsTests lsName = describe "Diagnostics" $ do
          xx = range(0, 10, length=100)
          y = sin.(xx)
          plot(xx, y)
+         plot!(xx, y)
          printlnzzzz("HI")
          |] [] $ \diagnostics -> do
-    assertDiagnosticRanges' diagnostics [(Range (Position 4 0) (Position 4 11), Nothing, "Missing reference: printlnzzzz")]
+    assertDiagnosticRanges' diagnostics [(Range (Position 5 0) (Position 5 11), Nothing, "Missing reference: printlnzzzz")]

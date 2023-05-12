@@ -5,6 +5,7 @@
 module Spec.Tests.Julia (tests) where
 
 import Control.Lens hiding (List)
+import Data.Aeson as A
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Test hiding (message)
@@ -17,8 +18,6 @@ import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
-
-import Data.Aeson as A
 import TestLib.Util
 
 
