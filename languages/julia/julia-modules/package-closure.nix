@@ -107,7 +107,7 @@ let
   '';
 in
 
-runCommand "julia-package.yml" { buildInputs = [julia (python3.withPackages (ps: with ps; [pyyaml]))]; } ''
+runCommand "julia-package-closure.yml" { buildInputs = [julia (python3.withPackages (ps: with ps; [pyyaml]))]; } ''
   mkdir home
   export HOME=$(pwd)/home
 

@@ -18,6 +18,7 @@
 , setDefaultDepot ? true
 , makeWrapperArgs ? ""
 , packageOverrides ? {}
+, makeTransitiveDependenciesImportable ? false # Used to support symbol indexing
 }:
 
 packageNames:
@@ -141,9 +142,12 @@ let
   # Build a Julia project and depot. The project contains Project.toml/Manifest.toml, while the
   # depot contains package build products (including the precompiled libraries, if precompile=true)
   projectAndDepot = callPackage ./depot.nix {
-    inherit closureYaml extraLibs overridesToml packageNames packageImplications precompile;
+    inherit closureYaml extraLibs overridesToml packageImplications precompile;
     julia = juliaWrapped;
     registry = minimalRegistry;
+    packageNames = if makeTransitiveDependenciesImportable
+      then lib.mapAttrsToList (uuid: info: info.name) dependencyUuidToInfo
+      else packageNames;
   };
 
 in

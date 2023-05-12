@@ -2,38 +2,76 @@
 , lib
 , python3
 , runCommand
+
+, indexTransitiveDependencies ? true
 }:
 
 packageNames:
 
 let
-  juliaWithPackages = callPackage ../. { precompile = false; };
+  julia = callPackage ../. {
+    precompile = true;
+    makeTransitiveDependenciesImportable = true;
+  } (packageNames ++ ["SymbolServer"]);
 
-  juliaSymbolServer = juliaWithPackages (["SymbolServer"] ++ packageNames);
+  # juliaSymbolServer = callPackage ../. {} ["SymbolServer"];
 
-  symbolStoreNix = runCommand "julia-indexes.nix" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml]))]; } ''
-    indexpackage=$(find ${juliaSymbolServer.projectAndDepot}/depot/packages/SymbolServer -name indexpackage.jl)
-    symbolServerSource=$(dirname "$indexpackage")
+  combinedStoreSeparateDerivations = let
+    symbolStoreNix = runCommand "julia-indexes.nix" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml]))]; } ''
+      indexpackage=$(find ${julia.projectAndDepot}/depot/packages/SymbolServer -name indexpackage.jl)
+      symbolServerSource=$(dirname "$indexpackage")
 
-    python ${./index_packages.py} \
-      "${(juliaWithPackages packageNames).dependencyUuidToInfoYaml}" \
-      '${lib.generators.toJSON {} packageNames}' \
-      "${juliaSymbolServer}/bin/julia" \
-      "$symbolServerSource" \
-      "$out"
-  '';
+      python ${./index_packages.py} \
+        "${julia.dependencyUuidToInfoYaml}" \
+        '${lib.generators.toJSON {} packageNames}' \
+        '${lib.generators.toJSON {} indexTransitiveDependencies}' \
+        "${julia}/bin/julia" \
+        "$symbolServerSource" \
+        "$out"
+    '';
 
-  uuidToSymbolStore = callPackage symbolStoreNix {
-    julia = juliaSymbolServer;
-    indexpackage = ./indexpackage.jl;
-  };
+    uuidToSymbolStore = callPackage symbolStoreNix {
+      inherit julia;
+      indexpackage = ./indexpackage.jl;
+    };
+  in
+    runCommand "julia-combined-store" { buildInputs = [(python3.withPackages (ps: with ps; [toml]))]; } ''
+      python ${./combine_indices.py} \
+        "${uuidToSymbolStore}" \
+        "$out"
+    '';
 
-  combinedStore = runCommand "julia-combined-store" { buildInputs = [(python3.withPackages (ps: with ps; [toml]))]; } ''
-    python ${./combine_indices.py} \
-      "${uuidToSymbolStore}" \
+
+  combinedStoreThreaded = runCommand "julia-symbols-store" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml])) julia]; } ''
+    # Convert julia.dependencyUuidToInfoYaml to TOML, which Julia can import natively
+    python - <<'EOF'
+    import toml
+    import yaml
+
+    with open("${julia.dependencyUuidToInfoYaml}", "r") as f:
+      contents = yaml.safe_load(f)
+
+    with open("./dependency_uuid_to_info.toml", "w") as f:
+      toml.dump(contents, f)
+    EOF
+
+    symbolServerSource=$(dirname "$(find ${julia.projectAndDepot}/depot/packages/SymbolServer -name indexpackage.jl)")
+
+    cp -r $symbolServerSource/. .
+    chmod u+w ./indexpackage.jl
+    cp ${./indexpackage.jl} ./indexpackage.jl
+    cp ${./index_all_packages.jl} ./index_all_packages.jl
+
+    mkdir home
+    export HOME=$(pwd)/home
+
+    julia ./index_all_packages.jl \
+      "./dependency_uuid_to_info.toml" \
       "$out"
   '';
 
 in
 
-combinedStore
+# combinedStoreSeparateDerivations
+
+combinedStoreThreaded
