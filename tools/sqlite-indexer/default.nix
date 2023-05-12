@@ -61,6 +61,13 @@ rec {
   '';
 
   searcher = writeShellScript "searcher.sh" ''
+    function join_by {
+      local d=''${1-} f=''${2-}
+      if shift 2; then
+        printf %s "$f" "''${@/#/$d}"
+      fi
+    }
+
     while true; do
       read page_size
       read page
@@ -68,10 +75,20 @@ rec {
 
       filterClause=""
       if [[ -n "$query" ]]; then
-        # Escape any double quotes in the query SQL-style, then surround the whole thing in double
-        # quotes to form an FTS string; see
-        # https://www.sqlite.org/fts5.html#full_text_query_syntax
-        filterClause="WHERE main MATCH ('\"' || REPLACE('$query', '\"', '\"\"') || '\"')";
+        words=()
+        for word in $query; do
+          # Escape any double quotes in the query SQL-style, then surround the whole thing in double
+          # quotes to form an FTS string followed by star; see
+          # https://www.sqlite.org/fts5.html#full_text_query_syntax
+          escaped=$(echo "$word" | sed -E 's/"/""/g')
+          words+=("\"$escaped\"*")
+        done
+
+        fts=$(join_by " + " "''${words[@]}")
+
+        filterClause="WHERE main MATCH '"
+        filterClause+="$fts"
+        filterClause+="'"
       fi
 
       offset=$((page_size * page))
