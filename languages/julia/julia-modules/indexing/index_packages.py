@@ -10,7 +10,7 @@ dependencies_path = Path(sys.argv[1])
 package_names = json.loads(sys.argv[2])
 index_transitive_deps = json.loads(sys.argv[3])
 julia_path = Path(sys.argv[4])
-julia_symbolserver_src = Path(sys.argv[5])
+indexpackage = Path(sys.argv[5])
 out_path = Path(sys.argv[6])
 
 with open(dependencies_path, "r") as f:
@@ -25,6 +25,30 @@ with open(out_path, "w") as f:
   def process_item(item):
     uuid, info = item
 
+    julia_expression = f"""
+using Base: UUID
+
+import SymbolServer
+
+module LoadingBay end
+
+name = Symbol("{info["name"]}")
+version = VersionNumber("{info["version"]}")
+uuid = UUID("{uuid}")
+
+m = try
+    @time "Loading $name $version" begin
+        LoadingBay.eval(:(import $name))
+        getfield(LoadingBay, name)
+    end
+catch e
+    @info "Could not load package $name $version ($uuid): $e"
+    return 10
+end
+
+exit(SymbolServer.index_package(name, version, uuid, "{info["treehash"]}", "{out_path}", m))
+"""
+
     if not index_transitive_deps:
       if info["name"] not in package_names: return ""
 
@@ -32,11 +56,10 @@ with open(out_path, "w") as f:
 
     lines.append(f"""{uuid} = "${{runCommand "{info["name"]}-{info["name"]}-symbols" {{ buildInputs = [julia]; }} ''
   mkdir -p $out
-  cp -r {julia_symbolserver_src}/. .
-  chmod u+w ./indexpackage.jl
-  cp ${{indexpackage}} ./indexpackage.jl
+
   set +e
-  julia ./indexpackage.jl {info["name"]} "{info["version"]}" "{uuid}" "{info["treehash"]}"
+
+  julia -e '{julia_expression}'
   code="$?"
   if [ $code -eq 37 ]; then
     exit 0
