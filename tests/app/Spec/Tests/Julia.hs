@@ -62,12 +62,12 @@ kernelSpec lang = NixKernelSpec {
   nixKernelName = lang
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just [i|Julia (#{lang})|]
-  -- , nixKernelPackages = [nameOnly "JSON3", nameOnly "Plots"]
-  , nixKernelPackages = [
-      nameOnly "JSON3"
-      , nameOnly "Plots"
-      , nameOnly "Roots"
-      ]
+  , nixKernelPackages = [nameOnly "JSON3"]
+  -- , nixKernelPackages = [
+  --     nameOnly "JSON3"
+  --     , nameOnly "Plots"
+  --     , nameOnly "Roots"
+  --     ]
   , nixKernelLanguageServers = [nameOnly "LanguageServer"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
