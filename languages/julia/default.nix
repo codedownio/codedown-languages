@@ -34,28 +34,28 @@ let
   ];
 
   packageOverrides = {
-    # "LanguageServer" = fetchFromGitHub {
-    #   owner = "julia-vscode";
-    #   repo = "LanguageServer.jl";
-    #   rev = "3a000de8d80b2d374d46517a813882ff1aeb895c";
-    #   sha256 = "Z3RckYs08YsoPnWkcPZzaN5JD10EdkUyxHO788yvXF4=";
-    # };
+    "LanguageServer" = fetchFromGitHub {
+      owner = "julia-vscode";
+      repo = "LanguageServer.jl";
+      rev = "3a000de8d80b2d374d46517a813882ff1aeb895c";
+      sha256 = "0pjwmz6g7fvkqhr4axh4bl7lkpk8fgv7193m7ql8pw9lif8mqx37";
+    };
     "StaticLint" = fetchFromGitHub {
       owner = "julia-vscode";
       repo = "StaticLint.jl";
       rev = "8334959b9fe1a7f3169621a250eb8ff98db64775";
-      sha256 = "gd/VKBgyIW+6PYXBPbPmxLcDqW7tI3G9ZtiFOlYBtms=";
+      sha256 = "0sxn05b3m1fqcsyp28zddslh7dy4wsrkvhc57nx6y89j30ldbpw1";
     };
-    # "SymbolServer" = fetchFromGitHub {
-    #   owner = "codedownio";
-    #   repo = "SymbolServer.jl";
-    #   rev = "cfe81ec7830e6d8881191b3af7b35f143e4cd3eb";
-    #   sha256 = "YCefldfibbFl2TKwtvqNEwn1CFyCMWXWjZ47e6Nhh3w=";
-    # };
+    "SymbolServer" = fetchFromGitHub {
+      owner = "codedownio";
+      repo = "SymbolServer.jl";
+      rev = "52d46776c970c155186584154fdfc1bebc589b0d";
+      sha256 = "03hj6skfs6czq1f2bqwbp0qjyklaf48a2lb001gdg3x0idw55nx3";
+    };
 
-    "LanguageServer" = /home/tom/tools/LanguageServer.jl;
+    # "LanguageServer" = /home/tom/tools/LanguageServer.jl;
     # "StaticLint" = /home/tom/tools/StaticLint.jl;
-    "SymbolServer" = /home/tom/tools/SymbolServer.jl;
+    # "SymbolServer" = /home/tom/tools/SymbolServer.jl;
   };
 
   baseCandidates = rec {
