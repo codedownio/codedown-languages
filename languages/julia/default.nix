@@ -49,8 +49,8 @@ let
     "SymbolServer" = fetchFromGitHub {
       owner = "codedownio";
       repo = "SymbolServer.jl";
-      rev = "52d46776c970c155186584154fdfc1bebc589b0d";
-      sha256 = "03hj6skfs6czq1f2bqwbp0qjyklaf48a2lb001gdg3x0idw55nx3";
+      rev = "1badb724cebef0ae867c8c1f73cb08efe5b6e291";
+      sha256 = "0j4cjj50mp0cm6aq684kasijk11pwagp3v9d1mf39isk6afa7inn";
     };
 
     # "LanguageServer" = /home/tom/tools/LanguageServer.jl;
