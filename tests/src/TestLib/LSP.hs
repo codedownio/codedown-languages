@@ -13,7 +13,6 @@ import Control.Monad.Logger
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.Aeson as A
 import Data.Aeson.TH as A
-import Data.Bifunctor
 import qualified Data.ByteString as B
 import Data.Default
 import Data.Function
@@ -185,7 +184,7 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
   env <- getEnvironment
   -- let cleanEnv = [(k, v) | (k, v) <- env, k /= "PATH", k /= "HOME", k /= "GHC_PACKAGE_PATH"]
   let cleanEnv = [(k, v) | (k, v) <- env, k /= "GHC_PACKAGE_PATH"]
-  let configEnv = maybe mempty (fmap (first T.unpack . second T.unpack) . M.toList) (lspConfigEnv config)
+  let configEnv = maybe mempty (fmap (bimap T.unpack T.unpack) . M.toList) (lspConfigEnv config)
   let finalEnv = ("HOME", homeDir) : (configEnv <> cleanEnv)
   info [i|Language server environment: #{finalEnv}|]
   let modifyCp cp = cp { env = Just finalEnv
