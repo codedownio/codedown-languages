@@ -7,15 +7,13 @@
 , attrs
 , julia
 , kernelName
-, packageNames
-, juliaLsp # Julia set up with LanguageServer.jl containing depot
 , settings
 }:
 
 let
   common = callPackage ../common.nix {};
 
-  juliaIndices = callPackage ./julia-modules/indexing {};
+  juliaIndices = callPackage ./julia-modules/indexing { inherit julia; };
 
 in
 
@@ -30,10 +28,10 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
   attrs = attrs;
   type = "stream";
   args = [
-    "${juliaLsp}/bin/julia"
+    "${julia}/bin/julia"
     "--startup-file=no"
     "--history-file=no"
-    "--project=${juliaLsp.projectAndDepot}/project"
+    "--project=${julia.projectAndDepot}/project"
     "-e"
 
     ''using LanguageServer, LanguageServer.SymbolServer;
@@ -43,7 +41,7 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
         "${julia.projectAndDepot}/project",
         "${julia.projectAndDepot}/depot",
         nothing,
-        ${if settings.index then ''"${juliaIndices packageNames}"'' else "nothing"},
+        ${if settings.index then ''"${juliaIndices}"'' else "nothing"},
         false,
         nothing
       );

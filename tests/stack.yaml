@@ -15,7 +15,7 @@ packages:
 
 extra-deps:
 - git: https://github.com/codedownio/lsp.git
-  commit: 3c0accdd7528baed90591510d9420a894132b91a
+  commit: 3b01c70182cf4ebfd614a52c9e486c5ead0434c6
   subdirs:
   - lsp
   - lsp-types

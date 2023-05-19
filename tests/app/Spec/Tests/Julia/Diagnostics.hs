@@ -37,6 +37,8 @@ diagnosticsTests lsName = describe "Diagnostics" $ do
          |] [] $ \diagnostics -> do
     assertDiagnosticRanges' diagnostics [(Range (Position 3 0) (Position 3 11), Nothing, "Missing reference: printlnzzzz")]
 
+  -- This test is tricky because symbols like "plot" actually come from RecipesBase (or something), so
+  -- it checks we're indexing such a transitive dependency.
   testDiagnostics'' "finds symbols from Plots package" lsName "test.jl" (Just "julia")
     [__i|using Plots
          xx = range(0, 10, length=100)

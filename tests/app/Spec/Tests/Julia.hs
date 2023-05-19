@@ -23,7 +23,6 @@ import TestLib.Util
 
 tests :: TopSpec
 tests = do
-  juliaTests "julia"
   juliaTests "julia16"
   juliaTests "julia18"
 

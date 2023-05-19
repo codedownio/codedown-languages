@@ -47,10 +47,10 @@ let
       sha256 = "gd/VKBgyIW+6PYXBPbPmxLcDqW7tI3G9ZtiFOlYBtms=";
     };
     "SymbolServer" = fetchFromGitHub {
-      owner = "julia-vscode";
+      owner = "codedownio";
       repo = "SymbolServer.jl";
-      rev = "3162b6a1b53d7036c53e24c3cc2fe21b90acf67a";
-      sha256 = "BeTrUNZ3OaoIJ8KIPskZWuCaaA3iA4vPjTJwX+BK+Sk=";
+      rev = "cfe81ec7830e6d8881191b3af7b35f143e4cd3eb";
+      sha256 = "YCefldfibbFl2TKwtvqNEwn1CFyCMWXWjZ47e6Nhh3w=";
     };
 
     # "LanguageServer" = /home/tom/tools/LanguageServer.jl;
@@ -102,14 +102,13 @@ mapAttrs (attr: value:
       packageMustBeDerivation = false;
     };
 
-    languageServerOptions = attrs: julia: packageNames: settings: {
+    languageServerOptions = attrs: julia: settings: {
       LanguageServer = callPackage ./language-server-LanguageServer.nix {
-        inherit attrs julia packageNames settings;
+        inherit attrs julia settings;
         kernelName = attr;
-        juliaLsp = value ["LanguageServer" "SymbolServer"];
       };
     };
-    languageServerSearch = common.searcher (languageServerOptions [] baseJulia [] (common.makeDefaultSettings settingsSchema));
+    languageServerSearch = common.searcher (languageServerOptions [] baseJulia (common.makeDefaultSettings settingsSchema));
 
     build = args@{
       packages ? []
@@ -120,7 +119,14 @@ mapAttrs (attr: value:
       , metaOnly ? false
     }:
       let
-        julia = value (["IJulia"] ++ packages);
+        hasLanguageServer = length languageServers > 0; # TODO: more precise check if we ever add more language servers
+
+        julia = value (
+          ["IJulia"]
+          ++ packages
+          ++ lib.optionals hasLanguageServer ["LanguageServer" "SymbolServer"]
+        );
+
         settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
       in
         symlinkJoin {
@@ -131,7 +137,7 @@ mapAttrs (attr: value:
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [julia])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (languageServerOptions attrs julia packages (common.focusSettings "LanguageServer." settingsToUse))) languageServers))
+          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (languageServerOptions attrs julia (common.focusSettings "LanguageServer." settingsToUse))) languageServers))
           ;
 
           passthru = {
