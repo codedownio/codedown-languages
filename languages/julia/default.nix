@@ -37,8 +37,8 @@ let
     "LanguageServer" = fetchFromGitHub {
       owner = "julia-vscode";
       repo = "LanguageServer.jl";
-      rev = "27b830bc8de6f81cf4287b49f2453b252cc6799b";
-      sha256 = "1lnwbb0prf4sfwz2ym19v5mlap9fhp3hwjlarby0mrrasxhcaagr";
+      rev = "205fce6619a991f9cc6d04543b3b021e2ab2d69f";
+      sha256 = "116al8sx4598a1zjlyb36yrxzdk6z7b1z4mc98n9rwvlfqnznk87";
     };
     "StaticLint" = fetchFromGitHub {
       owner = "julia-vscode";
