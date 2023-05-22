@@ -6,7 +6,7 @@
 let
   common = callPackage ../common.nix {};
 
-  clojure-lsp = (builtins.getFlake "github:codedownio/clojure-lsp/e47c4cd8c7b30dfa3b13021bf6ec90c8c81bf041").packages.x86_64-linux.default;
+  clojure-lsp = (builtins.getFlake "github:clojure-lsp/clojure-lsp/5e3584014f2ac9c13a877dfd7984383346d81609").packages.x86_64-linux.default;
 
 in
 
