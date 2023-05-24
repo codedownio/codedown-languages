@@ -63,7 +63,7 @@ lib.listToAttrs (map (x:
         }
         {
           target = "lsp.pylint.enable";
-          title = "Enable Pyright language server";
+          title = "Enable Pylint language server";
           type = "boolean";
           defaultValue = false;
         }
@@ -79,12 +79,6 @@ lib.listToAttrs (map (x:
           type = "boolean";
           defaultValue = false;
         }
-        {
-          target = "lsp.pylint.enable";
-          title = "Enable Pylint language server";
-          type = "boolean";
-          defaultValue = false;
-        }
       ] ++ lib.optionals (lib.hasAttr "python-language-server" pkgs) [
         {
           target = "lsp.microsoft.enable";
@@ -94,14 +88,14 @@ lib.listToAttrs (map (x:
         }
       ] ++ lib.optionals ((lib.hasAttr "python-lsp-server" basePython.pkgs) && (lib.versionAtLeast basePython.pythonVersion "3.7")) [
         {
-          target = "lsp.pythonlsp.enable";
+          target = "lsp.python-lsp-server.enable";
           title = "Enable python-lsp-server language server";
           type = "boolean";
           defaultValue = false;
         }
       ] ++ lib.optionals (lib.hasAttr "python-language-server" basePython.pkgs) [
         {
-          target = "lsp.pythonlsp.enable";
+          target = "lsp.python-language-server.enable";
           title = "Enable python-language-server language server";
           type = "boolean";
           defaultValue = false;
