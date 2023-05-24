@@ -102,5 +102,5 @@ rec {
   makeDefaultSettings = settingsSchema: listToAttrs (map (item: {
     name = item.target;
     value = item.defaultValue;
-  }) settingsSchema);
+  }) (filter (hasAttr "target") settingsSchema));
 }
