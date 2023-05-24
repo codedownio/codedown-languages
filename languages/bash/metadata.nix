@@ -35,6 +35,4 @@ rec {
   packageOptions = base@{...}: {};
 
   packageSearch = base@{...}: common.searcher {};
-
-  languageServerOptions = base@{python, ...}: packages: {};
 }
