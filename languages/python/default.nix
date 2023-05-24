@@ -45,18 +45,9 @@ lib.listToAttrs (map (x:
 
       settingsSchema = [
         {
-          target = "permitUserSite";
-          title = "Permit user site-packages";
-          description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
-          type = "boolean";
-          defaultValue = false;
-        }
-        {
-          target = "enableVariableInspector";
-          title = "Enable variable inspector";
-          description = "Enable the variable inspector, which will fetch runtime values of variables to show in the variables list.";
-          type = "boolean";
-          defaultValue = true;
+          title = "Language servers";
+          level = 1;
+          type = "heading";
         }
         {
           target = "lsp.jedi.enable";
@@ -114,6 +105,26 @@ lib.listToAttrs (map (x:
           title = "Enable python-language-server language server";
           type = "boolean";
           defaultValue = false;
+        }
+      ] ++ [
+        {
+          title = "Miscellaneous";
+          level = 1;
+          type = "heading";
+        }
+        {
+          target = "permitUserSite";
+          title = "Permit user site-packages";
+          description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
+          type = "boolean";
+          defaultValue = false;
+        }
+        {
+          target = "enableVariableInspector";
+          title = "Enable variable inspector";
+          description = "Enable the variable inspector, which will fetch runtime values of variables to show in the variables list.";
+          type = "boolean";
+          defaultValue = true;
         }
       ];
 
