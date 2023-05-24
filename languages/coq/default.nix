@@ -8,8 +8,6 @@
 let
   common = callPackage ../common.nix {};
 
-  allLanguageServerOptions = coq: kernelName: {};
-
   repls = coq: {};
 
   coq_jupyter = callPackage ./coq_jupyter {};
@@ -36,6 +34,12 @@ let
 
   isLessCommon = candidate: !(lib.elem candidate ["coqPackages" "coqPackages_8_20"]);
 
+  settingsSchema = [];
+
+  chooseLanguageServers = settings: coq: kernelName:
+    []
+    ;
+
 in
 
 lib.listToAttrs (map (x:
@@ -56,15 +60,10 @@ lib.listToAttrs (map (x:
       packageOptions = coqPackages;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = allLanguageServerOptions baseCoq "coq";
-      languageServerSearch = common.searcher languageServerOptions;
-
-      settingsSchema = [];
       defaultSettings = {};
 
       build = args@{
         packages ? []
-        , languageServers ? []
         , attrs ? [baseName "coq"]
         , extensions ? ["v"]
         , settings ? defaultSettings
@@ -90,13 +89,13 @@ lib.listToAttrs (map (x:
           ++ (if metaOnly then [] else [
             coq
           ])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions coq baseName)) languageServers));
+          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse coq baseName);
 
           passthru = {
             args = args // { inherit baseName; };
             settings = settingsToUse;
             repls = repls coq;
-            inherit meta languageServerOptions packageOptions settingsSchema;
+            inherit meta packageOptions settingsSchema;
           };
         };
 

@@ -11,9 +11,14 @@ let
   common = callPackage ../common.nix {};
 
   settingsSchema = [
-    # rust-analyzer.
     {
-      target = "rust-analyzer.debug";
+      target = "lsp.rust-analyzer.enable";
+      title = "Enable rust-analyzer";
+      type = "boolean";
+      defaultValue = true;
+    }
+    {
+      target = "lsp.rust-analyzer.debug";
       title = "Rust-analyzer: enable debug output";
       description = "Print verbose debug output.";
       type = "boolean";
@@ -21,12 +26,13 @@ let
     }
   ];
 
-  allLanguageServerOptions = rust: kernelName: focusedSettings: {
-    rust-analyzer = callPackage ./language_server_rust_analyzer/config.nix {
+  chooseLanguageServers = settings: rust: kernelName:
+    []
+    ++ lib.optionals (common.isTrue settings "lsp.rust-analyzer.enable") [(callPackage ./language_server_rust_analyzer/config.nix {
       inherit rust kernelName;
-      settings = focusedSettings;
-    };
-  };
+      settings = common.focusSettings "lsp.rust-analyzer." settings;
+    })]
+    ;
 
   # Note: update this when the base Nixpkgs is bumped
   baseCandidates = [
@@ -63,12 +69,8 @@ listToAttrs (map (x:
       packageOptions = rustPackages;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = allLanguageServerOptions rust "rust" (common.makeDefaultSettings settingsSchema);
-      languageServerSearch = common.searcher languageServerOptions;
-
       build = args@{
         packages ? []
-        , languageServers ? []
         , attrs ? [x "rust"]
         , extensions ? ["rs" "rlib"]
         , settings ? {}
@@ -91,14 +93,13 @@ listToAttrs (map (x:
 
           (callPackage ./mode_info.nix { inherit attrs extensions; })
         ]
-        ++ (if metaOnly then [] else [
-          rustPackages.rustc rustPackages.cargo pkgs.gcc
-          (map (y: builtins.getAttr y (allLanguageServerOptions rust x (common.focusSettings "rust-analyzer." settingsToUse))) languageServers)
-        ]);
+        ++ (if metaOnly then [] else [rustPackages.rustc rustPackages.cargo pkgs.gcc])
+        ++ (if metaOnly then [] else chooseLanguageServers settingsToUse rust x)
+        ;
 
         passthru = {
           args = args // { baseName = x; };
-          inherit meta packageOptions languageServerOptions;
+          inherit meta packageOptions;
         };
       };
 

@@ -13,7 +13,8 @@ import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Types
 import Language.LSP.Types.Lens hiding (diagnostics)
-import Spec.Tests.Haskell.Common
+import qualified Spec.Tests.Haskell.Common as HaskellCommon
+import Spec.Tests.Haskell.Common hiding (lsName)
 import Test.Sandwich as Sandwich
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
@@ -78,4 +79,4 @@ etaExpandCode = [__i|module Foo where
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
   introduceNixEnvironment [kernelSpec "haskell-ghc924"] [] "Haskell" $
-    diagnosticsTests lsName
+    diagnosticsTests HaskellCommon.lsName

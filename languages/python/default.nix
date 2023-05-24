@@ -8,26 +8,17 @@
 let
   common = callPackage ../common.nix {};
 
-  allLanguageServerOptions = pythonWithPackages: kernelName:
-    let
-      basePython = pythonWithPackages (_: []);
-    in
-      {
-        # Primary language servers
-        jedi = (callPackage ./language_server_jedi/config.nix { inherit pythonWithPackages kernelName; });
-        pyright = (callPackage ./language_server_pyright/config.nix { inherit pythonWithPackages kernelName; });
-
-        # Secondary language servers (for diagnostics, formatting, etc.)
-        pylint = (callPackage ./language_server_pylint/config.nix { inherit pythonWithPackages kernelName; });
-        flake8 = (callPackage ./language_server_flake8/config.nix { inherit pythonWithPackages kernelName; });
-        pycodestyle = (callPackage ./language_server_pycodestyle/config.nix { inherit pythonWithPackages kernelName; });
-      } // (lib.optionalAttrs (lib.hasAttr "python-language-server" pkgs) {
-        microsoft = callPackage ./language_server_microsoft/config.nix { inherit pythonWithPackages kernelName; };
-      }) // (lib.optionalAttrs ((lib.hasAttr "python-lsp-server" basePython.pkgs) && (lib.versionAtLeast basePython.pythonVersion "3.7")) {
-        python-lsp-server = callPackage ./language_server_pythonlsp/config.nix { inherit pythonWithPackages kernelName; };
-      }) // (lib.optionalAttrs (lib.hasAttr "python-language-server" basePython.pkgs) {
-        python-language-server = callPackage ./language_server_palantir/config.nix { inherit pythonWithPackages kernelName; };
-      });
+  chooseLanguageServers = settings: pythonWithPackages: kernelName:
+    []
+    ++ lib.optionals (common.isTrue settings "lsp.jedi.enable") [(callPackage ./language_server_jedi/config.nix { inherit pythonWithPackages kernelName; })]
+    ++ lib.optionals (common.isTrue settings "lsp.pyright.enable") [(callPackage ./language_server_pyright/config.nix { inherit pythonWithPackages kernelName; })]
+    ++ lib.optionals (common.isTrue settings "lsp.pylint.enable") [(callPackage ./language_server_pylint/config.nix { inherit pythonWithPackages kernelName; })]
+    ++ lib.optionals (common.isTrue settings "lsp.flake8.enable") [(callPackage ./language_server_flake8/config.nix { inherit pythonWithPackages kernelName; })]
+    ++ lib.optionals (common.isTrue settings "lsp.pycodestyle.enable") [(callPackage ./language_server_pycodestyle/config.nix { inherit pythonWithPackages kernelName; })]
+    ++ lib.optionals (common.isTrue settings "lsp.microsoft.enable") [(callPackage ./language_server_microsoft/config.nix { inherit pythonWithPackages kernelName; })]
+    ++ lib.optionals (common.isTrue settings "lsp.python-lsp-server.enable") [(callPackage ./language_server_pythonlsp/config.nix { inherit pythonWithPackages kernelName; })]
+    ++ lib.optionals (common.isTrue settings "lsp.python-language-server.enable") [(callPackage ./language_server_palantir/config.nix { inherit pythonWithPackages kernelName; })]
+    ;
 
   repls = python: {
     ipython = {
@@ -67,6 +58,63 @@ lib.listToAttrs (map (x:
           type = "boolean";
           defaultValue = true;
         }
+        {
+          target = "lsp.jedi.enable";
+          title = "Enable Jedi language server";
+          type = "boolean";
+          defaultValue = true;
+        }
+        {
+          target = "lsp.pyright.enable";
+          title = "Enable Pyright language server";
+          type = "boolean";
+          defaultValue = false;
+        }
+        {
+          target = "lsp.pylint.enable";
+          title = "Enable Pyright language server";
+          type = "boolean";
+          defaultValue = false;
+        }
+        {
+          target = "lsp.flake8.enable";
+          title = "Enable Flake8 language server";
+          type = "boolean";
+          defaultValue = false;
+        }
+        {
+          target = "lsp.pycodestyle.enable";
+          title = "Enable pycodestyle language server";
+          type = "boolean";
+          defaultValue = false;
+        }
+        {
+          target = "lsp.pylint.enable";
+          title = "Enable Pylint language server";
+          type = "boolean";
+          defaultValue = false;
+        }
+      ] ++ lib.optionals (lib.hasAttr "python-language-server" pkgs) [
+        {
+          target = "lsp.microsoft.enable";
+          title = "Enable Microsoft Python language server";
+          type = "boolean";
+          defaultValue = false;
+        }
+      ] ++ lib.optionals ((lib.hasAttr "python-lsp-server" basePython.pkgs) && (lib.versionAtLeast basePython.pythonVersion "3.7")) [
+        {
+          target = "lsp.pythonlsp.enable";
+          title = "Enable python-lsp-server language server";
+          type = "boolean";
+          defaultValue = false;
+        }
+      ] ++ lib.optionals (lib.hasAttr "python-language-server" basePython.pkgs) [
+        {
+          target = "lsp.pythonlsp.enable";
+          title = "Enable python-language-server language server";
+          type = "boolean";
+          defaultValue = false;
+        }
       ];
 
       meta = basePython.meta // {
@@ -82,12 +130,8 @@ lib.listToAttrs (map (x:
       packageOptions = basePython.pkgs;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = allLanguageServerOptions basePython.withPackages "python";
-      languageServerSearch = common.searcher languageServerOptions;
-
       build = args@{
         packages ? []
-        , languageServers ? []
         , attrs ? [x "python"]
         , extensions ? ["py"]
         , settings ? {}
@@ -113,11 +157,11 @@ lib.listToAttrs (map (x:
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [python ps.ipython])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions pythonWithPackages x)) languageServers))
+          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse pythonWithPackages x)
           ;
 
           passthru = {
-            inherit meta packageOptions languageServerOptions settingsSchema;
+            inherit meta packageOptions settingsSchema;
             args = args // { baseName = x; };
             settings = settingsToUse;
             repls = repls python;

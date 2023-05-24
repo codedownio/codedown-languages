@@ -10,9 +10,19 @@
 let
   common = callPackage ../common.nix {};
 
-  allLanguageServerOptions = rPackages: rWrapper: basePackages: {
-    languageserver = (callPackage ./language_server.nix { inherit rPackages rWrapper basePackages; });
-  };
+  settingsSchema = [
+    {
+      target = "lsp.languageserver.enable";
+      title = "Enable languageserver";
+      type = "boolean";
+      defaultValue = true;
+    }
+  ];
+
+  chooseLanguageServers = settings: rPackages: rWrapper: basePackages: kernelName:
+    []
+    ++ lib.optionals (common.isTrue settings "lsp.languageserver.enable") [(callPackage ./language_server.nix { inherit rPackages rWrapper basePackages kernelName; })]
+  ;
 
   meta = R.meta // {
     baseName = "R";
@@ -39,38 +49,39 @@ listToAttrs [{
     packageOptions = rPackages;
     packageSearch = common.searcher packageOptions;
 
-    languageServerOptions = allLanguageServerOptions rPackages rWrapper [];
-    languageServerSearch = common.searcher languageServerOptions;
-
     build = args@{
       packages ? []
-      , languageServers ? []
+      , settings ? {}
       , attrs ? ["r" "R"]
       , extensions ? ["r"]
       , metaOnly ? false
     }:
       let
+        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+
         basePackages = [rPackages.IRkernel] ++ (map (x: lib.getAttr x rPackages) packages);
 
         rWithPackages = rWrapper.override {
           packages = basePackages;
         };
-      in symlinkJoin {
-        name = "r";
+      in
+        symlinkJoin {
+          name = "r";
 
-        paths = [
-          rWithPackages
-          (callPackage ./kernel.nix { inherit rWithPackages attrs extensions; })
-          (callPackage ./mode_info.nix { inherit attrs extensions; })
-        ]
-        ++ (map (x: builtins.getAttr x (allLanguageServerOptions rPackages rWrapper basePackages)) languageServers);
+          paths = [
+            (callPackage ./kernel.nix { inherit rWithPackages attrs extensions; })
+            (callPackage ./mode_info.nix { inherit attrs extensions; })
+          ]
+          ++ (if metaOnly then [] else [rWithPackages])
+          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse rPackages rWrapper basePackages "R")
+          ;
 
-        passthru = {
-          inherit meta packageOptions languageServerOptions;
-          args = args // { baseName = "R"; };
-          repls = repls rWithPackages R.version;
+          passthru = {
+            inherit meta packageOptions;
+            args = args // { baseName = "R"; };
+            repls = repls rWithPackages R.version;
+          };
         };
-      };
 
     inherit meta;
   };

@@ -28,19 +28,13 @@ import UnliftIO.Process
 testKernelSearchersBuild :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => Text -> SpecFree context m ()
-testKernelSearchersBuild kernel = it [i|#{kernel}: package and LSP searchers build|] $ do
+testKernelSearchersBuild kernel = it [i|#{kernel}: package searchers build|] $ do
   testPackageSearchBuild kernel
-  testLanguageServerSearchBuild kernel
 
 testPackageSearchBuild :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => Text -> ExampleT context m ()
 testPackageSearchBuild kernel = testBuild [i|.\#languages."#{kernel}".packageSearch|]
-
-testLanguageServerSearchBuild :: (
-  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
-  ) => Text -> ExampleT context m ()
-testLanguageServerSearchBuild kernel = testBuild [i|.\#languages."#{kernel}".languageServerSearch|]
 
 testBuild :: (MonadIO m, MonadThrow m, MonadBaseControl IO m, MonadLogger m) => String -> m ()
 testBuild expr = do
@@ -59,17 +53,11 @@ testKernelSearchersNonempty :: (
   ) => Text -> SpecFree context m ()
 testKernelSearchersNonempty kernel = describe [i|#{kernel}: package and LSP searchers build and have results|] $ do
   it "package searcher" $ testPackageSearchNonempty kernel
-  it "LSP searcher" $ testLanguageServerSearchNonempty kernel
 
 testPackageSearchNonempty :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => Text -> ExampleT context m ()
 testPackageSearchNonempty kernel = testSearcherHasNonemptyResults [i|.\#languages."#{kernel}".packageSearch|]
-
-testLanguageServerSearchNonempty :: (
-  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
-  ) => Text -> ExampleT context m ()
-testLanguageServerSearchNonempty kernel = testSearcherHasNonemptyResults [i|.\#languages."#{kernel}".languageServerSearch|]
 
 testSearcherHasNonemptyResults :: (MonadUnliftIO m, MonadThrow m, MonadLogger m, MonadFail m) => String -> m ()
 testSearcherHasNonemptyResults expr = searcherResults expr >>= \case

@@ -19,18 +19,23 @@ let
 
   settingsSchema = [
     {
-      target = "enableHlintOutput";
-      title = "Enable hlint warnings in code output.";
-      description = "Show hlint warnings as part of Jupyter kernel output. Normally you don't want this because it is provided by haskell-language-server.";
+      target = "lsp.haskell-language-server.enable";
+      title = "Enable haskell-language-server";
+      type = "boolean";
+      defaultValue = true;
+    }
+    {
+      target = "lsp.haskell-language-server.debug";
+      title = "Haskell-language-server: enable debug output";
+      description = "Print verbose debug output.";
       type = "boolean";
       defaultValue = false;
     }
 
-    # haskell-language-server.
     {
-      target = "haskell-language-server.debug";
-      title = "Haskell-language-server: enable debug output";
-      description = "Print verbose debug output.";
+      target = "enableHlintOutput";
+      title = "Enable hlint warnings in code output.";
+      description = "Show hlint warnings as part of Jupyter kernel output. Normally you don't want this because it is provided by haskell-language-server.";
       type = "boolean";
       defaultValue = false;
     }
@@ -63,9 +68,10 @@ let
     };
   };
 
-  allLanguageServerOptions = snapshot: ghc: kernelName: focusedSettings: {
-    haskell-language-server = hls snapshot ghc kernelName focusedSettings;
-  };
+  chooseLanguageServers = settings: snapshot: ghc: kernelName:
+    []
+    ++ lib.optionals (common.isTrue settings "lsp.haskell-language-server.enable") [(hls snapshot ghc kernelName (common.focusSettings "lsp.haskell-language-server." settings))]
+    ;
 
   compilers = {
     # ghc865 = haskell.packages.ghc865Binary; # Fails with error: attribute 'exceptions_0_10_4' missing
@@ -140,12 +146,8 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
         let meta = (attrByPath ["components" "library" "meta"] null value); in
         if meta == null then value else value // { inherit meta; }) packageOptions);
 
-      languageServerOptions = allLanguageServerOptions snapshot (snapshot.ghcWithPackages (ps: [])) "haskell" (common.makeDefaultSettings settingsSchema);
-      languageServerSearch = common.searcher languageServerOptions;
-
       build = args@{
         packages ? []
-        , languageServers ? []
         , attrs ? [meta.baseName "haskell"]
         , extensions ? ["hs"]
         , settings ? {}
@@ -156,7 +158,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
           ghc = snapshot.ghcWithPackages (ps:
             [ps.directory]
             ++ (map (x: builtins.getAttr x ps) packages)
-            ++ (if any (x: x == "haskell-language-server") languageServers then [ps.haskell-language-server] else [])
+            ++ (if (common.isTrue settingsToUse "lsp.haskell-language-server.enable") then [ps.haskell-language-server] else [])
           );
 
         in symlinkJoin {
@@ -177,13 +179,13 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [ghc])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions snapshot ghc meta.baseName (common.focusSettings "haskell-language-server." settingsToUse))) languageServers))
+          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse snapshot ghc meta.baseName)
           ;
 
           passthru = {
             args = args // { baseName = meta.baseName; };
             settings = settingsToUse;
-            inherit meta languageServerOptions packageOptions settingsSchema;
+            inherit meta packageOptions settingsSchema;
             repls = repls ghc;
           };
         };

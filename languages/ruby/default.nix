@@ -50,6 +50,20 @@ let
     extensions_to_run = ["rb"];
   }]);
 
+  settingsSchema = [
+    {
+      target = "lsp.solargraph.enable";
+      title = "Enable Solargraph language server";
+      type = "boolean";
+      defaultValue = true;
+    }
+  ];
+
+  chooseLanguageServers = settings: packageOptions: kernelName:
+    []
+    ++ lib.optionals (common.isTrue settings "lsp.solargraph.enable") [(callPackage ./solargraph.nix { rubyPackages = packageOptions; inherit kernelName; })]
+    ;
+
 in
 
 with lib;
@@ -63,6 +77,7 @@ listToAttrs (map (x:
       displayName = "Ruby " + ruby.version;
       version = ruby.version;
       icon = ./logo-64x64.png;
+      inherit settingsSchema;
     };
 
   in {
@@ -71,35 +86,27 @@ listToAttrs (map (x:
       packageOptions = getAttr x packagesLookup;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = {
-        solargraph = callPackage ./solargraph.nix {
-          rubyPackages = packageOptions;
-          kernelName = x;
-        };
-      };
-      languageServerSearch = common.searcher languageServerOptions;
-
       build = args@{
         packages ? []
-        , languageServers ? []
+        , settings ? {}
         , attrs ? [x "ruby"]
         , extensions ? ["rb"]
         , metaOnly ? false
       }:
-        symlinkJoin {
+        let
+          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+        in symlinkJoin {
           name = x;
           paths = [
             (callPackage ./kernel.nix { inherit attrs extensions; })
             modeInfo
           ]
-          ++ (if metaOnly then [] else [
-            ruby
-          ])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y languageServerOptions) languageServers))
+          ++ (if metaOnly then [] else [ruby])
+          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse packageOptions x)
           ;
           passthru = {
             args = args // { baseName = x; };
-            inherit meta packageOptions languageServerOptions;
+            inherit meta packageOptions;
           };
         };
 

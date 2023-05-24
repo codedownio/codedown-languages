@@ -18,7 +18,6 @@ kernelSpec = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Go"
   , nixKernelPackages = []
-  , nixKernelLanguageServers = [nameOnly "gopls"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing

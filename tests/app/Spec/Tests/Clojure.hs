@@ -18,7 +18,6 @@ kernelSpec = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Clojure"
   , nixKernelPackages = []
-  , nixKernelLanguageServers = [nameOnly "clojure-lsp"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing

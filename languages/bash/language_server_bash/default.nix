@@ -6,6 +6,8 @@
 , nodejs-14_x
 , shellcheck
 , unixtools
+
+, kernelName
 }:
 
 with lib;
@@ -31,7 +33,7 @@ let
     '';
 in
 
-common.writeTextDirWithMeta bashLanguageServerWithMan.meta "lib/codedown/language-servers/bash-language-server.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta bashLanguageServerWithMan.meta "lib/codedown/language-servers/bash-${kernelName}-bash-language-server.yaml" (lib.generators.toYAML {} [{
   name = "bash-language-server";
   extensions = ["sh" "bash"];
   notebook_suffix = ".bash";

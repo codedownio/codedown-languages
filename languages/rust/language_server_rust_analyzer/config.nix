@@ -76,6 +76,6 @@ let
 
 in
 
-common.writeTextDirWithMeta rust-analyzer.meta "lib/codedown/language-servers/rust-analyzer.yaml" (lib.generators.toYAML {} [
+common.writeTextDirWithMeta rust-analyzer.meta "lib/codedown/language-servers/rust-${kernelName}-rust-analyzer.yaml" (lib.generators.toYAML {} [
   (config false)
 ])

@@ -17,10 +17,19 @@ let
   packageOptions = {};
   packageSearch = common.searcher packageOptions;
 
-  languageServerOptions = {
-    bash-language-server = callPackage ./language_server_bash {};
-  };
-  languageServerSearch = common.searcher languageServerOptions;
+  chooseLanguageServers = settings: kernelName:
+    []
+    ++ lib.optionals (common.isTrue settings "lsp.bash-language-server.enable") [(callPackage ./language_server_bash { inherit kernelName; })]
+    ;
+
+  settingsSchema = [
+    {
+      target = "lsp.bash-language-server.enable";
+      title = "Enable Bash language server";
+      type = "boolean";
+      defaultValue = true;
+    }
+  ];
 
 in
 
@@ -32,22 +41,24 @@ lib.listToAttrs (map (x:
       displayName = "Bash " + bash.version;
       version = bash.version;
       icon = ./bash.png;
+      inherit settingsSchema;
     };
   in
     {
       name = x;
       value = rec {
         inherit packageOptions packageSearch;
-        inherit languageServerOptions languageServerSearch;
 
         build = args@{
           packages ? []
-          , languageServers ? []
           , attrs ? ["bash"]
           , extensions ? ["sh" "bash"]
           , metaOnly ? false
+          , settings ? {}
         }:
-          symlinkJoin {
+          let
+            settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+          in symlinkJoin {
             name = "bash";
 
             paths = [
@@ -55,12 +66,12 @@ lib.listToAttrs (map (x:
               (callPackage ./mode_info.nix { inherit attrs extensions; })
             ]
             ++ (if metaOnly then [] else [(callPackage ./man-with-pages.nix {})])
-            ++ (if metaOnly then [] else (map (y: builtins.getAttr y languageServerOptions) languageServers))
+            ++ (if metaOnly then [] else chooseLanguageServers settingsToUse x)
             ;
 
             passthru = {
               args = args // { baseName = x; };
-              inherit meta packageOptions languageServerOptions;
+              inherit meta packageOptions;
             };
           };
 

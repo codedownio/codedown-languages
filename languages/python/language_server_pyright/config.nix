@@ -22,7 +22,7 @@ let
 
 in
 
-common.writeTextDirWithMeta pyright.meta "lib/codedown/language-servers/python-pyright.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta pyright.meta "lib/codedown/language-servers/python-${kernelName}-pyright.yaml" (lib.generators.toYAML {} [{
   name = "pyright";
   display_name = "Pyright";
   description = pyright.meta.description;

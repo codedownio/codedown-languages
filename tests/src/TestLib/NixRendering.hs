@@ -105,8 +105,7 @@ renderKernel (NixKernelSpec {..}) = [i|({
   name = "#{nixKernelName}";
   channel = "#{nixKernelChannel}";
   args = {
-    packages = [#{T.unwords $ fmap quote $ fmap nameAndMetaName nixKernelPackages}];
-    languageServers = [#{T.unwords $ fmap quote $ fmap nameAndMetaName nixKernelLanguageServers}];#{settings}
+    packages = [#{T.unwords $ fmap quote $ fmap nameAndMetaName nixKernelPackages}];#{settings}
   };
 })|]
   where

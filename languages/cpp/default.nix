@@ -68,17 +68,16 @@ if cling == null then {} else
         packageOptions = {};
         packageSearch = common.searcher packageOptions;
 
-        languageServerOptions = {};
-        languageServerSearch = common.searcher languageServerOptions;
-
         build = args@{
           packages ? []
-          , languageServers ? []
+          , settings ? {}
           , attrs ? [x "cpp"]
           , extensions ? ["cpp" "hpp" "cxx" "hxx" "c" "h"]
           , metaOnly ? false
         }:
-          symlinkJoin {
+          let
+            settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+          in symlinkJoin {
             name = x;
             paths = [
               ((callPackage ./kernel_cling.nix { inherit attrs extensions logo64 std metaOnly; }) (getAttr x displayNames) x)
@@ -89,7 +88,7 @@ if cling == null then {} else
             ;
 
             passthru = {
-              inherit meta packageOptions languageServerOptions;
+              inherit meta packageOptions;
               args = args // { baseName = x; };
               repls = repls (getAttr x icons);
             };

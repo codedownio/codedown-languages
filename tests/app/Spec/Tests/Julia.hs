@@ -67,13 +67,13 @@ kernelSpec lang = NixKernelSpec {
       , nameOnly "Plots"
       , nameOnly "Roots"
       ]
-  , nixKernelLanguageServers = [nameOnly "LanguageServer"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Just $ aesonFromList [
-      ("LanguageServer.debug", A.Bool True)
-      , ("LanguageServer.index", A.Bool True)
+      ("lsp.LanguageServer.enable", A.Bool True)
+      , ("lsp.LanguageServer.debug", A.Bool True)
+      , ("lsp.LanguageServer.index", A.Bool True)
       ]
   }
 

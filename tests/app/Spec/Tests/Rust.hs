@@ -58,13 +58,12 @@ kernelSpec = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Rust"
   , nixKernelPackages = []
-  , nixKernelLanguageServers = [nameOnly "rust-analyzer"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Just (aesonFromList [
-                                 ("rust-analyzer.debug", A.Bool True)
-                                 ])
+  , nixKernelSettings = Just $ aesonFromList [
+      ("rust-analyzer.debug", A.Bool True)
+      ]
   }
 
 main :: IO ()

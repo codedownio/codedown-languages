@@ -2,6 +2,7 @@
 
 module Spec.Tests.Python3 (tests) where
 
+import Data.Aeson as A
 import Data.String.Interpolate
 import Language.LSP.Types
 import Test.Sandwich as Sandwich
@@ -10,6 +11,7 @@ import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Util
 
 
 kernelSpec :: NixKernelSpec
@@ -18,16 +20,15 @@ kernelSpec = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Python 3"
   , nixKernelPackages = [nameOnly "tensorflow"]
-  , nixKernelLanguageServers = [
-      nameOnly "python-lsp-server"
-      , nameOnly "pylint"
-      , nameOnly "pyright"
-      , nameOnly "pycodestyle"
-      ]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Nothing
+  , nixKernelSettings = Just $ aesonFromList [
+      ("lsp.python-lsp-server.enable", A.Bool True)
+      , ("lsp.pylint.enable", A.Bool True)
+      , ("lsp.pyright.enable", A.Bool True)
+      , ("lsp.pycodestyle.enable", A.Bool True)
+      ]
   }
 
 tests :: TopSpec

@@ -25,7 +25,7 @@ let
 
 in
 
-common.writeTextDirWithMeta gopls.meta "lib/codedown/language-servers/gopls.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta gopls.meta "lib/codedown/language-servers/go-${kernelName}-gopls.yaml" (lib.generators.toYAML {} [{
   name = "gopls";
   display_name = "gopls";
   description = gopls.meta.description;

@@ -25,6 +25,20 @@ let
     };
   };
 
+  settingsSchema = [
+    {
+      target = "lsp.clojure-lsp.enable";
+      title = "Enable clojure-lsp language server";
+      type = "boolean";
+      defaultValue = true;
+    }
+  ];
+
+  chooseLanguageServers = settings: kernelName:
+  []
+  ++ lib.optionals (common.isTrue settings "lsp.clojure-lsp.enable") [(callPackage ./language-server.nix { inherit kernelName; })]
+  ;
+
 in
 
 with lib;
@@ -46,30 +60,27 @@ listToAttrs (map (x:
       packageOptions = getAttr x packagesLookup;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = {
-        clojure-lsp = callPackage ./language-server.nix { kernelName = x; };
-      };
-      languageServerSearch = common.searcher languageServerOptions;
-
       build = args@{
         packages ? []
-        , languageServers ? []
+        , settings ? {}
         , attrs ? ["clojure"]
         , extensions ? ["clj"]
         , metaOnly ? false
       }:
-        symlinkJoin {
+        let
+          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+        in symlinkJoin {
           name = "clojure";
           paths = [
             (callPackage ./kernel.nix { inherit attrs extensions; })
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [clojure])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y languageServerOptions) languageServers))
+          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse x)
           ;
 
           passthru = {
-            inherit meta packageOptions languageServerOptions;
+            inherit meta packageOptions;
             args = args // { baseName = x; };
             repls = repls clojure;
           };

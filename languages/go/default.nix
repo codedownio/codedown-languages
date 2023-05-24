@@ -14,6 +14,20 @@ let
     "go_1_19"
   ];
 
+  settingsSchema = [
+    {
+      target = "lsp.gopls.enable";
+      title = "Enable gopls language server";
+      type = "boolean";
+      defaultValue = true;
+    }
+  ];
+
+  chooseLanguageServers = settings: go: attrs: kernelName:
+  []
+  ++ lib.optionals (common.isTrue settings "lsp.gopls.enable") [(callPackage ./language-server-gopls.nix { inherit go attrs; inherit kernelName; })]
+  ;
+
   repls = go: {};
 
 in
@@ -37,33 +51,27 @@ listToAttrs (map (x:
       packageOptions = {};
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = attrs: {
-        gopls = callPackage ./language-server-gopls.nix { inherit go attrs; kernelName = x; };
-      };
-      languageServerSearch = common.searcher (languageServerOptions []);
-
       build = args@{
         packages ? []
-        , languageServers ? []
+        , settings ? {}
         , attrs ? ["go"]
         , extensions ? ["go"]
         , metaOnly ? false
       }:
-        symlinkJoin {
+        let
+          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+        in symlinkJoin {
           name = "go";
           paths = [
             (callPackage ./kernel.nix { inherit attrs extensions metaOnly; })
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
-          ++ (if metaOnly then [] else [
-            go
-          ])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (languageServerOptions attrs)) languageServers))
+          ++ (if metaOnly then [] else [go])
+          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse go attrs x)
           ;
 
           passthru = {
             inherit meta packageOptions;
-            languageServerOptions = languageServerOptions attrs;
             args = args // { baseName = x; };
             repls = repls go;
           };

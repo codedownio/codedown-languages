@@ -1,12 +1,14 @@
 { pkgs
 , stdenv
 , lib
+, callPackage
+, fetchFromGitHub
+
 , rWrapper
 , rPackages
 , basePackages
 , R
-, callPackage
-, fetchFromGitHub
+, kernelName
 }:
 
 let
@@ -69,7 +71,7 @@ let
 
 in
 
-common.writeTextDirWithMeta languageserver.meta "lib/codedown/language-servers/r-languageserver.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta languageserver.meta "lib/codedown/language-servers/r-${kernelName}-languageserver.yaml" (lib.generators.toYAML {} [{
   name = "languageserver";
   display_name = "";
   description = "An implementation of the Language Server Protocol for R";

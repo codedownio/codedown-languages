@@ -80,18 +80,14 @@ listToAttrs (mapAttrsToList (compilerName: snapshotName:
         let meta = (attrByPath ["components" "library" "meta"] null value); in
         if meta == null then value else value // { inherit meta; }) packageOptions);
 
-      languageServerOptions = allLanguageServerOptions (snapshot.ghcWithPackages (ps: [])) "haskell";
-      languageServerSearch = common.searcher languageServerOptions;
-
       settingsSchema = [];
       defaultSettings = {};
 
       build = args@{
         packages ? []
-        , languageServers ? []
         , attrs ? [meta.baseName "haskell"]
         , extensions ? ["hs"]
-        , settings ? defaultSettings
+        , settings ? {}
         , metaOnly ? false
       }:
         let

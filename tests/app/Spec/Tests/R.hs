@@ -16,7 +16,6 @@ kernelSpec = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "R"
   , nixKernelPackages = [nameOnly "ggplot2"]
-  , nixKernelLanguageServers = []
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing

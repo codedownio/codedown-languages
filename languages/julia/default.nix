@@ -16,22 +16,36 @@ let
   juliaWithPackages = callPackage ./julia-modules {};
 
   settingsSchema = [
-    # LanguageServer.
     {
-      target = "LanguageServer.index";
+      target = "lsp.LanguageServer.enable";
+      title = "Enable LanguageServer language server";
+      type = "boolean";
+      defaultValue = true;
+    }
+    {
+      target = "lsp.LanguageServer.index";
       title = "LanguageServer: auto-index packages when building environment";
       description = "Automatically build SymbolServer.jl indices when realizing environment (may increase build time).";
       type = "boolean";
       defaultValue = true;
     }
     {
-      target = "LanguageServer.debug";
+      target = "lsp.LanguageServer.debug";
       title = "LanguageServer: stderr debugging";
       description = "Log debug messages to stderr.";
       type = "boolean";
       defaultValue = false;
     }
   ];
+
+  chooseLanguageServers = settings: attrs: attr: julia:
+  []
+  ++ lib.optionals (common.isTrue settings "lsp.LanguageServer.enable") [(callPackage ./language-server-LanguageServer.nix {
+    inherit attrs julia;
+    kernelName = attr;
+    settings = common.focusSettings "lsp.LanguageServer." settings;
+  })]
+  ;
 
   packageOverrides = {
     "LanguageServer" = fetchFromGitHub {
@@ -102,32 +116,21 @@ mapAttrs (attr: value:
       packageMustBeDerivation = false;
     };
 
-    languageServerOptions = attrs: julia: settings: {
-      LanguageServer = callPackage ./language-server-LanguageServer.nix {
-        inherit attrs julia settings;
-        kernelName = attr;
-      };
-    };
-    languageServerSearch = common.searcher (languageServerOptions [] baseJulia (common.makeDefaultSettings settingsSchema));
-
     build = args@{
       packages ? []
-      , languageServers ? []
       , attrs ? [attr "julia"]
       , extensions ? ["jl"]
       , settings ? {}
       , metaOnly ? false
     }:
       let
-        hasLanguageServer = length languageServers > 0; # TODO: more precise check if we ever add more language servers
+        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
 
         julia = value (
           ["IJulia"]
           ++ packages
-          ++ lib.optionals hasLanguageServer ["LanguageServer" "SymbolServer"]
+          ++ lib.optionals (common.isTrue settingsToUse "lsp.LanguageServer.enable") ["LanguageServer" "SymbolServer"]
         );
-
-        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
       in
         symlinkJoin {
           name = attr;
@@ -137,15 +140,12 @@ mapAttrs (attr: value:
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [julia])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (languageServerOptions attrs julia (common.focusSettings "LanguageServer." settingsToUse)))
-                                            languageServers)
-                                       )
+          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse attrs attr julia)
           ;
 
           passthru = {
             args = args // { baseName = attr; };
             inherit meta packageOptions;
-            languageServerOptions = languageServerOptions julia attrs;
           };
         };
 

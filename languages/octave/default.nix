@@ -47,12 +47,9 @@ listToAttrs (map (x:
       packageOptions = baseOctave.pkgs;
       packageSearch = common.searcher packageOptions;
 
-      languageServerOptions = {};
-      languageServerSearch = common.searcher languageServerOptions;
-
       build = args@{
         packages ? []
-        , languageServers ? []
+        , settings ? {}
         , extraJupyterConfig ? null
         , attrs ? ["octave"]
         , extensions ? ["m"]
@@ -90,7 +87,7 @@ listToAttrs (map (x:
             octave
           ];
           passthru = {
-            inherit meta packageOptions languageServerOptions;
+            inherit meta packageOptions;
             args = args // { baseName = x; };
             repls = repls octaveWithPackages baseOctave.version;
           };

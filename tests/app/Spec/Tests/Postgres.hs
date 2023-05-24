@@ -23,9 +23,6 @@ kernelSpec = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Postgres"
   , nixKernelPackages = []
-  , nixKernelLanguageServers = [
-      -- nameOnly ""
-      ]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing

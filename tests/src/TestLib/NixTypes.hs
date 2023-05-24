@@ -54,7 +54,6 @@ data NixKernelSpec = NixKernelSpec {
   , nixKernelChannel :: Text
   , nixKernelDisplayName :: Maybe Text
   , nixKernelPackages :: [NameAndMeta]
-  , nixKernelLanguageServers :: [NameAndMeta]
   , nixKernelExtraJupyterConfig :: Maybe Text
   , nixKernelMeta :: Maybe Value
   , nixKernelIcon :: Maybe Text

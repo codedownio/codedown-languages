@@ -89,6 +89,8 @@ rec {
   in
     if evaluated.success then evaluated.value else default;
 
+  isTrue = settings: name: hasAttr name settings && getAttr name settings == true;
+
   focusSettings = prefix: settings: with lib; let
     filtered = lib.filterAttrs (n: _: hasPrefix prefix n) settings;
   in

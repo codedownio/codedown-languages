@@ -15,7 +15,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = [];
-        languageServers = ["bash-language-server"];
       };
     })
 
@@ -24,7 +23,6 @@ codedown.mkCodeDownEnvironment {
     #   channel = "codedown";
     #   args = {
     #     packages = [];
-    #     languageServers = [];
     #   };
     # })
 
@@ -33,7 +31,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = [];
-        languageServers = ["clojure-lsp"];
       };
     })
 
@@ -42,7 +39,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = [];
-        languageServers = [];
         attrs = ["cpp11" "cpp"];
       };
     })
@@ -52,10 +48,10 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["JSON3" "Plots"];
-        languageServers = ["LanguageServer"];
         settings = {
-            "LanguageServer.index" = true;
-            "LanguageServer.debug" = false;
+          "lsp.LanguageServer.enable" = true;
+          "lsp.LanguageServer.index" = true;
+          "lsp.LanguageServer.debug" = false;
         };
       };
     })
@@ -65,10 +61,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["JSON3" "Plots"];
-        # languageServers = ["LanguageServer"];
-        # settings = {
-        #     "LanguageServer.index" = true;
-        # };
       };
     })
 
@@ -77,7 +69,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["aeson"];
-        languageServers = ["haskell-language-server"];
       };
     })
 
@@ -86,9 +77,8 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["aeson"];
-        languageServers = ["haskell-language-server"];
         settings = {
-          "haskell-language-server.debug" = true;
+          "lsp.haskell-language-server.debug" = true;
         };
       };
     })
@@ -98,7 +88,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["aeson"];
-        languageServers = ["haskell-language-server"];
       };
     })
 
@@ -107,7 +96,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["ggplot2"];
-        languageServers = ["languageserver"];
       };
     })
 
@@ -116,7 +104,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["arduino"];
-        languageServers = [];
         extraJupyterConfig = ''
           c.OctaveKernel.plot_settings = dict(format='svg')
         '';
@@ -128,9 +115,14 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["matplotlib" "scipy" "rope"];
-        languageServers = ["jedi" "pyright" "pylint" "flake8" "pycodestyle" "python-lsp-server"];
         settings = {
           permitUserSite = false;
+          "lsp.jedi.enable" = true;
+          "lsp.pyright.enable" = true;
+          "lsp.pylint.enable" = true;
+          "lsp.flake8.enable" = true;
+          "lsp.pycodestyle.enable" = true;
+          "lsp.python-lsp-server.enable" = true;
         };
       };
     })
@@ -140,7 +132,6 @@ codedown.mkCodeDownEnvironment {
     #   channel = "codedown";
     #   args = {
     #     packages = [];
-    #     languageServers = [];
     #     settings = {
     #       permitUserSite = false;
     #     };
@@ -152,7 +143,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = [];
-        languageServers = ["solargraph"];
       };
     })
 
@@ -161,7 +151,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = [];
-        languageServers = ["rust-analyzer"];
       };
     })
 
@@ -170,7 +159,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = [];
-        languageServers = ["gopls"];
       };
     })
 
@@ -179,7 +167,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = [];
-        languageServers = [];
       };
     })
 
@@ -188,7 +175,6 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["ceres"];
-        languageServers = [];
       };
     })
   ];

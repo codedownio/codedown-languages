@@ -68,6 +68,6 @@ let
 
 in
 
-common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/language-servers/haskell-hls.yaml" (lib.generators.toYAML {} [
+common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/language-servers/haskell-${kernelName}-hls.yaml" (lib.generators.toYAML {} [
   (config false)
 ])

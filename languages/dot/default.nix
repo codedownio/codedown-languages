@@ -20,7 +20,7 @@ lib.listToAttrs (map (x:
     graphviz = lib.getAttr x pkgs;
 
     meta = graphviz.meta // {
-      baseName = "cpp11";
+      baseName = "graphviz";
       displayName = "Graphviz " + graphviz.version;
       version = graphviz.version;
       icon = ./logo-64x64.png;
@@ -32,12 +32,9 @@ lib.listToAttrs (map (x:
       packageOptions = {};
       packageSearch = common.searcher {};
 
-      languageServerOptions = {};
-      languageServerSearch = common.searcher languageServerOptions;
-
       build = args@{
         packages ? []
-        , languageServers ? []
+        , settings ? {}
         , attrs ? ["dot" "graphviz"]
         , extensions ? ["dot" "gv"]
       }:
@@ -50,7 +47,7 @@ lib.listToAttrs (map (x:
           ];
           passthru = {
             args = args // { baseName = x; };
-            inherit meta packageOptions languageServerOptions;
+            inherit meta packageOptions;
           };
         };
 

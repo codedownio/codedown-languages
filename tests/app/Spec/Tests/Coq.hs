@@ -18,9 +18,6 @@ kernelSpec = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Coq"
   , nixKernelPackages = [nameOnly "ceres"]
-  , nixKernelLanguageServers = [
-      -- nameOnly "coq-language-server"
-      ]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing

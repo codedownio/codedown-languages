@@ -19,7 +19,7 @@ let
 
 in
 
-common.writeTextDirWithMeta python.pkgs.pycodestyle.meta "lib/codedown/language-servers/python-pycodestyle.yaml"
+common.writeTextDirWithMeta python.pkgs.pycodestyle.meta "lib/codedown/language-servers/python-${kernelName}-pycodestyle.yaml"
   (lib.generators.toYAML {} [{
     name = "pycodestyle";
     display_name = "pycodestyle";

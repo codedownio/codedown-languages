@@ -5,6 +5,7 @@
 module Spec.Tests.Ruby (tests) where
 
 import Control.Lens
+import Data.Aeson as A
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Types
@@ -15,6 +16,7 @@ import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Util (aesonFromList)
 
 
 tests :: TopSpec
@@ -44,11 +46,12 @@ kernelSpec lang = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just [i|Ruby (#{lang})|]
   , nixKernelPackages = []
-  , nixKernelLanguageServers = [nameOnly "solargraph"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Nothing
+  , nixKernelSettings = Just $ aesonFromList [
+      ("lsp.solargraph.enable", A.Bool True)
+      ]
   }
 
 main :: IO ()
