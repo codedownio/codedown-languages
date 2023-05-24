@@ -48,7 +48,7 @@ lib.listToAttrs (map (x:
       baseName = with builtins; (substring 0 3 x) + (substring 11 (stringLength x - 11) x);
       displayName = "Coq " + baseCoq.version;
       meta = baseCoq.meta // {
-        inherit baseName displayName;
+        inherit baseName displayName settingsSchema;
         version = baseCoq.version;
         icon = coq_jupyter.sizedLogo "64";
         lessCommon = isLessCommon x;

@@ -30,17 +30,32 @@ testKernelSearchersBuild :: (
   ) => Text -> SpecFree context m ()
 testKernelSearchersBuild kernel = it [i|#{kernel}: package searchers build|] $ do
   testPackageSearchBuild kernel
+  testHasSettingsSchema kernel
 
 testPackageSearchBuild :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => Text -> ExampleT context m ()
 testPackageSearchBuild kernel = testBuild [i|.\#languages."#{kernel}".packageSearch|]
 
+testHasSettingsSchema :: (
+  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  ) => Text -> ExampleT context m ()
+testHasSettingsSchema kernel = testEval [i|.\#languages."#{kernel}".meta.settingsSchema|]
+
 testBuild :: (MonadIO m, MonadThrow m, MonadBaseControl IO m, MonadLogger m) => String -> m ()
 testBuild expr = do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
   p <- createProcessWithLogging $ (proc "nix" ["build", expr, "--json", "--no-link"]) {
+    cwd = Just rootDir
+    }
+  waitForProcess p >>= (`shouldBe` ExitSuccess)
+
+testEval :: (MonadIO m, MonadThrow m, MonadBaseControl IO m, MonadLogger m) => String -> m ()
+testEval expr = do
+  rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
+
+  p <- createProcessWithLogging $ (proc "nix" ["eval", expr, "--json"]) {
     cwd = Just rootDir
     }
   waitForProcess p >>= (`shouldBe` ExitSuccess)

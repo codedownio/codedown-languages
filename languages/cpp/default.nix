@@ -37,6 +37,8 @@ let
     cpp2a = "c++2a";
   };
 
+  settingsSchema = [];
+
   repls = icon: {
     cling = {
       display_name = "Cling " + cling.unwrapped.version;
@@ -57,6 +59,7 @@ if cling == null then {} else
         displayName = getAttr x displayNames;
         version = clang.version;
         icon = getAttr x icons;
+        inherit settingsSchema;
       };
 
       logo64 = getAttr x icons;

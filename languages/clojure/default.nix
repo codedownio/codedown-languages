@@ -52,6 +52,7 @@ listToAttrs (map (x:
       displayName = "Clojure";
       version = clojure.version;
       icon = ./logo-64x64.png;
+      inherit settingsSchema;
     };
 
   in {

@@ -18,6 +18,8 @@ let
     "octave"
   ];
 
+  settingsSchema = [];
+
   repls = octave: version: {
     octave = {
       display_name = "Octave " + version;
@@ -39,6 +41,7 @@ listToAttrs (map (x:
       displayName = "Octave " + baseOctave.version;
       version = baseOctave.version;
       icon = ./logo-64x64.png;
+      inherit settingsSchema;
     };
 
   in {

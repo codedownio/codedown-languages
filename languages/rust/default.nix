@@ -61,6 +61,7 @@ listToAttrs (map (x:
       baseName = x;
       inherit displayName;
       icon = ./logo-64x64.png;
+      inherit settingsSchema;
     };
 
   in {

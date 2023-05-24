@@ -43,6 +43,7 @@ listToAttrs (map (x:
       displayName = "Go";
       version = go.version;
       icon = ./logo-64x64.png;
+      inherit settingsSchema;
     };
 
   in {
