@@ -58,12 +58,13 @@ let
     type = "stream";
     args = if raw then [
       "${rustAnalyzerToUse}/bin/rust-analyzer"
-    ] else [
+    ] else ([
       "${rnls}/bin/rust-notebook-language-server"
       "--wrapped-server" "${rustAnalyzerToUse}/bin/rust-analyzer"
       "--shadow-dir-template" "${shadowDirTemplate}"
     ]
-    ++ lib.optionals settings.debug ["--log-level" "debug"];
+    ++ lib.optionals settings.debug ["--log-level" "debug"]
+    );
     initialization_options = {
       "rust-analyzer.linkedProjects" = [
         "${rust-env}/Cargo.toml"

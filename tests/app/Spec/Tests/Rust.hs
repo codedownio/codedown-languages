@@ -3,8 +3,8 @@
 module Spec.Tests.Rust (tests) where
 
 import Data.Aeson as A
-import Data.ByteString
 import Data.String.Interpolate
+import Language.LSP.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -42,17 +42,20 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
                                                             format!("Hello {}", "world")
                                                            |] $ \diagnostics -> do
     info [i|Got diagnostics: #{diagnostics}|]
+    -- assertDiagnosticRanges diagnostics [
+    --   (Range (Position 2 7) (Position 2 28), Nothing)
+    --   ]
     return ()
 
-  -- testDiagnostics' "rust-analyzer" "test.rs" Nothing [__i|println!("Hello world");
-  --                                                         eprintln!("Hello error");
-  --                                                         format!("Hello {}", "world")
-  --                                                        |] extraFiles $ \diagnostics -> do
-  --   info [i|Got diagnostics: #{diagnostics}|]
-  --   return ()
+  testDiagnostics "rust-analyzer" "test.rsz" Nothing [__i|printlnz!("Hello world");
+                                                          eprintln!("Hello error");
+                                                          format!("Hello {}", "world")
+                                                         |] $ \diagnostics -> do
+    info [i|Got diagnostics: #{diagnostics}|]
+    return ()
 
 
-kernelSpec:: NixKernelSpec
+kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
   nixKernelName = "rust"
   , nixKernelChannel = "codedown"
@@ -62,7 +65,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Just $ aesonFromList [
-      ("rust-analyzer.debug", A.Bool True)
+      ("lsp.rust-analyzer.debug", A.Bool True)
       ]
   }
 
