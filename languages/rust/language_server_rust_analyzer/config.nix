@@ -22,8 +22,8 @@ let
   rnlsSrc = fetchFromGitHub {
     owner = "codedownio";
     repo = "rust-notebook-language-server";
-    rev = "5a5c0e968798439f600830c69e76834b3207b6b5";
-    sha256 = "16sigp64r7k2nypbwbkaycs8b9wmlh5hn3a6d7gvm20i8f1lxdj3";
+    rev = "83597467569a3745daee65fd4cb200c4f53d2921";
+    sha256 = "18qjhsrwyhkg1sfvrl3mcngimvbmn00fv55pmfpbah7kwxjmqbk6";
   };
   # rnlsSrc = /home/tom/tools/rust-notebook-language-server;
 
