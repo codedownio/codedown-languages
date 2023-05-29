@@ -69,6 +69,106 @@ let
       "rust-analyzer.linkedProjects" = [
         "${rust-env}/Cargo.toml"
       ];
+
+      # Based on https://github.com/emacs-lsp/lsp-mode/blob/c8bbdb80ed2dbfdbf55b6c4058308dab092306b5/clients/lsp-rust.el#L734
+      "diagnostics" = {
+        "enable" = true;
+        "enableExperimental" = false;
+        "disabled" = [];
+        "warningsAsHint" = [];
+        "warningsAsInfo" = [];
+      };
+      "imports" = {
+        "granularity" = {
+          "enforce" = false;
+          "group" = "crate";
+        };
+        "group" = true;
+        "merge" = {
+          "glob" = true;
+        };
+        "prefix" = "plain";
+      };
+      "lruCapacity" = null;
+      "checkOnSave" = {
+        "enable" = true;
+        "command" = "check";
+        "extraArgs" = [];
+        "features" = [];
+        "overrideCommand" = [];
+      };
+      "files" = {
+        "exclude" = [];
+        "watcher" = "client";
+        "excludeDirs" = [];
+      };
+      "cargo" = {
+        "allFeatures" = false;
+        "noDefaultFeatures" = false;
+        "features" = [];
+        "target" = null;
+        "runBuildScripts" = true;
+        "loadOutDirsFromCheck" = true;
+        "autoreload" = true;
+        "useRustcWrapperForBuildScripts" = true;
+        "unsetTest" = [];
+      };
+      "rustfmt" = {
+        "extraArgs" = [];
+        "overrideCommand" = [];
+        "rangeFormatting" = {
+          "enable" = false;
+        };
+      };
+      "inlayHints" = {
+        "bindingModeHints" = false;
+        "chainingHints" = false;
+        "closingBraceHints" = {
+          "enable" = true;
+          "minLines" = 25;
+        };
+        "closureReturnTypeHints" = false;
+        "lifetimeElisionHints" = {
+          "enable" = "never";
+          "useParameterNames" = false;
+        };
+        "maxLength" = null;
+        "parameterHints" = false;
+        "reborrowHints" = "never";
+        "renderColons" = true;
+        "typeHints" = {
+          "enable" = false;
+          "hideClosureInitialization" = false;
+          "hideNamedConstructor" = false;
+        };
+      };
+      "completion" = {
+        "addCallParenthesis" = true;
+        "addCallArgumentSnippets" = true;
+        "postfix" = {
+          "enable" = true;
+        };
+        "autoimport" = {
+          "enable" = true;
+        };
+        "autoself" = {
+          "enable" = true;
+        };
+      };
+      "callInfo" = {
+        "full" = true;
+      };
+      "procMacro" = {
+        "enable" = true;
+      };
+      "rustcSource" = null;
+      "linkedProjects" = [];
+      "highlighting" = {
+        "strings" = true;
+      };
+      "experimental" = {
+        "procAttrMacros" = true;
+      };
     };
     env = {
       "PATH" = lib.makeBinPath [coreutils rust.packages.stable.cargo];
