@@ -22,8 +22,8 @@ let
   rnlsSrc = fetchFromGitHub {
     owner = "codedownio";
     repo = "rust-notebook-language-server";
-    rev = "83597467569a3745daee65fd4cb200c4f53d2921";
-    sha256 = "18qjhsrwyhkg1sfvrl3mcngimvbmn00fv55pmfpbah7kwxjmqbk6";
+    rev = "2f03f8052d45f8a83b28ee42f5b1d8f20616ff07";
+    sha256 = "1a5hqirv2zv12l854vdzilvyg7gb8p762s16rnz1fd83bf1sim12";
   };
   # rnlsSrc = /home/tom/tools/rust-notebook-language-server;
 
@@ -66,7 +66,7 @@ let
     ++ lib.optionals settings.debug ["--log-level" "debug"]
     );
     initialization_options = {
-      "rust-analyzer.linkedProjects" = [
+      "linkedProjects" = [
         "${rust-env}/Cargo.toml"
       ];
 
@@ -112,6 +112,8 @@ let
         "autoreload" = true;
         "useRustcWrapperForBuildScripts" = true;
         "unsetTest" = [];
+        "sysroot" = "${rust.packages.stable.rustc}";
+        "sysrootSrc" = "${rust.packages.stable.rustPlatform.rustLibSrc}";
       };
       "rustfmt" = {
         "extraArgs" = [];
@@ -162,7 +164,6 @@ let
         "enable" = true;
       };
       "rustcSource" = null;
-      "linkedProjects" = [];
       "highlighting" = {
         "strings" = true;
       };
@@ -172,6 +173,7 @@ let
     };
     env = {
       "PATH" = lib.makeBinPath [coreutils rust.packages.stable.cargo];
+      # "RA_LOG" = "rust_analyzer=info";
     };
   };
 

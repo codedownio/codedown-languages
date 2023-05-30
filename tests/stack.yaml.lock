@@ -5,7 +5,7 @@
 
 packages:
 - completed:
-    commit: 3b01c70182cf4ebfd614a52c9e486c5ead0434c6
+    commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
     git: https://github.com/codedownio/lsp.git
     name: lsp
     pantry-tree:
@@ -14,33 +14,33 @@ packages:
     subdir: lsp
     version: 1.6.0.0
   original:
-    commit: 3b01c70182cf4ebfd614a52c9e486c5ead0434c6
+    commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
     git: https://github.com/codedownio/lsp.git
     subdir: lsp
 - completed:
-    commit: 3b01c70182cf4ebfd614a52c9e486c5ead0434c6
+    commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
     git: https://github.com/codedownio/lsp.git
     name: lsp-types
     pantry-tree:
-      sha256: 8609e0f49124313c6b6accb0d5b101ed3aa5600781259d54058592e20ad7a492
+      sha256: aa0813b492e2ca878499c4d825701a40c245799f955754c65dea118621ad5c13
       size: 4909
     subdir: lsp-types
     version: 1.6.0.0
   original:
-    commit: 3b01c70182cf4ebfd614a52c9e486c5ead0434c6
+    commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-types
 - completed:
-    commit: 3b01c70182cf4ebfd614a52c9e486c5ead0434c6
+    commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
     git: https://github.com/codedownio/lsp.git
     name: lsp-test
     pantry-tree:
-      sha256: 19ddf7b19e3cdec2715ef23e00d57c31cc0f77080951a653ca66e41b22b63c17
+      sha256: 9db2b8826df90f382cf8c7eae0bfed7423f55e520bc9aa8030d768e85b88270f
       size: 2134
     subdir: lsp-test
     version: 0.14.1.0
   original:
-    commit: 3b01c70182cf4ebfd614a52c9e486c5ead0434c6
+    commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-test
 snapshots:
