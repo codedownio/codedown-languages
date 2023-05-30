@@ -66,9 +66,7 @@ let
     ++ lib.optionals settings.debug ["--log-level" "debug"]
     );
     initialization_options = {
-      "linkedProjects" = [
-        "${rust-env}/Cargo.toml"
-      ];
+      "linkedProjects" = [];
 
       # Based on https://github.com/emacs-lsp/lsp-mode/blob/c8bbdb80ed2dbfdbf55b6c4058308dab092306b5/clients/lsp-rust.el#L734
       "diagnostics" = {
