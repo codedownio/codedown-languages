@@ -51,7 +51,7 @@ let
     display_name = "rust-analyzer";
     description = rustAnalyzerToUse.meta.description;
     icon = ./logo-64x64.png;
-    extensions = if raw then ["rs" "rlib"] else [];
+    extensions = ["rs" "rlib"];
     notebook_suffix = if raw then ".rs" else "";
     kernel_name = kernelName;
     attrs = if raw then [] else ["rust"];
