@@ -2,11 +2,13 @@
 
 module TestLib.Util where
 
-import Control.Monad.Catch (MonadThrow)
+import Control.Monad.Catch (MonadMask, MonadThrow)
 import Control.Monad.IO.Unlift
+import Control.Retry
 import Data.Aeson (Value)
 import Data.String.Interpolate
 import Data.Text as T
+import GHC.Stack
 import System.FilePath
 import Test.Sandwich
 import UnliftIO.Directory
@@ -45,3 +47,8 @@ aesonFromList xs = HM.fromList [(A.fromText k, v) | (k, v) <- xs]
 aesonFromList :: (Eq k, Hashable k) => [(Text, Value)] -> HM.HashMap A.Key v
 aesonFromList = HM.fromList
 #endif
+
+waitUntil :: forall m a. (HasCallStack, MonadIO m, MonadMask m, MonadThrow m) => Double -> m a -> m a
+waitUntil timeInSeconds action = do
+  let policy = limitRetriesByCumulativeDelay (round (timeInSeconds * 1_000_000.0)) $ capDelay 200_000 $ exponentialBackoff 1_000
+  recoverAll policy $ const action
