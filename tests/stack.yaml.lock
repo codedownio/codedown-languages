@@ -5,20 +5,20 @@
 
 packages:
 - completed:
-    commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
+    commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
     git: https://github.com/codedownio/lsp.git
     name: lsp
     pantry-tree:
-      sha256: 33b1eb7000752d96cf3fb8b55e8134c147a685863dbaae4374cabb01a7c33321
+      sha256: 7ad698dda75c51ceaac0d514937c2a8f3318d54e0ac6165224771e512bd8d557
       size: 1044
     subdir: lsp
     version: 1.6.0.0
   original:
-    commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
+    commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
     git: https://github.com/codedownio/lsp.git
     subdir: lsp
 - completed:
-    commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
+    commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
     git: https://github.com/codedownio/lsp.git
     name: lsp-types
     pantry-tree:
@@ -27,22 +27,29 @@ packages:
     subdir: lsp-types
     version: 1.6.0.0
   original:
-    commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
+    commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-types
 - completed:
-    commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
+    commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
     git: https://github.com/codedownio/lsp.git
     name: lsp-test
     pantry-tree:
-      sha256: 9db2b8826df90f382cf8c7eae0bfed7423f55e520bc9aa8030d768e85b88270f
-      size: 2134
+      sha256: 4de730454e2b213a8097c6dc7a3ed0bdfbf2a75c22fda35011c024a10e7ca714
+      size: 2224
     subdir: lsp-test
     version: 0.14.1.0
   original:
-    commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
+    commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-test
+- completed:
+    hackage: sandwich-0.1.4.0@sha256:991b70eaeca02233cc7b4d540a661ee8933c82a5a59be3e12ecceb9dce2c7913,8937
+    pantry-tree:
+      sha256: 2c8b97eb942cc6a6d0c9317d5c5e30f190ce7405e3fb2329479e90fbf04040e6
+      size: 5882
+  original:
+    hackage: sandwich-0.1.4.0
 snapshots:
 - completed:
     sha256: 9fa4bece7acfac1fc7930c5d6e24606004b09e80aa0e52e9f68b148201008db9

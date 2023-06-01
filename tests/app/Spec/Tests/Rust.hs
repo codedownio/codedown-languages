@@ -26,11 +26,9 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
     it "hovers println!" $ doNotebookSession "rust-analyzer" [i|println!("hi")|] $ \filename -> do
       ident <- openDoc filename "haskell"
 
-      rsp <- getCustomRequest "rust-analyzer/analyzerStatus" $ A.toJSON ident
-      info [i|Rust analyzer status: #{rsp}|]
-
-      hover <- getHoverOrException ident (Position 0 1)
-      allHoverText hover `textShouldContain` [i|Prints to the standard output|]
+      waitUntil 60 $ do
+        hover <- getHoverOrException ident (Position 0 1)
+        allHoverText hover `textShouldContain` [i|Prints to the standard output|]
 
     diagnosticsTests
 

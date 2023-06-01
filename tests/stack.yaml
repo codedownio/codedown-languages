@@ -15,8 +15,9 @@ packages:
 
 extra-deps:
 - git: https://github.com/codedownio/lsp.git
-  commit: 43489a9f4b3b2ca336a2267ec37b6bee737c374e
+  commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
   subdirs:
   - lsp
   - lsp-types
   - lsp-test
+- sandwich-0.1.4.0
