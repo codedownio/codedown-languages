@@ -1,9 +1,6 @@
 
 module Spec.Tests.Haskell.Statements where
 
-import Control.Monad.Catch (MonadCatch, MonadThrow)
-import Control.Monad.IO.Unlift
-import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Test hiding (message)
@@ -14,9 +11,7 @@ import Test.Sandwich as Sandwich
 import TestLib.LSP
 
 
-statementsTests :: (
-  Sandwich.HasLabel context "nixEnvironment" FilePath, HasBaseContext context, MonadBaseControl IO m, MonadUnliftIO m, MonadThrow m, MonadCatch m
-  ) => SpecFree context m ()
+statementsTests :: (LspContext context m) => SpecFree context m ()
 statementsTests = describe "Statements" $ do
   describe "Single-line" $ do
     it "doesn't choke" $ doNotebookSession lsName statementsCode $ \filename -> do

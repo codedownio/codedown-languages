@@ -5,6 +5,7 @@
 
 module TestLib.LSP where
 
+import Control.Applicative
 import Control.Lens hiding (List)
 import Control.Monad
 import Control.Monad.Catch as C (MonadCatch, MonadThrow)
@@ -68,12 +69,15 @@ data LanguageServerConfig = LanguageServerConfig {
 deriveJSON toSnake2 ''LanguageServerConfig
 
 type LspContext ctx m = (
-  HasNixEnvironment ctx
-  , HasBaseContext ctx
+  Alternative m
   , MonadIO m
   , MonadBaseControl IO m
   , MonadUnliftIO m
+  , MonadCatch m
   , MonadThrow m
+
+  , HasNixEnvironment ctx
+  , HasBaseContext ctx
   )
 
 doNotebookSession :: LspContext ctx m => Text -> Text -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
@@ -212,7 +216,9 @@ assertDiagnosticRanges' diagnostics desired = ranges `shouldBe` desired
 -- hoverShouldSatisfy :: MonadThrow m => Position -> (Maybe Hover -> ExampleT ctx m ()) -> ExampleT ctx m ()
 -- hoverShouldSatisfy pos pred = getHover (TextDocumentIdentifier (Uri undefined)) pos >>= pred
 
-getHoverOrException :: (MonadLoggerIO m, MonadThrow m) => TextDocumentIdentifier -> Position -> Session m Hover
+getHoverOrException :: (
+  MonadLoggerIO m, MonadThrow m, MonadUnliftIO m, Alternative m
+  ) => TextDocumentIdentifier -> Position -> Session m Hover
 getHoverOrException tdi pos = getHover tdi pos >>= \case
   Nothing -> expectationFailure [i|No hover returned.|]
   Just x -> return x

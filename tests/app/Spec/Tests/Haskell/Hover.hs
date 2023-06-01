@@ -3,9 +3,6 @@
 module Spec.Tests.Haskell.Hover where
 
 import Control.Lens ((^.))
-import Control.Monad.Catch (MonadThrow)
-import Control.Monad.IO.Unlift
-import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Test hiding (message)
@@ -16,9 +13,7 @@ import Test.Sandwich as Sandwich
 import TestLib.LSP
 
 
-hoverTests :: (
-  Sandwich.HasLabel context "nixEnvironment" FilePath, HasBaseContext context, MonadBaseControl IO m, MonadUnliftIO m, MonadThrow m
-  ) => SpecFree context m ()
+hoverTests :: (LspContext context m) => SpecFree context m ()
 hoverTests = describe "Hover" $ do
   it "hovers foo" $ doNotebookSession lsName hoverCode $ \filename -> do
     ident <- openDoc filename "haskell"

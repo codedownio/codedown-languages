@@ -47,6 +47,7 @@ library
       ViewPatterns
       NumericUnderscores
       MultiWayIf
+      GeneralizedNewtypeDeriving
   ghc-options: -Wunused-packages -Wall
   build-depends:
       aeson
@@ -127,6 +128,7 @@ executable tests-exe
       ViewPatterns
       NumericUnderscores
       MultiWayIf
+      GeneralizedNewtypeDeriving
   ghc-options: -Wunused-packages -Wall -threaded -rtsopts -with-rtsopts=-N
   build-tool-depends:
       sandwich:sandwich-discover

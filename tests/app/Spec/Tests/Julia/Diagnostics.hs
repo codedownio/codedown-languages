@@ -1,12 +1,8 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module Spec.Tests.Julia.Diagnostics where
 
-import Control.Monad.Catch (MonadCatch, MonadThrow)
-import Control.Monad.IO.Unlift
-import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Types
@@ -14,9 +10,7 @@ import Test.Sandwich as Sandwich
 import TestLib.LSP
 
 
-diagnosticsTests :: (
-  Sandwich.HasLabel context "nixEnvironment" FilePath, HasBaseContext context, MonadBaseControl IO m, MonadUnliftIO m, MonadThrow m, MonadCatch m
-  ) => Text -> SpecFree context m ()
+diagnosticsTests :: (LspContext context m) => Text -> SpecFree context m ()
 diagnosticsTests lsName = describe "Diagnostics" $ do
   testDiagnostics'' "flags a simple missing reference" lsName "test.jl" (Just "julia") [i|printlnzzzz("HI")|] [] $ \diagnostics -> do
     assertDiagnosticRanges' diagnostics [(Range (Position 0 0) (Position 0 11), Nothing, "Missing reference: printlnzzzz")]

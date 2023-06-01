@@ -2,9 +2,6 @@
 module Spec.Tests.Haskell.CodeActions where
 
 import Control.Lens
-import Control.Monad.Catch (MonadThrow)
-import Control.Monad.IO.Unlift
-import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.String.Interpolate
 import Data.Text
 import Language.LSP.Test hiding (message)
@@ -15,9 +12,7 @@ import Test.Sandwich as Sandwich
 import TestLib.LSP
 
 
-codeActionsTests :: (
-  Sandwich.HasLabel context "nixEnvironment" FilePath, HasBaseContext context, MonadBaseControl IO m, MonadUnliftIO m, MonadThrow m
-  ) => SpecFree context m ()
+codeActionsTests :: (LspContext context m) => SpecFree context m ()
 codeActionsTests = describe "Code actions" $ do
   it "gets no code actions for putStrLn" $ doNotebookSession lsName codeActionsCode $ \filename -> do
     ident <- openDoc filename "haskell"

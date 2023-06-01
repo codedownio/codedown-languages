@@ -1,9 +1,6 @@
 
 module Spec.Tests.Haskell.DocumentHighlight where
 
-import Control.Monad.Catch (MonadThrow)
-import Control.Monad.IO.Unlift
-import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Test hiding (message)
@@ -13,9 +10,7 @@ import Test.Sandwich as Sandwich
 import TestLib.LSP
 
 
-documentHighlightTests :: (
-  Sandwich.HasLabel context "nixEnvironment" FilePath, HasBaseContext context, MonadBaseControl IO m, MonadUnliftIO m, MonadThrow m
-  ) => SpecFree context m ()
+documentHighlightTests :: (LspContext context m) => SpecFree context m ()
 documentHighlightTests = describe "Document highlight" $ do
   it "highlights foo" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
     ident <- openDoc filename "haskell"
