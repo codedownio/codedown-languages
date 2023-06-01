@@ -7,6 +7,7 @@ import Data.String.Interpolate
 import Language.LSP.Test
 import Language.LSP.Types
 import Spec.Tests.Rust.Diagnostics
+import Spec.Tests.Rust.Hovers
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -23,13 +24,7 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
   testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
   describe "LSP" $ do
-    it "hovers println!" $ doNotebookSession "rust-analyzer" [i|println!("hi")|] $ \filename -> do
-      ident <- openDoc filename "haskell"
-
-      waitUntil 60 $ do
-        hover <- getHoverOrException ident (Position 0 1)
-        allHoverText hover `textShouldContain` [i|Prints to the standard output|]
-
+    hoverTests
     diagnosticsTests
 
 

@@ -110,6 +110,7 @@ executable tests-exe
       Spec.Tests.Ruby
       Spec.Tests.Rust
       Spec.Tests.Rust.Diagnostics
+      Spec.Tests.Rust.Hovers
       Spec.Tests.Searchers
       Spec.Tests.Spellchecker
       Paths_tests

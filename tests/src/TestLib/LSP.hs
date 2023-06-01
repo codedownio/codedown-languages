@@ -8,7 +8,7 @@ module TestLib.LSP where
 import Control.Applicative
 import Control.Lens hiding (List)
 import Control.Monad
-import Control.Monad.Catch as C (MonadCatch, MonadThrow)
+import Control.Monad.Catch as C (MonadCatch, MonadMask, MonadThrow)
 import Control.Monad.IO.Unlift
 import Control.Monad.Logger
 import Control.Monad.Trans.Control (MonadBaseControl)
@@ -75,26 +75,37 @@ type LspContext ctx m = (
   , MonadUnliftIO m
   , MonadCatch m
   , MonadThrow m
+  , MonadMask m
 
   , HasNixEnvironment ctx
   , HasBaseContext ctx
   )
 
-doNotebookSession :: LspContext ctx m => Text -> Text -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
+doNotebookSession :: (
+  LspContext ctx m
+  ) => Text -> Text -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
 doNotebookSession = doSession' "main.ipynb"
 
-doSession' :: LspContext ctx m => Text -> Text -> Text -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
+doSession' :: (
+  LspContext ctx m
+  ) => Text -> Text -> Text -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
 doSession' filename lsName codeToUse cb = do
   withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) codeToUse [] $ do
     cb (T.unpack filename)
 
-testDiagnostics :: (LspContext ctx m, MonadCatch m) => Text -> FilePath -> Maybe Text -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnostics :: (
+  LspContext ctx m
+  ) => Text -> FilePath -> Maybe Text -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics name filename maybeLanguageId codeToTest = testDiagnostics' name filename maybeLanguageId codeToTest []
 
-testDiagnostics' :: (LspContext ctx m, MonadCatch m) => Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnostics' :: (
+  LspContext ctx m
+  ) => Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics' name filename maybeLanguageId codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest} (diagnostics)|] name filename maybeLanguageId codeToTest
 
-testDiagnostics'' :: (LspContext ctx m, MonadCatch m) => String -> Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnostics'' :: (
+  LspContext ctx m
+  ) => String -> Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb = it label $ do
   lastFailureReason <- newMVar Nothing
   withRunInIO $ \runInIO ->
@@ -125,7 +136,9 @@ testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb =
         throwIO x
     handleFn _ e = expectationFailure [i|LSP session failed with SessionException: #{e}|]
 
-itHasHoverSatisfying :: LspContext ctx m => Text -> FilePath -> Maybe Text -> Text -> Position -> (Hover -> ExampleT ctx m ()) -> SpecFree ctx m ()
+itHasHoverSatisfying :: (
+  LspContext ctx m
+  ) => Text -> FilePath -> Maybe Text -> Text -> Position -> (Hover -> ExampleT ctx m ()) -> SpecFree ctx m ()
 itHasHoverSatisfying name filename maybeLanguageId codeToTest pos cb = it [i|#{name}: #{show codeToTest} (hover)|] $ do
   maybeHover <- withRunInIO $ \runInIO ->
     runInIO $ withLspSession name filename codeToTest [] $ do
@@ -134,7 +147,6 @@ itHasHoverSatisfying name filename maybeLanguageId codeToTest pos cb = it [i|#{n
   case maybeHover of
     Nothing -> expectationFailure [i|Expected a hover.|]
     Just x -> cb x
-
 
 withLspSession :: (
   LspContext ctx m
