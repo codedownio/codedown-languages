@@ -4,13 +4,10 @@ module Spec.Tests.Rust (tests) where
 
 import Data.Aeson as A
 import Data.String.Interpolate
-import Language.LSP.Test
-import Language.LSP.Types
 import Spec.Tests.Rust.Diagnostics
 import Spec.Tests.Rust.Hovers
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
-import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers

@@ -1,8 +1,12 @@
 
 module Spec.Tests.Rust.Diagnostics where
 
+import Control.Lens
+import Data.Function
+import qualified Data.List as L
 import Data.String.Interpolate
 import Language.LSP.Types
+import qualified Language.LSP.Types.Lens as LSP
 import Test.Sandwich as Sandwich
 import TestLib.LSP
 
@@ -16,9 +20,11 @@ diagnosticsTests = describe "Diagnostics" $ do
       , (Range (Position 0 0) (Position 0 8), Nothing, "a macro with a similar name exists: `println`")
       ]
 
-  testDiagnostics "rust-analyzer" "test.rs" Nothing [__i|printlnz!("Hello world");
-                                                         eprintln!("Hello error");
-                                                         format!("Hello {}", "world")
+  testDiagnostics "rust-analyzer" "test.rs" Nothing [__i|struct A { a: u8, b: u8 }
+                                                         const a: A = A { a: 10, };
                                                         |] $ \diagnostics -> do
-    info [i|Got diagnostics: #{diagnostics}|]
-    return ()
+    assertDiagnosticRanges' (L.sortBy (compare `on` (^. LSP.message)) diagnostics) [
+      (Range (Position 1 6) (Position 1 7), Just (InR "incorrect-ident-case"), "Constant `a` should have UPPER_SNAKE_CASE name, e.g. `A`")
+      , (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing field `b` in initializer of `A`\nmissing `b`")
+      , (Range (Position 1 13) (Position 1 14), Just (InR "missing-fields"), "missing structure fields:\n- b\n")
+      ]
