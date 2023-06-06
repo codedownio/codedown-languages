@@ -34,6 +34,8 @@ let
     })]
     ;
 
+  allPackageNames = import ./all_package_names.nix;
+
   # Note: update this when the base Nixpkgs is bumped
   baseCandidates = [
     "rust"
@@ -67,8 +69,16 @@ listToAttrs (map (x:
   in {
     name = x;
     value = rec {
-      packageOptions = rustPackages;
-      packageSearch = common.searcher packageOptions;
+      packageOptions = listToAttrs (map (x: { name = x; value = {
+        meta = {
+          name = x;
+        };
+      }; }) allPackageNames);
+
+      packageSearch = common.searcher' {
+        packageMustBeDerivation = false;
+        packages = packageOptions;
+      };
 
       build = args@{
         packages ? []
