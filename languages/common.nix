@@ -56,11 +56,6 @@ rec {
 
   writeShellScriptBinWithAttrs = attrs: path: text: (writeShellScriptBin path text).overrideAttrs (old: attrs);
 
-  # searcher = packages: (callPackage ../tools/fuse-indexer { inherit packages; }).searcher;
-  # searcher' = attrPrefix: packages: (callPackage ../tools/fuse-indexer {
-  #   inherit packages attrPrefix;
-  # }).searcher;
-
   searcher = packages: (callPackage ../tools/sqlite-indexer { inherit packages; }).searcher;
   searcher' = args: (callPackage ../tools/sqlite-indexer args).searcher;
 
