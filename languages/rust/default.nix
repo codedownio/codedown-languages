@@ -36,6 +36,8 @@ let
 
   allPackageNames = import ./all_package_names.nix;
 
+  packagesBuilder = callPackage ./packages.nix {};
+
   # Note: update this when the base Nixpkgs is bumped
   baseCandidates = [
     "rust"
@@ -99,6 +101,7 @@ listToAttrs (map (x:
               cargo = rustPackages.cargo;
             };
             rustLibSrc = rustPackages.rustPlatform.rustLibSrc;
+            vendoredPackages = packagesBuilder.vendorDependencies packages;
             inherit rustPackages;
           })
 

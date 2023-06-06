@@ -6,6 +6,7 @@
 , evcxr
 , rustLibSrc
 , rustPackages
+, vendoredPackages
 
 , displayName
 , attrs
@@ -44,6 +45,9 @@ common.makeJupyterKernelInner metaOnly (
           inherit attrs extensions;
           priority = 1;
         };
+      };
+      env = {
+        "RUST_VENDORED_PACKAGES" = vendoredPackages;
       };
     };
   }]

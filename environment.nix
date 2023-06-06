@@ -150,7 +150,7 @@ codedown.mkCodeDownEnvironment {
       name = "rust";
       channel = "codedown";
       args = {
-        packages = [];
+        packages = ["rand"];
       };
     })
 
