@@ -2,8 +2,8 @@
 , fetchFromGitHub
 , runCommand
 
-, crate2nix
-, rustPackages
+, cargo
+, rustPlatform
 }:
 
 let
@@ -26,7 +26,7 @@ let
     echo "]" >> $out
   '';
 
-  cargoNix = packageNames: runCommand "rust-dependencies" { buildInputs = [rustPackages.cargo crate2nix]; } ''
+  cargoNix = packageNames: runCommand "rust-dependencies" { buildInputs = [cargo]; } ''
     # Generate Cargo.toml
     echo '[package]' >> Cargo.toml
     echo 'name = "rust_environment"' >> Cargo.toml
@@ -57,7 +57,7 @@ let
     echo "{rustPlatform}: rustPlatform.importCargoLock { lockFile = ./Cargo.lock; }" >> default.nix
 
     mkdir -p $out
-    cp Cargo.toml Cargo.lock default.nix $out
+    cp -r Cargo.toml Cargo.lock default.nix $out
   '';
 
 in
@@ -67,7 +67,7 @@ rec {
 
   vendorDependencies = packageNames:
     callPackage "${cargoNix packageNames}" {
-      rustPlatform = rustPackages.rustPlatform;
+      inherit rustPlatform;
     };
 
   inherit allPackageNames;
