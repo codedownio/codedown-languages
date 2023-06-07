@@ -144,6 +144,7 @@ executable tests-exe
     , lsp-types
     , monad-control
     , optparse-applicative
+    , safe
     , sandwich
     , string-interpolate
     , tests

@@ -38,6 +38,7 @@ dependencies:
 - lsp-test
 - lsp-types
 - monad-control
+- safe
 - sandwich
 - string-interpolate
 - text
