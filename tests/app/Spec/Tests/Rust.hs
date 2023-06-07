@@ -20,17 +20,24 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
 
   testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
+  testKernelStdoutCallback "rust" randCode $ \output -> do
+    info [i|Got output: #{output}|]
+
   describe "LSP" $ do
     hoverTests
     diagnosticsTests
 
+
+randCode = [__i|use rand::prelude::*;
+                let x: u8 = random();
+                println!("{}", x);|]
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
   nixKernelName = "rust"
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Rust"
-  , nixKernelPackages = []
+  , nixKernelPackages = [nameOnly "rand"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing

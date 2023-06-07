@@ -59,14 +59,17 @@ type JupyterRunnerMonad m = (
   )
 
 testKernelStdout :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> Text -> SpecFree context m ()
-testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ testKernelStdout' kernel code desired
+testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ testKernelStdout' kernel code (`shouldBe` desired)
 
-testKernelStdout' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> Text -> ExampleT context m ()
-testKernelStdout' kernel code desired = do
+testKernelStdoutCallback :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> (Text -> ExampleT context m ()) -> SpecFree context m ()
+testKernelStdoutCallback kernel code cb = it [i|#{kernel}: #{code}|] $ testKernelStdout' kernel code cb
+
+testKernelStdout' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> (Text -> ExampleT context m ()) -> ExampleT context m ()
+testKernelStdout' kernel code cb = do
   runKernelCode kernel code $ \_notebookFile _outputNotebookFile outFile _errFile -> do
     doesFileExist outFile >>= \case
-      True -> liftIO (T.readFile outFile) >>= (`shouldBe` desired)
-      False -> "" `shouldBe` desired
+      True -> liftIO (T.readFile outFile) >>= cb
+      False -> cb ""
 
 itHasDisplayDatas :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
 itHasDisplayDatas kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ displayDatasShouldBe kernel code desired
@@ -149,7 +152,7 @@ runKernelCode kernel code cb = do
   let cp = (proc jr ["notebook.ipynb", "out.ipynb"
                     , "--stdout-file", outFile
                     , "--stderr-file", errFile
-                    , "--start-timeout", "30"
+                    , "--start-timeout", "120"
                     , "-k", T.unpack kernel
                     ]) {
         env = Just [
