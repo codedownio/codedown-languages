@@ -8,6 +8,7 @@
 , rustPackages
 , vendoredPackages
 
+, packages
 , displayName
 , attrs
 , extensions
@@ -24,6 +25,10 @@ let
     makeWrapper ${evcxr}/bin/evcxr_jupyter $out/bin/evcxr_jupyter \
       --suffix PATH : ${rustPackages.rustc}/bin
   '';
+
+  evcxrConfigDir = (callPackage ./withPackages.nix {
+    inherit (rustPackages) cargo rustPlatform;
+  }).evcxrConfigDir packages;
 
 in
 
@@ -47,7 +52,7 @@ common.makeJupyterKernelInner metaOnly (
         };
       };
       env = {
-        "RUST_VENDORED_PACKAGES" = vendoredPackages;
+        "EVCXR_CONFIG_DIR" = evcxrConfigDir;
       };
     };
   }]

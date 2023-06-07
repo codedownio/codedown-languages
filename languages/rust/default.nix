@@ -48,6 +48,12 @@ let
     "rust_1_67"
     "rust_1_68"
     "rust_1_69"
+    "rust_1_70"
+    "rust_1_71"
+    "rust_1_72"
+    "rust_1_73"
+    "rust_1_74"
+    "rust_1_75"
   ];
 
 in
@@ -95,7 +101,7 @@ listToAttrs (map (x:
 
         paths = [
           (callPackage ./kernel.nix {
-            inherit displayName attrs extensions;
+            inherit packages displayName attrs extensions;
             evcxr = pkgs.evcxr.override {
               rustPlatform = rustPackages.rustPlatform;
               cargo = rustPackages.cargo;
