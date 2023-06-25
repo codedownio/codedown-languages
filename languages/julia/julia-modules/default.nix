@@ -13,6 +13,11 @@
 
 , julia
 
+# Special registry which is equal to JuliaRegistries/General, but every Versions.toml
+# entry is augmented with a Nix sha256 hash
+, augmentedRegistry ? callPackage ./registry.nix {}
+
+# Other overridable arguments
 , extraLibs ? []
 , precompile ? true
 , setDefaultDepot ? true
@@ -29,10 +34,6 @@ let
 in
 
 let
-  # Special registry which is equal to JuliaRegistries/General, but every Versions.toml
-  # entry is augmented with a Nix sha256 hash
-  augmentedRegistry = callPackage ./registry.nix {};
-
   # Some Julia packages require access to Python. Provide a Nixpkgs version so it
   # doesn't try to install its own.
   pythonToUse = let

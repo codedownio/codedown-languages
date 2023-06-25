@@ -47,7 +47,7 @@ let
 
     foreach(handle_package_input!, pkgs)
 
-    # The handle_package_input! call above clears pkg.path, so we have to appy package overrides after
+    # The handle_package_input! call above clears pkg.path, so we have to apply package overrides after
     overrides = Dict{String, String}(${builtins.concatStringsSep ", " (lib.mapAttrsToList (name: path: ''"${name}" => "${path}"'') packageOverrides)})
     println("Package overrides: ")
     println(overrides)
@@ -73,7 +73,32 @@ let
     foreach(pkg -> ctx.env.project.deps[pkg.name] = pkg.uuid, pkgs)
 
     pkgs, deps_map = _resolve(ctx.io, ctx.env, ctx.registries, pkgs, PRESERVE_NONE, ctx.julia_version)
-'';
+
+    if VERSION >= VersionNumber("1.9")
+        # Check for weak dependencies, which appear on the RHS of the deps_map but not in pkgs
+        uuid_to_name = Dict()
+        for pkg in pkgs
+            uuid_to_name[pkg.uuid] = pkg.name
+        end
+
+        weak_name_to_uuid = Dict()
+        for (uuid, deps) in pairs(deps_map)
+            for (dep_name, dep_uuid) in pairs(deps)
+                if !haskey(uuid_to_name, dep_uuid)
+                    weak_name_to_uuid[dep_name] = dep_uuid
+                end
+            end
+        end
+
+        if !isempty(weak_name_to_uuid)
+            println("Found weak dependencies: $(keys(weak_name_to_uuid))")
+
+            # Re-run _resolve
+            foreach(x -> ctx.env.project.deps[x.first] = x.second, weak_name_to_uuid)
+            pkgs, deps_map = _resolve(ctx.io, ctx.env, ctx.registries, pkgs, PRESERVE_NONE, ctx.julia_version)
+        end
+    end
+  '';
 
   juliaExpression = packageNames: ''
     import Pkg

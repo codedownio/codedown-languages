@@ -1,7 +1,9 @@
 { lib
 , runCommand
+
 , cacert
 , curl
+, git
 , julia
 , python3
 
@@ -15,7 +17,7 @@
 }:
 
 runCommand "julia-depot" {
-    buildInputs = [curl julia (python3.withPackages (ps: with ps; [pyyaml]))] ++ extraLibs;
+    nativeBuildInputs = [curl git julia (python3.withPackages (ps: with ps; [pyyaml]))] ++ extraLibs;
     inherit precompile registry;
   } ''
   export HOME=$(pwd)
@@ -50,8 +52,13 @@ runCommand "julia-depot" {
   # for finding the extra packages we need to add
   python ${./python}/find_package_implications.py "${closureYaml}" '${lib.generators.toJSON {} packageImplications}' extra_package_names.txt
 
+  # git config --global --add safe.directory '/nix'
+  export JULIA_PKG_USE_CLI_GIT="true"
+
   julia -e ' \
     import Pkg
+    import Pkg.Types: PRESERVE_NONE
+
     Pkg.Registry.add(Pkg.RegistrySpec(path="${registry}"))
 
     input = ${lib.generators.toJSON {} packageNames} ::Vector{String}
@@ -64,7 +71,7 @@ runCommand "julia-depot" {
 
     if !isempty(input)
       println("Adding packages: " * join(input, " "))
-      Pkg.add(input)
+      Pkg.add(input; preserve=PRESERVE_NONE)
       Pkg.instantiate()
 
       if "precompile" in keys(ENV) && ENV["precompile"] != "0"

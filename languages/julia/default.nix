@@ -78,6 +78,8 @@ let
     julia16 = juliaWithPackages.override { inherit packageOverrides; julia = julia_16-bin; };
 
     julia18 = juliaWithPackages.override { inherit packageOverrides; julia = julia_18; };
+
+    # julia19 = juliaWithPackages.override { inherit packageOverrides; julia = julia_19; };
   };
 
   packageSet = lib.listToAttrs (map (x: {
