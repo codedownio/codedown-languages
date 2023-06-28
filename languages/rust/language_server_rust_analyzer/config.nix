@@ -22,14 +22,15 @@ let
   rnlsSrc = fetchFromGitHub {
     owner = "codedownio";
     repo = "rust-notebook-language-server";
-    rev = "e632f9f132d34aa3b82c10e7ef9dd2a71de2110e";
-    sha256 = "03hx5nv4h7hy77nfv4q3jvw1rxpr9agdcf0pqyzz8z7d9qipxcd3";
+    rev = "8c95624722fbff4786b4cc0cd3d402a076faf884";
+    sha256 = "1aifyn829yd8ngdxh90hm11rvmsqqzvq576l8zrplz9fcjr1s5p1";
   };
   # rnlsSrc = /home/tom/tools/rust-notebook-language-server;
 
   ghc = haskell.packages.ghc924;
 
   rnls = ghc.callPackage rnlsSrc {
+    lsp-types = ghc.callPackage ./lsp-types.nix {};
     myers-diff = ghc.callPackage ./myers-diff.nix {};
   };
 

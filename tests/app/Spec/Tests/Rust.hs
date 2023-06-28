@@ -6,6 +6,7 @@ import Data.Aeson as A
 import Data.String.Interpolate
 import qualified Data.Text as T
 import Safe
+import Spec.Tests.Rust.Completion
 import Spec.Tests.Rust.Diagnostics
 import Spec.Tests.Rust.Hovers
 import Test.Sandwich as Sandwich
@@ -28,8 +29,9 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
       _ -> expectationFailure [i|Unexpected output: #{show output}|]
 
   describe "LSP" $ do
-    hoverTests
+    completionTests
     diagnosticsTests
+    hoverTests
 
 
 randCode :: T.Text
