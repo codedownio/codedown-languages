@@ -37,7 +37,7 @@ python.pkgs.buildPythonPackage rec {
 
   buildInputs = with python.pkgs; [
     pygls click jedi toml pydantic docstring-to-markdown
-    poetry
+    poetry-core
   ];
 
   nativeCheckInputs = with python.pkgs; [

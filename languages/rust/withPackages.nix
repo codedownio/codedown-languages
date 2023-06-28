@@ -88,5 +88,7 @@ rec {
 
   inherit allPackageNames;
 
+  inherit vendorDependencies;
+
   inherit evcxrConfigDir;
 }

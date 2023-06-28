@@ -26,9 +26,31 @@ let
       --suffix PATH : ${rustPackages.rustc}/bin
   '';
 
-  evcxrConfigDir = (callPackage ./withPackages.nix {
+  withPackages = (callPackage ./withPackages.nix {
     inherit (rustPackages) cargo rustPlatform;
-  }).evcxrConfigDir packages;
+  });
+
+  evcxrConfigDir = withPackages.evcxrConfigDir packages;
+
+  cargoHome = runCommand "cargo-home" {} ''
+    # Set up local index
+    mkdir -p $out/index_base
+    ln -s ${withPackages.cratesIndex} $out/index_base/index
+
+    # cat <<EOT >> $out/config.toml
+    # [source.crates-io]
+    # local-registry = "$out/index_base"
+    # directory = "${withPackages.vendorDependencies packages}"
+    # EOT
+
+    cat <<EOT >> $out/config.toml
+    [source.crates-io]
+    replace-with = "vendored-sources"
+
+    [source.vendored-sources]
+    local-registry = "$out/index_base"
+    EOT
+  '';
 
 in
 
@@ -53,6 +75,7 @@ common.makeJupyterKernelInner metaOnly (
       };
       env = {
         "EVCXR_CONFIG_DIR" = evcxrConfigDir;
+        "CARGO_HOME" = cargoHome;
       };
     };
   }]

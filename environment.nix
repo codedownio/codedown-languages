@@ -110,22 +110,22 @@ codedown.mkCodeDownEnvironment {
       };
     })
 
-    ({
-      name = "python3";
-      channel = "codedown";
-      args = {
-        packages = ["matplotlib" "scipy" "rope"];
-        settings = {
-          permitUserSite = false;
-          "lsp.jedi.enable" = true;
-          "lsp.pyright.enable" = true;
-          "lsp.pylint.enable" = true;
-          "lsp.flake8.enable" = true;
-          "lsp.pycodestyle.enable" = true;
-          "lsp.python-lsp-server.enable" = true;
-        };
-      };
-    })
+    # ({
+    #   name = "python3";
+    #   channel = "codedown";
+    #   args = {
+    #     packages = ["matplotlib" "scipy" "rope"];
+    #     settings = {
+    #       permitUserSite = false;
+    #       "lsp.jedi.enable" = true;
+    #       "lsp.pyright.enable" = true;
+    #       "lsp.pylint.enable" = true;
+    #       "lsp.flake8.enable" = true;
+    #       "lsp.pycodestyle.enable" = true;
+    #       "lsp.python-lsp-server.enable" = true;
+    #     };
+    #   };
+    # })
 
     # ({
     #   name = "pypy3";
@@ -174,7 +174,7 @@ codedown.mkCodeDownEnvironment {
       name = "coq";
       channel = "codedown";
       args = {
-        packages = ["ceres"];
+        packages = [];
       };
     })
   ];

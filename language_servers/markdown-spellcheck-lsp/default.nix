@@ -7,8 +7,8 @@
 , makeWrapper
 , node2nix
 , nodePackages
-, nodejs-14_x
-, nodejs-slim-14_x
+, nodejs-16_x
+, nodejs-slim-16_x
 , python3
 , stdenv
 , runCommand
@@ -20,7 +20,7 @@ with lib.lists;
 let
   common = callPackage ../../languages/common.nix {};
 
-  nodejs = nodejs-slim-14_x;
+  nodejs = nodejs-slim-16_x;
 
   nodehunWithNix = stdenv.mkDerivation {
     name = "nodehun-with-nix";
@@ -38,7 +38,7 @@ let
 
     buildInputs = [node2nix];
 
-    buildPhase = "node2nix -14 -l package-lock.json";
+    buildPhase = "node2nix -16 -l package-lock.json";
 
     installPhase = "cp -r ./. $out";
   };
@@ -50,7 +50,7 @@ let
     tar -czvf $out "$dir"
   '';
 
-  nodehun = (callPackage nodehunWithNix { nodejs = nodejs-14_x; }).package.override {
+  nodehun = (callPackage nodehunWithNix { nodejs = nodejs-16_x; }).package.override {
     preRebuild = ''
       npm run build -- --tarball ${nodeHeaders}
     '';

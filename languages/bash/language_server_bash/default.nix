@@ -3,7 +3,6 @@
 , callPackage
 , makeWrapper
 
-, nodejs-14_x
 , shellcheck
 , unixtools
 
@@ -15,9 +14,7 @@ with lib;
 let
   common = callPackage ../../common.nix {};
 
-  bashLanguageServer = (callPackage ./bash-language-server {
-    nodejs = nodejs-14_x;
-  })."bash-language-server-3.1.1";
+  bashLanguageServer = (callPackage ./bash-language-server {})."bash-language-server-3.1.1";
 
   # manWithPages = (import ../shared.nix).manWithPages;
 

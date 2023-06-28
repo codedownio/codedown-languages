@@ -17,7 +17,7 @@ import TestLib.Util
 completionTests :: (LspContext context m) => SpecFree context m ()
 completionTests = describe "Completions" $ do
   forM_ ["main.ipynb", "test.rs"] $ \doc -> do
-    it [i|Completes printl (#{doc})|] $ doSession' doc "rust-analyzer" [i|printl|] $ \filename -> do
+    it [i|(#{doc}) Completes printl to println!|] $ doSession' doc "rust-analyzer" [i|printl|] $ \filename -> do
       ident <- openDoc filename "haskell"
 
       waitUntil 60 $ do
