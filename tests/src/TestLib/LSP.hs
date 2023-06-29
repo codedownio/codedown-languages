@@ -1,5 +1,6 @@
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE NumericUnderscores #-}
+{-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-deprecations #-} -- For PlainString, CodeString, etc.
 {-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 
@@ -21,6 +22,7 @@ import qualified Data.List as L
 import Data.Map (Map)
 import qualified Data.Map as M
 import Data.Maybe
+import Data.Row.Records hiding (Map)
 import qualified Data.Set as S
 import Data.String.Interpolate
 import qualified Data.Text as T hiding (filter)
@@ -28,9 +30,9 @@ import Data.Text hiding (filter)
 import qualified Data.Text.IO as T
 import Data.Time
 import GHC.Int
+import Language.LSP.Protocol.Lens as LSP hiding (diagnostics, hover, label, name, ranges)
+import Language.LSP.Protocol.Types
 import Language.LSP.Test
-import Language.LSP.Types
-import Language.LSP.Types.Lens as LSP hiding (diagnostics, hover, label, name)
 import System.FilePath
 import System.IO.Temp (createTempDirectory)
 import Test.Sandwich as Sandwich
@@ -238,12 +240,16 @@ getHoverOrException tdi pos = getHover tdi pos >>= \case
 allHoverText :: Hover -> Text
 allHoverText hover = allHoverContentsText (hover ^. contents)
 
+type HoverContents = MarkupContent |? (MarkedString |? [MarkedString])
+
 allHoverContentsText :: HoverContents -> Text
-allHoverContentsText (HoverContentsMS (List mss)) = mconcat $ fmap markedStringToText mss
+allHoverContentsText (InL (MarkupContent _ t)) = t
+allHoverContentsText (InR markedStrings) = case markedStrings of
+  InL ms -> markedStringToText ms
+  InR mss -> mconcat $ fmap markedStringToText mss
   where
-    markedStringToText (PlainString t) = t
-    markedStringToText (CodeString (LanguageString _ t)) = t
-allHoverContentsText (HoverContents (MarkupContent _ t)) = t
+    markedStringToText (MarkedString (InL t)) = t
+    markedStringToText (MarkedString (InR thing)) = thing .! #value
 
 containsAll :: Text -> [Text] -> Bool
 containsAll haystack = Prelude.all (`T.isInfixOf` haystack)

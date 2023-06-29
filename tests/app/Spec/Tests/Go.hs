@@ -3,7 +3,7 @@
 module Spec.Tests.Go (tests) where
 
 import Data.String.Interpolate
-import Language.LSP.Types
+import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP

@@ -4,7 +4,7 @@ module Spec.Tests.Python3 (tests) where
 
 import Data.Aeson as A
 import Data.String.Interpolate
-import Language.LSP.Types
+import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP

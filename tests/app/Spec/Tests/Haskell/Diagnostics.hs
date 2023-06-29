@@ -7,8 +7,8 @@ module Spec.Tests.Haskell.Diagnostics where
 import Control.Lens ((^.))
 import Data.String.Interpolate
 import Data.Text as T
-import Language.LSP.Types
-import Language.LSP.Types.Lens hiding (diagnostics)
+import Language.LSP.Protocol.Types
+import Language.LSP.Protocol.Lens hiding (diagnostics)
 import qualified Spec.Tests.Haskell.Common as HaskellCommon
 import Spec.Tests.Haskell.Common hiding (lsName)
 import Test.Sandwich as Sandwich

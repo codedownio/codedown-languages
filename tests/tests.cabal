@@ -73,6 +73,7 @@ library
     , random
     , resource-pool
     , retry
+    , row-types
     , safe
     , sandwich
     , string-interpolate

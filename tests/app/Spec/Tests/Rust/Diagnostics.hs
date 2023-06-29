@@ -5,8 +5,8 @@ import Control.Lens
 import Data.Function
 import qualified Data.List as L
 import Data.String.Interpolate
-import Language.LSP.Types
-import qualified Language.LSP.Types.Lens as LSP
+import Language.LSP.Protocol.Types
+import qualified Language.LSP.Protocol.Lens as LSP
 import Test.Sandwich as Sandwich
 import TestLib.LSP
 

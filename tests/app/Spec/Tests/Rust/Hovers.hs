@@ -4,7 +4,7 @@ module Spec.Tests.Rust.Hovers where
 import Control.Monad
 import Data.String.Interpolate
 import Language.LSP.Test
-import Language.LSP.Types
+import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
 import TestLib.LSP
 import TestLib.Util

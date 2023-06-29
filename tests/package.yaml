@@ -64,6 +64,7 @@ library:
   - random
   - resource-pool
   - retry
+  - row-types
   - safe
   - temporary
   - time

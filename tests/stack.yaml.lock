@@ -5,54 +5,54 @@
 
 packages:
 - completed:
-    commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
+    commit: 59a1450871317e85ce89f05478c0af92e105d3dc
     git: https://github.com/codedownio/lsp.git
     name: lsp
     pantry-tree:
-      sha256: 7ad698dda75c51ceaac0d514937c2a8f3318d54e0ac6165224771e512bd8d557
-      size: 1044
+      sha256: 9d8370277cc83f157edf368042479b89a770aba92b8aa4072b3426b6b489c12b
+      size: 1043
     subdir: lsp
-    version: 1.6.0.0
+    version: 2.0.0.0
   original:
-    commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
+    commit: 59a1450871317e85ce89f05478c0af92e105d3dc
     git: https://github.com/codedownio/lsp.git
     subdir: lsp
 - completed:
-    commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
+    commit: 59a1450871317e85ce89f05478c0af92e105d3dc
     git: https://github.com/codedownio/lsp.git
     name: lsp-types
     pantry-tree:
-      sha256: aa0813b492e2ca878499c4d825701a40c245799f955754c65dea118621ad5c13
-      size: 4909
+      sha256: f8617d8aaa142ecc8ce62e0b2d930669d4969b6b9143368d20b1680874b8077c
+      size: 45522
     subdir: lsp-types
-    version: 1.6.0.0
+    version: 2.0.0.1
   original:
-    commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
+    commit: 59a1450871317e85ce89f05478c0af92e105d3dc
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-types
 - completed:
-    commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
+    commit: 59a1450871317e85ce89f05478c0af92e105d3dc
     git: https://github.com/codedownio/lsp.git
     name: lsp-test
     pantry-tree:
-      sha256: 4de730454e2b213a8097c6dc7a3ed0bdfbf2a75c22fda35011c024a10e7ca714
-      size: 2224
+      sha256: b0ea243a1603c16d763f38da8f35281f5c59c0fe8988aa73dadef10d6193f8e1
+      size: 2225
     subdir: lsp-test
-    version: 0.14.1.0
+    version: 0.15.0.0
   original:
-    commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
+    commit: 59a1450871317e85ce89f05478c0af92e105d3dc
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-test
 - completed:
-    hackage: sandwich-0.1.4.0@sha256:991b70eaeca02233cc7b4d540a661ee8933c82a5a59be3e12ecceb9dce2c7913,8937
+    hackage: row-types-1.0.1.2@sha256:4d4c7cb95d06a32b28ba977852d52a26b4c1f695ef083a6fd874ab6d79933b64,3071
     pantry-tree:
-      sha256: 2c8b97eb942cc6a6d0c9317d5c5e30f190ce7405e3fb2329479e90fbf04040e6
-      size: 5882
+      sha256: 6a3617038d3970095100d14d026c396002a115700500cf3004ffb67ae5a75611
+      size: 1060
   original:
-    hackage: sandwich-0.1.4.0
+    hackage: row-types-1.0.1.2
 snapshots:
 - completed:
-    sha256: 9fa4bece7acfac1fc7930c5d6e24606004b09e80aa0e52e9f68b148201008db9
-    size: 649606
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/18.yaml
-  original: lts-20.18
+    sha256: 5a59b2a405b3aba3c00188453be172b85893cab8ebc352b1ef58b0eae5d248a2
+    size: 650475
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/26.yaml
+  original: lts-20.26

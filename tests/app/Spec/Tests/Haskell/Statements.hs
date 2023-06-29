@@ -3,8 +3,8 @@ module Spec.Tests.Haskell.Statements where
 
 import Data.String.Interpolate
 import Data.Text as T
+import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
-import Language.LSP.Types
 import Spec.Tests.Haskell.Common
 import Spec.Tests.Haskell.DocumentHighlight
 import Test.Sandwich as Sandwich
@@ -16,7 +16,7 @@ statementsTests = describe "Statements" $ do
   describe "Single-line" $ do
     it "doesn't choke" $ doNotebookSession lsName statementsCode $ \filename -> do
       ident <- openDoc filename "haskell"
-      getHighlights ident (Position 0 1) >>= (`shouldBe` List documentHighlightResults)
+      getHighlights ident (Position 0 1) >>= (`shouldBe` documentHighlightResults)
 
     testDiagnostics lsName "main.ipynb" Nothing statementsCode $ \diagnostics -> do
       -- Note: normally the server wouldn't send empty diagnostics. But the statement inserts "= unsafePerformIO $ ",
@@ -26,7 +26,7 @@ statementsTests = describe "Statements" $ do
   describe "Multi-line" $ do
     it "doesn't choke" $ doNotebookSession lsName statementsCode $ \filename -> do
       ident <- openDoc filename "haskell"
-      getHighlights ident (Position 0 1) >>= (`shouldBe` List documentHighlightResults)
+      getHighlights ident (Position 0 1) >>= (`shouldBe` documentHighlightResults)
 
     testDiagnostics lsName "main.ipynb" Nothing statementsCodeMultiline $ \diagnostics -> do
       info [i|Got diagnostics: #{diagnostics}|]

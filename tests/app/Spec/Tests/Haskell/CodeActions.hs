@@ -5,8 +5,8 @@ import Control.Lens
 import Data.String.Interpolate
 import Data.Text
 import Language.LSP.Test hiding (message)
-import Language.LSP.Types
-import Language.LSP.Types.Lens hiding (actions)
+import Language.LSP.Protocol.Types
+import Language.LSP.Protocol.Lens hiding (actions)
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
 import TestLib.LSP

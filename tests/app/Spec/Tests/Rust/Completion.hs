@@ -4,9 +4,9 @@ module Spec.Tests.Rust.Completion where
 import Control.Lens
 import Control.Monad
 import Data.String.Interpolate
+import Language.LSP.Protocol.Lens hiding (edit, item, range)
+import Language.LSP.Protocol.Types
 import Language.LSP.Test
-import Language.LSP.Types
-import Language.LSP.Types.Lens
 import Safe
 import Test.Sandwich as Sandwich
 
@@ -28,10 +28,10 @@ completionTests = describe "Completions" $ do
           Just item -> pure (item ^. textEdit)
 
         let range = Range (Position 0 0) (Position 0 6)
-        edit `shouldBe` (Just (CompletionEditInsertReplace (InsertReplaceEdit "println!($0)" range range)))
+        edit `shouldBe` (Just (InR (InsertReplaceEdit "println!($0)" range range)))
 
 isPrintLnCompletion :: CompletionItem -> Bool
 isPrintLnCompletion ci = case ci ^. textEdit of
   Nothing -> False
-  Just (CompletionEditText x) -> x ^. newText == "println!($0)"
-  Just (CompletionEditInsertReplace x) -> x ^. newText == "println!($0)"
+  Just (InL x) -> x ^. newText == "println!($0)"
+  Just (InR x) -> x ^. newText == "println!($0)"

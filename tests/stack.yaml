@@ -1,5 +1,5 @@
 
-resolver: lts-20.18
+resolver: lts-20.26
 
 nix:
   enable: false
@@ -11,13 +11,16 @@ nix:
 
 packages:
 - .
-# - /home/tom/tools/haskell-lsp/lsp-test
+# - /home/tom/tools/haskell-lsp-types-2/lsp
+# - /home/tom/tools/haskell-lsp-types-2/lsp-test
+# - /home/tom/tools/haskell-lsp-types-2/lsp-types
 
 extra-deps:
 - git: https://github.com/codedownio/lsp.git
-  commit: 52bdaf6df9a2fa3bc363d39a64bcef631c79edaa
+  commit: 59a1450871317e85ce89f05478c0af92e105d3dc
   subdirs:
   - lsp
   - lsp-types
   - lsp-test
-- sandwich-0.1.4.0
+
+- row-types-1.0.1.2

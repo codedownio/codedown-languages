@@ -5,7 +5,7 @@ module Spec.Tests.Julia.Diagnostics where
 
 import Data.String.Interpolate
 import Data.Text as T
-import Language.LSP.Types
+import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
 import TestLib.LSP
 

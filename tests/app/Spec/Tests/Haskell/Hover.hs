@@ -5,9 +5,9 @@ module Spec.Tests.Haskell.Hover where
 import Control.Lens ((^.))
 import Data.String.Interpolate
 import Data.Text as T
+import Language.LSP.Protocol.Lens hiding (hover)
+import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
-import Language.LSP.Types
-import Language.LSP.Types.Lens hiding (hover)
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
 import TestLib.LSP
@@ -25,7 +25,7 @@ hoverTests = describe "Hover" $ do
     ident <- openDoc filename "haskell"
     hover <- getHoverOrException ident (Position 1 1)
     (hover ^. range) `shouldBe` Just (Range (Position 1 0) (Position 1 8))
-    let HoverContents (MarkupContent {..}) = hover ^. contents
+    let InL (MarkupContent {..}) = hover ^. contents
     _value `textShouldContain` "putStrLn :: String -> IO ()"
 
 hoverCode :: Text

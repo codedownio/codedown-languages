@@ -8,9 +8,9 @@ import Control.Lens hiding (List)
 import Data.Aeson as A
 import Data.String.Interpolate
 import Data.Text as T
+import Language.LSP.Protocol.Lens hiding (diagnostics, hover, text)
+import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
-import Language.LSP.Types
-import Language.LSP.Types.Lens hiding (diagnostics, hover, text)
 import Spec.Tests.Julia.Diagnostics
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
@@ -36,12 +36,12 @@ juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kerne
     diagnosticsTests lsName
 
     itHasHoverSatisfying lsName "test.jl" Nothing [__i|print("hi")|] (Position 0 2) $ \hover -> do
-      let HoverContents (MarkupContent MkMarkdown text) = hover ^. contents
+      let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents
       text `textShouldContain` "Write to `io` (or to the default output stream"
 
     it "highlights foo" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
       ident <- openDoc filename "haskell"
-      getHighlights ident (Position 0 1) >>= (`shouldBe` List documentHighlightResults)
+      getHighlights ident (Position 0 1) >>= (`shouldBe` documentHighlightResults)
 
 
 documentHighlightCode :: Text
@@ -50,8 +50,8 @@ documentHighlightCode = [__i|foo = "hello"
 
 documentHighlightResults :: [DocumentHighlight]
 documentHighlightResults = [
-  DocumentHighlight (Range (Position 0 0) (Position 0 3)) (Just HkWrite)
-  , DocumentHighlight (Range (Position 1 8) (Position 1 11)) (Just HkRead)
+  DocumentHighlight (Range (Position 0 0) (Position 0 3)) (Just DocumentHighlightKind_Write)
+  , DocumentHighlight (Range (Position 1 8) (Position 1 11)) (Just DocumentHighlightKind_Read)
   ]
 
 lsName :: Text
