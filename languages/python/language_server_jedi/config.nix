@@ -1,12 +1,10 @@
-{ lib
-, pkgs
+{ callPackage
+, lib
+
 , pythonWithPackages
 , writeTextDir
 , kernelName
 }:
-
-with pkgs;
-with pkgs.lib;
 
 let
   common = callPackage ../../common.nix {};

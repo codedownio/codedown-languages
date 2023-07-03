@@ -1,12 +1,11 @@
-{ stdenv
-, pkgs
+{ callPackage
+, lib
+, stdenv
+
 , pythonWithPackages
 , kernelName
 , packages ? []
 }:
-
-with pkgs;
-with pkgs.lib;
 
 let
   common = callPackage ../../common.nix {};

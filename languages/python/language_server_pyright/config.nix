@@ -1,13 +1,15 @@
 { lib
-, pkgs
+, callPackage
+, makeWrapper
+, runCommand
+, writeTextDir
+
 , pythonWithPackages
 , pyright
-, writeTextDir
+
 , kernelName
 }:
 
-with pkgs;
-with pkgs.lib;
 
 let
   common = callPackage ../../common.nix {};
@@ -51,7 +53,7 @@ common.writeTextDirWithMeta pyright.meta "lib/codedown/language-servers/python-$
     "python.analysis.logLevel" = "Trace"; # Information
     "python.analysis.autoSearchPaths" = true;
     "python.analysis.extraPaths" = ["/home/user"];
-    "python.pythonPath" = "${python}/bin/python";
+    "python.pythonPath" = "${pythonEnv}/bin/python";
     # We need to send empty string, otherwise  pyright-langserver fails with parse error
     # "python.venvPath" = "";
   };
