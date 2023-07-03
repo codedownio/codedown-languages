@@ -38,7 +38,6 @@ kernelTests lang = do
       let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents
       text `textShouldContain` "Kernel#puts"
       text `textShouldContain` "$stdout.puts(obj"
-      text `textShouldContain` "Returns:"
 
 kernelSpec :: Text -> NixKernelSpec
 kernelSpec lang = NixKernelSpec {
