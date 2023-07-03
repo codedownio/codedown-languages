@@ -6,6 +6,7 @@
 
 
 codedown.mkCodeDownEnvironment {
+  environmentName = "r";
   inherit channels overlays;
   # metaOnly = true;
 

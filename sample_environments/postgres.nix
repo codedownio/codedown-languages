@@ -6,6 +6,7 @@
 
 
 codedown.mkCodeDownEnvironment {
+  environmentName = "postgres";
   inherit channels overlays;
   # metaOnly = true;
 

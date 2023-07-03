@@ -6,6 +6,7 @@
 
 
 codedown.mkCodeDownEnvironment {
+  environmentName = "rust";
   inherit channels overlays;
   # metaOnly = true;
 

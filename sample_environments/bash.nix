@@ -6,6 +6,7 @@
 
 
 codedown.mkCodeDownEnvironment {
+  environmentName = "bash";
   inherit channels overlays;
   # metaOnly = true;
 

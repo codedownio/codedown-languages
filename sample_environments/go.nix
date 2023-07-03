@@ -6,6 +6,7 @@
 
 
 codedown.mkCodeDownEnvironment {
+  environmentName = "go";
   inherit channels overlays;
   # metaOnly = true;
 

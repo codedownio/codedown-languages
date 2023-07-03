@@ -9,6 +9,7 @@
 
 args@{
   channels
+  , environmentName ? "codedown-environment"
   , kernels ? []
   , otherPackages ? []
   , metaOnly ? false
@@ -48,7 +49,7 @@ let
 in
 
 symlinkJoin {
-  name = "codedown-environment";
+  name = environmentName;
   paths = builtKernels
           ++ [((callPackage ./spec_yaml.nix {}) (args //  { inherit shells exporters; kernels = builtKernels; }))]
           ++ (if metaOnly then [] else [(shellsCommon.wrapShells shells)])

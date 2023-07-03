@@ -6,6 +6,7 @@
 
 
 codedown.mkCodeDownEnvironment {
+  environmentName = "ghc810";
   inherit channels overlays;
   # metaOnly = true;
 

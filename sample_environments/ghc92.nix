@@ -6,6 +6,7 @@
 
 
 codedown.mkCodeDownEnvironment {
+  environmentName = "ghc92";
   inherit channels overlays;
   # metaOnly = true;
 

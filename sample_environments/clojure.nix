@@ -6,6 +6,7 @@
 
 
 codedown.mkCodeDownEnvironment {
+  environmentName = "clojure";
   inherit channels overlays;
   # metaOnly = true;
 

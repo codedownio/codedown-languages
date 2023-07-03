@@ -6,6 +6,7 @@
 
 
 codedown.mkCodeDownEnvironment {
+  environmentName = "python3";
   inherit channels overlays;
   # metaOnly = true;
 

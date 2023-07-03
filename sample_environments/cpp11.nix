@@ -6,6 +6,7 @@
 
 
 codedown.mkCodeDownEnvironment {
+  environmentName = "cpp11";
   inherit channels overlays;
   # metaOnly = true;
 

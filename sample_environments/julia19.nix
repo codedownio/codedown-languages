@@ -6,6 +6,7 @@
 
 
 codedown.mkCodeDownEnvironment {
+  environmentName = "julia19";
   inherit channels overlays;
   # metaOnly = true;
 

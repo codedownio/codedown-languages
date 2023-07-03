@@ -6,6 +6,7 @@
 
 
 codedown.mkCodeDownEnvironment {
+  environmentName = "octave";
   inherit channels overlays;
   # metaOnly = true;
 
