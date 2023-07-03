@@ -74,7 +74,7 @@ runCommand "julia-depot" {
       Pkg.add(input; preserve=PRESERVE_NONE)
       Pkg.instantiate()
 
-      if "precompile" in keys(ENV) && ENV["precompile"] != "0"
+      if "precompile" in keys(ENV) && ENV["precompile"] != "0" && ENV["precompile"] != ""
         Pkg.precompile()
       end
     end

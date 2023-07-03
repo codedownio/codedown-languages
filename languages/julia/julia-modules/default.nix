@@ -3,12 +3,16 @@
 , runCommand
 , fetchFromGitHub
 , fetchgit
-, fetchurl
 , git
 , makeWrapper
 , writeText
 , writeTextFile
 , python3
+
+# Artifacts dependencies
+, fetchurl
+, glibc
+, pkgs
 , stdenv
 
 , julia
@@ -127,16 +131,22 @@ let
   artifactsNix = runCommand "julia-artifacts.nix" { buildInputs = [(python3.withPackages (ps: with ps; [toml pyyaml]))]; } ''
     python ${./python}/extract_artifacts.py \
       "${dependencyUuidToRepoYaml}" \
+      "${closureYaml}" \
       "${juliaWrapped}/bin/julia" \
-      "${./extract_artifacts.jl}" \
+      "${if lib.versionAtLeast julia.version "1.7" then ./extract_artifacts.jl else ./extract_artifacts_16.jl}" \
+      '${lib.generators.toJSON {} (import ./extra-libs.nix)}' \
       "$out"
   '';
 
   # Import the artifacts Nix to build Overrides.toml (IFD)
-  overridesTomlRaw = import artifactsNix { inherit fetchurl stdenv writeTextFile; };
+  artifacts = import artifactsNix { inherit lib fetchurl pkgs glibc stdenv; };
+  overridesJson = writeTextFile {
+    name = "Overrides.json";
+    text = lib.generators.toJSON {} artifacts;
+  };
   overridesToml = runCommand "Overrides.toml" { buildInputs = [(python3.withPackages (ps: with ps; [toml]))]; } ''
-    python ${./python}/dedup_overrides.py \
-      "${overridesTomlRaw}" \
+    python ${./python}/format_overrides.py \
+      "${overridesJson}" \
       "$out"
   '';
 
@@ -167,8 +177,8 @@ runCommand "julia-${julia.version}-env" {
   inherit dependencyUuidToRepoYaml;
   inherit minimalRegistry;
   inherit artifactsNix;
+  inherit overridesJson;
   inherit overridesToml;
-  inherit overridesTomlRaw;
   inherit projectAndDepot;
 } (''
   mkdir -p $out/bin
