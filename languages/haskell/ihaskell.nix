@@ -13,10 +13,10 @@
 
 let
   src = fetchFromGitHub {
-    owner = "gibiansky";
+    owner = "IHaskell";
     repo = "IHaskell";
-    rev = "8afa4e22c5724da89fec85a599ee129ab5b4cb9a";
-    sha256 = "0rkvqrpnsyp33x8mzh1v48vm96bpmza14nl6ah1sgjfbp86ihi8p";
+    rev = "c547ee2fdc0a09cf4129b19292147fec38527a55";
+    sha256 = "lpUSdhZ2HtUMcUygG5ORbib9Dc9SE2e81fQHO0UWNCo=";
   };
 
   displays = self: builtins.listToAttrs (

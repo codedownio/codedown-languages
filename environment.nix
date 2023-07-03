@@ -1,6 +1,6 @@
 { codedown
-, channels
-, overlays
+, channels ? {}
+, overlays ? {}
 , ...
 }:
 
@@ -65,7 +65,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
-      name = "haskell-ghc8107";
+      name = "haskell-ghc810";
       channel = "codedown";
       args = {
         packages = ["aeson"];
@@ -73,7 +73,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
-      name = "haskell-ghc902";
+      name = "haskell-ghc90";
       channel = "codedown";
       args = {
         packages = ["aeson"];
@@ -84,7 +84,7 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
-      name = "haskell-ghc924";
+      name = "haskell-ghc92";
       channel = "codedown";
       args = {
         packages = ["aeson"];
@@ -92,12 +92,23 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
-      name = "R";
+      name = "haskell-ghc94";
       channel = "codedown";
       args = {
-        packages = ["ggplot2"];
+        packages = ["aeson"];
+        settings = {
+          "lsp.haskell-language-server.enable" = false;
+        };
       };
     })
+
+    # ({
+    #   name = "haskell-ghc96";
+    #   channel = "codedown";
+    #   args = {
+    #     packages = ["aeson"];
+    #   };
+    # })
 
     ({
       name = "octave";
@@ -107,6 +118,14 @@ codedown.mkCodeDownEnvironment {
         extraJupyterConfig = ''
           c.OctaveKernel.plot_settings = dict(format='svg')
         '';
+      };
+    })
+
+    ({
+      name = "R";
+      channel = "codedown";
+      args = {
+        packages = ["ggplot2"];
       };
     })
 

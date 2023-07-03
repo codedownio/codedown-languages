@@ -28,7 +28,7 @@ let
     (callPackage ./languages/python {})
     (callPackage ./languages/r {})
     (callPackage ./languages/ruby {})
-    (pkgsUnstable.callPackage ./languages/rust {})
+    (callPackage ./languages/rust {})
   ];
 
 in

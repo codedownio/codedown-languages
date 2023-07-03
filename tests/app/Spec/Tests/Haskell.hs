@@ -26,16 +26,12 @@ tests :: TopSpec
 tests = do
   -- See languages/haskell/default.nix for details on what's available
 
-  -- haskellCommonTests "haskell-ghc865"
-  -- haskellCommonTests "haskell-ghc884"
+  haskellCommonTests "haskell-ghc810"
+  haskellCommonTests "haskell-ghc90"
+  haskellCommonTests "haskell-ghc92"
+  haskellCommonTests "haskell-ghc94"
+  -- haskellCommonTests "haskell-ghc96"
 
-  haskellCommonTests "haskell-ghc8107"
-  haskellCommonTests "haskell-ghc902"
-  haskellCommonTests "haskell-ghc928"
-  haskellCommonTests "haskell-ghc945"
-  haskellCommonTests "haskell-ghc962"
-
-  -- haskellCommonTests "haskell-ghc942"
 
 haskellCommonTests :: Text -> TopSpec
 haskellCommonTests lang = do

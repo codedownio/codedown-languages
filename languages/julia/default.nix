@@ -1,6 +1,7 @@
 { lib
 , julia_16-bin
 , julia_18
+, julia_19
 , python3
 , callPackage
 , fetchFromGitHub
@@ -79,7 +80,7 @@ let
 
     julia18 = juliaWithPackages.override { inherit packageOverrides; julia = julia_18; };
 
-    # julia19 = juliaWithPackages.override { inherit packageOverrides; julia = julia_19; };
+    julia19 = juliaWithPackages.override { inherit packageOverrides; julia = julia_19; };
   };
 
   packageSet = lib.listToAttrs (map (x: {

@@ -22,9 +22,9 @@ import TestLib.Util (aesonFromList)
 tests :: TopSpec
 tests = describe "Ruby" $ do
   kernelTests "ruby"
-  kernelTests "ruby_2_7"
   kernelTests "ruby_3_0"
   kernelTests "ruby_3_1"
+  kernelTests "ruby_3_2"
 
 
 kernelTests :: Text -> TopSpec

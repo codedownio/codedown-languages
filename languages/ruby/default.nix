@@ -9,38 +9,31 @@
 let
   common = callPackage ../common.nix {};
 
-  baseCandidates = [
-    "ruby"
-    "ruby_2_0"
-    "ruby_2_1_0"
-    "ruby_2_2_9"
-    "ruby_2_3"
-    "ruby_2_3_6"
-    "ruby_2_4"
-    "ruby_2_4_3"
-    "ruby_2_5"
-    "ruby_2_5_0"
-    "ruby_2_6"
-    "ruby_2_7"
+  filterFn = x: (common.hasAttrSafe x pkgs) && !(lib.attrByPath [x "meta" "broken"] false pkgs);
+
+  baseCandidates = lib.filter filterFn [
+    # "ruby_2_4"
+    # "ruby_2_4_3"
+    # "ruby_2_5"
+    # "ruby_2_5_0"
+    # "ruby_2_6"
+    # "ruby_2_7"
     "ruby_3_0"
     "ruby_3_1"
+    "ruby_3_2"
   ];
 
-  packagesLookup = {
+  packagesLookup = lib.filterAttrs (k: v: filterFn k) {
     ruby = pkgs.rubyPackages;
-    ruby_2_0 = {};
-    ruby_2_1_0 = {};
-    ruby_2_2_9 = {};
-    ruby_2_3 = {};
-    ruby_2_3_6 = {};
-    ruby_2_4 = pkgs.rubyPackages_2_4;
-    ruby_2_4_3 = pkgs.rubyPackages_2_4;
-    ruby_2_5 = pkgs.rubyPackages_2_5;
-    ruby_2_5_0 = pkgs.rubyPackages_2_5;
-    ruby_2_6 = pkgs.rubyPackages_2_6;
-    ruby_2_7 = pkgs.rubyPackages_2_7;
+    # ruby_2_4 = pkgs.rubyPackages_2_4;
+    # ruby_2_4_3 = pkgs.rubyPackages_2_4;
+    # ruby_2_5 = pkgs.rubyPackages_2_5;
+    # ruby_2_5_0 = pkgs.rubyPackages_2_5;
+    # ruby_2_6 = pkgs.rubyPackages_2_6;
+    # ruby_2_7 = pkgs.rubyPackages_2_7;
     ruby_3_0 = pkgs.rubyPackages_3_0;
     ruby_3_1 = pkgs.rubyPackages_3_1;
+    ruby_3_2 = pkgs.rubyPackages_3_2;
   };
 
   modeInfo = writeTextDir "lib/codedown/modes/ruby.yaml" (pkgs.lib.generators.toYAML {} [{
@@ -114,4 +107,4 @@ listToAttrs (map (x:
     };
   }
 
-) (filter (x: (common.hasAttrSafe x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates))
+) baseCandidates)
