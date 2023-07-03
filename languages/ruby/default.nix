@@ -18,19 +18,22 @@ let
     # "ruby_2_5_0"
     # "ruby_2_6"
     # "ruby_2_7"
+
+    "ruby"
     "ruby_3_0"
     "ruby_3_1"
     "ruby_3_2"
   ];
 
   packagesLookup = lib.filterAttrs (k: v: filterFn k) {
-    ruby = pkgs.rubyPackages;
     # ruby_2_4 = pkgs.rubyPackages_2_4;
     # ruby_2_4_3 = pkgs.rubyPackages_2_4;
     # ruby_2_5 = pkgs.rubyPackages_2_5;
     # ruby_2_5_0 = pkgs.rubyPackages_2_5;
     # ruby_2_6 = pkgs.rubyPackages_2_6;
     # ruby_2_7 = pkgs.rubyPackages_2_7;
+
+    ruby = pkgs.rubyPackages;
     ruby_3_0 = pkgs.rubyPackages_3_0;
     ruby_3_1 = pkgs.rubyPackages_3_1;
     ruby_3_2 = pkgs.rubyPackages_3_2;
