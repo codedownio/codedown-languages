@@ -1,12 +1,8 @@
 { lib
 , callPackage
 , coreutils
-, fetchFromGitHub
 , runCommand
-, stdenv
 
-, haskell
-, python
 , rust
 , rust-analyzer
 
@@ -19,20 +15,7 @@ with lib;
 let
   common = callPackage ../../common.nix {};
 
-  rnlsSrc = fetchFromGitHub {
-    owner = "codedownio";
-    repo = "rust-notebook-language-server";
-    rev = "13d268df7cee4cafb4c95917473dfc4e76d93746";
-    sha256 = "0yc1shq8y78kpyiq4zci48nlsqw4291qim9fsrvj218mh9nx9y2w";
-  };
-  # rnlsSrc = /home/tom/tools/rust-notebook-language-server;
-
-  ghc = haskell.packages.ghc924;
-
-  rnls = ghc.callPackage rnlsSrc {
-    lsp-types = ghc.callPackage ./lsp-types.nix {};
-    myers-diff = ghc.callPackage ./myers-diff.nix {};
-  };
+  rnls = callPackage ./rnls.nix {};
 
   rustAnalyzerToUse = rust-analyzer.override {
     rustPlatform = rust.packages.stable.rustPlatform;
