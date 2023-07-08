@@ -17,7 +17,7 @@ rec {
 
       ${concatStringsSep "\n" (mapAttrsToList (kernelName: kernel:
         let
-          allowedKernelKeys = ["argv" "display_name" "language" "interrupt_mode" "env" "metadata" "logo32" "logo64"];
+          allowedKernelKeys = ["argv" "display_name" "language" "codemirror_mode" "interrupt_mode" "env" "metadata" "logo32" "logo64"];
           config = builtins.toJSON (
             (filterAttrs (n: v: (any (x: x == n) allowedKernelKeys)) kernel)
             // {display_name = if (kernel.displayName != "") then kernel.displayName else kernelName;}

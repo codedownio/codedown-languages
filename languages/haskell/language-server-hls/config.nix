@@ -13,7 +13,9 @@
 , gnused
 
 , kernelName
+
 , ghc
+, snapshot
 
 , settings
 }:
@@ -23,7 +25,7 @@ with lib;
 let
   common = callPackage ../../common.nix {};
 
-  hnls = callPackage ./hnls.nix {};
+  hnls = callPackage ./hnls.nix { inherit ghc snapshot; };
 
   hlsWrapped = runCommand "haskell-language-server-${haskell-language-server.version}-wrapped" { buildInputs = [makeWrapper]; } ''
     mkdir -p $out/bin

@@ -6,7 +6,7 @@
 snapshot: ghc: kernelName: focusedSettings: callPackage ./language-server-hls/config.nix {
   inherit kernelName;
 
-  ghc = snapshot;
+  inherit ghc snapshot;
 
   settings = focusedSettings;
 

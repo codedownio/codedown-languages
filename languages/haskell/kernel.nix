@@ -1,12 +1,14 @@
 { lib
 , jupyter-kernel
 , snapshot
-, attrs
-, extensions
-, displayName
 , ihaskell
 , ghc
 , callPackage
+
+, attrs
+, displayName
+, extensions
+, language ? lib.head attrs
 , metaOnly ? false
 
 # Needed for ihaskell's PATH
@@ -37,7 +39,8 @@ common.makeJupyterKernelInner metaOnly (
         "-l" "${ghc.out}/lib/${ghc.meta.name}"
         "+RTS" "-M3g" "-N2" "-RTS"
       ];
-      language = head attrs;
+      codemirror_mode = "haskell";
+      inherit language;
       logo32 = ./haskell-logo-32x32.png;
       logo64 = ./haskell-logo-64x64.png;
       inherit repls;

@@ -178,6 +178,8 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
             (callPackage ./kernel.nix {
               inherit displayName attrs extensions metaOnly snapshot;
 
+              language = "haskell";
+
               ihaskell = if settingsToUse.enableHlintOutput then snapshot.ihaskell else snapshot.ihaskell.overrideAttrs (oldAttrs: {
                 configureFlags = ["-f" "-use-hlint"];
               });

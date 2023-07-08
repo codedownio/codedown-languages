@@ -4,6 +4,7 @@
 , stdenv
 
 , ghc
+, snapshot
 }:
 
 let
@@ -15,9 +16,9 @@ let
   };
   # hnlsSrc = /home/tom/tools/haskell-notebook-language-server;
 
-  hnlsFromSource = ghc.callPackage hnlsSrc {
-    lsp-types = ghc.callPackage ./lsp-types.nix {};
-    myers-diff = ghc.callPackage ./myers-diff.nix {};
+  hnlsFromSource = snapshot.callPackage hnlsSrc {
+    lsp-types = snapshot.callPackage ./lsp-types.nix {};
+    myers-diff = snapshot.callPackage ./myers-diff.nix {};
     sandwich = null;
     sandwich-quickcheck = null;
   };
@@ -36,18 +37,18 @@ let
   };
 
   ghcVersionToHnls = {
-    "8.10.7" = prebuilt (fetchzip {
-      url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v0.1.0.0/haskell-notebook-language-server-0.1.0.0-ghc8107-x86_64-linux.tar.gz";
-      sha256 = "sha256-jRLBb1CKHVrlMyCljjyGNuEcwPxOKduIjMGbUSWq2jI=";
-    });
-    "9.0.2" = prebuilt (fetchzip {
-      url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v0.1.0.0/haskell-notebook-language-server-0.1.0.0-ghc902-x86_64-linux.tar.gz";
-      sha256 = "sha256-Eio2rE2wAlhZyGdEKgxlc8xoaIFrxmmJLS6ZQFExxSg=";
-    });
-    "9.2.8" = prebuilt (fetchzip {
-      url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v0.1.0.0/haskell-notebook-language-server-0.1.0.0-ghc928-x86_64-linux.tar.gz";
-      sha256 = "sha256-44g/JSih4dVSmrvMpJQviyLwWBUXBGqbYKyDhx2CL6I=";
-    });
+    # "8.10.7" = prebuilt (fetchzip {
+    #   url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v0.1.0.0/haskell-notebook-language-server-0.1.0.0-ghc8107-x86_64-linux.tar.gz";
+    #   sha256 = "sha256-jRLBb1CKHVrlMyCljjyGNuEcwPxOKduIjMGbUSWq2jI=";
+    # });
+    # "9.0.2" = prebuilt (fetchzip {
+    #   url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v0.1.0.0/haskell-notebook-language-server-0.1.0.0-ghc902-x86_64-linux.tar.gz";
+    #   sha256 = "sha256-Eio2rE2wAlhZyGdEKgxlc8xoaIFrxmmJLS6ZQFExxSg=";
+    # });
+    # "9.2.8" = prebuilt (fetchzip {
+    #   url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v0.1.0.0/haskell-notebook-language-server-0.1.0.0-ghc928-x86_64-linux.tar.gz";
+    #   sha256 = "sha256-44g/JSih4dVSmrvMpJQviyLwWBUXBGqbYKyDhx2CL6I=";
+    # });
   };
 
 in
