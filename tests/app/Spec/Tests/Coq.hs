@@ -17,7 +17,7 @@ kernelSpec = NixKernelSpec {
   nixKernelName = "coq"
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Coq"
-  , nixKernelPackages = [nameOnly "interval"]
+  , nixKernelPackages = [nameOnly "bignums"]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
@@ -28,7 +28,12 @@ tests :: TopSpec
 tests = describe "Coq" $ introduceNixEnvironment [kernelSpec] [] "Coq" $ introduceJupyterRunner $ do
   testKernelSearchersBuild "coq"
 
-  itHasExecuteTexts "coq" [i|From Interval Require Import Interval.|] [Just $ Array []]
+  itHasExecuteTexts "coq" [__i|Require Import Bignums.BigN.BigN.
+                               Check (BigN.add_comm 1 2).|] [Just $ Array [
+                                                                String "BigN.add_comm 1 2\n"
+                                                                , String "     : (1 + 2 == 2 + 1)%bigN"
+                                                                ]
+                                                            ]
 
   itHasExecuteTexts "coq" [i|Print true.|] [Just $ Array [
                                                String "Inductive bool : Set :=  true : bool | false : bool."
