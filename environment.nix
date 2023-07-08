@@ -69,6 +69,9 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["aeson"];
+        settings = {
+          "lsp.haskell-language-server.debug" = true;
+        };
       };
     })
 
@@ -88,6 +91,9 @@ codedown.mkCodeDownEnvironment {
       channel = "codedown";
       args = {
         packages = ["aeson"];
+        settings = {
+          "lsp.haskell-language-server.debug" = true;
+        };
       };
     })
 
