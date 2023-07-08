@@ -23,22 +23,7 @@ with lib;
 let
   common = callPackage ../../common.nix {};
 
-  hnlsSrc = fetchFromGitHub {
-    owner = "codedownio";
-    repo = "haskell-notebook-language-server";
-    rev = "c5834f1336deca39f32eaf75c131108832739eb1";
-    sha256 = "YJ8f/X6qPRkmmTlaptvKV4Ga8oXkgeR/c/St+BjYCRI=";
-  };
-  # hnlsSrc = /home/tom/tools/haskell-notebook-language-server;
-
-  hnls = ghc.callPackage hnlsSrc {
-    lsp-types = ghc.callPackage ./lsp-types.nix {};
-    myers-diff = ghc.callPackage ./myers-diff.nix {};
-    sandwich = null;
-    sandwich-quickcheck = null;
-  };
-
-  exe = hnls;
+  hnls = callPackage ./hnls.nix {};
 
   hlsWrapped = runCommand "haskell-language-server-${haskell-language-server.version}-wrapped" { buildInputs = [makeWrapper]; } ''
     mkdir -p $out/bin
@@ -61,7 +46,7 @@ let
       "${hlsWrapped}/bin/haskell-language-server"
       "--lsp"
     ] else [
-      "${exe}/bin/haskell-notebook-language-server"
+      "${hnls}/bin/haskell-notebook-language-server"
       "--wrapped-hls" "${hlsWrapped}/bin/haskell-language-server"
       "--hls-args" "--lsp"
     ]
