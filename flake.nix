@@ -63,7 +63,7 @@
             sample_environments_farm = pkgsStable.linkFarm "sample_environments_farm" (pkgsStable.lib.mapAttrsToList (name: path: { inherit name path; }) sample_environments);
 
             notebook = with pkgsStable; python3.pkgs.toPythonModule (
-              python3.pkgs.notebook.overridePythonAttrs(oldAttrs: {
+              python3.pkgs.notebook.overridePythonAttrs (oldAttrs: {
                 makeWrapperArgs = ["--set JUPYTER_PATH ${environment}/lib/codedown"];
               })
             );
