@@ -3,6 +3,8 @@
 , callPackage
 , writeTextDir
 , symlinkJoin
+
+, darwin
 }:
 
 with lib;
@@ -35,8 +37,6 @@ let
     ;
 
   allPackageNames = import ./all_package_names.nix;
-
-  packagesBuilder = callPackage ./packages.nix {};
 
   # Note: update this when the base Nixpkgs is bumped
   baseCandidates = [
@@ -101,14 +101,13 @@ listToAttrs (map (x:
 
         paths = [
           (callPackage ./kernel.nix {
-            inherit packages displayName attrs extensions;
-            evcxr = pkgs.evcxr.override {
+            inherit displayName attrs extensions;
+            evcxr = ((callPackage ./evcxr {
+              inherit (darwin.apple_sdk.frameworks) CoreServices Security;
+            }).override {
               rustPlatform = rustPackages.rustPlatform;
               cargo = rustPackages.cargo;
-            };
-            rustLibSrc = rustPackages.rustPlatform.rustLibSrc;
-            vendoredPackages = packagesBuilder.vendorDependencies packages;
-            inherit rustPackages;
+            }).withPackages packages;
           })
 
           (callPackage ./mode_info.nix { inherit attrs extensions; })

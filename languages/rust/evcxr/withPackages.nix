@@ -2,6 +2,7 @@
 , fetchFromGitHub
 , lib
 , runCommand
+, writeTextFile
 
 , python3
 
@@ -10,7 +11,6 @@
 }:
 
 let
-
   cratesIndex = fetchFromGitHub {
     owner = "rust-lang";
     repo = "crates.io-index";
@@ -29,19 +29,20 @@ let
     echo "]" >> $out
   '';
 
-  cargoNix = packageNames: runCommand "rust-dependencies" { buildInputs = [cargo]; } ''
-    # Generate Cargo.toml
-    cat <<EOT >> Cargo.toml
-    [package]
-    name = "rust_environment"
-    version = "0.1.0"
-    edition = "2018"
+  cargoToml = packageNames: writeTextFile {
+    name = "Cargo.toml";
+    text = ''
+      [package]
+      name = "rust_environment"
+      version = "0.1.0"
+      edition = "2018"
 
-    [dependencies]
-    EOT
-    for name in ${toString packageNames}; do
-      echo "$name = \"*\"" >> Cargo.toml
-    done
+      [dependencies]
+    '' + lib.concatStringsSep "\n" (map (name: ''${name} = "*"'') packageNames);
+  };
+
+  cargoNix = packageNames: runCommand "Cargo-nix" { buildInputs = [cargo]; } ''
+    cp "${cargoToml packageNames}" Cargo.toml
 
     # Generate lib.rs
     mkdir -p "src"
@@ -76,9 +77,14 @@ let
     let
       deps = vendorDependencies packageNames;
     in
-      runCommand "init-evcxr-dir" { buildInputs = [(python3.withPackages (ps: [ps.toml]))]; } ''
+      runCommand "evcxr-config" { buildInputs = [(python3.withPackages (ps: [ps.toml]))]; } ''
         mkdir -p $out
-        python ${./build_init_evcxr.py} '${deps}' '${lib.generators.toJSON {} packageNames}' "$out"
+        echo ":offline 1" >> $out/init.evcxr
+        python ${./python}/build_init_evcxr.py \
+          '${deps}'\
+          '${lib.generators.toJSON {} packageNames}' \
+          "${cargoNix packageNames}/Cargo.lock" \
+          "$out/init.evcxr"
       '';
 
 in
@@ -87,6 +93,10 @@ rec {
   inherit cratesIndex;
 
   inherit allPackageNames;
+
+  inherit cargoToml;
+
+  inherit cargoNix;
 
   inherit vendorDependencies;
 
