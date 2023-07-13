@@ -33,7 +33,7 @@ stdenv.mkDerivation {
     echo "[ -f ~/.zshrc ] && source ~/.zshrc" >> .zshrc
 
     makeWrapper ${zsh}/bin/zsh $out/bin/zsh-with-theme \
-      --prefix PATH : ${lib.makeBinPath [glibc.out]} \
+      --prefix PATH : ${lib.makeBinPath [glibc.bin]} \
       --set ZDOTDIR $out
   '';
 
