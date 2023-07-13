@@ -5,6 +5,7 @@
 
 , rust
 , rust-analyzer
+, gcc
 
 , cargoHome
 
@@ -149,7 +150,11 @@ let
       };
     };
     env = {
-      "PATH" = lib.makeBinPath [coreutils rust.packages.stable.cargo];
+      "PATH" = lib.makeBinPath [
+        coreutils
+        rust.packages.stable.cargo
+        gcc.out
+      ];
       # "RA_LOG" = "rust_analyzer=info";
     };
   };
