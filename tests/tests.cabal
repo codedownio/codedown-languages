@@ -151,6 +151,7 @@ executable tests-exe
     , string-interpolate
     , tests
     , text
+    , unliftio
     , unliftio-core
     , vector
   default-language: Haskell2010

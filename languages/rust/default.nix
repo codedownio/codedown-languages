@@ -28,13 +28,13 @@ let
     }
   ];
 
-  chooseLanguageServers = settings: rust: kernelName:
+  chooseLanguageServers = settings: rust: cargoHome: kernelName:
     []
     ++ lib.optionals (common.isTrue settings "lsp.rust-analyzer.enable") [(callPackage ./language_server_rust_analyzer/config.nix {
-      inherit rust kernelName;
+      inherit rust cargoHome kernelName;
       settings = common.focusSettings "lsp.rust-analyzer." settings;
     })]
-    ;
+  ;
 
   allPackageNames = import ./all_package_names.nix;
 
@@ -95,25 +95,27 @@ listToAttrs (map (x:
         , settings ? {}
         , metaOnly ? false
       }: let
+        evcxr = ((callPackage ./evcxr {
+          inherit (darwin.apple_sdk.frameworks) CoreServices Security;
+        }).override {
+          rustPlatform = rustPackages.rustPlatform;
+          cargo = rustPackages.cargo;
+        }).withPackages packages;
+
         settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
       in symlinkJoin {
         name = "rust";
 
         paths = [
           (callPackage ./kernel.nix {
+            inherit evcxr;
             inherit displayName attrs extensions;
-            evcxr = ((callPackage ./evcxr {
-              inherit (darwin.apple_sdk.frameworks) CoreServices Security;
-            }).override {
-              rustPlatform = rustPackages.rustPlatform;
-              cargo = rustPackages.cargo;
-            }).withPackages packages;
           })
 
           (callPackage ./mode_info.nix { inherit attrs extensions; })
         ]
         ++ (if metaOnly then [] else [rustPackages.rustc rustPackages.cargo pkgs.gcc])
-        ++ (if metaOnly then [] else chooseLanguageServers settingsToUse rust x)
+        ++ (if metaOnly then [] else chooseLanguageServers settingsToUse rust evcxr.cargoHome x)
         ;
 
         passthru = {

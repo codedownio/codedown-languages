@@ -43,6 +43,7 @@ dependencies:
 - string-interpolate
 - text
 - unliftio-core
+- unliftio
 - vector
 
 # - hashable # Only needed for aeson < 2

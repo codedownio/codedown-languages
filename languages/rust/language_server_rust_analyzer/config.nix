@@ -6,6 +6,8 @@
 , rust
 , rust-analyzer
 
+, cargoHome
+
 , kernelName
 , settings
 }:
@@ -21,14 +23,7 @@ let
     rustPlatform = rust.packages.stable.rustPlatform;
   };
 
-  rust-env = runCommand "rust-environment" {} ''
-    mkdir -p $out
-    cp ${./Cargo.toml} $out/Cargo.toml
-    mkdir -p $out/src
-    touch $out/src/lib.rs
-  '';
-
-  shadowDirTemplate = rust-env;
+  shadowDirTemplate = cargoHome;
 
   config = raw: {
     name = "rust-analyzer${if raw then "-raw" else ""}";
