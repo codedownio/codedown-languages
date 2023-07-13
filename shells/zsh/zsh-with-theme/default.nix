@@ -1,4 +1,5 @@
-{ lib
+{ glibc
+, lib
 , stdenv
 , makeWrapper
 , oh-my-zsh
@@ -32,7 +33,8 @@ stdenv.mkDerivation {
     echo "[ -f ~/.zshrc ] && source ~/.zshrc" >> .zshrc
 
     makeWrapper ${zsh}/bin/zsh $out/bin/zsh-with-theme \
-                --set ZDOTDIR $out
+      --prefix PATH : ${lib.makeBinPath [glibc.out]} \
+      --set ZDOTDIR $out
   '';
 
   meta = zsh.meta;
