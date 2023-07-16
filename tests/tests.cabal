@@ -114,6 +114,7 @@ executable tests-exe
       Spec.Tests.Rust.Diagnostics
       Spec.Tests.Rust.Hovers
       Spec.Tests.Searchers
+      Spec.Tests.Shells.Zsh
       Spec.Tests.Spellchecker
       Paths_tests
   hs-source-dirs:

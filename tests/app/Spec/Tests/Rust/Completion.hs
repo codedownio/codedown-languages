@@ -28,7 +28,7 @@ completionTests = describe "Completions" $ do
           Just item -> pure (item ^. textEdit)
 
         let range = Range (Position 0 0) (Position 0 6)
-        edit `shouldBe` (Just (InR (InsertReplaceEdit "println!($0)" range range)))
+        edit `shouldBe` Just (InR (InsertReplaceEdit "println!($0)" range range))
 
 isPrintLnCompletion :: CompletionItem -> Bool
 isPrintLnCompletion ci = case ci ^. textEdit of
