@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-23.05";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -8,7 +8,7 @@
     flake-utils.lib.eachSystem ["x86_64-linux"] (system:
       let
         pkgs = import nixpkgs { inherit system; };
-        tests = pkgs.haskell.packages.ghc927.callPackage ./tests.nix {};
+        tests = pkgs.haskell.packages.ghc928.callPackage ./tests.nix {};
       in
         rec {
           packages = rec {
