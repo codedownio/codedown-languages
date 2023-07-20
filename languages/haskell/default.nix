@@ -42,10 +42,10 @@ let
   ];
 
   ihaskell-source = fetchFromGitHub {
-    owner = "IHaskell";
+    owner = "codedownio";
     repo = "IHaskell";
-    rev = "c547ee2fdc0a09cf4129b19292147fec38527a55";
-    sha256 = "lpUSdhZ2HtUMcUygG5ORbib9Dc9SE2e81fQHO0UWNCo=";
+    rev = "084958220fa00e1522c89239483bd853afc228fe";
+    sha256 = "11csrwas9gpibn8xmagg66a057s6hzi4rjh4maymvxfbm1155ffw";
   };
 
   chooseLanguageServers = settings: snapshot: ghc: kernelName:
@@ -54,20 +54,69 @@ let
     ;
 
   compilers = {
-    ghc810 = haskell.packages.ghc810;
-    ghc90 = haskell.packages.ghc90;
-    ghc92 = haskell.packages.ghc92;
+    ghc810 = haskell.packages.ghc810.override {
+      overrides = self: super: {
+        ghc-parser = self.callCabal2nix "ghc-parser" (
+          runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out"
+        ) {};
+
+        ipython-kernel = self.callCabal2nix "ipython-kernel" (
+          runCommand "ipython-kernel" {} "cp -r ${ihaskell-source}/ipython-kernel $out"
+        ) {};
+
+        ihaskell = self.callCabal2nixWithOptions "ihaskell" ihaskell-source "--no-check" {};
+      };
+    };
+
+    ghc90 = haskell.packages.ghc90.override {
+      overrides = self: super: {
+        ghc-parser = self.callCabal2nix "ghc-parser" (
+          runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out"
+        ) {};
+
+        ipython-kernel = self.callCabal2nix "ipython-kernel" (
+          runCommand "ipython-kernel" {} "cp -r ${ihaskell-source}/ipython-kernel $out"
+        ) {};
+
+        ihaskell = self.callCabal2nixWithOptions "ihaskell" ihaskell-source "--no-check" {};
+      };
+    };
+
+    ghc92 = haskell.packages.ghc92.override {
+      overrides = self: super: {
+        ghc-parser = self.callCabal2nix "ghc-parser" (
+          runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out"
+        ) {};
+
+        ipython-kernel = self.callCabal2nix "ipython-kernel" (
+          runCommand "ipython-kernel" {} "cp -r ${ihaskell-source}/ipython-kernel $out"
+        ) {};
+
+        ihaskell = self.callCabal2nixWithOptions "ihaskell" ihaskell-source "--no-check" {};
+      };
+    };
 
     ghc94 = haskell.packages.ghc94.override {
       overrides = self: super: {
-        ghc-parser = let
-          ghc-parser-source = runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out";
-        in
-          self.callCabal2nix "ghc-parser" ghc-parser-source {};
+        ghc-parser = self.callCabal2nix "ghc-parser" (
+          runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out"
+        ) {};
 
-        ihaskell = super.ihaskell.overrideAttrs (oldAttrs: {
-          src = ihaskell-source;
-        });
+        ipython-kernel = self.callCabal2nix "ipython-kernel" (
+          runCommand "ipython-kernel" {} "cp -r ${ihaskell-source}/ipython-kernel $out"
+        ) {};
+
+        ihaskell = self.callCabal2nixWithOptions "ihaskell" ihaskell-source "--no-check" {};
+
+        ghc-syntax-highlighter = let
+          src = fetchFromGitHub {
+            owner = "mrkkrp";
+            repo = "ghc-syntax-highlighter";
+            rev = "bbc049904524aae08e6431494f41fe2a288f6259";
+            sha256 = "sha256-w7AxGsUfqGhh7wrSPppQ2+gPwjvb4mwExJdDOcasAZ4=";
+          };
+        in
+          self.callCabal2nix "ghc-syntax-highlighter" src {};
 
         zeromq4-haskell = super.zeromq4-haskell.overrideAttrs (oldAttrs: {
           buildInputs = oldAttrs.buildInputs ++ [pkgs.libsodium];

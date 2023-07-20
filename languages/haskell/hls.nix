@@ -1,6 +1,9 @@
 { callPackage
+, lib
 , makeWrapper
 , stdenv
+
+, ncurses
 }:
 
 snapshot: ghc: kernelName: focusedSettings: callPackage ./language-server-hls/config.nix {
@@ -22,6 +25,7 @@ snapshot: ghc: kernelName: focusedSettings: callPackage ./language-server-hls/co
       mkdir -p $out/bin
       makeWrapper ${ghc}/bin/haskell-language-server $out/bin/haskell-language-server \
                   --set NIX_GHC_LIBDIR "${ghc.out}/lib/${ghc.meta.name}" \
+                  --suffix LD_LIBRARY_PATH : "${lib.makeLibraryPath [ncurses]}" \
                   --prefix PATH ':' ${ghc}/bin
     '';
     dontInstall = true;
