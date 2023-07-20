@@ -3,6 +3,8 @@ args: {
   clojure = import ./sample_environments/clojure.nix args;
   coq = import ./sample_environments/coq.nix args;
   cpp11 = import ./sample_environments/cpp11.nix args;
+  cpp14 = import ./sample_environments/cpp14.nix args;
+  cpp17 = import ./sample_environments/cpp17.nix args;
   exporters-large = import ./sample_environments/exporters-large.nix args;
   exporters-small = import ./sample_environments/exporters-small.nix args;
   ghc810 = import ./sample_environments/ghc810.nix args;

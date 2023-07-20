@@ -60,7 +60,10 @@
             environment = import ./environment.nix { inherit codedown; };
 
             sample_environments = import ./sample_environments.nix { inherit codedown; };
-            sample_environments_farm = pkgsStable.linkFarm "sample_environments_farm" (pkgsStable.lib.mapAttrsToList (name: path: { inherit name path; }) sample_environments);
+            sample_environments_farm = pkgsStable.linkFarm "sample_environments_farm" (
+              pkgsStable.lib.mapAttrsToList (name: path: { inherit name path; })
+                                            sample_environments
+            );
 
             notebook = with pkgsStable; python3.pkgs.toPythonModule (
               python3.pkgs.notebook.overridePythonAttrs (oldAttrs: {
