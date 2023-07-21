@@ -6,20 +6,17 @@
 
 
 codedown.mkCodeDownEnvironment {
-  environmentName = "python38";
+  environmentName = "cpp2a";
   inherit channels overlays;
   # metaOnly = true;
 
   kernels = [
     ({
-      name = "python38";
+      name = "cpp2a";
       channel = "codedown";
       args = {
         packages = [];
-        settings = {
-          "lsp.jedi.enable" = false;
-          "enableVariableInspector" = false;
-        };
+        attrs = ["cpp2a" "cpp"];
       };
     })
   ];

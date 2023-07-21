@@ -5,6 +5,7 @@ args: {
   cpp11 = import ./sample_environments/cpp11.nix args;
   cpp14 = import ./sample_environments/cpp14.nix args;
   cpp17 = import ./sample_environments/cpp17.nix args;
+  cpp2a = import ./sample_environments/cpp2a.nix args;
   exporters-large = import ./sample_environments/exporters-large.nix args;
   exporters-small = import ./sample_environments/exporters-small.nix args;
   ghc810 = import ./sample_environments/ghc810.nix args;
@@ -17,6 +18,8 @@ args: {
   julia19 = import ./sample_environments/julia19.nix args;
   octave = import ./sample_environments/octave.nix args;
   postgres = import ./sample_environments/postgres.nix args;
+  python27 = import ./sample_environments/python27.nix args;
+  python38 = import ./sample_environments/python38.nix args;
   python3 = import ./sample_environments/python3.nix args;
   r = import ./sample_environments/r.nix args;
   ruby = import ./sample_environments/ruby.nix args;

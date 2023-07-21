@@ -1,8 +1,10 @@
+{-# LANGUAGE RankNTypes #-}
 {-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 
 module Spec.Tests.Cpp (tests) where
 
 import Data.String.Interpolate
+import Data.Text
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
@@ -10,9 +12,25 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 
 
-kernelSpec :: NixKernelSpec
-kernelSpec = NixKernelSpec {
-  nixKernelName = "cpp11"
+tests :: TopSpec
+tests = do
+  tests' "cpp11"
+  tests' "cpp14"
+  tests' "cpp17"
+  tests' "cpp1z"
+
+tests' :: Text -> TopSpec
+tests' kernelName = describe "C++" $ introduceNixEnvironment [kernelSpec kernelName] [] "C++" $ introduceJupyterRunner $ do
+  testKernelSearchersBuild kernelName
+
+  testKernelStdout kernelName [__i|\#include <iostream>
+                                   using namespace std;
+                                   cout << "hi" << endl;|] "hi\n"
+
+
+kernelSpec :: Text -> NixKernelSpec
+kernelSpec kernelName  = NixKernelSpec {
+  nixKernelName = kernelName
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "CPP"
   , nixKernelPackages = []
@@ -21,15 +39,6 @@ kernelSpec = NixKernelSpec {
   , nixKernelIcon = Nothing
   , nixKernelSettings = Nothing
   }
-
-tests :: TopSpec
-tests = describe "C++" $ introduceNixEnvironment [kernelSpec] [] "C++" $ introduceJupyterRunner $ do
-  testKernelSearchersBuild "cpp11"
-
-  testKernelStdout "cpp11" [__i|\#include <iostream>
-                                using namespace std;
-                                cout << "hi" << endl;|] "hi\n"
-
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests

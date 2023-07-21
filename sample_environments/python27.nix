@@ -6,13 +6,13 @@
 
 
 codedown.mkCodeDownEnvironment {
-  environmentName = "python38";
+  environmentName = "python27";
   inherit channels overlays;
   # metaOnly = true;
 
   kernels = [
     ({
-      name = "python38";
+      name = "python27";
       channel = "codedown";
       args = {
         packages = [];
