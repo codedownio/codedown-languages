@@ -30,6 +30,16 @@ let
       --prefix PATH ":" ${gnused}/bin
   '';
 
+  # clingKernel = python3Packages.buildPythonApplication {
+  #   pname = "jupyter-cling-kernel";
+  #   version = "0.9";
+  #   src = "${cling}/share/cling/Jupyter/kernel";
+  #   propagatedBuildInputs = with python3Packages; [ipykernel traitlets cling];
+  # };
+
+
+  # "JUPYTER_CLING_KERNEL" = "${clingKernel}";
+
 in
 
 displayName: attrName: common.makeJupyterKernel (
@@ -41,6 +51,7 @@ displayName: attrName: common.makeJupyterKernel (
         [
           "${pythonWrapped}/bin/python"
           "${cling.unwrapped}/share/Jupyter/kernel/clingkernel.py"
+          "{connection_file}"
         ]
         # ++ cling.flags
         ++ [

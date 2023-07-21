@@ -2,7 +2,7 @@
 , callPackage
 , writeTextDir
 , symlinkJoin
-, cling ? null
+, cling
 , clang
 }:
 
@@ -83,8 +83,8 @@ if cling == null then {} else
           in symlinkJoin {
             name = x;
             paths = [
-              ((callPackage ./kernel_cling.nix { inherit attrs extensions logo64 std metaOnly; }) (getAttr x displayNames) x)
-              # ((callPackage ./kernel_xeus.nix { inherit attrs extensions logo64 std metaOnly; }) (getAttr x displayNames) x)
+              # ((callPackage ./kernel_cling.nix { inherit attrs extensions logo64 std metaOnly; }) (getAttr x displayNames) x)
+              ((callPackage ./kernel_xeus.nix { inherit attrs extensions logo64 std metaOnly; }) (getAttr x displayNames) x)
               (callPackage ./mode_info.nix { inherit attrs extensions; })
             ]
             ++ (if metaOnly then [] else [cling])

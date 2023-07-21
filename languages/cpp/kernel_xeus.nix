@@ -1,7 +1,10 @@
 { lib
 , callPackage
-, blas
+, llvmPackages_9
 , python3Packages
+
+, blas
+, cling
 
 , attrs
 , extensions
@@ -16,16 +19,8 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  cling = callPackage ./cling {};
   xeusStuff = callPackage ./xeus/xeusCling.nix { cling = cling.unwrapped; };
   xeusMisc = callPackage ./xeus/xeusMisc.nix {xtl = xeusStuff.xtl;};
-
-  # clingKernel = python3Packages.buildPythonApplication {
-  #   pname = "jupyter-cling-kernel";
-  #   version = "0.9";
-  #   src = "${cling}/share/cling/Jupyter/kernel";
-  #   propagatedBuildInputs = with python3Packages; [ipykernel traitlets cling];
-  # };
 
 in
 
@@ -35,25 +30,32 @@ displayName: attrName: common.makeJupyterKernel (
     value = {
       displayName = displayName;
       argv =
-        # ["${clingKernel}/bin/jupyter-cling-kernel"]
         ["${xeusStuff.xeusCling}/bin/xcpp"]
+        ++ [
+          "-I" "${lib.getDev llvmPackages_9.libcxx}/include/c++/v1"
+        ]
         ++ cling.flags
         ++ [
-          "-resource-dir" "${cling}"
+          "-resource-dir" "${cling.unwrapped}"
+
+          "-l" "${llvmPackages_9.libcxx}/lib/libc++.so"
+
+          # Uncomment to see some info about Cling's search path setup
+          # "-v"
 
           # Be able to use libraries installed by Nix
           # "-I" "/home/user/.nix-profile/include"
           # "-L" "/home/user/.nix-profile/lib"
 
           # xtensor and xtensor-blas (used in sample notebook)
-          # "-idirafter" "${xeusMisc.xtensor}/include"
-          # "-idirafter" "${xeusMisc.xtensorBlas}/include"
-          # "-L" "${xeusMisc.liblapackShared}/lib"
-          # "-L" "${blas}/lib"
+          "-idirafter" "${xeusMisc.xtensor}/include"
+          "-idirafter" "${xeusMisc.xtensorBlas}/include"
+          "-L" "${xeusMisc.liblapackShared}/lib"
+          "-L" "${blas}/lib"
         ]
         ++ [
           "-f" "{connection_file}"
-          "--std=${std}"
+          "-std=${std}"
         ];
       language = attrName;
       logo32 = null;
@@ -65,7 +67,7 @@ displayName: attrName: common.makeJupyterKernel (
         };
       };
       env = {
-        # "JUPYTER_CLING_KERNEL" = "${clingKernel}";
+
       };
     };
   }]

@@ -1,21 +1,40 @@
+diff --git a/include/xeus-cling/xinterpreter.hpp b/include/xeus-cling/xinterpreter.hpp
+index 2c13eb8..53dd085 100644
+--- a/include/xeus-cling/xinterpreter.hpp
++++ b/include/xeus-cling/xinterpreter.hpp
+@@ -72,6 +72,7 @@ namespace xcpp
+         void restore_output();
+ 
+         void init_extra_includes();
++        void init_libs();
+         void init_preamble();
+         void init_magic();
+ 
 diff --git a/src/xinterpreter.cpp b/src/xinterpreter.cpp
-index 8476375..e6508af 100644
+index e4ebf65..90548a8 100644
 --- a/src/xinterpreter.cpp
 +++ b/src/xinterpreter.cpp
-@@ -53,6 +53,16 @@ namespace xcpp
-           m_cout_buffer(std::bind(&interpreter::publish_stdout, this, _1)),
-           m_cerr_buffer(std::bind(&interpreter::publish_stderr, this, _1))
+@@ -60,6 +60,7 @@ namespace xcpp
      {
-+        // Do extra setup normally performed in Cling's main function
-+        m_cling.AddIncludePath(".");
-+
-+        // Load libs
-+        const cling::InvocationOptions& Opts = m_cling.getOptions();
-+        for (const std::string& Lib : Opts.LibsToLoad)
-+        {
-+          m_cling.loadFile(Lib);
-+        }
-+
          redirect_output();
+         init_extra_includes();
++        init_libs();
          init_preamble();
          init_magic();
+     }
+@@ -434,6 +435,15 @@ namespace xcpp
+         m_interpreter.AddIncludePaths(XEUS_SEARCH_PATH);
+     }
+ 
++    void interpreter::init_libs()
++    {
++        const cling::InvocationOptions& Opts = m_interpreter.getOptions();
++        for (const std::string& Lib : Opts.LibsToLoad)
++        {
++            m_interpreter.loadFile(Lib);
++        }
++    }
++
+     void interpreter::init_preamble()
+     {
+         preamble_manager.register_preamble("introspection", new xintrospection(m_interpreter));
