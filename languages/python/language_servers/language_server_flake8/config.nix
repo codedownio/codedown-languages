@@ -1,27 +1,26 @@
 { callPackage
 , lib
 , stdenv
-
 , pythonWithPackages
+
 , kernelName
-, packages ? []
 }:
 
 let
   common = callPackage ../../common.nix {};
 
-  diagnostic-languageserver = (callPackage ../../../language_servers/diagnostic-languageserver/default.nix {})
+  diagnostic-languageserver = (callPackage ../../../../language_servers/diagnostic-languageserver/default.nix {})
     ."diagnostic-languageserver-git+https://github.com/codedownio/diagnostic-languageserver.git#0171e0867e0c340c287bfd60c348425585e21eeb";
 
-  python = pythonWithPackages (ps: [ps.pycodestyle]);
+  python = pythonWithPackages (ps: [ps.flake8]);
 
 in
 
-common.writeTextDirWithMeta python.pkgs.pycodestyle.meta "lib/codedown/language-servers/python-${kernelName}-pycodestyle.yaml"
+common.writeTextDirWithMeta python.pkgs.flake8.meta "lib/codedown/language-servers/python-${kernelName}-flake8.yaml"
   (lib.generators.toYAML {} [{
-    name = "pycodestyle";
-    display_name = "pycodestyle";
-    description = python.pkgs.pycodestyle.meta.description;
+    name = "flake8";
+    display_name = "Flake8";
+    description = python.pkgs.flake8.meta.description;
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;
@@ -37,9 +36,9 @@ common.writeTextDirWithMeta python.pkgs.pycodestyle.meta "lib/codedown/language-
     };
     initialization_options = {
       linters = {
-        pycodestyle = {
-          sourceName = "pycodestyle";
-          command = "${python.pkgs.pycodestyle}/bin/pycodestyle";
+        flake8 = {
+          sourceName = "flake8";
+          command = "${python.pkgs.flake8}/bin/flake8";
           args = [
             "%file"
           ];
@@ -55,8 +54,10 @@ common.writeTextDirWithMeta python.pkgs.pycodestyle.meta "lib/codedown/language-
           ];
           rootPatterns = [".git" "pyproject.toml" "setup.py"];
           securities = {
-            E = "error";
-            W = "warning";
+            E = "error"; # Errors? (typically from pycodestyle)
+            W = "warning"; # Warnings? (typically from pycodestyle)
+            C = "warning"; # cyclomatic complexity (from mccabe)
+            F = "warning"; # flake8's own warnings
           };
           offsetColumn = 0;
           offsetLine = 0;
@@ -64,11 +65,11 @@ common.writeTextDirWithMeta python.pkgs.pycodestyle.meta "lib/codedown/language-
         };
       };
       filetypes = {
-        py = "pycodestyle";
-        md = "pycodestyle";
-        ipynb = "pycodestyle";
-        pycodestyle = "pycodestyle";
-        python = "pycodestyle";
+        py = "flake8";
+        md = "flake8";
+        ipynb = "flake8";
+        flake8 = "flake8";
+        python = "flake8";
       };
       formatters = {};
       formatFiletypes = {};
