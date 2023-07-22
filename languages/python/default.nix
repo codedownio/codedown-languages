@@ -31,10 +31,11 @@ let
   baseCandidates = [
     "python"
     "python2" "python27"
-    "python3" "python36" "python37" "python38" "python39"
+    "python3" "python36" "python37" "python38" "python39" "python310" "python311" "python312" "python313" "python314" "python315"
+
     "pypy"
     "pypy2" "pypy27"
-    "pypy3" "pypy36" "pypy37" "pypy38" "pypy39"
+    "pypy3" "pypy36" "pypy37" "pypy38" "pypy39" "pypy310" "pypy311" "pypy312" "pypy313" "pypy314" "pypy315"
   ];
 
 in

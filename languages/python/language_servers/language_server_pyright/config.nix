@@ -12,7 +12,7 @@
 
 
 let
-  common = callPackage ../../common.nix {};
+  common = callPackage ../../../common.nix {};
 
   pythonEnv = pythonWithPackages (_: []);
 

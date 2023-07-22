@@ -10,7 +10,7 @@
 with lib;
 
 let
-  common = callPackage ../../common.nix {};
+  common = callPackage ../../../common.nix {};
 
   python = pythonWithPackages (_: []);
 

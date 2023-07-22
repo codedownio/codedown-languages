@@ -22,7 +22,7 @@ let
   # There doesn't seem to be any way to tell python-language-server to distinguish *its own*
   # imports from those of the code it's examining. This might be worth researching further.
 
-  common = callPackage ../../common.nix {};
+  common = callPackage ../../../common.nix {};
 
   # manylinux1 = callPackage ./manylinux1.nix { inherit python; };
 

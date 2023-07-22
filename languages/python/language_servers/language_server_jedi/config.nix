@@ -7,7 +7,7 @@
 }:
 
 let
-  common = callPackage ../../common.nix {};
+  common = callPackage ../../../common.nix {};
 
   jediLanguageServer = callPackage ./jedi-language-server {
     python = pythonWithPackages (_: []);

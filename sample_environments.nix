@@ -18,8 +18,8 @@ args: {
   julia19 = import ./sample_environments/julia19.nix args;
   octave = import ./sample_environments/octave.nix args;
   postgres = import ./sample_environments/postgres.nix args;
-  python27 = import ./sample_environments/python27.nix args;
-  python38 = import ./sample_environments/python38.nix args;
+  python310 = import ./sample_environments/python310.nix args;
+  python311 = import ./sample_environments/python311.nix args;
   python3 = import ./sample_environments/python3.nix args;
   r = import ./sample_environments/r.nix args;
   ruby = import ./sample_environments/ruby.nix args;

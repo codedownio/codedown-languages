@@ -8,7 +8,7 @@ with pkgs;
 with pkgs.lib;
 
 let
-  common = callPackage ../../common.nix {};
+  common = callPackage ../../../common.nix {};
 
   diagnostic-languageserver = (callPackage ../../../../language_servers/diagnostic-languageserver/default.nix {})
     ."diagnostic-languageserver-git+https://github.com/codedownio/diagnostic-languageserver.git#0171e0867e0c340c287bfd60c348425585e21eeb";
