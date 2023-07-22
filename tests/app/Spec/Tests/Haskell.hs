@@ -13,6 +13,7 @@ import Spec.Tests.Haskell.Common
 import Spec.Tests.Haskell.Diagnostics
 import Spec.Tests.Haskell.DocumentHighlight
 import Spec.Tests.Haskell.Hover
+import Spec.Tests.Haskell.Info
 import Spec.Tests.Haskell.Statements
 import Spec.Tests.Haskell.Symbols
 import Test.Sandwich as Sandwich
@@ -52,6 +53,8 @@ haskellCommonTests lang = do
 
       describe "Kernel" $ do
         itHasDisplayDatas lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
+
+        itHasDisplayDatas lang [__i|:info String|] [stringInfo]
 
         -- We shouldn't get hlint output by default
         itHasDisplayDatas lang etaExpandCode []

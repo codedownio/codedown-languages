@@ -44,8 +44,8 @@ let
   ihaskell-source = fetchFromGitHub {
     owner = "codedownio";
     repo = "IHaskell";
-    rev = "084958220fa00e1522c89239483bd853afc228fe";
-    sha256 = "11csrwas9gpibn8xmagg66a057s6hzi4rjh4maymvxfbm1155ffw";
+    rev = "9db3044d7cfcac6acfb92633c0bea9e27fa31b42";
+    sha256 = "12zp765aqf3ks0h84i3y2jx0gyamkya7wm9s8x1sa482729sv8mp";
   };
 
   chooseLanguageServers = settings: snapshot: ghc: kernelName:

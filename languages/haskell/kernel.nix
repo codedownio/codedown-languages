@@ -37,6 +37,8 @@ common.makeJupyterKernelInner metaOnly (
         "kernel"
         "{connection_file}"
         "-l" "${ghc.out}/lib/${ghc.meta.name}"
+        "--html-code-wrapper-class" "cm-s-hite"
+        "--html-code-token-prefix" ""
         "+RTS" "-M3g" "-N2" "-RTS"
       ];
       codemirror_mode = "haskell";
