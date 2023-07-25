@@ -6,6 +6,7 @@
 , displayName
 , attrs
 , extensions
+, language ? lib.head attrs
 , metaOnly ? false
 }:
 
@@ -26,7 +27,7 @@ common.makeJupyterKernelInner metaOnly (
         "--control_file"
         "{connection_file}"
       ];
-      language = lib.head attrs;
+      inherit language;
       logo32 = ./logo-32x32.png;
       logo64 = ./logo-64x64.png;
       metadata = {
