@@ -9,25 +9,23 @@
 let
   common = callPackage ../../../common.nix {};
 
-  jediLanguageServer = callPackage ./jedi-language-server {
-    python = pythonWithPackages (_: []);
-  };
+  pythonEnv = pythonWithPackages (ps: [ps.jedi-language-server]);
 
-  pythonEnv = pythonWithPackages (_: [jediLanguageServer]);
+  jls = pythonEnv.pkgs.jedi-language-server;
 
 in
 
-common.writeTextDirWithMeta jediLanguageServer.meta "lib/codedown/language-servers/python-${kernelName}-jedi.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta jls.meta "lib/codedown/language-servers/python-${kernelName}-jedi.yaml" (lib.generators.toYAML {} [{
   name = "jedi";
   display_name = "Jedi";
-  description = jediLanguageServer.meta.description;
+  description = jls.meta.description;
   icon = ./logo.png;
   extensions = ["py"];
   notebook_suffix = ".py";
   kernel_name = kernelName;
   attrs = ["python"];
   type = "stream";
-  args = ["${jediLanguageServer}/bin/jedi-language-server"];
+  args = ["${pythonEnv}/bin/jedi-language-server"];
   # Not sure whether to do this using an environment variable or initialization option
   env = {
     JEDI_LANGUAGE_SERVER_EXTRA_PATHS = lib.concatStringsSep ":" [

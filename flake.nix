@@ -65,6 +65,10 @@
                                             sample_environments
             );
 
+            test = pkgsStable.poetry2nix.mkPoetryEnv {
+              projectDir = ./languages/python/envs/python38;
+            };
+
             notebook = with pkgsStable; python3.pkgs.toPythonModule (
               python3.pkgs.notebook.overridePythonAttrs (oldAttrs: {
                 makeWrapperArgs = ["--set JUPYTER_PATH ${environment}/lib/codedown"];

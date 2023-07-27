@@ -1,6 +1,7 @@
 { pkgs
 , lib
 , callPackage
+, poetry2nix
 , symlinkJoin
 , stdenv
 }:
@@ -38,143 +39,156 @@ let
     "pypy3" "pypy36" "pypy37" "pypy38" "pypy39" "pypy310" "pypy311" "pypy312" "pypy313" "pypy314" "pypy315"
   ];
 
+  # Pythons that don't work with the ipykernel, ipywidgets, etc. of the Nixpkgs Python package set,
+  # so we have a special package checked in under ./envs
+  specialEnvPythons = {
+    "python38" = pkgs.python38;
+    "python39" = pkgs.python39;
+    "python312" = pkgs.python312;
+  };
+
 in
 
 lib.listToAttrs (map (x:
-  let basePython = lib.getAttr x pkgs;
-      displayName = "Python " + basePython.version;
+  let
+    basePython =
+      if lib.hasAttr x specialEnvPythons then (poetry2nix.mkPoetryEnv { projectDir = ./envs/${x}; }).overrideAttrs (_: { version = specialEnvPythons.${x}.version; })
+      else lib.getAttr x pkgs;
 
-      settingsSchema = [
-        {
-          title = "Language servers";
-          level = 1;
-          type = "heading";
-        }
-        {
-          target = "lsp.jedi.enable";
-          title = "Enable Jedi language server";
-          type = "boolean";
-          defaultValue = true;
-        }
-        {
-          target = "lsp.pyright.enable";
-          title = "Enable Pyright language server";
-          type = "boolean";
-          defaultValue = false;
-        }
-        {
-          target = "lsp.pylint.enable";
-          title = "Enable Pylint language server";
-          type = "boolean";
-          defaultValue = false;
-        }
-        {
-          target = "lsp.flake8.enable";
-          title = "Enable Flake8 language server";
-          type = "boolean";
-          defaultValue = false;
-        }
-        {
-          target = "lsp.pycodestyle.enable";
-          title = "Enable pycodestyle language server";
-          type = "boolean";
-          defaultValue = false;
-        }
-      ] ++ lib.optionals (lib.hasAttr "python-language-server" pkgs) [
-        {
-          target = "lsp.microsoft.enable";
-          title = "Enable Microsoft Python language server";
-          type = "boolean";
-          defaultValue = false;
-        }
-      ] ++ lib.optionals ((lib.hasAttr "python-lsp-server" basePython.pkgs) && (lib.versionAtLeast basePython.pythonVersion "3.7")) [
-        {
-          target = "lsp.python-lsp-server.enable";
-          title = "Enable python-lsp-server language server";
-          type = "boolean";
-          defaultValue = false;
-        }
-      ] ++ lib.optionals (lib.hasAttr "python-language-server" basePython.pkgs) [
-        {
-          target = "lsp.python-language-server.enable";
-          title = "Enable python-language-server language server";
-          type = "boolean";
-          defaultValue = false;
-        }
-      ] ++ [
-        {
-          title = "Miscellaneous";
-          level = 1;
-          type = "heading";
-        }
-        {
-          target = "permitUserSite";
-          title = "Permit user site-packages";
-          description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
-          type = "boolean";
-          defaultValue = false;
-        }
-        {
-          target = "enableVariableInspector";
-          title = "Enable variable inspector";
-          description = "Enable the variable inspector, which will fetch runtime values of variables to show in the variables list.";
-          type = "boolean";
-          defaultValue = true;
-        }
-      ];
+    displayName = "Python " +  basePython.version;
 
-      meta = basePython.meta // {
-        baseName = x;
-        inherit displayName settingsSchema;
-        version = basePython.version;
-        icon = ./logo-64x64.png;
-      };
+    settingsSchema = [
+      {
+        title = "Language servers";
+        level = 1;
+        type = "heading";
+      }
+      {
+        target = "lsp.jedi.enable";
+        title = "Enable Jedi language server";
+        type = "boolean";
+        defaultValue = true;
+      }
+      {
+        target = "lsp.pyright.enable";
+        title = "Enable Pyright language server";
+        type = "boolean";
+        defaultValue = false;
+      }
+      {
+        target = "lsp.pylint.enable";
+        title = "Enable Pylint language server";
+        type = "boolean";
+        defaultValue = false;
+      }
+      {
+        target = "lsp.flake8.enable";
+        title = "Enable Flake8 language server";
+        type = "boolean";
+        defaultValue = false;
+      }
+      {
+        target = "lsp.pycodestyle.enable";
+        title = "Enable pycodestyle language server";
+        type = "boolean";
+        defaultValue = false;
+      }
+    ] ++ lib.optionals (lib.hasAttr "python-language-server" pkgs) [
+      {
+        target = "lsp.microsoft.enable";
+        title = "Enable Microsoft Python language server";
+        type = "boolean";
+        defaultValue = false;
+      }
+    ] ++ lib.optionals ((lib.hasAttr "python-lsp-server" basePython.pkgs) && (lib.versionAtLeast basePython.pythonVersion "3.7")) [
+      {
+        target = "lsp.python-lsp-server.enable";
+        title = "Enable python-lsp-server language server";
+        type = "boolean";
+        defaultValue = false;
+      }
+    ] ++ lib.optionals (lib.hasAttr "python-language-server" basePython.pkgs) [
+      {
+        target = "lsp.python-language-server.enable";
+        title = "Enable python-language-server language server";
+        type = "boolean";
+        defaultValue = false;
+      }
+    ] ++ [
+      {
+        title = "Miscellaneous";
+        level = 1;
+        type = "heading";
+      }
+      {
+        target = "permitUserSite";
+        title = "Permit user site-packages";
+        description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
+        type = "boolean";
+        defaultValue = false;
+      }
+      {
+        target = "enableVariableInspector";
+        title = "Enable variable inspector";
+        description = "Enable the variable inspector, which will fetch runtime values of variables to show in the variables list.";
+        type = "boolean";
+        defaultValue = true;
+      }
+    ];
 
-  in {
-    name = x;
-    value = rec {
-      packageOptions = basePython.pkgs;
-      packageSearch = common.searcher packageOptions;
-
-      build = args@{
-        packages ? []
-        , attrs ? [x "python"]
-        , extensions ? ["py"]
-        , settings ? {}
-        , metaOnly ? false
-      }:
-        let
-          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
-          ps = packageOptions;
-          allPackages = [ps.ipykernel ps.ipywidgets]
-                        ++ (map (x: builtins.getAttr x ps) packages);
-          python = basePython.withPackages (_: allPackages);
-          pythonWithPackages = f: basePython.withPackages (_: allPackages ++ f ps);
-
-        in symlinkJoin {
-          name = x;
-
-          paths = [
-            (callPackage ./kernel.nix {
-              inherit python displayName attrs extensions metaOnly;
-              enableVariableInspector = settingsToUse.enableVariableInspector;
-            })
-
-            (callPackage ./mode_info.nix { inherit attrs extensions; })
-          ]
-          ++ (if metaOnly then [] else [python ps.ipython])
-          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse pythonWithPackages x)
-          ;
-
-          passthru = {
-            inherit meta packageOptions settingsSchema;
-            args = args // { baseName = x; };
-            settings = settingsToUse;
-            repls = repls python;
-          };
-        };
-
-      inherit meta;
+    meta = basePython.meta // {
+      baseName = x;
+      inherit displayName settingsSchema;
+      version = basePython.version;
+      icon = ./logo-64x64.png;
     };
-  }
+
+  in
+    {
+      name = x;
+      value = rec {
+        packageOptions = basePython.pkgs;
+        packageSearch = common.searcher packageOptions;
+
+        build = args@{
+          packages ? []
+          , attrs ? [x "python"]
+          , extensions ? ["py"]
+          , settings ? {}
+          , metaOnly ? false
+        }:
+          let
+            settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+            ps = packageOptions;
+            allPackages = [ps.ipykernel ps.ipywidgets]
+                          ++ (map (x: builtins.getAttr x ps) packages);
+            python = basePython.withPackages (_: allPackages);
+            pythonWithPackages = f: basePython.withPackages (_: allPackages ++ f ps);
+
+          in symlinkJoin {
+            name = x;
+
+            paths = [
+              (callPackage ./kernel.nix {
+                inherit python displayName attrs extensions metaOnly;
+                enableVariableInspector = settingsToUse.enableVariableInspector;
+              })
+
+              (callPackage ./mode_info.nix { inherit attrs extensions; })
+            ]
+            ++ (if metaOnly then [] else [python ps.ipython])
+            ++ (if metaOnly then [] else chooseLanguageServers settingsToUse pythonWithPackages x)
+            ;
+
+            passthru = {
+              inherit meta packageOptions settingsSchema;
+              args = args // { baseName = x; };
+              settings = settingsToUse;
+              repls = repls python;
+            };
+          };
+
+        inherit meta;
+      };
+    }
 ) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))

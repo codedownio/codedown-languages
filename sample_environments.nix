@@ -20,6 +20,7 @@ args: {
   postgres = import ./sample_environments/postgres.nix args;
   python310 = import ./sample_environments/python310.nix args;
   python311 = import ./sample_environments/python311.nix args;
+  python38 = import ./sample_environments/python38.nix args;
   python3 = import ./sample_environments/python3.nix args;
   r = import ./sample_environments/r.nix args;
   ruby = import ./sample_environments/ruby.nix args;

@@ -1,9 +1,11 @@
+{-# LANGUAGE RankNTypes #-}
 {-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 
-module Spec.Tests.Python3 (tests) where
+module Spec.Tests.Python (tests) where
 
 import Data.Aeson as A
 import Data.String.Interpolate
+import Data.Text
 import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
@@ -14,30 +16,23 @@ import TestLib.TestSearchers
 import TestLib.Util
 
 
-kernelSpec :: NixKernelSpec
-kernelSpec = NixKernelSpec {
-  nixKernelName = "python3"
-  , nixKernelChannel = "codedown"
-  , nixKernelDisplayName = Just "Python 3"
-  , nixKernelPackages = [nameOnly "tensorflow"]
-  , nixKernelExtraJupyterConfig = Nothing
-  , nixKernelMeta = Nothing
-  , nixKernelIcon = Nothing
-  , nixKernelSettings = Just $ aesonFromList [
-      ("lsp.python-lsp-server.enable", A.Bool True)
-      , ("lsp.pylint.enable", A.Bool True)
-      , ("lsp.pyright.enable", A.Bool True)
-      , ("lsp.pycodestyle.enable", A.Bool True)
-      ]
-  }
-
 tests :: TopSpec
-tests = describe "Python 3" $ introduceNixEnvironment [kernelSpec] [] "Python 3" $ introduceJupyterRunner $ do
-  testKernelSearchersNonempty "python3"
+tests = parallel $ do
+  tests' "python3"
+  tests' "python38"
+  -- tests' "python39"
+  tests' "python310"
+  tests' "python311"
+  -- tests' "python312"
 
-  testKernelStdout "python3" [i|print("hi")|] "hi\n"
-  testKernelStdout "python3" [i|print(42)|] "42\n"
-  testKernelStdout "python3" [i|import tensorflow|] ""
+
+tests' :: Text -> TopSpec
+tests' kernelName = describe [i|Python (#{kernelName})|] $ introduceNixEnvironment [kernelSpec kernelName] [] "Python 3" $ introduceJupyterRunner $ do
+  testKernelSearchersNonempty kernelName
+
+  testKernelStdout kernelName [i|print("hi")|] "hi\n"
+  testKernelStdout kernelName [i|print(42)|] "42\n"
+  testKernelStdout kernelName [i|import tensorflow|] ""
 
   testDiagnostics "python-lsp-server" "test.py" Nothing [i|\n\n\nfoo = 42|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
@@ -70,6 +65,24 @@ tests = describe "Python 3" $ introduceNixEnvironment [kernelSpec] [] "Python 3"
                                                        f("asdf", 42)
                                                       |] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
+
+
+kernelSpec :: Text -> NixKernelSpec
+kernelSpec kernelName = NixKernelSpec {
+  nixKernelName = kernelName
+  , nixKernelChannel = "codedown"
+  , nixKernelDisplayName = Just "Python"
+  , nixKernelPackages = [nameOnly "tensorflow"]
+  , nixKernelExtraJupyterConfig = Nothing
+  , nixKernelMeta = Nothing
+  , nixKernelIcon = Nothing
+  , nixKernelSettings = Just $ aesonFromList [
+      ("lsp.python-lsp-server.enable", A.Bool True)
+      , ("lsp.pylint.enable", A.Bool True)
+      , ("lsp.pyright.enable", A.Bool True)
+      , ("lsp.pycodestyle.enable", A.Bool True)
+      ]
+  }
 
 
 main :: IO ()

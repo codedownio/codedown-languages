@@ -107,7 +107,7 @@ executable tests-exe
       Spec.Tests.Julia.Diagnostics
       Spec.Tests.Octave
       Spec.Tests.Postgres
-      Spec.Tests.Python3
+      Spec.Tests.Python
       Spec.Tests.R
       Spec.Tests.Ruby
       Spec.Tests.Rust

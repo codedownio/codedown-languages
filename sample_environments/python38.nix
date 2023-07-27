@@ -18,7 +18,12 @@ codedown.mkCodeDownEnvironment {
         packages = [];
         settings = {
           "lsp.jedi.enable" = false;
-          "enableVariableInspector" = false;
+          "enableVariableInspector" = true;
+
+          # "lsp.python-lsp-server.enable" = true;
+          # "lsp.pylint.enable" = true;
+          # "lsp.pyright.enable" = true;
+          # "lsp.pycodestyle.enable" = true;
         };
       };
     })
