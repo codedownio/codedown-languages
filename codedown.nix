@@ -25,7 +25,16 @@ let
     (callPackage ./languages/julia {})
     (callPackage ./languages/octave {})
     (callPackage ./languages/postgres {})
-    (callPackage ./languages/python {})
+    (callPackage ./languages/python {
+      poetry2nix = import (pkgsStable.fetchFromGitHub {
+        owner = "nix-community";
+        repo = "poetry2nix";
+        rev = "78fc8882411c29c8eb5f162b09fcafe08b8b03a3";
+        sha256 = "1dfgm286c48ac6yrk16xz41d0rsg6bv08122ngy420b0z88la9nj";
+      }) {
+        pkgs = pkgsStable;
+      };
+    })
     (callPackage ./languages/r {})
     (callPackage ./languages/ruby {})
     (pkgsUnstable.callPackage ./languages/rust {})

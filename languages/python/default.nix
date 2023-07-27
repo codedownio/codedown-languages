@@ -52,7 +52,11 @@ in
 lib.listToAttrs (map (x:
   let
     basePython =
-      if lib.hasAttr x specialEnvPythons then (poetry2nix.mkPoetryEnv { projectDir = ./envs/${x}; }).overrideAttrs (_: { version = specialEnvPythons.${x}.version; })
+      if lib.hasAttr x specialEnvPythons then (poetry2nix.mkPoetryEnv {
+        projectDir = ./envs/${x};
+        python = specialEnvPythons.${x};
+        overrides = import ./envs/${x}/poetry-overrides.nix { inherit poetry2nix; };
+      }).overrideAttrs (_: { version = specialEnvPythons.${x}.version; })
       else lib.getAttr x pkgs;
 
     displayName = "Python " +  basePython.version;

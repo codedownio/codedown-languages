@@ -20,7 +20,7 @@ tests :: TopSpec
 tests = parallel $ do
   tests' "python3"
   tests' "python38"
-  -- tests' "python39"
+  tests' "python39"
   tests' "python310"
   tests' "python311"
   -- tests' "python312"
@@ -77,7 +77,8 @@ kernelSpec kernelName = NixKernelSpec {
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Just $ aesonFromList [
-      ("lsp.python-lsp-server.enable", A.Bool True)
+      ("lsp.jedi.enable", A.Bool True)
+      , ("lsp.python-lsp-server.enable", A.Bool True)
       , ("lsp.pylint.enable", A.Bool True)
       , ("lsp.pyright.enable", A.Bool True)
       , ("lsp.pycodestyle.enable", A.Bool True)
