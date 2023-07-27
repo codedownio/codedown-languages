@@ -68,18 +68,14 @@ rec {
 
   xeusCling = clangStdenv.mkDerivation {
     pname = "xeusCling";
-    version = "0.15.2";
+    version = "0.15.3";
 
     src = fetchFromGitHub {
       owner = "QuantStack";
       repo = "xeus-cling";
-      rev = "c13e6608f28494877415c76609d7a38cb268740c";
-      sha256 = "0fni3938brv34qvw8afnblcmifafcgkn7il73hpa4mqa3kzhbr5a";
+      rev = "3fc0cb6c5ad0b968c52da67c7946eb78b3b865e2";
+      sha256 = "0lm3m304hxr5xmp82nq9rgg6xwf1bz0bmvb9x2vzdpx97zxm9xir";
     };
-
-    patches = [
-      ./xeus-cling.patch
-    ];
 
     nativeBuildInputs = [ cmake ];
     buildInputs = [
