@@ -20,7 +20,7 @@ tests = do
   tests' "cpp1z"
 
 tests' :: Text -> TopSpec
-tests' kernelName = describe "C++" $ introduceNixEnvironment [kernelSpec kernelName] [] "C++" $ introduceJupyterRunner $ do
+tests' kernelName = describe [i|C++ (#{kernelName})|] $ introduceNixEnvironment [kernelSpec kernelName] [] "C++" $ introduceJupyterRunner $ do
   testKernelSearchersBuild kernelName
 
   testKernelStdout kernelName [__i|\#include <iostream>
