@@ -2,7 +2,6 @@
 resolver: lts-20.26
 
 nix:
-  enable: false
   pure: false
   packages:
   - zlib
