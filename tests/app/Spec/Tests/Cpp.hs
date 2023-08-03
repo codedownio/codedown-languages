@@ -13,7 +13,7 @@ import TestLib.TestSearchers
 
 
 tests :: TopSpec
-tests = parallel $ do
+tests = describe "C++" $ parallel $ do
   -- tests' "cpp98"
   tests' "cpp11"
   tests' "cpp14"
