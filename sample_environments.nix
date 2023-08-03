@@ -5,7 +5,8 @@ args: {
   cpp11 = import ./sample_environments/cpp11.nix args;
   cpp14 = import ./sample_environments/cpp14.nix args;
   cpp17 = import ./sample_environments/cpp17.nix args;
-  cpp2a = import ./sample_environments/cpp2a.nix args;
+  cpp20 = import ./sample_environments/cpp20.nix args;
+  cpp23 = import ./sample_environments/cpp23.nix args;
   exporters-large = import ./sample_environments/exporters-large.nix args;
   exporters-small = import ./sample_environments/exporters-small.nix args;
   ghc810 = import ./sample_environments/ghc810.nix args;
@@ -21,6 +22,7 @@ args: {
   python310 = import ./sample_environments/python310.nix args;
   python311 = import ./sample_environments/python311.nix args;
   python38 = import ./sample_environments/python38.nix args;
+  python39 = import ./sample_environments/python39.nix args;
   python3 = import ./sample_environments/python3.nix args;
   r = import ./sample_environments/r.nix args;
   ruby = import ./sample_environments/ruby.nix args;

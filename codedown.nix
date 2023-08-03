@@ -18,7 +18,7 @@ let
     (callPackage ./languages/bash {})
     (callPackage ./languages/clojure {})
     (callPackage ./languages/coq {})
-    (callPackage ./languages/cpp {})
+    (pkgsUnstable.callPackage ./languages/cpp {})
     (callPackage ./languages/dot {})
     (callPackage ./languages/go {})
     (callPackage ./languages/haskell {})

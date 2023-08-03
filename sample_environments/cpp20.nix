@@ -6,17 +6,17 @@
 
 
 codedown.mkCodeDownEnvironment {
-  environmentName = "cpp2a";
+  environmentName = "cpp20";
   inherit channels overlays;
   # metaOnly = true;
 
   kernels = [
     ({
-      name = "cpp2a";
+      name = "cpp20";
       channel = "codedown";
       args = {
         packages = [];
-        attrs = ["cpp2a" "cpp"];
+        attrs = ["cpp20" "cpp"];
       };
     })
   ];

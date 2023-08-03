@@ -13,11 +13,13 @@ import TestLib.TestSearchers
 
 
 tests :: TopSpec
-tests = do
+tests = parallel $ do
+  -- tests' "cpp98"
   tests' "cpp11"
   tests' "cpp14"
   tests' "cpp17"
-  tests' "cpp1z"
+  tests' "cpp20"
+  tests' "cpp23"
 
 tests' :: Text -> TopSpec
 tests' kernelName = describe [i|C++ (#{kernelName})|] $ introduceNixEnvironment [kernelSpec kernelName] [] "C++" $ introduceJupyterRunner $ do

@@ -1,17 +1,15 @@
 { callPackage
-, clangStdenv
-, fetchFromGitHub
-, cmake
-, xtl
 , blas
-, openblas
-, liblapack
+, clangStdenv
+, cmake
+, fetchFromGitHub
 , gfortran
+, liblapack
+, openblas
+, xtl
 }:
 
 let
-  xtl = callPackage ./libs/xtl.nix {};
-
   xsimd = clangStdenv.mkDerivation {
     pname = "xsimd";
     version = "0.10.0";

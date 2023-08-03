@@ -1,17 +1,17 @@
 { lib
 , callPackage
+, fetchurl
 , llvmPackages_9
 , python3Packages
 
 , blas
-, cling
 
+, attrName
 , attrs
+, displayName
 , extensions
-, logo64
-, std
-
 , metaOnly
+, std
 }:
 
 with lib;
@@ -19,47 +19,40 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  xeusStuff = callPackage ./xeus/xeusCling.nix { cling = cling.unwrapped; };
-  xeusMisc = callPackage ./xeus/xeusMisc.nix {xtl = xeusStuff.xtl;};
+  cling = callPackage ./cling {};
+
+  xeus-cling = callPackage ./xeus-cling/xeus-cling.nix { inherit cling; };
+
+  xeusMisc = callPackage ./xeusMisc.nix;
 
 in
 
-displayName: attrName: common.makeJupyterKernel (
+common.makeJupyterKernel (
   listToAttrs [{
     name = attrName;
     value = {
       displayName = displayName;
-      argv =
-        ["${xeusStuff.xeusCling}/bin/xcpp"]
-        ++ [
-          "-I" "${lib.getDev llvmPackages_9.libcxx}/include/c++/v1"
-        ]
-        ++ cling.flags
-        ++ [
-          "-resource-dir" "${cling.unwrapped}"
-
-          "-l" "${llvmPackages_9.libcxx}/lib/libc++.so"
-
-          # Uncomment to see some info about Cling's search path setup
-          # "-v"
-
-          # Be able to use libraries installed by Nix
-          # "-I" "/home/user/.nix-profile/include"
-          # "-L" "/home/user/.nix-profile/lib"
-
-          # xtensor and xtensor-blas (used in sample notebook)
-          "-idirafter" "${xeusMisc.xtensor}/include"
-          "-idirafter" "${xeusMisc.xtensorBlas}/include"
-          "-L" "${xeusMisc.liblapackShared}/lib"
-          "-L" "${blas}/lib"
-        ]
-        ++ [
-          "-f" "{connection_file}"
-          "-std=${std}"
-        ];
+      argv = [
+        "${xeus-cling}/bin/xcpp"
+      ]
+      ++ cling.flags
+      ++ [
+        "-resource-dir" "${cling.unwrapped}"
+        "-L" "${cling.unwrapped}/lib"
+        "-l" "${cling.unwrapped}/lib/cling.so"
+        "-std=${std}"
+        # "-v"
+        "-f" "{connection_file}"
+      ];
       language = attrName;
-      logo32 = null;
-      logo64 = logo64;
+      logo32 = fetchurl {
+        url = https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/32px-ISO_C%2B%2B_Logo.svg.png;
+        hash = "sha256-cr0TB8/j2mkcFhfCkz9F7ZANOuTlWA2OcWtDcXyOjHw=";
+      };
+      logo64 = fetchurl {
+        url = https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/64px-ISO_C%2B%2B_Logo.svg.png;
+        hash = "sha256-nZtJ4bR7GmQttvqEJC9KejOxphrjjxT36L9yOIITFLk=";
+      };
       metadata = {
         codedown = {
           inherit attrs extensions;

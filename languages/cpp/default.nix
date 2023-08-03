@@ -10,31 +10,30 @@ let
   common = callPackage ../common.nix {};
 
   baseCandidates = [
+    # "cpp98"
     "cpp11"
     "cpp14"
     "cpp17"
-    "cpp2a"
+    "cpp20"
+    "cpp23"
   ];
 
   icons = {
+    # cpp98 = ./cpp11.png; # TODO
     cpp11 = ./cpp11.png;
     cpp14 = ./cpp14.png;
     cpp17 = ./cpp17.png;
-    cpp2a = ./cpp2a.png;
-  };
-
-  displayNames = {
-    cpp11 = "C++ 11";
-    cpp14 = "C++ 14";
-    cpp17 = "C++ 17";
-    cpp2a = "C++ 2a";
+    cpp20 = ./cpp2a.png; # TODO
+    cpp23 = ./cpp2a.png; # TODO
   };
 
   stds = {
+    # cpp98 = "c++98";
     cpp11 = "c++11";
     cpp14 = "c++14";
     cpp17 = "c++17";
-    cpp2a = "c++2a";
+    cpp20 = "c++20";
+    cpp23 = "c++23";
   };
 
   settingsSchema = [];
@@ -54,16 +53,17 @@ with lib;
 if cling == null then {} else
   listToAttrs (map (x:
     let
+      std = getAttr x stds;
+
+      displayName = "C++ " + (lib.removePrefix "c++" std);
+
       meta = clang.meta // {
         baseName = x;
-        displayName = getAttr x displayNames;
+        inherit displayName;
         version = clang.version;
         icon = getAttr x icons;
         inherit settingsSchema;
       };
-
-      logo64 = getAttr x icons;
-      std = getAttr x stds;
 
     in {
       name = x;
@@ -83,8 +83,10 @@ if cling == null then {} else
           in symlinkJoin {
             name = x;
             paths = [
-              # ((callPackage ./kernel_cling.nix { inherit attrs extensions logo64 std metaOnly; }) (getAttr x displayNames) x)
-              ((callPackage ./kernel_xeus.nix { inherit attrs extensions logo64 std metaOnly; }) (getAttr x displayNames) x)
+              ((callPackage ./kernel_xeus.nix {
+                inherit attrs displayName extensions metaOnly std;
+                attrName = x;
+              }))
               (callPackage ./mode_info.nix { inherit attrs extensions; })
             ]
             ++ (if metaOnly then [] else [cling])

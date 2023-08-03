@@ -13,8 +13,8 @@ let
   pkgsUnstable = import (fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
-    rev = "cd99c2b3c9f160cd004318e0697f90bbd5960825"; # nixpkgs-unstable-rev
-    sha256 = "sha256-cdW6qUL71cNWhHCpMPOJjlw0wzSRP0pVlRn2vqX/VVg="; # nixpkgs-unstable-sha256
+    rev = "4a56ce9727a0c5478a836a0d8a8f641c5b9a3d5f"; # nixpkgs-unstable-rev
+    sha256 = "Qq/MPkhS12Bl0X060pPvX3v9ac3f2rRQfHjjozPh/Qs="; # nixpkgs-unstable-sha256
   }) {};
 
 in
