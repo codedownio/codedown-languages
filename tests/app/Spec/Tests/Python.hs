@@ -17,7 +17,7 @@ import TestLib.Util
 
 
 tests :: TopSpec
-tests = parallel $ do
+tests = describe "Python" $ parallel $ do
   tests' "python3"
   tests' "python38"
   tests' "python39"
