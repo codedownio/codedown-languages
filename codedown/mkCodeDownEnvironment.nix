@@ -32,6 +32,7 @@ let
   shellToReplInfo = shell: {
     name = shell.contents.name;
     display_name = shell.contents.displayName;
+    executable_name = shell.contents.executableName;
     args = ["${shell.contents}/lib/codedown/shell"];
     icon = shell.contents.icon;
   };
