@@ -23,6 +23,7 @@ let
   repls = octave: version: {
     octave = {
       display_name = "Octave " + version;
+      attr = "octave";
       args = ["${octave}/bin/octave"];
       icon = ./logo-64x64.png;
     };

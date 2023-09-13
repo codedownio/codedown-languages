@@ -20,6 +20,7 @@ let
   repls = clojure: {
     clojure = {
       display_name = "Clojure " + clojure.version;
+      attr = "clojure";
       args = ["${clojure}/bin/clojure"];
       icon = ./logo-64x64.png;
     };

@@ -6,7 +6,13 @@
 }:
 
 rec {
-  wrapShell = executableName: baseDerivation: displayName: icon: stdenv.mkDerivation {
+  wrapShell = {
+    executableName
+    , baseDerivation
+    , displayName
+    , attr
+    , icon
+  }: stdenv.mkDerivation {
     name = baseDerivation.name;
 
     dontUnpack = true;
@@ -23,7 +29,7 @@ rec {
 
     meta = baseDerivation.meta;
 
-    inherit icon displayName;
+    inherit icon displayName attr;
   };
 
   wrapShells = allShells: runCommand "codedown-shells" { shells = (map (x: x.contents) allShells); } ''

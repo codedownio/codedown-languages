@@ -34,6 +34,7 @@ let
   repls = rWithPackages: version: {
     r = {
       display_name = "R " + version;
+      attr = "r";
       args = ["${rWithPackages}/bin/R"];
       icon = ./logo-64x64.png;
     };

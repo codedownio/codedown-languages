@@ -47,6 +47,7 @@ let
   repls = ghc: {
     ghci = {
       display_name = "GHCi " + ghc.version;
+      attr = "ghci";
       args = ["${ghc}/bin/ghci"];
       icon = ./haskell-logo-64x64.png;
     };

@@ -22,6 +22,7 @@ let
 
   repls = [{
     display_name = "GHCi";
+    attr = "ghci";
     proc = "${ghc.out}/bin/ghci";
   }];
 

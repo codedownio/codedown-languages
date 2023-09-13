@@ -41,6 +41,7 @@ let
   repls = icon: {
     cling = {
       display_name = "Cling " + cling.unwrapped.version;
+      attr = "cling";
       args = ["${cling}/bin/cling"];
       icon = icon;
     };

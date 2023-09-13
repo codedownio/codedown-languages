@@ -8,4 +8,10 @@ let
 
 in
 
-common.wrapShell "bash" bashInteractive ("Bash " + bashInteractive.version) ../default_icon_64x64.png
+common.wrapShell {
+  executableName = "bash";
+  baseDerivation = bashInteractive;
+  displayName = "Bash " + bashInteractive.version;
+  attr = "bash";
+  icon = ../default_icon_64x64.png;
+}

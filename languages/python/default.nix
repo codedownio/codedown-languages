@@ -24,6 +24,7 @@ let
   repls = python: {
     ipython = {
       display_name = "IPython " + python.pkgs.ipython.version;
+      attr = "ipython";
       args = ["${python}/bin/ipython"];
       icon = ./logo-64x64.png;
     };

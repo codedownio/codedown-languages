@@ -11,4 +11,10 @@ let
 
 in
 
-common.wrapShell "zsh-with-theme" baseDerivation ("ZSH " + baseDerivation.version) ../default_icon_64x64.png
+common.wrapShell {
+  executableName = "zsh-with-theme";
+  inherit baseDerivation;
+  displayName = "ZSH " + baseDerivation.version;
+  attr = "zsh";
+  icon = ../default_icon_64x64.png;
+}

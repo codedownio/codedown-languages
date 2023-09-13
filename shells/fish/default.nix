@@ -11,4 +11,10 @@ let
 
 in
 
-common.wrapShell "fish" baseDerivation ("Fish " + baseDerivation.version) ./icon-64x64.png
+common.wrapShell {
+  executableName = "fish";
+  inherit baseDerivation;
+  displayName = "Fish " + baseDerivation.version;
+  attr = "fish";
+  icon = ./icon-64x64.png;
+}
