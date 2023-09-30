@@ -25,6 +25,7 @@ tests :: TopSpec
 tests = do
   juliaTests "julia16"
   juliaTests "julia18"
+  juliaTests "julia19"
 
 juliaTests :: Text -> TopSpec
 juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kernelSpec lang] [] [i|Julia (#{lang})|] $ introduceJupyterRunner $ do

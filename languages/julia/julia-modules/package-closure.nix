@@ -72,15 +72,18 @@ let
 
     foreach(pkg -> ctx.env.project.deps[pkg.name] = pkg.uuid, pkgs)
 
+    # Save the original pkgs for later. We might need to augment it with the weak dependencies
+    orig_pkgs = pkgs
+
     pkgs, deps_map = _resolve(ctx.io, ctx.env, ctx.registries, pkgs, PRESERVE_NONE, ctx.julia_version)
 
     if VERSION >= VersionNumber("1.9")
-        # Check for weak dependencies, which appear on the RHS of the deps_map but not in pkgs
+        # Check for weak dependencies, which appear on the RHS of the deps_map but not in pkgs.
+        # Build up weak_name_to_uuid
         uuid_to_name = Dict()
         for pkg in pkgs
             uuid_to_name[pkg.uuid] = pkg.name
         end
-
         weak_name_to_uuid = Dict()
         for (uuid, deps) in pairs(deps_map)
             for (dep_name, dep_uuid) in pairs(deps)
@@ -90,12 +93,27 @@ let
             end
         end
 
+        # If we have nontrivial weak dependencies, add each one to the initial pkgs and then re-run _resolve
         if !isempty(weak_name_to_uuid)
             println("Found weak dependencies: $(keys(weak_name_to_uuid))")
 
-            # Re-run _resolve
-            foreach(x -> ctx.env.project.deps[x.first] = x.second, weak_name_to_uuid)
-            pkgs, deps_map = _resolve(ctx.io, ctx.env, ctx.registries, pkgs, PRESERVE_NONE, ctx.julia_version)
+            orig_uuids = Set([pkg.uuid for pkg in orig_pkgs])
+
+            for (name, uuid) in pairs(weak_name_to_uuid)
+                if uuid in orig_uuids
+                    continue
+                end
+
+                pkg = PackageSpec(name, uuid)
+
+                push!(orig_uuids, uuid)
+                push!(orig_pkgs, pkg)
+                ctx.env.project.deps[name] = uuid
+                entry = Pkg.Types.manifest_info(ctx.env.manifest, uuid)
+                orig_pkgs[length(orig_pkgs)] = update_package_add(ctx, pkg, entry, false)
+            end
+
+            pkgs, deps_map = _resolve(ctx.io, ctx.env, ctx.registries, orig_pkgs, PRESERVE_NONE, ctx.julia_version)
         end
     end
   '';

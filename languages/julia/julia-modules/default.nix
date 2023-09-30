@@ -3,6 +3,7 @@
 , runCommand
 , fetchFromGitHub
 , fetchgit
+, fontconfig
 , git
 , makeWrapper
 , writeText
@@ -51,6 +52,7 @@ let
     mkdir -p $out/bin
     makeWrapper ${julia}/bin/julia $out/bin/julia \
       --suffix LD_LIBRARY_PATH : "${lib.makeLibraryPath extraLibs}" \
+      --set FONTCONFIG_FILE ${fontconfig.out}/etc/fonts/fonts.conf \
       --set PYTHONHOME "${pythonToUse}" \
       --prefix PYTHONPATH : "${pythonToUse}/${pythonToUse.sitePackages}" \
       --set PYTHON ${pythonToUse}/bin/python $makeWrapperArgs \

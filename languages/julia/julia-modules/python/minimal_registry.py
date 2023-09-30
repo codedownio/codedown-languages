@@ -76,7 +76,8 @@ for (uuid, versions) in uuid_to_versions.items():
 
     # Copy some files to the minimal repo unchanged
     for f in ["Compat.toml", "Deps.toml"]:
-      shutil.copy2(registry_path / path / f, out_path / path)
+      if (registry_path / path / f).exists():
+        shutil.copy2(registry_path / path / f, out_path / path)
 
     # Copy the Versions.toml file, trimming down to the versions we care about
     all_versions = toml.load(registry_path / path / "Versions.toml")
