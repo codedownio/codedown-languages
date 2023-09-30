@@ -6,7 +6,9 @@
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, flake-utils }@inputs:
+  inputs.dream2nix.url = "github:nix-community/dream2nix";
+
+  outputs = { self, nixpkgs, nixpkgs-unstable, flake-utils, dream2nix }@inputs:
     # flake-utils.lib.eachDefaultSystem (system:
     flake-utils.lib.eachSystem ["x86_64-linux"] (system:
       let
@@ -70,6 +72,16 @@
                 makeWrapperArgs = ["--set JUPYTER_PATH ${environment}/lib/codedown"];
               })
             );
+
+            test = dream2nix.lib.evalModules {
+              packageSets = {
+                nixpkgs = pkgsStable;
+              };
+
+              modules = [
+                ./my-package.nix
+              ];
+            };
           };
         }
     );
