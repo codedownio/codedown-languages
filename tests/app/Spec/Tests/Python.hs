@@ -19,11 +19,10 @@ import TestLib.Util
 tests :: TopSpec
 tests = describe "Python" $ parallel $ do
   tests' "python3"
-  tests' "python38"
-  tests' "python39"
-  tests' "python310"
-  tests' "python311"
-  -- tests' "python312"
+
+  -- tests' "python2"
+  -- tests' "pypy2"
+  -- tests' "pypy3"
 
 
 tests' :: Text -> TopSpec

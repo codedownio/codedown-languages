@@ -30,14 +30,30 @@ let
     };
   };
 
+  # Fine-grained candidates
+  # These don't work for now because Nixpkgs only keeps one set of Python packages,
+  # aimed at the currently supported Python.
+  # baseCandidates = [
+  #   "python"
+  #   "python2" "python27"
+  #   "python3" "python36" "python37" "python38" "python39" "python310" "python311" "python312" "python313" "python314" "python315"
+
+  #   "pypy"
+  #   "pypy2" "pypy27"
+  #   "pypy3" "pypy36" "pypy37" "pypy38" "pypy39" "pypy310" "pypy311" "pypy312" "pypy313" "pypy314" "pypy315"
+  # ];
+
   baseCandidates = [
     "python"
-    "python2" "python27"
-    "python3" "python36" "python37" "python38" "python39" "python310" "python311" "python312" "python313" "python314" "python315"
+    "python3"
 
-    "pypy"
-    "pypy2" "pypy27"
-    "pypy3" "pypy36" "pypy37" "pypy38" "pypy39" "pypy310" "pypy311" "pypy312" "pypy313" "pypy314" "pypy315"
+    # Reached EOL: Nixpkgs won't build without complaints
+    # "python2"
+
+    # Currently pypy3 nose marked as broken
+    # "pypy"
+    # "pypy2"
+    # "pypy3"
   ];
 
   # Pythons that don't work with the ipykernel, ipywidgets, etc. of the Nixpkgs Python package set,
