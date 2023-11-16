@@ -81,6 +81,9 @@ listToAttrs (map (x:
     value = rec {
       packageOptions = getAttr x packagesLookup;
       packageSearch = common.searcher packageOptions;
+      languageServerOptions = [
+        packageOptions.solargraph
+      ];
 
       build = args@{
         packages ? []

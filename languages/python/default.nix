@@ -1,13 +1,18 @@
-{ pkgs
+{ callPackage
 , lib
-, callPackage
+, pkgs
 , poetry2nix
+, python-language-server
+, pyright
 , symlinkJoin
 , stdenv
 }:
 
 let
   common = callPackage ../common.nix {};
+
+  hasPythonLspServer = python: (lib.hasAttr "python-lsp-server" python.pkgs) && (lib.versionAtLeast python.pythonVersion "3.7");
+  hasPythonLanguageServer = python: lib.hasAttr "python-language-server" python.pkgs;
 
   chooseLanguageServers = settings: pythonWithPackages: kernelName:
     []
@@ -17,8 +22,8 @@ let
     ++ lib.optionals (common.isTrue settings "lsp.flake8.enable") [(callPackage ./language_servers/language_server_flake8/config.nix { inherit pythonWithPackages kernelName; })]
     ++ lib.optionals (common.isTrue settings "lsp.pycodestyle.enable") [(callPackage ./language_servers/language_server_pycodestyle/config.nix { inherit pythonWithPackages kernelName; })]
     ++ lib.optionals (common.isTrue settings "lsp.microsoft.enable") [(callPackage ./language_servers/language_server_microsoft/config.nix { inherit pythonWithPackages kernelName; })]
-    ++ lib.optionals (common.isTrue settings "lsp.python-lsp-server.enable") [(callPackage ./language_servers/language_server_pythonlsp/config.nix { inherit pythonWithPackages kernelName; })]
-    ++ lib.optionals (common.isTrue settings "lsp.python-language-server.enable") [(callPackage ./language_servers/language_server_palantir/config.nix { inherit pythonWithPackages kernelName; })]
+    ++ lib.optionals (common.isTrue settings "lsp.python-lsp-server.enable" && hasPythonLspServer pythonWithPackages) [(callPackage ./language_servers/language_server_pythonlsp/config.nix { inherit pythonWithPackages kernelName; })]
+    ++ lib.optionals (common.isTrue settings "lsp.python-language-server.enable" && hasPythonLanguageServer pythonWithPackages) [(callPackage ./language_servers/language_server_palantir/config.nix { inherit pythonWithPackages kernelName; })]
     ;
 
   repls = python: {
@@ -121,14 +126,14 @@ lib.listToAttrs (map (x:
         type = "boolean";
         defaultValue = false;
       }
-    ] ++ lib.optionals ((lib.hasAttr "python-lsp-server" basePython.pkgs) && (lib.versionAtLeast basePython.pythonVersion "3.7")) [
+    ] ++ lib.optionals (hasPythonLspServer basePython) [
       {
         target = "lsp.python-lsp-server.enable";
         title = "Enable python-lsp-server language server";
         type = "boolean";
         defaultValue = false;
       }
-    ] ++ lib.optionals (lib.hasAttr "python-language-server" basePython.pkgs) [
+    ] ++ lib.optionals (hasPythonLanguageServer basePython) [
       {
         target = "lsp.python-language-server.enable";
         title = "Enable python-language-server language server";
@@ -170,6 +175,16 @@ lib.listToAttrs (map (x:
       value = rec {
         packageOptions = basePython.pkgs;
         packageSearch = common.searcher packageOptions;
+        languageServerOptions = [
+          basePython.pkgs.jedi-language-server
+          pyright
+          basePython.pkgs.pylint
+          basePython.pkgs.flake8
+          basePython.pkgs.pycodestyle
+        ]
+        # ++ lib.optionals (hasPythonLanguageServer basePython) [pkgs.python-language-server]
+        ++ lib.optionals (hasPythonLspServer basePython) [basePython.pkgs.python-lsp-server]
+        ;
 
         build = args@{
           packages ? []

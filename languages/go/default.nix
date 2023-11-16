@@ -1,6 +1,7 @@
-{ pkgs
-, callPackage
+{ callPackage
+, gopls
 , lib
+, pkgs
 , symlinkJoin
 }:
 
@@ -51,6 +52,9 @@ listToAttrs (map (x:
     value = rec {
       packageOptions = {};
       packageSearch = common.searcher packageOptions;
+      languageServerOptions = [
+        gopls
+      ];
 
       build = args@{
         packages ? []

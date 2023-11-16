@@ -1,12 +1,13 @@
 { lib
 , callPackage
+
+, clojure-lsp
+
 , kernelName
 }:
 
 let
   common = callPackage ../common.nix {};
-
-  clojure-lsp = (builtins.getFlake "github:clojure-lsp/clojure-lsp/5e3584014f2ac9c13a877dfd7984383346d81609").packages.x86_64-linux.default;
 
 in
 

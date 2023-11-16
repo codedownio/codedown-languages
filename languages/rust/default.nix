@@ -5,6 +5,7 @@
 , symlinkJoin
 
 , darwin
+, rust-analyzer
 }:
 
 with lib;
@@ -87,6 +88,10 @@ listToAttrs (map (x:
         packageMustBeDerivation = false;
         packages = packageOptions;
       };
+
+      languageServerOptions = [
+        rust-analyzer
+      ];
 
       build = args@{
         packages ? []
