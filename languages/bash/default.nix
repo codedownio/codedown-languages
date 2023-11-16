@@ -1,8 +1,10 @@
-{ pkgs
+{ callPackage
 , lib
-, callPackage
-, writeTextDir
+, pkgs
+, nodePackages
 , symlinkJoin
+, writeTextDir
+
 , metaOnly ? false
 }:
 
@@ -48,6 +50,9 @@ lib.listToAttrs (map (x:
       name = x;
       value = rec {
         inherit packageOptions packageSearch;
+        languageServerOptions = [
+          nodePackages.bash-language-server
+        ];
 
         build = args@{
           packages ? []

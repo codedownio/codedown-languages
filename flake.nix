@@ -57,13 +57,25 @@
                     --set PATH ${lib.makeBinPath packages}
                 '';
 
-            environment = import ./environment.nix { inherit codedown; };
-
             sample_environments = import ./sample_environments.nix { inherit codedown; };
             sample_environments_farm = pkgsStable.linkFarm "sample_environments_farm" (
               pkgsStable.lib.mapAttrsToList (name: path: { inherit name path; })
                                             sample_environments
             );
+
+            printLanguageServerVersions = let
+              versionsMap = with pkgsStable.lib;
+                mapAttrs (lang: value: if (hasAttr "languageServerOptions" value) then (map (x: x.name) value.languageServerOptions) else [])
+                         (filterAttrs (k: _: !(hasPrefix "override") k) languages);
+
+              file = pkgsStable.writeTextFile {
+                name = "versions.yaml";
+                text = pkgsStable.lib.generators.toPretty {} versionsMap;
+              };
+            in
+              pkgsStable.writeShellScriptBin "print-versions.sh" ''
+                cat ${file}
+              '';
 
             notebook = with pkgsStable; python3.pkgs.toPythonModule (
               python3.pkgs.notebook.overridePythonAttrs (oldAttrs: {

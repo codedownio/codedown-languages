@@ -199,6 +199,9 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
     name = meta.baseName;
     value = rec {
       packageOptions = snapshot;
+      languageServerOptions = [
+        snapshot.haskell-language-server
+      ];
 
       # Grab the meta from the library component
       # Could also search over other components?
