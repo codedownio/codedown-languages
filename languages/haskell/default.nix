@@ -15,7 +15,7 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  hasHlsSupport = version: true;
+  hasHlsSupport = version: builtins.compareVersions version "9.0" >= 0;
 
   chooseLanguageServers = settings: snapshot: ghc: kernelName:
     []

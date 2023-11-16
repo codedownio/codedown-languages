@@ -31,7 +31,7 @@ tests = do
   haskellCommonTests "haskell-ghc90"
   haskellCommonTests "haskell-ghc92"
   haskellCommonTests "haskell-ghc94"
-  -- haskellCommonTests "haskell-ghc96"
+  haskellCommonTests "haskell-ghc96"
 
 
 haskellCommonTests :: Text -> TopSpec
