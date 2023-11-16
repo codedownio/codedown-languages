@@ -24,7 +24,7 @@ stdenv.mkDerivation {
 
   src = fetchzip {
     url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.0.0/rust-notebook-language-server-0.2.0.0-x86_64-linux.tar.gz";
-    sha256 = "15dnfbhyqy2d2b3jfwv79wnh4wd10vj0bjmxwh0vgd3hpkwhjd4a";
+    sha256 = "sha256-Adxwl9j6Iuw0czhB0OMw32jOw3MzR9YzRrLlZWDm548=";
   };
 
   installPhase = ''
