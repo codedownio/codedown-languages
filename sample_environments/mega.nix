@@ -11,7 +11,7 @@ codedown.mkCodeDownEnvironment {
 
   kernels = [
     ({
-      name = "bashInteractive";
+      name = "bash";
       channel = "codedown";
       args = {
         packages = [];

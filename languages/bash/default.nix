@@ -12,8 +12,7 @@ let
   common = callPackage ../common.nix {};
 
   baseCandidates = [
-    "bashInteractive"
-    "bashInteractive_5"
+    "bash"
   ];
 
   packageOptions = {};

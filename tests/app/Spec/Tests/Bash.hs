@@ -17,7 +17,7 @@ import TestLib.Util
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
   nixKernelChannel = "codedown"
-  , nixKernelName = "bashInteractive"
+  , nixKernelName = "bash"
   , nixKernelDisplayName = Just "Bash"
   , nixKernelPackages = []
   , nixKernelExtraJupyterConfig = Nothing
@@ -30,7 +30,7 @@ kernelSpec = NixKernelSpec {
 
 tests :: TopSpec
 tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ introduceJupyterRunner $ do
-  testKernelSearchersBuild "bashInteractive"
+  testKernelSearchersBuild "bash"
 
   testKernelStdout "bash" [i|echo hi|] "hi\n"
 
