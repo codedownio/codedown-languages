@@ -31,7 +31,6 @@ ghc-options:
 dependencies:
 - base >= 4.7 && < 5
 - aeson
-- bytestring
 - containers
 - exceptions
 - lens
@@ -42,8 +41,6 @@ dependencies:
 - sandwich
 - string-interpolate
 - text
-- unliftio-core
-- unliftio
 - vector
 
 # - hashable # Only needed for aeson < 2
@@ -51,6 +48,7 @@ dependencies:
 library:
   source-dirs: src
   dependencies:
+  - bytestring
   - conduit
   - conduit-aeson
   - data-default
@@ -70,6 +68,7 @@ library:
   - temporary
   - time
   - unliftio
+  - unliftio-core
 
 executables:
   tests-exe:

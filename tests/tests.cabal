@@ -28,6 +28,7 @@ library
       TestLib.NixRendering
       TestLib.NixTypes
       TestLib.TestBuilding
+      TestLib.TestConfigs
       TestLib.TestSearchers
       TestLib.Types
       TestLib.Util
@@ -94,7 +95,6 @@ executable tests-exe
       Spec.Tests.Clojure
       Spec.Tests.Coq
       Spec.Tests.Cpp
-      Spec.Tests.Farm
       Spec.Tests.Go
       Spec.Tests.Haskell
       Spec.Tests.Haskell.CodeActions
@@ -116,6 +116,7 @@ executable tests-exe
       Spec.Tests.Rust.Completion
       Spec.Tests.Rust.Diagnostics
       Spec.Tests.Rust.Hovers
+      Spec.Tests.SampleEnvironments
       Spec.Tests.Searchers
       Spec.Tests.Shells.Zsh
       Spec.Tests.Spellchecker
@@ -142,7 +143,6 @@ executable tests-exe
   build-depends:
       aeson
     , base >=4.7 && <5
-    , bytestring
     , containers
     , exceptions
     , lens
@@ -155,7 +155,5 @@ executable tests-exe
     , string-interpolate
     , tests
     , text
-    , unliftio
-    , unliftio-core
     , vector
   default-language: Haskell2010
