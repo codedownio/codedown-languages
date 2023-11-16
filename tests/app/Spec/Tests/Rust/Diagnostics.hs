@@ -5,8 +5,8 @@ import Control.Lens
 import Data.Function
 import qualified Data.List as L
 import Data.String.Interpolate
-import Language.LSP.Protocol.Types
 import qualified Language.LSP.Protocol.Lens as LSP
+import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
 import TestLib.LSP
 
@@ -24,7 +24,7 @@ diagnosticsTests = describe "Diagnostics" $ do
                                                          const a: A = A { a: 10, };
                                                         |] $ \diagnostics -> do
     assertDiagnosticRanges' (L.sortBy (compare `on` (^. LSP.message)) diagnostics) [
-      (Range (Position 1 6) (Position 1 7), Just (InR "incorrect-ident-case"), "Constant `a` should have UPPER_SNAKE_CASE name, e.g. `A`")
+      (Range (Position 1 6) (Position 1 7), Just (InR "non_upper_case_globals"), "Constant `a` should have UPPER_SNAKE_CASE name, e.g. `A`")
       , (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing field `b` in initializer of `A`\nmissing `b`")
-      , (Range (Position 1 13) (Position 1 14), Just (InR "missing-fields"), "missing structure fields:\n- b\n")
+      , (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing structure fields:\n- b\n")
       ]
