@@ -52,6 +52,7 @@ deriveJSON toSnakeC3 ''LanguageServerType
 
 data LanguageServerConfig = LanguageServerConfig {
   lspConfigName :: Text
+  , lspConfigVersion :: Maybe Text
   , lspConfigDescription :: Maybe Text
   , lspConfigDisplayName :: Maybe Text
   , lspConfigIcon :: Maybe FilePath
