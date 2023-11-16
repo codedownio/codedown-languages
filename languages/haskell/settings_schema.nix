@@ -1,4 +1,8 @@
-[
+{ lib
+, version
+}:
+
+lib.optionals (builtins.compareVersions version "9.0" >= 0) [
   {
     target = "lsp.haskell-language-server.enable";
     title = "Enable haskell-language-server";
@@ -12,7 +16,8 @@
     type = "boolean";
     defaultValue = false;
   }
-
+]
+++ [
   {
     target = "enableHlintOutput";
     title = "Enable hlint warnings in code output.";

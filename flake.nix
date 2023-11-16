@@ -63,6 +63,15 @@
                                             sample_environments
             );
 
+            compilers = pkgsStable.callPackage ./languages/haskell/compilers.nix {
+              ihaskell-source = pkgsStable.fetchFromGitHub {
+                owner = "codedownio";
+                repo = "IHaskell";
+                rev = "9db3044d7cfcac6acfb92633c0bea9e27fa31b42";
+                sha256 = "12zp765aqf3ks0h84i3y2jx0gyamkya7wm9s8x1sa482729sv8mp";
+              };
+            };
+
             printLanguageServerVersions = let
               versionsMap = with pkgsStable.lib;
                 mapAttrs (lang: value: if (hasAttr "languageServerOptions" value) then (map (x: x.name) value.languageServerOptions) else [])
