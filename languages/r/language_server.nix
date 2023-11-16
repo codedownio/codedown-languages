@@ -21,16 +21,19 @@ let
 
   buildR = rWrapper.override { packages = languageServerDeps; };
 
+  version = "0.3.16";
+
   languageserver = stdenv.mkDerivation {
     name = "r-custom-languageserver";
+    inherit version;
 
     inherit languageserver_dependencies;
 
     src = fetchFromGitHub {
       owner = "REditorSupport";
       repo = "languageserver";
-      rev = "e272fe10fc1ac3eb8d83e670212ff4d471e372d3";
-      sha256 = "11bndnqhki0yvjbvlizmhmscjg0vccl30jw6ac0zzgvrgi6razc2";
+      rev = "beed0f00563390b3e39a9bb47fc25bf852ec3734";
+      sha256 = "0sifrmkv6hn15nppjg4wjvs3l8an3lsa4rdp3xi3f4w006kdgx5w";
     };
 
     configurePhase = ''
@@ -73,6 +76,7 @@ in
 
 common.writeTextDirWithMeta languageserver.meta "lib/codedown/language-servers/r-${kernelName}-languageserver.yaml" (lib.generators.toYAML {} [{
   name = "languageserver";
+  inherit version;
   display_name = "";
   description = "An implementation of the Language Server Protocol for R";
   icon = null;

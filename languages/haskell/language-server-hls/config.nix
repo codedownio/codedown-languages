@@ -35,6 +35,7 @@ let
 
   config = raw: {
     name = "haskell-language-server${if raw then "-raw" else ""}";
+    version = haskell-language-server.version;
     display_name = "Haskell Language Server";
     description = haskell-language-server.meta.description;
     icon = ./icon_64x64.png;

@@ -26,6 +26,7 @@ in
 
 common.writeTextDirWithMeta pyright.meta "lib/codedown/language-servers/python-${kernelName}-pyright.yaml" (lib.generators.toYAML {} [{
   name = "pyright";
+  version = pyright.version;
   display_name = "Pyright";
   description = pyright.meta.description;
 

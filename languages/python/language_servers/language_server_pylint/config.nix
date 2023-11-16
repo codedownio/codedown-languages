@@ -20,6 +20,7 @@ in
 common.writeTextDirWithMeta python.pkgs.pylint.meta "lib/codedown/language-servers/python-${kernelName}-pylint.yaml"
   (lib.generators.toYAML {} [{
     name = "pylint";
+    version = python.pkgs.pylint;
     display_name = "Pylint";
     description = python.pkgs.pylint.meta.description;
     icon = ./logo.png;

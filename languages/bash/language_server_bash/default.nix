@@ -2,6 +2,7 @@
 , runCommand
 , callPackage
 , makeWrapper
+, nodePackages
 
 , shellcheck
 , unixtools
@@ -14,7 +15,7 @@ with lib;
 let
   common = callPackage ../../common.nix {};
 
-  bashLanguageServer = (callPackage ./bash-language-server {})."bash-language-server-3.1.1";
+  bashLanguageServer = nodePackages.bash-language-server;
 
   # manWithPages = (import ../shared.nix).manWithPages;
 
@@ -32,6 +33,7 @@ in
 
 common.writeTextDirWithMeta bashLanguageServerWithMan.meta "lib/codedown/language-servers/bash-${kernelName}-bash-language-server.yaml" (lib.generators.toYAML {} [{
   name = "bash-language-server";
+  version = bashLanguageServer.version;
   extensions = ["sh" "bash"];
   notebook_suffix = ".bash";
   attrs = ["bash"];

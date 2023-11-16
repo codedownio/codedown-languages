@@ -17,6 +17,7 @@ in
 
 common.writeTextDirWithMeta jls.meta "lib/codedown/language-servers/python-${kernelName}-jedi.yaml" (lib.generators.toYAML {} [{
   name = "jedi";
+  version = jls.version;
   display_name = "Jedi";
   description = jls.meta.description;
   icon = ./logo.png;

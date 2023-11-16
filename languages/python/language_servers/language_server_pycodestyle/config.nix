@@ -20,6 +20,7 @@ in
 common.writeTextDirWithMeta python.pkgs.pycodestyle.meta "lib/codedown/language-servers/python-${kernelName}-pycodestyle.yaml"
   (lib.generators.toYAML {} [{
     name = "pycodestyle";
+    version = python.pkgs.pycodestyle.version;
     display_name = "pycodestyle";
     description = python.pkgs.pycodestyle.meta.description;
     extensions = ["py"];

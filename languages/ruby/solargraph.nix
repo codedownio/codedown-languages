@@ -14,6 +14,7 @@ in
 
 common.writeTextDirWithMeta solargraph.meta "lib/codedown/language-servers/ruby-solargraph.yaml" (lib.generators.toYAML {} [{
   name = "solargraph";
+  version = solargraph.version;
   display_name = "Solargraph";
   description = "A Ruby language server";
   icon = ./logo-64x64.png;

@@ -27,6 +27,7 @@ in
 
 common.writeTextDirWithMeta gopls.meta "lib/codedown/language-servers/go-${kernelName}-gopls.yaml" (lib.generators.toYAML {} [{
   name = "gopls";
+  version = gopls.version;
   display_name = "gopls";
   description = gopls.meta.description;
   icon = ./logo-64x64.png;

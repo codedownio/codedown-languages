@@ -69,6 +69,7 @@ in
 common.writeTextDirWithMeta python-language-server.meta "lib/codedown/language-servers/python-${kernelName}-microsoft.yaml"
   (lib.generators.toYAML {} [{
     name = "python-language-server";
+    version = python-language-server.version;
     display_name = "Python Language Server";
     description = python-language-server.meta.description;
     extensions = ["py"];

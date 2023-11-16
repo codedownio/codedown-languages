@@ -12,6 +12,7 @@ in
 
 common.writeTextDirWithMeta clojure-lsp.meta "lib/codedown/language-servers/clojre-${kernelName}-clojure-lsp.yaml" (lib.generators.toYAML {} [{
   name = "clojure-lsp";
+  version = clojure-lsp.version;
   display_name = "Clojure LSP";
   description = clojure-lsp.meta.description or "Clojure & ClojureScript Language Server (LSP) implementation";
   icon = ./logo-64x64.png;

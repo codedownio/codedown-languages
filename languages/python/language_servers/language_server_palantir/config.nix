@@ -45,6 +45,7 @@ in
 common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedown/language-servers/python-${kernelName}-palantir.yaml"
   (lib.generators.toYAML {} [{
     name = "python-language-server";
+    version = python.pkgs.python-language-server.version;
     display_name = "Python Language Server";
     description = python.pkgs.python-language-server.meta.description;
     extensions = ["py"];

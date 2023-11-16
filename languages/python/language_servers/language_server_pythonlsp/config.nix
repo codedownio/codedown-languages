@@ -46,6 +46,7 @@ in
 common.writeTextDirWithMeta python.pkgs.python-lsp-server.meta "lib/codedown/language-servers/python-${kernelName}-pythonlsp.yaml"
   (lib.generators.toYAML {} [{
     name = "python-lsp-server";
+    version = python.pkgs.python-lsp-server.version;
     display_name = "Python LSP Server";
     description = python.pkgs.python-lsp-server.meta.description;
     extensions = ["py"];

@@ -28,6 +28,7 @@ let
 
   config = raw: {
     name = "rust-analyzer${if raw then "-raw" else ""}";
+    version = rustAnalyzerToUse.version;
     display_name = "rust-analyzer";
     description = rustAnalyzerToUse.meta.description;
     icon = ./logo-64x64.png;
