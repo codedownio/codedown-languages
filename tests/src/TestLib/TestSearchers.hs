@@ -17,6 +17,7 @@ import qualified Data.Vector as V
 import System.Exit
 import System.FilePath
 import Test.Sandwich
+import TestLib.TestBuilding
 import TestLib.Util
 import UnliftIO.Directory
 import UnliftIO.IO
@@ -41,24 +42,6 @@ testHasSettingsSchema :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => Text -> ExampleT context m ()
 testHasSettingsSchema kernel = testEval [i|.\#languages."#{kernel}".meta.settingsSchema|]
-
-testBuild :: (MonadIO m, MonadThrow m, MonadBaseControl IO m, MonadLogger m) => String -> m ()
-testBuild expr = do
-  rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
-
-  p <- createProcessWithLogging $ (proc "nix" ["build", expr, "--json", "--no-link"]) {
-    cwd = Just rootDir
-    }
-  waitForProcess p >>= (`shouldBe` ExitSuccess)
-
-testEval :: (MonadIO m, MonadThrow m, MonadBaseControl IO m, MonadLogger m) => String -> m ()
-testEval expr = do
-  rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
-
-  p <- createProcessWithLogging $ (proc "nix" ["eval", expr, "--json"]) {
-    cwd = Just rootDir
-    }
-  waitForProcess p >>= (`shouldBe` ExitSuccess)
 
 -- Testing for nonempty results
 

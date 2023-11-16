@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.35.2.
+-- This file has been generated from package.yaml by hpack version 0.36.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -27,6 +27,7 @@ library
       TestLib.NixEnvironmentContext
       TestLib.NixRendering
       TestLib.NixTypes
+      TestLib.TestBuilding
       TestLib.TestSearchers
       TestLib.Types
       TestLib.Util
@@ -93,6 +94,7 @@ executable tests-exe
       Spec.Tests.Clojure
       Spec.Tests.Coq
       Spec.Tests.Cpp
+      Spec.Tests.Farm
       Spec.Tests.Go
       Spec.Tests.Haskell
       Spec.Tests.Haskell.CodeActions
