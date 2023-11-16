@@ -12,7 +12,7 @@ let
     owner = "codedownio";
     repo = "haskell-notebook-language-server";
     rev = "c5834f1336deca39f32eaf75c131108832739eb1";
-    sha256 = "YJ8f/X6qPRkmmTlaptvKV4Ga8oXkgeR/c/St+BjYCRI=";
+    sha256 = "04h9v0cgibglfdzy90g4hpr9m0aprbdscnirk4k1jgdagvyiz7v0";
   };
   # hnlsSrc = /home/tom/tools/haskell-notebook-language-server;
 
