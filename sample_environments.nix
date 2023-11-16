@@ -17,6 +17,7 @@ args: {
   julia16 = import ./sample_environments/julia16.nix args;
   julia18 = import ./sample_environments/julia18.nix args;
   julia19 = import ./sample_environments/julia19.nix args;
+  mega = import ./sample_environments/mega.nix args;
   octave = import ./sample_environments/octave.nix args;
   postgres = import ./sample_environments/postgres.nix args;
   python3 = import ./sample_environments/python3.nix args;
