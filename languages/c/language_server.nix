@@ -1,16 +1,17 @@
-with import <nixpkgs> {};
-with python3Packages;
-with makeWrapper;
-with stdenv;
+{ lib
+, llvmPackages
+, writeTextDir
+}:
 
 
 writeTextDir "language-servers.yaml" (lib.generators.toYAML {} [{
   name = "c";
+  version = llvmPackages.clang-unwrapped.version;
   extensions = ["c" "h"];
   attrs = ["c"];
   type = "stream";
   args = [
-    "${llvmPackages_10.clang-unwrapped}/bin/clangd"
+    "${llvmPackages.clang-unwrapped}/bin/clangd"
     "-log=verbose"
   ];
   # args = [
