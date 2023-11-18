@@ -125,8 +125,7 @@ testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb =
             warn [i|testDiagnostics'' failure: #{x}|]
             _ <- liftIO $ modifyMVar_ lastFailureReason (const $ return $ Just x)
             now <- liftIO getCurrentTime
-            if | (diffUTCTime now startTime) > (120 * 60 * 1_000_000) -> return ()
-               | otherwise -> loop
+            when ((diffUTCTime now startTime) <= (5 * 60 * 1_000_000)) loop
           Right () -> return ()
   where
     handleFn :: (MonadCatch n, MonadIO n, MonadLogger n) => MVar (Maybe FailureReason) -> SessionException -> n a
