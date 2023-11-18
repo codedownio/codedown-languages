@@ -105,6 +105,7 @@ in
 
 common.writeTextDirWithMeta hunspell.meta "lib/codedown/language-servers/codedown-spellchecker.yaml" (lib.generators.toYAML {} [{
   name = "spellchecker";
+  version = "1.1.0";
   extensions = ["md" "ipynb"];
   attrs = ["markdown"];
   type = "stream";
