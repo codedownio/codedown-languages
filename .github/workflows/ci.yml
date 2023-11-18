@@ -64,3 +64,15 @@ jobs:
           --print-failures \
           --fixed-root "$TEST_ROOT" \
           --markdown-summary "$GITHUB_STEP_SUMMARY" --${{matrix.suite}}
+
+    - name: Upload test artifacts
+      if: ${{ always() }}
+      continue-on-error: true
+      run: |
+        if [[ -n "$TEST_ROOT" ]]; then
+          rsync \
+            -e "ssh -F /secrets/ci_ssh_config" \
+            -azW --progress --mkpath \
+            "$TEST_ROOT/" \
+            tester@desktop1:/home/tester/all_test_runs/${{github.repository}}_${{github.workflow}}_${{github.run_number}}/${{matrix.suite}}
+        fi
