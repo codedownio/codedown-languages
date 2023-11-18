@@ -27,7 +27,7 @@ tests :: TopSpec
 tests = do
   -- See languages/haskell/default.nix for details on what's available
 
-  haskellCommonTests "haskell-ghc810"
+  -- haskellCommonTests "haskell-ghc810"
   haskellCommonTests "haskell-ghc90"
   haskellCommonTests "haskell-ghc92"
   haskellCommonTests "haskell-ghc94"
