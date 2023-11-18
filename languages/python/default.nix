@@ -22,8 +22,8 @@ let
     ++ lib.optionals (common.isTrue settings "lsp.flake8.enable") [(callPackage ./language_servers/language_server_flake8/config.nix { inherit pythonWithPackages kernelName; })]
     ++ lib.optionals (common.isTrue settings "lsp.pycodestyle.enable") [(callPackage ./language_servers/language_server_pycodestyle/config.nix { inherit pythonWithPackages kernelName; })]
     ++ lib.optionals (common.isTrue settings "lsp.microsoft.enable") [(callPackage ./language_servers/language_server_microsoft/config.nix { inherit pythonWithPackages kernelName; })]
-    ++ lib.optionals (common.isTrue settings "lsp.python-lsp-server.enable" && hasPythonLspServer pythonWithPackages) [(callPackage ./language_servers/language_server_pythonlsp/config.nix { inherit pythonWithPackages kernelName; })]
-    ++ lib.optionals (common.isTrue settings "lsp.python-language-server.enable" && hasPythonLanguageServer pythonWithPackages) [(callPackage ./language_servers/language_server_palantir/config.nix { inherit pythonWithPackages kernelName; })]
+    ++ lib.optionals (common.isTrue settings "lsp.python-lsp-server.enable" && (hasPythonLspServer (pythonWithPackages (ps: [])))) [(callPackage ./language_servers/language_server_pythonlsp/config.nix { inherit pythonWithPackages kernelName; })]
+    ++ lib.optionals (common.isTrue settings "lsp.python-language-server.enable" && (hasPythonLanguageServer (pythonWithPackages (ps: [])))) [(callPackage ./language_servers/language_server_palantir/config.nix { inherit pythonWithPackages kernelName; })]
     ;
 
   repls = python: {
