@@ -9,7 +9,6 @@ args: {
   cpp23 = import ./sample_environments/cpp23.nix args;
   exporters-large = import ./sample_environments/exporters-large.nix args;
   exporters-small = import ./sample_environments/exporters-small.nix args;
-  ghc810 = import ./sample_environments/ghc810.nix args;
   ghc90 = import ./sample_environments/ghc90.nix args;
   ghc92 = import ./sample_environments/ghc92.nix args;
   ghc94 = import ./sample_environments/ghc94.nix args;
