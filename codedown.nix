@@ -47,7 +47,7 @@ rec {
 
   nixpkgsStableSearcher = common.searcher pkgsStable;
 
-  spellchecker = callPackage ./language_servers/markdown-spellcheck-lsp {};
+  spellchecker = pkgsUnstable.callPackage ./language_servers/markdown-spellcheck-lsp {};
 
   shells = {
     zsh = callPackage ./shells/zsh {};
