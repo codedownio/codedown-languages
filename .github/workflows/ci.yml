@@ -15,6 +15,25 @@ jobs:
 
     strategy:
       fail-fast: false
+      matrix:
+        suite:
+        - bash
+        - clojure
+        - coq
+        - cpp
+        - go
+        - haskell
+        - julia
+        - octave
+        - postgres
+        - python
+        - r
+        - ruby
+        - rust
+        - sample-environments
+        - searchers
+        - zsh
+        - spellchecker
 
     steps:
     - uses: actions/checkout@v3
@@ -42,4 +61,4 @@ jobs:
         stack run --nix --no-nix-pure -- \
           --print-failures \
           --fixed-root "$TEST_ROOT" \
-          --markdown-summary "$GITHUB_STEP_SUMMARY"
+          --markdown-summary "$GITHUB_STEP_SUMMARY" --${{matrix.suite}}
