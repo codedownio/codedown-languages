@@ -24,6 +24,21 @@
 , debug ? false
 }:
 
+let
+  # Nixpkgs moved to argparse 3.x, but we need ~2.9
+  argparse_2_9 = argparse.overrideAttrs (oldAttrs: {
+    version = "2.9";
+
+    src = fetchFromGitHub {
+      owner = "p-ranav";
+      repo = "argparse";
+      rev = "v2.9";
+      sha256 = "sha256-vbf4kePi5gfg9ub4aP1cCK1jtiA65bUS9+5Ghgvxt/E=";
+    };
+  });
+
+in
+
 clangStdenv.mkDerivation rec {
   pname = "xeus-cling";
   version = "0.15.3";
@@ -42,7 +57,7 @@ clangStdenv.mkDerivation rec {
 
   nativeBuildInputs = [ cmake ];
   buildInputs = [
-    argparse
+    argparse_2_9
     cling.unwrapped
     cppzmq
     libuuid
