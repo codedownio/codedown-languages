@@ -27,8 +27,8 @@ let
     ihaskell-source = fetchFromGitHub {
       owner = "codedownio";
       repo = "IHaskell";
-      rev = "9db3044d7cfcac6acfb92633c0bea9e27fa31b42";
-      sha256 = "12zp765aqf3ks0h84i3y2jx0gyamkya7wm9s8x1sa482729sv8mp";
+      rev = "72e663bcc1af12fc136d19941cf21efdf7341379";
+      sha256 = "WSXrx+/iAiGa8qIJc7Wt6VxL9adw5KFt6FfaiOH/mjg=";
     };
   };
 
