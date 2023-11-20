@@ -12,12 +12,12 @@ import Control.Monad
 import Control.Monad.Catch as C (MonadCatch, MonadMask, MonadThrow)
 import Control.Monad.IO.Unlift
 import Control.Monad.Logger
+import Control.Monad.Trans (lift)
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.Aeson as A
 import Data.Aeson.TH as A
 import qualified Data.ByteString as B
 import Data.Default
-import Data.Function
 import qualified Data.List as L
 import Data.Map (Map)
 import qualified Data.Map as M
@@ -28,9 +28,8 @@ import Data.String.Interpolate
 import qualified Data.Text as T hiding (filter)
 import Data.Text hiding (filter)
 import qualified Data.Text.IO as T
-import Data.Time
 import GHC.Int
-import Language.LSP.Protocol.Lens as LSP hiding (diagnostics, hover, label, name, ranges)
+import Language.LSP.Protocol.Lens as LSP hiding (diagnostics, hover, id, label, name, ranges)
 import Language.LSP.Protocol.Types
 import Language.LSP.Test
 import System.FilePath
@@ -38,10 +37,10 @@ import System.IO.Temp (createTempDirectory)
 import Test.Sandwich as Sandwich
 import TestLib.Aeson
 import TestLib.Types
+import TestLib.Util
 import UnliftIO.Directory
 import UnliftIO.Environment (getEnvironment)
 import UnliftIO.Exception
-import UnliftIO.MVar
 import UnliftIO.Process
 
 
@@ -93,7 +92,7 @@ doSession' :: (
   LspContext ctx m
   ) => Text -> Text -> Text -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
 doSession' filename lsName codeToUse cb = do
-  withRunInIO $ \runInIO -> runInIO $ withLspSession lsName (T.unpack filename) codeToUse [] $ do
+  withLspSession lsName (T.unpack filename) codeToUse [] $ do
     cb (T.unpack filename)
 
 testDiagnostics :: (
@@ -110,45 +109,19 @@ testDiagnostics'' :: (
   LspContext ctx m
   ) => String -> Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb = it label $ do
-  lastFailureReason <- newMVar Nothing
-  withRunInIO $ \runInIO ->
-    runInIO $ withLspSession' (handle (handleFn lastFailureReason)) name filename codeToTest extraFiles $ do
-      _ <- openDoc filename (fromMaybe name maybeLanguageId)
-      -- _ <- openDoc' filename (fromMaybe name maybeLanguageId) codeToTest
-
-      startTime <- liftIO getCurrentTime
-      fix $ \loop -> do
-        diagnostics <- waitForDiagnostics
-
-        liftIO (try (runInIO $ cb diagnostics)) >>= \case
-          Left (x :: FailureReason) -> do
-            warn [i|testDiagnostics'' failure: #{x}|]
-            _ <- liftIO $ modifyMVar_ lastFailureReason (const $ return $ Just x)
-            now <- liftIO getCurrentTime
-            when ((diffUTCTime now startTime) <= (5 * 60 * 1_000_000)) loop
-          Right () -> return ()
-  where
-    handleFn :: (MonadCatch n, MonadIO n, MonadLogger n) => MVar (Maybe FailureReason) -> SessionException -> n a
-    handleFn lastFailureReason e@(Timeout {}) = readMVar lastFailureReason >>= \case
-      Nothing -> do
-        warn [i|Had empty failure reason|]
-        throwIO e
-      Just x -> do
-        warn [i|Had failure reason: #{x}|]
-        throwIO x
-    handleFn _ e = expectationFailure [i|LSP session failed with SessionException: #{e}|]
+  withLspSession' id name filename codeToTest extraFiles $ do
+    _ <- openDoc filename (fromMaybe name maybeLanguageId)
+    waitUntil 300.0 (waitForDiagnostics >>= lift . cb)
 
 itHasHoverSatisfying :: (
   LspContext ctx m
   ) => Text -> FilePath -> Maybe Text -> Text -> Position -> (Hover -> ExampleT ctx m ()) -> SpecFree ctx m ()
 itHasHoverSatisfying name filename maybeLanguageId codeToTest pos cb = it [i|#{name}: #{show codeToTest} (hover)|] $ do
-  maybeHover <- withRunInIO $ \runInIO ->
-    runInIO $ withLspSession name filename codeToTest [] $ do
-      ident <- openDoc filename (fromMaybe name maybeLanguageId)
-      getHover ident pos
-  case maybeHover of
-    Nothing -> expectationFailure [i|Expected a hover.|]
-    Just x -> cb x
+  withLspSession name filename codeToTest [] $ do
+    ident <- openDoc filename (fromMaybe name maybeLanguageId)
+    getHover ident pos >>= \case
+      Nothing -> expectationFailure [i|Expected a hover.|]
+      Just x -> lift $ cb x
 
 withLspSession :: (
   LspContext ctx m
