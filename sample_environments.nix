@@ -12,6 +12,7 @@ args: {
   ghc90 = import ./sample_environments/ghc90.nix args;
   ghc92 = import ./sample_environments/ghc92.nix args;
   ghc94 = import ./sample_environments/ghc94.nix args;
+  ghc96 = import ./sample_environments/ghc96.nix args;
   go = import ./sample_environments/go.nix args;
   julia16 = import ./sample_environments/julia16.nix args;
   julia18 = import ./sample_environments/julia18.nix args;

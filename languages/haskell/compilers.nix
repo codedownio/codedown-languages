@@ -94,38 +94,24 @@
       in
         self.callCabal2nix "ghc-parser" ghc-parser-source {};
 
-      here = super.here.overrideAttrs (oldAttrs: {
-        src = fetchFromGitHub {
-          owner = "tmhedberg";
-          repo = "here";
-          rev = "2530d70b44b23dc6f3dfbc762a8199e70b952e1c";
-          sha256 = "q6oneTExLJw6P7iwwkHJCAN/MS69B0uw4r97fA49Jcw=";
-        };
-        doCheck = false;
-        buildInputs = oldAttrs.buildInputs ++ [super.hspec];
-      });
+      ipython-kernel = self.callCabal2nix "ipython-kernel" (
+        runCommand "ipython-kernel" {} "cp -r ${ihaskell-source}/ipython-kernel $out"
+      ) {};
 
-      hlint = super.shelly.overrideAttrs (oldAttrs: {
-        src = fetchFromGitHub {
-          owner = "ndmitchell";
-          repo = "hlint";
-          rev = "ed1259a7da88420e8d05d6241d6bdd4493a9997f";
-          sha256 = "kLqO2Hbm2ekNzNgT54oZfF8EleqvvxoFlWjJTiteBzI=";
-        };
-      });
+      ihaskell = self.callCabal2nixWithOptions "ihaskell" ihaskell-source "--no-check" {};
 
-      ihaskell = super.ihaskell.overrideAttrs (oldAttrs: {
-        src = ihaskell-source;
-      });
+      ghc-lib-parser = self.ghc-lib-parser_9_6_3_20231014;
+      ghc-lib-parser-ex = self.ghc-lib-parser-ex_9_6_0_2;
 
-      shelly = super.shelly.overrideAttrs (oldAttrs: {
+      ghc-syntax-highlighter = let
         src = fetchFromGitHub {
-          owner = "gregwebs";
-          repo = "Shelly.hs";
-          rev = "db62da933cba5da2a6aed34f049685fc72cb8440";
-          sha256 = "VOYIH9hzAL98x1nmFHWsKUSapq/UEj1ZhjSqk0JECPg=";
+          owner = "mrkkrp";
+          repo = "ghc-syntax-highlighter";
+          rev = "71ff751eaa6034d4aef254d6bc5a8be4f6595344";
+          sha256 = "wQmWSuvIJpg11zKl1qOSWpqxjp2DoJwa20vaS2KHypM=";
         };
-      });
+      in
+        self.callCabal2nix "ghc-syntax-highlighter" src {};
 
       zeromq4-haskell = super.zeromq4-haskell.overrideAttrs (oldAttrs: {
         buildInputs = oldAttrs.buildInputs ++ [libsodium];
