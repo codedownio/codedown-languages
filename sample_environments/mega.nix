@@ -64,16 +64,16 @@ codedown.mkCodeDownEnvironment {
       };
     })
 
-    ({
-      name = "haskell-ghc810";
-      channel = "codedown";
-      args = {
-        packages = ["aeson"];
-        settings = {
-          "lsp.haskell-language-server.debug" = true;
-        };
-      };
-    })
+    # ({
+    #   name = "haskell-ghc810";
+    #   channel = "codedown";
+    #   args = {
+    #     packages = ["aeson"];
+    #     settings = {
+    #       "lsp.haskell-language-server.debug" = true;
+    #     };
+    #   };
+    # })
 
     ({
       name = "haskell-ghc90";
@@ -108,13 +108,16 @@ codedown.mkCodeDownEnvironment {
       };
     })
 
-    # ({
-    #   name = "haskell-ghc96";
-    #   channel = "codedown";
-    #   args = {
-    #     packages = ["aeson"];
-    #   };
-    # })
+    ({
+      name = "haskell-ghc96";
+      channel = "codedown";
+      args = {
+        packages = ["aeson"];
+        settings = {
+          "lsp.haskell-language-server.enable" = false;
+        };
+      };
+    })
 
     ({
       name = "octave";
