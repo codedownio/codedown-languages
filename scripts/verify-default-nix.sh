@@ -3,7 +3,7 @@
 set -e
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd "$SCRIPTDIR"
+cd "$SCRIPTDIR/.."
 
 FLAKE_NIXPKGS_REV=$(nix flake info --json | jq -r .locks.nodes.nixpkgs.locked.rev)
 FLAKE_NIXPKGS_UNSTABLE_REV=$(nix flake info --json | jq -r '.locks.nodes["nixpkgs-unstable"].locked.rev')
