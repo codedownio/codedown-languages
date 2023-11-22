@@ -39,8 +39,8 @@ import TestLib.Aeson
 import TestLib.Types
 import TestLib.Util
 import UnliftIO.Directory
-import UnliftIO.Environment (getEnvironment)
 import UnliftIO.Exception
+import UnliftIO.IO
 import UnliftIO.Process
 
 
@@ -151,6 +151,9 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
   info [i|LSP command: #{lspCommand}|]
 
   homeDir <- liftIO $ createTempDirectory currentFolder (T.unpack (name <> "_home"))
+  pathToUse <- withFile "/dev/null" WriteMode $ \devNullHandle ->
+    (T.unpack . T.strip . T.pack) <$> readCreateProcess ((proc "nix" ["run", ".#print-basic-path"]) { std_err = UseHandle devNullHandle }) ""
+
   dataDir <- liftIO $ createTempDirectory currentFolder (T.unpack name)
 
   forM_ extraFiles $ \(path, bytes) -> do
@@ -172,11 +175,11 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
                           , logMessages = True
                           }
 
-  env <- getEnvironment
+  -- env <- getEnvironment
   -- let cleanEnv = [(k, v) | (k, v) <- env, k /= "PATH", k /= "HOME", k /= "GHC_PACKAGE_PATH"]
-  let cleanEnv = [(k, v) | (k, v) <- env, k /= "GHC_PACKAGE_PATH"]
+
   let configEnv = maybe mempty (fmap (bimap T.unpack T.unpack) . M.toList) (lspConfigEnv config)
-  let finalEnv = ("HOME", homeDir) : (configEnv <> cleanEnv)
+  let finalEnv = ("HOME", homeDir) : ("PATH", pathToUse) : configEnv
   info [i|Language server environment: #{finalEnv}|]
   let modifyCp cp = cp { env = Just finalEnv
                        , cwd = Just homeDir }

@@ -14,6 +14,12 @@
           packages = rec {
             inherit tests;
             inherit (pkgs) cabal2nix;
+
+            # Print a trivial PATH that we can use to run kernel and LSP tests, to ensure
+            # they aren't depending on anything on the test machine's PATH.
+            print-basic-path = pkgs.writeShellScriptBin "codedown-artifact-sizes.sh" ''
+              echo ${pkgs.lib.makeBinPath (with pkgs; [busybox bash])}
+            '';
           };
 
           defaultPackage = packages.tests;
