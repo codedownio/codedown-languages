@@ -95,10 +95,9 @@ in
 
   ghc96 = haskell.packages.ghc96.override {
     overrides = self: super: {
-      ghc-parser = let
-        ghc-parser-source = runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out";
-      in
-        self.callCabal2nix "ghc-parser" ghc-parser-source {};
+      ghc-parser = self.callCabal2nix "ghc-parser" (
+        runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out"
+      ) {};
 
       ipython-kernel = self.callCabal2nix "ipython-kernel" (
         runCommand "ipython-kernel" {} "cp -r ${ihaskell-source}/ipython-kernel $out"
@@ -110,10 +109,6 @@ in
       ghc-lib-parser-ex = self.ghc-lib-parser-ex_9_6_0_2;
 
       ghc-syntax-highlighter = ghc-syntax-highlighter_0_0_10_0 self.callCabal2nix;
-
-      zeromq4-haskell = super.zeromq4-haskell.overrideAttrs (oldAttrs: {
-        buildInputs = oldAttrs.buildInputs ++ [libsodium];
-      });
     };
   };
 }
