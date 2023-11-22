@@ -21,7 +21,7 @@ jobs:
     runs-on: self-hosted
 
     env:
-      TEST_ROOT: /home/tester/test_runs/${{github.repository}}_${{github.workflow}}_${{github.run_number}}
+      TEST_ROOT: /home/tester/test_runs/languages_${{github.workflow}}_${{github.run_number}}
 
     strategy:
       fail-fast: false
@@ -84,5 +84,5 @@ jobs:
             -e "ssh -F /secrets/ci_ssh_config" \
             -azW --progress --mkpath \
             "$TEST_ROOT/" \
-            tester@desktop1:/home/tester/all_test_runs/${{github.repository}}_${{github.workflow}}_${{github.run_number}}/${{matrix.suite}}
+            tester@desktop1:/home/tester/all_test_runs/languages_${{github.workflow}}_${{github.run_number}}/${{matrix.suite}}
         fi
