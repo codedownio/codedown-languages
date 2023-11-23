@@ -17,6 +17,13 @@ let
     sha256 = "sha256-iMsZCHbMArLfg9pP5xzSSQf0/IvQ9kAAQ4w0a3sQtn8="; # nixpkgs-unstable-sha256
   }) {};
 
+  pkgsMaster = import (fetchFromGitHub {
+    owner = "NixOS";
+    repo = "nixpkgs";
+    rev = "56746b6d6cf8557ce5d7f811c33ed75170c8b4e1"; # nixpkgs-master-rev
+    sha256 = "sha256-JKigW8FiR1JcYC5T1sqS03z24G7uo+S0+MhKQEgen0I="; # nixpkgs-master-sha256
+  }) {};
+
 in
 
-pkgsStable.callPackage ./codedown.nix { inherit pkgsStable pkgsUnstable; }
+pkgsStable.callPackage ./codedown.nix { inherit pkgsStable pkgsUnstable pkgsMaster; }

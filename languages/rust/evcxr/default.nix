@@ -7,15 +7,12 @@
 , Security
 
 , cargo
+, evcxr
 , rustPlatform
 , rustc
 }:
 
 let
-  evcxr = callPackage ./evcxr.nix {
-    inherit CoreServices Security;
-  };
-
   withPackages = callPackage ./withPackages.nix {
     inherit cargo rustPlatform;
   };

@@ -3,17 +3,19 @@
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-23.05";
   inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs.nixpkgs-master.url = "github:NixOS/nixpkgs/master";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, flake-utils }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, nixpkgs-master, flake-utils }@inputs:
     # flake-utils.lib.eachDefaultSystem (system:
     flake-utils.lib.eachSystem ["x86_64-linux"] (system:
       let
         pkgsStable = import nixpkgs { inherit system; };
         pkgsUnstable = import nixpkgs-unstable { inherit system; };
+        pkgsMaster = import nixpkgs-master { inherit system; };
 
-        codedown = import ./codedown.nix { inherit pkgsStable pkgsUnstable; };
+        codedown = import ./codedown.nix { inherit pkgsStable pkgsUnstable pkgsMaster; };
 
       in
         rec {

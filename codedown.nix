@@ -1,5 +1,6 @@
 { pkgsStable
 , pkgsUnstable
+, pkgsMaster
 , requiredPackages ? []
 , system ? "x86_64-linux"
 }:
@@ -37,7 +38,7 @@ let
     })
     (callPackage ./languages/r {})
     (callPackage ./languages/ruby {})
-    (pkgsUnstable.callPackage ./languages/rust {})
+    (pkgsMaster.callPackage ./languages/rust {})
   ];
 
 in

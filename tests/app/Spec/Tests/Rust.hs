@@ -34,11 +34,21 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
     diagnosticsTests
     hoverTests
 
-
+-- We need a sleep to make this test reliable. It seems the kernel has a problem where
+-- it can exit before flushing stdout?
+-- See TODO: file issue on evcxr
 randCode :: T.Text
 randCode = [__i|use rand::prelude::*;
                 let x: u8 = random();
-                println!("{}", x);|]
+
+                use std::fs::File;
+                use std::io::prelude::*
+                let mut file = File::create("number.txt")?;
+                file.write_all(x.to_string().as_bytes());
+
+                println!("{}", x);
+
+                std::thread::sleep(std::time::Duration::from_millis(100));|]
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {

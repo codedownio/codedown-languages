@@ -6,7 +6,7 @@ cd "$SCRIPTDIR/.."
 
 output=$(nix flake metadata --json)
 
-for input in nixpkgs nixpkgs-unstable; do
+for input in nixpkgs nixpkgs-unstable nixpkgs-master; do
     echo "Processing input: $input"
     rev=$(echo "$output" | jq -r ".locks.nodes[\"${input}\"].locked.rev")
     hash=$(echo "$output" | jq -r ".locks.nodes[\"${input}\"].locked.narHash")

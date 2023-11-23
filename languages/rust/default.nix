@@ -42,19 +42,14 @@ let
   # Note: update this when the base Nixpkgs is bumped
   baseCandidates = [
     "rust"
-    "rust_1_63"
-    "rust_1_64"
-    "rust_1_65"
-    "rust_1_66"
-    "rust_1_67"
-    "rust_1_68"
-    "rust_1_69"
     "rust_1_70"
     "rust_1_71"
     "rust_1_72"
     "rust_1_73"
     "rust_1_74"
     "rust_1_75"
+    "rust_1_76"
+    "rust_1_77"
   ];
 
 in
