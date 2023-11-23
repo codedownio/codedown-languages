@@ -47,7 +47,7 @@
 
             inherit (codedown) settingsSchemas;
 
-            jupyter-runner = with pkgsStable;
+            jupyter-runner = with pkgsUnstable;
               let
                 pythonEnv = python3.withPackages (ps: with ps; [papermill]);
                 packages = [coreutils findutils pythonEnv];

@@ -23,10 +23,11 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
 
   testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
-  testKernelStdoutCallback "rust" randCode $ \output -> do
-    case readMay (T.unpack (T.strip output)) of
+  testKernelStdoutCallback "rust" randCode $ \case
+    Just t -> case readMay (T.unpack (T.strip t)) of
       Just (x :: Int) | x >= 0 && x < 256 -> return ()
-      _ -> expectationFailure [i|Unexpected output: #{show output}|]
+      _ -> expectationFailure [i|Unexpected output: #{show t}|]
+    Nothing -> expectationFailure [i|Kernel produced no output.|]
 
   describe "LSP" $ do
     completionTests
