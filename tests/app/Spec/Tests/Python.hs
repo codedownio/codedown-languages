@@ -31,7 +31,7 @@ tests' kernelName = describe [i|Python (#{kernelName})|] $ introduceNixEnvironme
 
   testKernelStdout kernelName [i|print("hi")|] "hi\n"
   testKernelStdout kernelName [i|print(42)|] "42\n"
-  testKernelStdout kernelName [i|import tensorflow|] ""
+  testKernelStdout' kernelName [i|import tensorflow|] Nothing
 
   testDiagnostics "python-lsp-server" "test.py" Nothing [i|\n\n\nfoo = 42|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []

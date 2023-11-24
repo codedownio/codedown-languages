@@ -59,13 +59,16 @@ type JupyterRunnerMonad m = (
   )
 
 testKernelStdout :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> Text -> SpecFree context m ()
-testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ testKernelStdout' kernel code (`shouldBe` Just desired)
+testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ testKernelStdout'' kernel code (`shouldBe` Just desired)
+
+testKernelStdout' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> Maybe Text -> SpecFree context m ()
+testKernelStdout' kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ testKernelStdout'' kernel code (`shouldBe` desired)
 
 testKernelStdoutCallback :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> (Maybe Text -> ExampleT context m ()) -> SpecFree context m ()
-testKernelStdoutCallback kernel code cb = it [i|#{kernel}: #{code}|] $ testKernelStdout' kernel code cb
+testKernelStdoutCallback kernel code cb = it [i|#{kernel}: #{code}|] $ testKernelStdout'' kernel code cb
 
-testKernelStdout' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> (Maybe Text -> ExampleT context m ()) -> ExampleT context m ()
-testKernelStdout' kernel code cb = do
+testKernelStdout'' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> (Maybe Text -> ExampleT context m ()) -> ExampleT context m ()
+testKernelStdout'' kernel code cb = do
   runKernelCode kernel code $ \_notebookFile _outputNotebookFile outFile _errFile -> do
     doesFileExist outFile >>= \case
       True -> liftIO (T.readFile outFile) >>= cb . Just
@@ -154,6 +157,7 @@ runKernelCode kernel code cb = do
                     , "--stderr-file", errFile
                     , "--start-timeout", "120"
                     , "--cwd", homeDir
+                    , "--log-level", "DEBUG"
                     , "-k", T.unpack kernel
                     ]) {
         env = Just [
