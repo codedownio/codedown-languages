@@ -26,6 +26,10 @@ let
     proc = "${ghc.out}/bin/ghci";
   }];
 
+  libDir = if builtins.compareVersions ghc.version "9.6" < 0
+    then "${ghc.out}/lib/${ghc.meta.name}"
+    else "${ghc.out}/lib/${ghc.meta.name}/lib";
+
 in
 
 common.makeJupyterKernelInner metaOnly (
@@ -37,7 +41,7 @@ common.makeJupyterKernelInner metaOnly (
         "${ihaskell}/bin/ihaskell"
         "kernel"
         "{connection_file}"
-        "-l" "${ghc.out}/lib/${ghc.meta.name}"
+        "-l" libDir
         "--html-code-wrapper-class" "cm-s-hite"
         "--html-code-token-prefix" ""
         "+RTS" "-M3g" "-N2" "-RTS"
