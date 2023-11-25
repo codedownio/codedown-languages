@@ -56,7 +56,7 @@ if cling == null then {} else
     let
       std = getAttr x stds;
 
-      displayName = "C++ " + (lib.removePrefix "c++" std);
+      displayName = "C++";
 
       meta = clang.meta // {
         baseName = x;

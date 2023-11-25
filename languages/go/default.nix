@@ -68,7 +68,10 @@ listToAttrs (map (x:
         in symlinkJoin {
           name = "go";
           paths = [
-            (callPackage ./kernel.nix { inherit attrs extensions metaOnly; })
+            (callPackage ./kernel.nix {
+              inherit attrs extensions metaOnly;
+              version = go.version;
+            })
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [go])

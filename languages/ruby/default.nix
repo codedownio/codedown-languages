@@ -70,7 +70,7 @@ listToAttrs (map (x:
 
     meta = ruby.meta // {
       baseName = x;
-      displayName = "Ruby " + ruby.version;
+      displayName = "Ruby";
       version = ruby.version;
       icon = ./logo-64x64.png;
       inherit settingsSchema;
@@ -97,7 +97,7 @@ listToAttrs (map (x:
         in symlinkJoin {
           name = x;
           paths = [
-            (callPackage ./kernel.nix { inherit attrs extensions; })
+            (callPackage ./kernel.nix { inherit attrs extensions version; })
             modeInfo
           ]
           ++ (if metaOnly then [] else [ruby])

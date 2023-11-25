@@ -59,7 +59,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshotName:
   let
     snapshot = util.applyVersionToSnapshot snapshotName (getAttr snapshotName haskell-nix.snapshots);
 
-    displayName = "Haskell (GHC " + (snapshot.ghcWithPackages (ps: [])).version + ")";
+    displayName = "Haskell";
 
     meta = {
       baseName = "haskell-" + compilerName;

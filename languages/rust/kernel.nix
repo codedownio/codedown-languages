@@ -6,6 +6,7 @@
 , displayName
 , attrs
 , extensions
+, version
 , language ? lib.head attrs
 , metaOnly ? false
 }:
@@ -20,6 +21,7 @@ in
 common.makeJupyterKernelInner metaOnly (
   listToAttrs [{
     name = head attrs;
+    version = evcxr.version;
     value = {
       inherit displayName;
       argv = [
@@ -33,6 +35,10 @@ common.makeJupyterKernelInner metaOnly (
       metadata = {
         codedown = {
           inherit attrs extensions;
+          language_version = version;
+          other_versions = {
+            evcxr = evcxr.version;
+          };
           priority = 1;
         };
       };

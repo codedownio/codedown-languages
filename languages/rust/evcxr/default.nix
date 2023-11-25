@@ -43,6 +43,8 @@ evcxr.overrideAttrs (oldAttrs: {
   passthru = (oldAttrs.passthru or {}) // {
     withPackages = packageNames:
       runCommand "evcxr" {
+        version = evcxr.version;
+
         buildInputs = [makeWrapper];
 
         makeWrapperArgs = [

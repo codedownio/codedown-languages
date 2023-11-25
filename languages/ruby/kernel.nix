@@ -3,6 +3,7 @@
 
 , attrs
 , extensions
+, version
 , metaOnly ? false
 }:
 
@@ -31,6 +32,8 @@ common.makeJupyterKernelInner metaOnly (
       metadata = {
         codedown = {
           inherit attrs extensions;
+          language_version = version;
+
           priority = 1;
         };
       };

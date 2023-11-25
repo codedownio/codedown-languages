@@ -86,7 +86,10 @@ listToAttrs (map (x:
         in symlinkJoin {
           name = "octave";
           paths = [
-            (callPackage ./kernel.nix { inherit octave extraJupyterConfig attrs extensions; })
+            (callPackage ./kernel.nix {
+              inherit octave extraJupyterConfig attrs extensions;
+              version = baseOctave.version;
+            })
             (callPackage ./mode_info.nix { inherit attrs extensions; })
             octave
           ];

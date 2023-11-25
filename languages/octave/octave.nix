@@ -1,6 +1,24 @@
-{pkgs, octaveComplete}:
+{ lib
+, makeWrapper
+, runCommand
 
-with pkgs;
+, octaveComplete
+
+, makeFontsConf
+, carlito
+, dejavu_fonts
+, freefont_ttf
+, xorg
+
+, epstool
+, fig2dev
+, fontconfig
+, ghostscript
+, gnuplot
+, graphicsmagick
+, pstoedit
+, texinfo
+}:
 
 let
   fontsConf = makeFontsConf {
@@ -14,12 +32,15 @@ let
 
   # Binaries octave needs at runtime
   # (For some reason these don't seem to be included by the default Octave derivation)
-  octaveBinaries = [epstool fig2dev pstoedit fontconfig ghostscript gnuplot graphicsmagick texinfo];
+  octaveBinaries = [epstool fig2dev fontconfig ghostscript gnuplot graphicsmagick pstoedit texinfo];
 
 in
 
 runCommand "octave-with-binaries" {
+  # version = octaveComplete.version;
+
   buildInputs = [makeWrapper octaveComplete] ++ octaveBinaries;
+
   propagatedBuildInputs = [octaveComplete] ++ octaveBinaries;
 } ''
   mkdir -p $out/bin

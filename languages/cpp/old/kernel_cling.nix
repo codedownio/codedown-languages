@@ -46,7 +46,7 @@ displayName: attrName: common.makeJupyterKernel (
   listToAttrs [{
     name = attrName;
     value = {
-      displayName = displayName;
+      inherit displayName;
       argv =
         [
           "${pythonWrapped}/bin/python"

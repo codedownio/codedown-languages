@@ -61,7 +61,7 @@ listToAttrs (map (x:
     rust = getAttr x pkgs;
     rustPackages = rust.packages.stable;
 
-    displayName = "Rust " + rustPackages.rustc.version;
+    displayName = "Rust";
 
     meta = rustPackages.rustc.meta // {
       baseName = x;
@@ -110,6 +110,7 @@ listToAttrs (map (x:
           (callPackage ./kernel.nix {
             inherit evcxr;
             inherit displayName attrs extensions;
+            version = rustPackages.rustc.version;
           })
 
           (callPackage ./mode_info.nix { inherit attrs extensions; })

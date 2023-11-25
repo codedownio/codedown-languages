@@ -43,6 +43,7 @@ common.makeJupyterKernelInner metaOnly (
       metadata = {
         codedown = {
           inherit attrs extensions;
+          language_version = coq.version;
 
           # variable_inspector = if enableVariableInspector then variableInspector else null;
 

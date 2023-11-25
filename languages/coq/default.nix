@@ -46,7 +46,7 @@ lib.listToAttrs (map (x:
   let coqPackages = lib.getAttr x pkgs;
       baseCoq = coqPackages.coq;
       baseName = with builtins; (substring 0 3 x) + (substring 11 (stringLength x - 11) x);
-      displayName = "Coq " + baseCoq.version;
+      displayName = "Coq";
       meta = baseCoq.meta // {
         inherit baseName displayName settingsSchema;
         version = baseCoq.version;

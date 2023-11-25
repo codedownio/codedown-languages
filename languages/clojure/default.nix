@@ -79,7 +79,7 @@ listToAttrs (map (x:
         in symlinkJoin {
           name = "clojure";
           paths = [
-            (callPackage ./kernel.nix { inherit attrs extensions; })
+            (callPackage ./kernel.nix { inherit attrs extensions version; })
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [clojure])

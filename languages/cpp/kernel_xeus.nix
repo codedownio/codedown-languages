@@ -56,6 +56,7 @@ common.makeJupyterKernel (
       metadata = {
         codedown = {
           inherit attrs extensions;
+          language_version = std;
           priority = 1;
         };
       };

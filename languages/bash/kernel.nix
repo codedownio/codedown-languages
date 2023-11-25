@@ -33,6 +33,7 @@ common.makeJupyterKernelInner metaOnly {
     metadata = {
       codedown = {
         inherit attrs extensions;
+        language_version = bash.version;
         priority = 10;
       };
     };

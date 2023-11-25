@@ -26,14 +26,14 @@ let
 
   meta = R.meta // {
     baseName = "R";
-    displayName = if lib.hasAttr "version" R then "R " + R.version else "R";
+    displayName = "R";
     version = R.version;
     icon = ./logo-64x64.png;
   };
 
   repls = rWithPackages: version: {
     r = {
-      display_name = "R " + version;
+      display_name = "R";
       attr = "r";
       args = ["${rWithPackages}/bin/R"];
       icon = ./logo-64x64.png;
@@ -70,7 +70,10 @@ listToAttrs [{
           name = "r";
 
           paths = [
-            (callPackage ./kernel.nix { inherit rWithPackages attrs extensions; })
+            (callPackage ./kernel.nix {
+              inherit rWithPackages attrs extensions;
+              version = R.version;
+            })
             (callPackage ./mode_info.nix { inherit attrs extensions; })
           ]
           ++ (if metaOnly then [] else [rWithPackages])

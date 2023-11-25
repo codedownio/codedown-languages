@@ -1,6 +1,7 @@
 { callPackage
 , attrs
 , extensions
+, version
 , clojupyter
 }:
 
@@ -22,6 +23,7 @@ common.makeJupyterKernel {
     metadata = {
       codedown = {
         inherit attrs extensions;
+        language_version = version;
         priority = 1;
       };
     };

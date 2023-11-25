@@ -46,7 +46,7 @@ in
 listToAttrs (mapAttrsToList (compilerName: snapshot:
   let
     version = snapshot.ghc.version;
-    displayName = "Haskell (GHC " + version + ")";
+    displayName = "Haskell";
 
     settingsSchema = callPackage ./settings_schema.nix { inherit version; };
 

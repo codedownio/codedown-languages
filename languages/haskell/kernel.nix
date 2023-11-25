@@ -57,6 +57,7 @@ common.makeJupyterKernelInner metaOnly (
       metadata = {
         codedown = {
           inherit attrs extensions repls;
+          language_version = "GHC " + ghc.version;
           priority = 1;
         };
       };

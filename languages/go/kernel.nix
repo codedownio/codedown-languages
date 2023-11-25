@@ -1,9 +1,12 @@
 { lib
 , callPackage
+, gophernotes
+
+, metaOnly
+
 , attrs
 , extensions
-, gophernotes
-, metaOnly
+, version
 }:
 
 with lib;
@@ -26,6 +29,9 @@ common.makeJupyterKernelInner metaOnly {
     metadata = {
       codedown = {
         inherit attrs extensions;
+
+        language_version = version;
+
         priority = 1;
       };
     };

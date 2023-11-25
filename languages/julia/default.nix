@@ -101,7 +101,7 @@ mapAttrs (attr: value:
   let
     baseJulia = (value []).julia;
 
-    displayName = "Julia " + baseJulia.version;
+    displayName = "Julia";
 
     meta = baseJulia.meta // {
       baseName = attr;

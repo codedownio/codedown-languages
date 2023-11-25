@@ -12,6 +12,7 @@ rec {
     definitions = {
       c = {
         displayName = "C";
+        language_version = "Clang " + clang.version;
         argv = [
           "${import ./kernel.nix}/bin/jupyter_c_kernel"
           "-f"

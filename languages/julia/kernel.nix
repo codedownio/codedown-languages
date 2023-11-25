@@ -42,6 +42,7 @@ common.makeJupyterKernelInner metaOnly (
       metadata = {
         codedown = {
           inherit attrs extensions;
+          language_version = julia.version;
           priority = 1;
         };
       };
