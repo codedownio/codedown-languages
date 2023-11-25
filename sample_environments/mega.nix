@@ -44,6 +44,42 @@ codedown.mkCodeDownEnvironment {
     })
 
     ({
+      name = "cpp14";
+      channel = "codedown";
+      args = {
+        packages = [];
+        attrs = ["cpp14" "cpp"];
+      };
+    })
+
+    ({
+      name = "cpp17";
+      channel = "codedown";
+      args = {
+        packages = [];
+        attrs = ["cpp17" "cpp"];
+      };
+    })
+
+    ({
+      name = "cpp20";
+      channel = "codedown";
+      args = {
+        packages = [];
+        attrs = ["cpp20" "cpp"];
+      };
+    })
+
+    ({
+      name = "cpp23";
+      channel = "codedown";
+      args = {
+        packages = [];
+        attrs = ["cpp23" "cpp"];
+      };
+    })
+
+    ({
       name = "julia";
       channel = "codedown";
       args = {
