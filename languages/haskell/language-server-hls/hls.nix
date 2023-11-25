@@ -6,7 +6,7 @@
 , ncurses
 }:
 
-snapshot: ghc: kernelName: focusedSettings: callPackage ./language-server-hls/config.nix {
+snapshot: ghc: kernelName: focusedSettings: callPackage ./config.nix {
   inherit kernelName;
 
   inherit ghc snapshot;

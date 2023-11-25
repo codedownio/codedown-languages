@@ -20,7 +20,7 @@ let
   chooseLanguageServers = settings: snapshot: ghc: kernelName:
     []
     ++ lib.optionals (common.isTrue settings "lsp.haskell-language-server.enable" && hasHlsSupport ghc.version)
-                     [((callPackage ./hls.nix {}) snapshot ghc kernelName (common.focusSettings "lsp.haskell-language-server." settings))]
+                     [((callPackage ./language-server-hls/hls.nix {}) snapshot ghc kernelName (common.focusSettings "lsp.haskell-language-server." settings))]
   ;
 
   compilers = callPackage ./compilers.nix {
