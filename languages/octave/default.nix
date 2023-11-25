@@ -50,6 +50,9 @@ listToAttrs (map (x:
     value = rec {
       packageOptions = baseOctave.pkgs;
       packageSearch = common.searcher packageOptions;
+      versions = {
+        octave = baseOctave.version;
+      };
 
       build = args@{
         packages ? []

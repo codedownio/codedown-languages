@@ -66,6 +66,10 @@ listToAttrs (map (x:
       languageServerOptions = [
         clojure-lsp
       ];
+      versions = {
+        clojure = clojure.version;
+        clojure-lsp = clojure-lsp.version;
+      };
 
       build = args@{
         packages ? []

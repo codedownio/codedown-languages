@@ -55,6 +55,10 @@ listToAttrs (map (x:
       languageServerOptions = [
         gopls
       ];
+      versions = {
+        go = go.version;
+        gopls = gopls.version;
+      };
 
       build = args@{
         packages ? []

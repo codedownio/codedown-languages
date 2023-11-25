@@ -118,6 +118,9 @@ mapAttrs (attr: value:
       packages = packageSet;
       packageMustBeDerivation = false;
     };
+    versions = {
+      julia = baseJulia.version;
+    };
 
     build = args@{
       packages ? []

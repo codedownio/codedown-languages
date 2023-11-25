@@ -65,6 +65,10 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
       languageServerOptions = lib.optionals (hasHlsSupport version) [
         snapshot.haskell-language-server
       ];
+      versions = {
+        ghc = snapshot.ghc.version;
+        haskell-language-server = snapshot.haskell-language-server.version;
+      };
 
       # Grab the meta from the library component
       # Could also search over other components?

@@ -33,6 +33,9 @@ in
 {
   postgres = {
     inherit packageOptions packageSearch;
+    versions = {
+      postgres-kernel = meta.version;
+    };
 
     build = args@{
       packages ? []

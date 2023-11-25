@@ -84,6 +84,10 @@ listToAttrs (map (x:
       languageServerOptions = [
         packageOptions.solargraph
       ];
+      versions = {
+        ruby = builtins.toString ruby.version;
+        solargraph = packageOptions.solargraph.version;
+      };
 
       build = args@{
         packages ? []

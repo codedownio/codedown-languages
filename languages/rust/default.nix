@@ -88,6 +88,12 @@ listToAttrs (map (x:
         rust-analyzer
       ];
 
+      versions = {
+        rust = rustPackages.rustc.version;
+        rust-analyzer = rust-analyzer.version;
+        cargo = rustPackages.cargo.version;
+      };
+
       build = args@{
         packages ? []
         , attrs ? [x "rust"]

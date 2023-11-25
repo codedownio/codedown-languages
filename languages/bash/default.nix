@@ -52,6 +52,10 @@ lib.listToAttrs (map (x:
         languageServerOptions = [
           nodePackages.bash-language-server
         ];
+        versions = {
+          bash = bash.version;
+          bash-language-server = nodePackages.bash-language-server.version;
+        };
 
         build = args@{
           packages ? []

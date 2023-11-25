@@ -59,6 +59,9 @@ lib.listToAttrs (map (x:
     value = rec {
       packageOptions = coqPackages;
       packageSearch = common.searcher packageOptions;
+      versions = {
+        coq = baseCoq.version;
+      };
 
       defaultSettings = {};
 

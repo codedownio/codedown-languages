@@ -186,6 +186,17 @@ lib.listToAttrs (map (x:
         ++ lib.optionals (hasPythonLspServer basePython) [basePython.pkgs.python-lsp-server]
         ;
 
+        versions = {
+          python = basePython.version;
+          jedi-language-server = basePython.pkgs.jedi-language-server.version;
+          pyright = pyright.version;
+          pylint = basePython.pkgs.pylint.version;
+          flake8 = basePython.pkgs.flake8.version;
+          pycodestyle = basePython.pkgs.pycodestyle.version;
+        }
+        // lib.optionalAttrs (hasPythonLspServer basePython) { python-lsp-server = basePython.pkgs.python-lsp-server.version; }
+        ;
+
         build = args@{
           packages ? []
           , attrs ? [x "python"]

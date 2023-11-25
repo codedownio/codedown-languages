@@ -31,6 +31,9 @@ lib.listToAttrs (map (x:
     value = rec {
       packageOptions = {};
       packageSearch = common.searcher {};
+      versions = {
+        graphviz = graphviz.version;
+      };
 
       build = args@{
         packages ? []

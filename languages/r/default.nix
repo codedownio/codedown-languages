@@ -21,7 +21,15 @@ let
 
   chooseLanguageServers = settings: rPackages: rWrapper: basePackages: kernelName:
     []
-    ++ lib.optionals (common.isTrue settings "lsp.languageserver.enable") [(callPackage ./language_server.nix { inherit rPackages rWrapper basePackages kernelName; })]
+    ++ lib.optionals (common.isTrue settings "lsp.languageserver.enable") [(
+      let
+        languageserver = callPackage ./language-server-languageserver/languageserver.nix { inherit rPackages rWrapper; };
+      in
+        (callPackage ./language-server-languageserver.nix {
+          inherit rPackages rWrapper basePackages kernelName;
+          inherit languageserver;
+        })
+    )]
   ;
 
   meta = R.meta // {
@@ -49,6 +57,10 @@ listToAttrs [{
   value = rec {
     packageOptions = rPackages;
     packageSearch = common.searcher packageOptions;
+    versions = {
+      r = R.version;
+      languageserver = (callPackage ./language-server-languageserver/languageserver.nix {}).version;
+    };
 
     build = args@{
       packages ? []

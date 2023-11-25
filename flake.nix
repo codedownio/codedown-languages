@@ -87,6 +87,19 @@
               pkgsStable.writeShellScriptBin "print-versions.sh" ''
                 cat ${file}
               '';
+            printVersions = let
+              versionsMap = with pkgsStable.lib;
+                mapAttrs (lang: value: if (hasAttr "versions" value) then (value.versions) else {})
+                         (filterAttrs (k: _: !(hasPrefix "override") k) languages);
+
+              file = pkgsStable.writeTextFile {
+                name = "versions.yaml";
+                text = pkgsStable.lib.generators.toPretty {} versionsMap;
+              };
+            in
+              pkgsStable.writeShellScriptBin "print-versions.sh" ''
+                cat ${file}
+              '';
             printMegaVersions = pkgsStable.writeShellScriptBin "print-mega-versions.sh" ''
               MEGA_ENV=${sample_environments.mega}
 

@@ -66,11 +66,21 @@ if cling == null then {} else
         inherit settingsSchema;
       };
 
+      cling = callPackage ./cling {};
+
+      xeus-cling = callPackage ./xeus-cling/xeus-cling.nix { inherit cling; };
+
     in {
       name = x;
       value = rec {
         packageOptions = {};
         packageSearch = common.searcher packageOptions;
+        versions = {
+          clang = clang.version;
+          cling = cling.unwrapped.version;
+          xeus-cling = xeus-cling.version;
+          std = std;
+        };
 
         build = args@{
           packages ? []
@@ -85,6 +95,7 @@ if cling == null then {} else
             name = x;
             paths = [
               ((callPackage ./kernel_xeus.nix {
+                inherit cling xeus-cling;
                 inherit attrs displayName extensions metaOnly std;
                 attrName = x;
               }))

@@ -6,6 +6,9 @@
 
 , blas
 
+, cling
+, xeus-cling
+
 , attrName
 , attrs
 , displayName
@@ -18,12 +21,6 @@ with lib;
 
 let
   common = callPackage ../common.nix {};
-
-  cling = callPackage ./cling {};
-
-  xeus-cling = callPackage ./xeus-cling/xeus-cling.nix { inherit cling; };
-
-  xeusMisc = callPackage ./xeusMisc.nix;
 
 in
 
