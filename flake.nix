@@ -87,6 +87,22 @@
               pkgsStable.writeShellScriptBin "print-versions.sh" ''
                 cat ${file}
               '';
+            printMegaVersions = pkgsStable.writeShellScriptBin "print-mega-versions.sh" ''
+              MEGA_ENV=${sample_environments.mega}
+
+              echo "Built mega environment: $MEGA_ENV"
+              echo ""
+
+              KERNEL_JSONS=$(find "$MEGA_ENV" -name kernel.json | sort)
+
+              for file in $KERNEL_JSONS; do
+                language=$(cat $file | jq -r .language)
+                displayName=$(cat $file | jq .display_name)
+                version=$(cat $file | jq .metadata.codedown.language_version)
+
+                echo "$language: $displayName ($version)"
+              done
+            '';
 
             notebook = with pkgsStable; python3.pkgs.toPythonModule (
               python3.pkgs.notebook.overridePythonAttrs (oldAttrs: {
