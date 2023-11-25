@@ -49,9 +49,6 @@ lib.listToAttrs (map (x:
       name = x;
       value = rec {
         inherit packageOptions packageSearch;
-        languageServerOptions = [
-          nodePackages.bash-language-server
-        ];
         versions = {
           bash = bash.version;
           bash-language-server = nodePackages.bash-language-server.version;

@@ -74,19 +74,6 @@
               };
             };
 
-            printLanguageServerVersions = let
-              versionsMap = with pkgsStable.lib;
-                mapAttrs (lang: value: if (hasAttr "languageServerOptions" value) then (map (x: x.name) value.languageServerOptions) else [])
-                         (filterAttrs (k: _: !(hasPrefix "override") k) languages);
-
-              file = pkgsStable.writeTextFile {
-                name = "versions.yaml";
-                text = pkgsStable.lib.generators.toPretty {} versionsMap;
-              };
-            in
-              pkgsStable.writeShellScriptBin "print-versions.sh" ''
-                cat ${file}
-              '';
             printVersions = let
               versionsMap = with pkgsStable.lib;
                 mapAttrs (lang: value: if (hasAttr "versions" value) then (value.versions) else {})

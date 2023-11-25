@@ -175,17 +175,6 @@ lib.listToAttrs (map (x:
       value = rec {
         packageOptions = basePython.pkgs;
         packageSearch = common.searcher packageOptions;
-        languageServerOptions = [
-          basePython.pkgs.jedi-language-server
-          pyright
-          basePython.pkgs.pylint
-          basePython.pkgs.flake8
-          basePython.pkgs.pycodestyle
-        ]
-        # ++ lib.optionals (hasPythonLanguageServer basePython) [pkgs.python-language-server]
-        ++ lib.optionals (hasPythonLspServer basePython) [basePython.pkgs.python-lsp-server]
-        ;
-
         versions = {
           python = basePython.version;
           jedi-language-server = basePython.pkgs.jedi-language-server.version;

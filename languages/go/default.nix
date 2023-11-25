@@ -52,9 +52,6 @@ listToAttrs (map (x:
     value = rec {
       packageOptions = {};
       packageSearch = common.searcher packageOptions;
-      languageServerOptions = [
-        gopls
-      ];
       versions = {
         go = go.version;
         gopls = gopls.version;

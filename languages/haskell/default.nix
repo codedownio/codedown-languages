@@ -62,9 +62,6 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
     name = meta.baseName;
     value = rec {
       packageOptions = snapshot;
-      languageServerOptions = lib.optionals (hasHlsSupport version) [
-        snapshot.haskell-language-server
-      ];
       versions = {
         ghc = snapshot.ghc.version;
         haskell-language-server = snapshot.haskell-language-server.version;

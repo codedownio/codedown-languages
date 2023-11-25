@@ -81,9 +81,6 @@ listToAttrs (map (x:
     value = rec {
       packageOptions = getAttr x packagesLookup;
       packageSearch = common.searcher packageOptions;
-      languageServerOptions = [
-        packageOptions.solargraph
-      ];
       versions = {
         ruby = builtins.toString ruby.version;
         solargraph = packageOptions.solargraph.version;

@@ -84,10 +84,6 @@ listToAttrs (map (x:
         packages = packageOptions;
       };
 
-      languageServerOptions = [
-        rust-analyzer
-      ];
-
       versions = {
         rust = rustPackages.rustc.version;
         rust-analyzer = rust-analyzer.version;
