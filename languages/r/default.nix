@@ -25,7 +25,7 @@ let
       let
         languageserver = callPackage ./language-server-languageserver/languageserver.nix { inherit rPackages rWrapper; };
       in
-        (callPackage ./language-server-languageserver.nix {
+        (callPackage ./language-server-languageserver {
           inherit rPackages rWrapper basePackages kernelName;
           inherit languageserver;
         })
