@@ -108,6 +108,8 @@ in
       ghc-lib-parser = self.ghc-lib-parser_9_6_3_20231014;
       ghc-lib-parser-ex = self.ghc-lib-parser-ex_9_6_0_2;
 
+      warp_3_3_29 = null;
+
       ghc-syntax-highlighter = ghc-syntax-highlighter_0_0_10_0 self.callCabal2nix;
     };
   };

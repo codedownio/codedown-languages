@@ -22,7 +22,7 @@ let
     (pkgsUnstable.callPackage ./languages/cpp {})
     (callPackage ./languages/dot {})
     (callPackage ./languages/go {})
-    (pkgsUnstable.callPackage ./languages/haskell {})
+    (pkgsMaster.callPackage ./languages/haskell {})
     (callPackage ./languages/julia {})
     (callPackage ./languages/octave {})
     (callPackage ./languages/postgres {})
