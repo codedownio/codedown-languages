@@ -35,10 +35,14 @@ with lib;
     display_name = attrByPath ["meta" "displayName"] null x;
     icon = attrByPath ["meta" "icon"] null x.passthru;
     meta = attrByPath ["meta"] null x.passthru;
-    packages = map (name: {
-      inherit name;
-      meta = attrByPath [name "meta"] null x.passthru.packageOptions;
-    }) (x.passthru.args.packages or []);
+    packages = map (nameOrAttrset:
+      let
+        name = if builtins.isString nameOrAttrset then nameOrAttrset else nameOrAttrset.name;
+      in
+        {
+          inherit name;
+          meta = attrByPath [name "meta"] null x.passthru.packageOptions;
+        }) (x.passthru.args.packages or []);
     settings_schema = attrByPath ["passthru" "settingsSchema"] null x;
     settings = attrByPath ["passthru" "settings"] null x;
   }) kernels;

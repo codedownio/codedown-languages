@@ -29,6 +29,11 @@ let
     echo "]" >> $out
   '';
 
+  renderPackageName = pn:
+    if builtins.isString pn
+    then ''${pn} = "*"''
+    else ''${pn.name} = { version = "*", features = [${lib.concatStringsSep ", " (map (feat: ''"'' + feat + ''"'') pn.features)}] }'';
+
   cargoToml = packageNames: writeTextFile {
     name = "Cargo.toml";
     text = ''
@@ -38,7 +43,7 @@ let
       edition = "2018"
 
       [dependencies]
-    '' + lib.concatStringsSep "\n" (map (name: ''${name} = "*"'') packageNames);
+    '' + lib.concatStringsSep "\n" (map renderPackageName packageNames);
   };
 
   cargoNix = packageNames: runCommand "Cargo-nix" { buildInputs = [cargo]; } ''

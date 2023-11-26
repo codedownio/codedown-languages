@@ -15,7 +15,10 @@ codedown.mkCodeDownEnvironment {
       name = "rust";
       channel = "codedown";
       args = {
-        packages = ["rand"];
+        packages = [
+          "rand"
+          { name = "serde"; features = ["derive"]; }
+        ];
       };
     })
   ];

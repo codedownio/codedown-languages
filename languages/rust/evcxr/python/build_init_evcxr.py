@@ -24,5 +24,6 @@ for subdir in (f for f in vendor_dir.resolve().glob('**/*') if f.is_dir()):
 
 with open(out, "a") as f:
   for package in package_names:
-    if package in name_to_dir:
-      f.write(f""":dep {package} = {{ path = "{str(name_to_dir[package])}" }}\n""")
+    package_name = package if isinstance(package, str) else package["name"]
+    if package_name in name_to_dir:
+      f.write(f""":dep {package_name} = {{ path = "{str(name_to_dir[package_name])}" }}\n""")
