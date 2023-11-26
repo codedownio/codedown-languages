@@ -26,6 +26,7 @@ let
     proc = "${ghc.out}/bin/ghci";
   }];
 
+  # Note: can actually get libdir by calling "ghc --print-libdir"
   libDir = if builtins.compareVersions ghc.version "9.6" < 0
     then "${ghc.out}/lib/${ghc.meta.name}"
     else "${ghc.out}/lib/${ghc.meta.name}/lib";
