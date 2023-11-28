@@ -19,7 +19,7 @@ let
     (callPackage ./languages/bash {})
     (callPackage ./languages/clojure {})
     (callPackage ./languages/coq {})
-    (pkgsUnstable.callPackage ./languages/cpp {})
+    (pkgsMaster.callPackage ./languages/cpp {})
     (callPackage ./languages/dot {})
     (callPackage ./languages/go {})
     (pkgsMaster.callPackage ./languages/haskell {})
