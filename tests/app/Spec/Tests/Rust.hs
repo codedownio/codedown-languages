@@ -40,15 +40,7 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
 randCode :: T.Text
 randCode = [__i|use rand::prelude::*;
                 let x: u8 = random();
-
-                use std::fs::File;
-                use std::io::prelude::*
-                let mut file = File::create("number.txt")?;
-                file.write_all(x.to_string().as_bytes());
-
-                println!("{}", x);
-
-                std::thread::sleep(std::time::Duration::from_millis(100));|]
+                println!("{}", x);|]
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {

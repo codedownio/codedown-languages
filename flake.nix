@@ -11,9 +11,10 @@
     # flake-utils.lib.eachDefaultSystem (system:
     flake-utils.lib.eachSystem ["x86_64-linux"] (system:
       let
-        pkgsStable = import nixpkgs { inherit system; };
-        pkgsUnstable = import nixpkgs-unstable { inherit system; };
-        pkgsMaster = import nixpkgs-master { inherit system; };
+        overlays = [(import ./overlays.nix)];
+        pkgsStable = import nixpkgs { inherit system overlays; };
+        pkgsUnstable = import nixpkgs-unstable { inherit system overlays; };
+        pkgsMaster = import nixpkgs-master { inherit system overlays; };
 
         codedown = import ./codedown.nix { inherit pkgsStable pkgsUnstable pkgsMaster; };
 
