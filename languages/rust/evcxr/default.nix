@@ -41,6 +41,8 @@ in
 
 evcxr.overrideAttrs (oldAttrs: {
   passthru = (oldAttrs.passthru or {}) // {
+    cratesIndex = withPackages.cratesIndex;
+
     withPackages = packageNames:
       runCommand "evcxr" {
         version = evcxr.version;

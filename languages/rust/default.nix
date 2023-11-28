@@ -70,6 +70,10 @@ listToAttrs (map (x:
       inherit settingsSchema;
     };
 
+    evcxrBase = callPackage ./evcxr {
+      inherit (darwin.apple_sdk.frameworks) CoreServices Security;
+    };
+
   in {
     name = x;
     value = rec {
@@ -90,6 +94,10 @@ listToAttrs (map (x:
         cargo = rustPackages.cargo.version;
       };
 
+      passthru = {
+        inherit (evcxrBase) cratesIndex;
+      };
+
       build = args@{
         packages ? []
         , attrs ? [x "rust"]
@@ -97,9 +105,7 @@ listToAttrs (map (x:
         , settings ? {}
         , metaOnly ? false
       }: let
-        evcxr = ((callPackage ./evcxr {
-          inherit (darwin.apple_sdk.frameworks) CoreServices Security;
-        }).override {
+        evcxr = (evcxrBase.override {
           rustPlatform = rustPackages.rustPlatform;
           cargo = rustPackages.cargo;
         }).withPackages packages;
@@ -124,6 +130,7 @@ listToAttrs (map (x:
         passthru = {
           args = args // { baseName = x; };
           inherit meta packageOptions;
+          inherit (evcxr) cratesIndex;
         };
       };
 
