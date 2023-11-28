@@ -28,3 +28,11 @@ diagnosticsTests = describe "Diagnostics" $ do
       , (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing field `b` in initializer of `A`\nmissing `b`")
       , (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing structure fields:\n- b\n")
       ]
+
+  testDiagnostics "rust-analyzer" "main.ipynb" Nothing [__i|println!("Hello world");
+                                                            eprintln!("Hello error");
+                                                            format!("Hello {}", "world")
+                                                           |] $ \diagnostics -> do
+    assertDiagnosticRanges' (L.sortBy (compare `on` (^. LSP.message)) diagnostics) [
+      (Range (Position 2 0) (Position 2 28), Just (InR "E0308"), "mismatched types\nexpected `()`, found `String`")
+      ]

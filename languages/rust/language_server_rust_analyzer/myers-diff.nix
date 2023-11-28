@@ -5,12 +5,12 @@
 }:
 mkDerivation {
   pname = "myers-diff";
-  version = "0.2.0.0";
+  version = "0.3.0.0";
   src = fetchFromGitHub {
     owner = "codedownio";
     repo = "myers-diff";
-    rev = "b01ccb5bbeb479ebfde817cc5ac3db8f8e2dae23";
-    sha256 = "0vqi8ylyj48p4dzc65da18z5sv4w1fslq6bm8km86cg0mdxg3wpx";
+    rev = "3683ab4e052347bc47eb5546361f47bcd8c0fa58";
+    sha256 = "15n3p61884d4sgc3vzk98x3vxw7d95i5qqv0y8a7vk73cpy3vs2p";
   };
   doCheck = false;
   libraryHaskellDepends = [
