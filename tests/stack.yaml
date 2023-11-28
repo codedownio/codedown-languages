@@ -1,5 +1,5 @@
 
-resolver: lts-20.26
+resolver: lts-21.21
 
 nix:
   pure: false
@@ -23,4 +23,16 @@ extra-deps:
   - lsp-types
   - lsp-test
 
-- row-types-1.0.1.2
+- git: https://github.com/codedownio/sandwich.git
+  commit: 557515bc9d2934e56d2995ffacb888941ee57716
+  subdirs:
+  - sandwich
+
+# Needed by newer sandwich
+- brick-2.1.1
+- vty-6.1
+- vty-crossplatform-0.4.0.0
+- vty-unix-0.2.0.0
+- vty-windows-0.2.0.0
+
+- ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293

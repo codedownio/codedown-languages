@@ -205,8 +205,8 @@ makeUUID' n = T.pack <$> (replicateM n ((uuidLetters L.!!) <$> R.randomRIO (0, n
 
 withSqlPool :: forall m a. (MonadMask m, MonadIO m, MonadUnliftIO m) => Int -> PostgresDatabaseConfig -> ((Pool PGS.Connection, PostgresDatabaseConfig) -> m a) -> m a
 withSqlPool n config action = do
-  bracket (liftIO $ createPool (connectPostgres config) PGS.close 1 30 n)
-          (liftIO . destroyAllResources)
+  bracket (liftIO $ createPool (connectPostgres config) PGS.close 1 30 (fromIntegral n))
+          (liftIO . purgePool)
           (\pool -> action (pool, config))
 
 connectPostgres :: PostgresDatabaseConfig -> IO PGS.Connection

@@ -44,15 +44,63 @@ packages:
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-test
 - completed:
-    hackage: row-types-1.0.1.2@sha256:4d4c7cb95d06a32b28ba977852d52a26b4c1f695ef083a6fd874ab6d79933b64,3071
+    commit: 557515bc9d2934e56d2995ffacb888941ee57716
+    git: https://github.com/codedownio/sandwich.git
+    name: sandwich
     pantry-tree:
-      sha256: 6a3617038d3970095100d14d026c396002a115700500cf3004ffb67ae5a75611
-      size: 1060
+      sha256: 99d3bc4ddcefea67e7a5f43ed947bc6047edb840d9a1a9ea9ecc544ce708e294
+      size: 6020
+    subdir: sandwich
+    version: 0.2.1.0
   original:
-    hackage: row-types-1.0.1.2
+    commit: 557515bc9d2934e56d2995ffacb888941ee57716
+    git: https://github.com/codedownio/sandwich.git
+    subdir: sandwich
+- completed:
+    hackage: brick-2.1.1@sha256:ff36d64f1027eac17a14a83de053067413accb58b79e5002dce2a79cb8a3dcb3,17385
+    pantry-tree:
+      sha256: c70beaff3ad9126bc2a9a57649ef63becd534b7eb6b015092cb28437fe3f916d
+      size: 4671
+  original:
+    hackage: brick-2.1.1
+- completed:
+    hackage: vty-6.1@sha256:524d124223c02373260ebc409ddd622fbe97cacd1ea0ee98476b5992bddbc4f3,3661
+    pantry-tree:
+      sha256: 4ed3b229066617a0f3429b7b7dadc8e01d14111ac675801053cd35fbb6ee3f14
+      size: 2104
+  original:
+    hackage: vty-6.1
+- completed:
+    hackage: vty-crossplatform-0.4.0.0@sha256:50593f91ad16777d921138475a8d2784d538fd206addd30664c620278d6c8544,3172
+    pantry-tree:
+      sha256: ff010cf0ab3f48c43432268a00113e051599285d6ed60cfada7f53e44dbe00f8
+      size: 582
+  original:
+    hackage: vty-crossplatform-0.4.0.0
+- completed:
+    hackage: vty-unix-0.2.0.0@sha256:2af3d0bdae3c4b7b7e567ee374efe32c7439fabdf9096465ce011a6c6736e9ae,2932
+    pantry-tree:
+      sha256: 0e3dd52406c263fd4b54d03123e71423d1ef6939fb8c179745486243c519fdf7
+      size: 1926
+  original:
+    hackage: vty-unix-0.2.0.0
+- completed:
+    hackage: vty-windows-0.2.0.0@sha256:91a11bab7bb79f8ee0d4a8166824ed855251cbac101eed3fdf607ad519a13557,2815
+    pantry-tree:
+      sha256: 50d343eb4df5d1901b1773baeaff8ae7c6a88204d0997430e26f0dc50a1a63eb
+      size: 2160
+  original:
+    hackage: vty-windows-0.2.0.0
+- completed:
+    hackage: ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293
+    pantry-tree:
+      sha256: 863f042cd38e712406ac3ca414eb83e4f2264a71913fca0319d940655ebc873a
+      size: 253
+  original:
+    hackage: ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293
 snapshots:
 - completed:
-    sha256: 5a59b2a405b3aba3c00188453be172b85893cab8ebc352b1ef58b0eae5d248a2
-    size: 650475
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/26.yaml
-  original: lts-20.26
+    sha256: 7d4b649cf368f9076d8aa049aa44efe58950971d105892734e9957b2a26a2186
+    size: 640060
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/21/21.yaml
+  original: lts-21.21

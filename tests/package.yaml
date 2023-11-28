@@ -53,6 +53,7 @@ library:
   - conduit-aeson
   - data-default
   - directory
+  - ex-pool
   - filepath
   - monad-logger
   - mtl
@@ -61,7 +62,6 @@ library:
   - postgresql-simple
   - process
   - random
-  - resource-pool
   - retry
   - row-types
   - safe
@@ -80,5 +80,6 @@ executables:
     - -with-rtsopts=-N
     build-tools: sandwich:sandwich-discover
     dependencies:
+    - monad-logger
     - optparse-applicative
     - tests

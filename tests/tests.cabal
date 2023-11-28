@@ -60,6 +60,7 @@ library
     , containers
     , data-default
     , directory
+    , ex-pool
     , exceptions
     , filepath
     , lens
@@ -73,7 +74,6 @@ library
     , postgresql-simple
     , process
     , random
-    , resource-pool
     , retry
     , row-types
     , safe
@@ -149,6 +149,7 @@ executable tests-exe
     , lsp-test
     , lsp-types
     , monad-control
+    , monad-logger
     , optparse-applicative
     , safe
     , sandwich
