@@ -26,7 +26,7 @@ import UnliftIO.Temporary
 introduceNixEnvironment :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => [NixKernelSpec] -> [ChannelAndAttr] -> Text -> SpecFree (LabelValue "nixEnvironment" FilePath :> context) m () -> SpecFree context m ()
-introduceNixEnvironment kernels otherPackages label = introduceWith [i|#{label} Nix environment|] nixEnvironment $ \action -> do
+introduceNixEnvironment kernels otherPackages label = introduceWith [i|#{label} Nix|] nixEnvironment $ \action -> do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
   metadata :: A.Object <- withFile "/dev/null" WriteMode $ \devNullHandle -> do

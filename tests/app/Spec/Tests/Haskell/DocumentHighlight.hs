@@ -18,11 +18,11 @@ import TestLib.NixEnvironmentContext
 
 documentHighlightTests :: (LspContext context m) => SpecFree context m ()
 documentHighlightTests = describe "Document highlight" $ do
-  it "highlights foo" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
+  it "foo (.ipynb)" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
     ident <- openDoc filename "haskell"
     getHighlights ident (Position 0 1) >>= (`shouldBe` documentHighlightResults)
 
-  it "highlights foo in a regular doc" $ doSession' "Test.hs" lsName documentHighlightCodeRegular $ \filename -> do
+  it "foo (.hs)" $ doSession' "Test.hs" lsName documentHighlightCodeRegular $ \filename -> do
     ident <- openDoc filename "haskell"
     getHighlights ident (Position 0 1) >>= (
       `shouldBe`  [
