@@ -8,6 +8,7 @@ import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Types
 
 
 kernelSpec :: NixKernelSpec
@@ -22,7 +23,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelSettings = Nothing
   }
 
-tests :: TopSpec
+tests :: LanguageSpec
 tests = describe "Octave" $ introduceNixEnvironment [kernelSpec] [] "Octave" $ introduceJupyterRunner $ do
   testKernelSearchersBuild "octave"
 
@@ -30,4 +31,4 @@ tests = describe "Octave" $ introduceNixEnvironment [kernelSpec] [] "Octave" $ i
 
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = jupyterMain tests

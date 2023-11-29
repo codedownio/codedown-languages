@@ -16,10 +16,11 @@ import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Types
 import TestLib.Util (aesonFromList)
 
 
-tests :: TopSpec
+tests :: LanguageSpec
 tests = describe "Ruby" $ do
   kernelTests "ruby"
   kernelTests "ruby_3_0"
@@ -27,7 +28,7 @@ tests = describe "Ruby" $ do
   kernelTests "ruby_3_2"
 
 
-kernelTests :: Text -> TopSpec
+kernelTests :: Text -> LanguageSpec
 kernelTests lang = do
   describe (T.unpack lang) $ introduceNixEnvironment [kernelSpec lang] [] [i|Ruby (#{lang})|] $ introduceJupyterRunner $ do
     testKernelSearchersNonempty lang
@@ -54,4 +55,4 @@ kernelSpec lang = NixKernelSpec {
   }
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = jupyterMain tests

@@ -8,6 +8,7 @@ import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Types
 
 
 kernelSpec :: NixKernelSpec
@@ -22,7 +23,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelSettings = Nothing
   }
 
-tests :: TopSpec
+tests :: LanguageSpec
 tests = describe "R" $ introduceNixEnvironment [kernelSpec] [] "R" $ introduceJupyterRunner $ do
   testKernelSearchersNonempty "R"
 
@@ -31,4 +32,4 @@ tests = describe "R" $ introduceNixEnvironment [kernelSpec] [] "R" $ introduceJu
 
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = jupyterMain tests

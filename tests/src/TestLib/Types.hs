@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE RankNTypes #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-record-updates #-}
 
 module TestLib.Types where
@@ -7,10 +8,23 @@ import Data.Aeson as A
 import Data.Aeson.TH
 import qualified Data.List as L
 import Data.Text
-import Test.Sandwich
+import Options.Applicative hiding (action)
+import Test.Sandwich as Sandwich
 import TestLib.Aeson
 import TestLib.NixTypes
 
+
+-- * CLI
+
+data SpecialOptions = SpecialOptions {
+  optTestParallelism :: Int
+  }
+
+specialOptions :: Parser SpecialOptions
+specialOptions = SpecialOptions
+  <$> option auto (long "test-parallelism" <> short 'n' <> showDefault <> help "Test parallelism" <> value 4 <> metavar "INT")
+
+-- * Nix
 
 data LockedType = LockedTypeGithub
   deriving (Show)
@@ -37,6 +51,8 @@ lockedToNixSrcSpec name (LockedGithub {..}) = NixSrcFetchFromGithub {
   , nixSrcSha256 = lockedNarHash
   }
 
+-- * Labels
+
 nixEnvironment :: Label "nixEnvironment" FilePath
 nixEnvironment = Label
 type HasNixEnvironment context = HasLabel context "nixEnvironment" FilePath
@@ -44,3 +60,12 @@ type HasNixEnvironment context = HasLabel context "nixEnvironment" FilePath
 jupyterRunner :: Label "jupyterRunner" FilePath
 jupyterRunner = Label
 type HasJupyterRunner context = HasLabel context "jupyterRunner" FilePath
+
+-- * Spec types
+
+type SomeLanguageSpec context = (
+  HasBaseContext context
+  , HasJupyterRunner context
+  )
+
+type LanguageSpec = forall context. SomeLanguageSpec context => SpecFree context IO ()

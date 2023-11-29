@@ -15,6 +15,7 @@ import TestLib.JupyterTypes
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Types
 
 
 kernelSpec :: NixKernelSpec
@@ -29,7 +30,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelSettings = Nothing
   }
 
-tests :: TopSpec
+tests :: LanguageSpec
 tests = describe "Postgres tests" $ introduceNixEnvironment [kernelSpec] [] "Postgres" $ introduceJupyterRunner $ do
   testKernelSearchersBuild "postgres"
 
@@ -53,4 +54,4 @@ tests = describe "Postgres tests" $ introduceNixEnvironment [kernelSpec] [] "Pos
         v -> expectationFailure [i|Expected single map with text/plain. Got: #{v}|]
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = jupyterMain tests

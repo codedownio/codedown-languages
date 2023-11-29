@@ -14,10 +14,11 @@ import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Types
 import TestLib.Util
 
 
-tests :: TopSpec
+tests :: LanguageSpec
 tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ introduceJupyterRunner $ do
   testKernelSearchersBuild "rust"
 
@@ -57,4 +58,4 @@ kernelSpec = NixKernelSpec {
   }
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = jupyterMain tests

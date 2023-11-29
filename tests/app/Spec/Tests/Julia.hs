@@ -18,16 +18,17 @@ import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Types
 import TestLib.Util
 
 
-tests :: TopSpec
+tests :: LanguageSpec
 tests = do
   juliaTests "julia16"
   juliaTests "julia18"
   juliaTests "julia19"
 
-juliaTests :: Text -> TopSpec
+juliaTests :: Text -> LanguageSpec
 juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kernelSpec lang] [] [i|Julia (#{lang})|] $ introduceJupyterRunner $ do
   testKernelSearchersNonempty lang
 
@@ -79,4 +80,4 @@ kernelSpec lang = NixKernelSpec {
   }
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = jupyterMain tests

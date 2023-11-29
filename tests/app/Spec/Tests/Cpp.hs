@@ -10,9 +10,10 @@ import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Types
 
 
-tests :: TopSpec
+tests :: LanguageSpec
 tests = describe "C++" $ parallel $ do
   -- tests' "cpp98"
   tests' "cpp11"
@@ -21,7 +22,7 @@ tests = describe "C++" $ parallel $ do
   tests' "cpp20"
   tests' "cpp23"
 
-tests' :: Text -> TopSpec
+tests' :: Text -> LanguageSpec
 tests' kernelName = describe [i|C++ (#{kernelName})|] $ introduceNixEnvironment [kernelSpec kernelName] [] "C++" $ introduceJupyterRunner $ do
   testKernelSearchersBuild kernelName
 
@@ -43,4 +44,4 @@ kernelSpec kernelName  = NixKernelSpec {
   }
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = jupyterMain tests
