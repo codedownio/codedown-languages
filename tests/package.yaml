@@ -37,6 +37,7 @@ dependencies:
 - lsp-test
 - lsp-types
 - monad-control
+- optparse-applicative
 - safe
 - sandwich
 - string-interpolate
@@ -81,5 +82,4 @@ executables:
     build-tools: sandwich:sandwich-discover
     dependencies:
     - monad-logger
-    - optparse-applicative
     - tests

@@ -70,6 +70,7 @@ library
     , monad-logger
     , mtl
     , network
+    , optparse-applicative
     , postgresql-libpq
     , postgresql-simple
     , process
