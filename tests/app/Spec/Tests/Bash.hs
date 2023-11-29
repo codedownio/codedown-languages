@@ -11,6 +11,7 @@ import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Types
 import TestLib.Util
 
 
@@ -28,7 +29,7 @@ kernelSpec = NixKernelSpec {
       ]
   }
 
-tests :: TopSpec
+tests :: LanguageSpec
 tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ introduceJupyterRunner $ do
   testKernelSearchersBuild "bash"
 
@@ -44,4 +45,4 @@ tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ intro
       ]
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = jupyterMain tests

@@ -3,9 +3,7 @@
 module Spec.Tests.Shells.Zsh (tests) where
 
 import Data.String.Interpolate
-import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
-import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.Types

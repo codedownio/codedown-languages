@@ -13,10 +13,11 @@ import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Types
 import TestLib.Util
 
 
-tests :: TopSpec
+tests :: LanguageSpec
 tests = describe "Python" $ parallel $ do
   tests' "python3"
 
@@ -25,7 +26,7 @@ tests = describe "Python" $ parallel $ do
   -- tests' "pypy3"
 
 
-tests' :: Text -> TopSpec
+tests' :: Text -> LanguageSpec
 tests' kernelName = describe [i|Python (#{kernelName})|] $ introduceNixEnvironment [kernelSpec kernelName] [] "Python 3" $ introduceJupyterRunner $ do
   testKernelSearchersNonempty kernelName
 
@@ -86,4 +87,4 @@ kernelSpec kernelName = NixKernelSpec {
 
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = jupyterMain tests

@@ -21,9 +21,10 @@ import TestLib.JupyterRunnerContext
 import TestLib.JupyterTypes
 import TestLib.NixEnvironmentContext
 import TestLib.TestSearchers
+import TestLib.Types
 
 
-tests :: TopSpec
+tests :: LanguageSpec
 tests = do
   -- See languages/haskell/default.nix for details on what's available
 
@@ -34,9 +35,9 @@ tests = do
   haskellCommonTests "haskell-ghc96"
 
 
-haskellCommonTests :: Text -> TopSpec
+haskellCommonTests :: Text -> LanguageSpec
 haskellCommonTests lang = do
-  describe [i|Haskell #{lang} with hlint output|] $ introduceNixEnvironment [kernelSpecWithHlintOutput lang] [] "Haskell" $ introduceJupyterRunner $ do
+  describe [i|Haskell #{lang} with hlint output|] $ introduceNixEnvironment [kernelSpecWithHlintOutput lang] [] "Haskell" $ do
     describe "Kernel" $ do
       -- With the setting turned on, we should get hlint output
       itHasDisplayTexts lang etaExpandCode [Just (A.Array $ V.fromList [
@@ -69,4 +70,4 @@ haskellCommonTests lang = do
 
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = jupyterMain tests

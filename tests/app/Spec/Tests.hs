@@ -12,16 +12,24 @@ import Control.Monad.IO.Class
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Options.Applicative hiding (action)
 import Test.Sandwich
+import TestLib.Types
+import TestLib.JupyterRunnerContext
 
 #insert_test_imports
 
 
-tests :: TopSpecWithOptions' SpecialOptions
-tests = introduce' (defaultNodeOptions { nodeOptionsCreateFolder = False }) "Introduce parallel semaphore" parallelSemaphore getQSem (const $ return ()) $ $(getSpecFromFolder $ defaultGetSpecFromFolderOptions {
-  getSpecCombiner = 'describeParallel
-  , getSpecIndividualSpecHooks = 'withParallelSemaphore
-  , getSpecWarnOnParseError = NoWarnOnParseError
-  })
+tests :: forall context. (
+  HasBaseContext context
+  , HasCommandLineOptions context SpecialOptions
+  ) => SpecFree context IO ()
+tests =
+  introduceJupyterRunner $
+    introduce' (defaultNodeOptions { nodeOptionsCreateFolder = False }) "Introduce parallel semaphore" parallelSemaphore getQSem (const $ return ()) $
+      $(getSpecFromFolder $ defaultGetSpecFromFolderOptions {
+           getSpecCombiner = 'describeParallel
+           , getSpecIndividualSpecHooks = 'withParallelSemaphore
+           , getSpecWarnOnParseError = NoWarnOnParseError
+           })
   where
     getQSem = getCommandLineOptions >>= liftIO . newQSem . getParallelism
 
@@ -30,15 +38,6 @@ tests = introduce' (defaultNodeOptions { nodeOptionsCreateFolder = False }) "Int
 
 getParallelism :: CommandLineOptions SpecialOptions -> Int
 getParallelism = optTestParallelism . optUserOptions
-
-data SpecialOptions = SpecialOptions {
-  optTestParallelism :: Int
-  }
-
-specialOptions :: Parser SpecialOptions
-specialOptions = SpecialOptions
-  <$> option auto (long "test-parallelism" <> short 'n' <> showDefault <> help "Test parallelism" <> value 4 <> metavar "INT")
-
 
 describeParallel :: (
   MonadBaseControl IO m, MonadIO m, MonadMask m, HasParallelSemaphore context

@@ -10,6 +10,7 @@ import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Types
 
 
 kernelSpec :: NixKernelSpec
@@ -24,7 +25,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelSettings = Nothing
   }
 
-tests :: TopSpec
+tests :: LanguageSpec
 tests = describe "Clojure" $ introduceNixEnvironment [kernelSpec] [] "Clojure" $ introduceJupyterRunner $ do
   testKernelSearchersBuild "clojure"
 
@@ -35,4 +36,4 @@ tests = describe "Clojure" $ introduceNixEnvironment [kernelSpec] [] "Clojure" $
 
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = jupyterMain tests

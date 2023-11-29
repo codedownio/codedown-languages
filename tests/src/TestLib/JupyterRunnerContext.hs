@@ -1,5 +1,6 @@
-{-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE OverloadedLists #-}
+{-# LANGUAGE RankNTypes #-}
 
 module TestLib.JupyterRunnerContext where
 
@@ -20,7 +21,7 @@ import Data.Text.IO as T
 import qualified Data.Vector as V
 import System.Exit
 import System.FilePath
-import Test.Sandwich
+import Test.Sandwich as Sandwich
 import TestLib.JupyterTypes
 import TestLib.Types
 import TestLib.Util
@@ -202,3 +203,8 @@ notebookWithCode kernel code = A.object [
   where
     rawLines = T.splitOn "\n" code
     ls = [x <> "\n" | x <- L.init rawLines] <> [L.last rawLines]
+
+-- * Utility main function
+
+jupyterMain :: LanguageSpec -> IO ()
+jupyterMain tests = runSandwichWithCommandLineArgs' Sandwich.defaultOptions specialOptions (introduceJupyterRunner tests)

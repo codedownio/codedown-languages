@@ -10,6 +10,7 @@ import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
+import TestLib.Types
 
 
 kernelSpec :: NixKernelSpec
@@ -24,7 +25,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelSettings = Nothing
   }
 
-tests :: TopSpec
+tests :: LanguageSpec
 tests = describe "Coq" $ introduceNixEnvironment [kernelSpec] [] "Coq" $ introduceJupyterRunner $ do
   testKernelSearchersBuild "coq"
 
@@ -44,4 +45,4 @@ tests = describe "Coq" $ introduceNixEnvironment [kernelSpec] [] "Coq" $ introdu
 
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = jupyterMain tests

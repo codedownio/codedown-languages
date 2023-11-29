@@ -3,10 +3,12 @@ module Main where
 import Test.Sandwich
 
 import qualified Spec.Tests as Tests
+import TestLib.Types
 
-tests :: TopSpecWithOptions' Tests.SpecialOptions
+
+tests :: TopSpecWithOptions' SpecialOptions
 tests = Tests.tests
 
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs' defaultOptions Tests.specialOptions tests
+main = runSandwichWithCommandLineArgs' defaultOptions specialOptions tests
