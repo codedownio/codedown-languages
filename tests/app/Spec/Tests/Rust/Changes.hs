@@ -3,7 +3,6 @@
 module Spec.Tests.Rust.Changes where
 
 import Control.Lens
-import Control.Monad
 import Data.Function
 import qualified Data.List as L
 import Data.Row.Records
