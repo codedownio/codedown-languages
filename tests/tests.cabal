@@ -114,6 +114,7 @@ executable tests-exe
       Spec.Tests.R
       Spec.Tests.Ruby
       Spec.Tests.Rust
+      Spec.Tests.Rust.Changes
       Spec.Tests.Rust.Completion
       Spec.Tests.Rust.Diagnostics
       Spec.Tests.Rust.Hovers
@@ -152,6 +153,7 @@ executable tests-exe
     , monad-control
     , monad-logger
     , optparse-applicative
+    , row-types
     , safe
     , sandwich
     , string-interpolate

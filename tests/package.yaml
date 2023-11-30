@@ -82,4 +82,5 @@ executables:
     build-tools: sandwich:sandwich-discover
     dependencies:
     - monad-logger
+    - row-types
     - tests

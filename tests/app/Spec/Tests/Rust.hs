@@ -6,6 +6,7 @@ import Data.Aeson as A
 import Data.String.Interpolate
 import qualified Data.Text as T
 import Safe
+import Spec.Tests.Rust.Changes
 import Spec.Tests.Rust.Completion
 import Spec.Tests.Rust.Diagnostics
 import Spec.Tests.Rust.Hovers
@@ -31,6 +32,7 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ intro
     Nothing -> expectationFailure [i|Kernel produced no output.|]
 
   describe "LSP" $ do
+    changesTests
     completionTests
     diagnosticsTests
     hoverTests

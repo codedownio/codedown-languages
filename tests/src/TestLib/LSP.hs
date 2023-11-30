@@ -29,6 +29,7 @@ import qualified Data.Text as T hiding (filter)
 import Data.Text hiding (filter)
 import qualified Data.Text.IO as T
 import GHC.Int
+import GHC.Stack
 import Language.LSP.Protocol.Lens as LSP hiding (diagnostics, hover, id, label, name, ranges)
 import Language.LSP.Protocol.Types
 import Language.LSP.Test
@@ -193,12 +194,12 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
 
   handleFn $ runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir session
 
-assertDiagnosticRanges :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
+assertDiagnosticRanges :: (HasCallStack, MonadThrow m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
   where
     ranges = fmap (\x -> (x ^. range, x ^. code)) diagnostics
 
-assertDiagnosticRanges' :: MonadThrow m => [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)] -> ExampleT ctx m ()
+assertDiagnosticRanges' :: (HasCallStack, MonadThrow m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)] -> m ()
 assertDiagnosticRanges' diagnostics desired = ranges `shouldBe` desired
   where
     ranges = fmap (\x -> (x ^. range, x ^. code, x ^. LSP.message)) diagnostics

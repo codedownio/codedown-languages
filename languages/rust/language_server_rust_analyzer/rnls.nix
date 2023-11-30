@@ -21,15 +21,15 @@
 # Fetch a static binary, only ~5MB
 stdenv.mkDerivation {
   pname = "rust-notebook-language-server";
-  version = "0.2.1.0";
+  version = "0.2.2.0";
 
   src = fetchzip {
-    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.1.0/rust-notebook-language-server-0.2.1.0-x86_64-linux.tar.gz";
-    sha256 = "sha256-yV6aRtWh8Hg9bh6Mg7izDE2mICGWAkER6d/Q462/7Nk=";
+    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.2.0/rust-notebook-language-server-0.2.2.0-x86_64-linux.tar.gz";
+    sha256 = "sha256-W1gM48Rc4xhNcpdKmTQH0qZR3Y+r/AKEjXdI8oq+ZjA=";
   };
 
   installPhase = ''
     mkdir -p $out/bin
-    cp rust-notebook-language-server-0.2.1.0-x86_64-linux $out/bin/rust-notebook-language-server
+    cp rust-notebook-language-server-0.2.2.0-x86_64-linux $out/bin/rust-notebook-language-server
   '';
 }
