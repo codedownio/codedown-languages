@@ -34,6 +34,13 @@ let
     icon = ./logo-64x64.png;
     extensions = ["rs" "rlib"];
     notebook_suffix = if raw then ".rs" else "";
+
+    # Replace notebook end delimiters with semicolons. This will allow us to have cells that end with non-semicolon
+    # expressions.
+    # If the cell already has a semicolon, rust-analyzer will add a diagnostic complaining about the extra one.
+    # But that's fine, because it will get untransformed out of existence.
+    replace_end_delimiter_with = ";";
+
     kernel_name = kernelName;
     attrs = if raw then [] else ["rust"];
     type = "stream";
