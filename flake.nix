@@ -44,7 +44,7 @@
           };
 
           packages = rec {
-            inherit (codedown) spellchecker nixpkgsStableSearcher shellsSearcher exportersSearcher languagesSearcher;
+            inherit (codedown) spellchecker nixpkgsStableSearcher shellsSearcher exportersSearcher languagesSearcher languagesIcons;
 
             inherit (codedown) languages;
 

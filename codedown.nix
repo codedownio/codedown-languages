@@ -76,6 +76,10 @@ rec {
     packages = languagesFn true;
     packageMustBeDerivation = false;
   };
+  languagesIcons = common.searcherIcons' {
+    packages = languagesFn true;
+    packageMustBeDerivation = false;
+  };
 
   settingsSchemas = pkgsStable.lib.mapAttrs (attr: value:
     common.safeEval (pkgsStable.lib.attrByPath ["meta" "settingsSchema"] [] value)
