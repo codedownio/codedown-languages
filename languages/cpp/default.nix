@@ -19,12 +19,12 @@ let
   ];
 
   icons = {
-    # cpp98 = ./cpp11.png; # TODO
-    cpp11 = ./cpp11.png;
-    cpp14 = ./cpp14.png;
-    cpp17 = ./cpp17.png;
-    cpp20 = ./cpp2a.png; # TODO
-    cpp23 = ./cpp2a.png; # TODO
+    # cpp98 = ./cpp11-logo-64x64.png; # TODO
+    cpp11 = ./cpp11-logo-64x64.png;
+    cpp14 = ./cpp14-logo-64x64.png;
+    cpp17 = ./cpp17-logo-64x64.png;
+    cpp20 = ./cpp2a-logo-64x64.png; # TODO
+    cpp23 = ./cpp2a-logo-64x64.png; # TODO
   };
 
   stds = {

@@ -15,8 +15,8 @@ rec {
           "${(callPackage ./ijavascript {}).ijavascript}/bin/ijskernel"
           "{connection_file}"
         ];
-        logo32 = ./logo-32x32.png;
-        logo64 = ./logo-64x64.png;
+        logo32 = ./javascript-logo-32x32.png;
+        logo64 = ./javascript-logo-64x64.png;
         metadata = {
           codedown = {
             priority = 1;

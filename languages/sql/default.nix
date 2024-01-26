@@ -14,8 +14,8 @@ rec {
           "{connection_file}"
         ];
         language = "sql";
-        logo32 = ./logo-32x32.png;
-        logo64 = ./logo-64x64.png;
+        logo32 = ./sql-logo-32x32.png;
+        logo64 = ./sql-logo-64x64.png;
         env = {};
         metadata = {
           codedown = {

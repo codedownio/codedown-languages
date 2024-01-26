@@ -72,7 +72,7 @@ listToAttrs (map (x:
       baseName = x;
       displayName = "Ruby";
       version = ruby.version;
-      icon = ./logo-64x64.png;
+      icon = ./iruby-64x64.png;
       inherit settingsSchema;
     };
 

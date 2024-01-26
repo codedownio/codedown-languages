@@ -23,7 +23,7 @@ let
     baseName = "postgres";
     displayName = "PostgreSQL";
     description = "A simple Jupyter kernel for PostgreSQL";
-    icon = ./logo-64x64.png;
+    icon = ./postgres-logo-64x64.png;
     version = "0.1";
     inherit settingsSchema;
   };

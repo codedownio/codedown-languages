@@ -20,7 +20,7 @@ common.writeTextDirWithMeta jls.meta "lib/codedown/language-servers/python-${ker
   version = jls.version;
   display_name = "Jedi";
   description = jls.meta.description;
-  icon = ./logo.png;
+  icon = ./jedi-logo.png;
   extensions = ["py"];
   notebook_suffix = ".py";
   kernel_name = kernelName;

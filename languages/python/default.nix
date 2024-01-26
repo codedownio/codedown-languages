@@ -31,7 +31,7 @@ let
       display_name = "IPython " + python.pkgs.ipython.version;
       attr = "ipython";
       args = ["${python}/bin/ipython"];
-      icon = ./logo-64x64.png;
+      icon = ./python-logo-64x64.png;
     };
   };
 
@@ -166,7 +166,7 @@ lib.listToAttrs (map (x:
       baseName = x;
       inherit displayName settingsSchema;
       version = basePython.version;
-      icon = ./logo-64x64.png;
+      icon = ./python-logo-64x64.png;
     };
 
   in

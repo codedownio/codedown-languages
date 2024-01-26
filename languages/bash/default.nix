@@ -41,7 +41,7 @@ lib.listToAttrs (map (x:
       baseName = x;
       displayName = "Bash " + bash.version;
       version = bash.version;
-      icon = ./bash.png;
+      icon = ./bash-logo-128x128.png;
       inherit settingsSchema;
     };
   in

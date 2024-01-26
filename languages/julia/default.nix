@@ -107,7 +107,7 @@ mapAttrs (attr: value:
       baseName = attr;
       inherit displayName settingsSchema;
       version = baseJulia.version;
-      icon = ./logo-64x64.png;
+      icon = ./julia-logo-64x64.png;
     };
 
     python = python3;

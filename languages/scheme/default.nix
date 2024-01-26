@@ -16,7 +16,7 @@ rec {
         ];
         language = "scheme";
         logo32 = null;
-        logo64 = ./logo-64x64.png;
+        logo64 = ./scheme-logo-64x64.png;
         metadata = {
           codedown = {
             priority = 1;

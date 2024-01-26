@@ -18,8 +18,8 @@ common.makeJupyterKernel {
       "{connection_file}"
     ];
     language = "clojure";
-    logo32 = ./logo-32x32.png;
-    logo64 = ./logo-64x64.png;
+    logo32 = ./clojure-logo-32x32.png;
+    logo64 = ./clojure-logo-64x64.png;
     metadata = {
       codedown = {
         inherit attrs extensions;

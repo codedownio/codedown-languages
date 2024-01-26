@@ -25,7 +25,7 @@ let
       display_name = "Octave " + version;
       attr = "octave";
       args = ["${octave}/bin/octave"];
-      icon = ./logo-64x64.png;
+      icon = ./octave-logo-64x64.png;
     };
   };
 
@@ -41,7 +41,7 @@ listToAttrs (map (x:
       baseName = x;
       displayName = "Octave " + baseOctave.version;
       version = baseOctave.version;
-      icon = ./logo-64x64.png;
+      icon = ./octave-logo-64x64.png;
       inherit settingsSchema;
     };
 

@@ -27,8 +27,8 @@ common.makeJupyterKernelInner metaOnly (
         "kernel"
         "{connection_file}"
       ];
-      logo32 = ./logo-32x32.png;
-      logo64 = ./logo-64x64.png;
+      logo32 = ./iruby-32x32.png;
+      logo64 = ./iruby-64x64.png;
       metadata = {
         codedown = {
           inherit attrs extensions;

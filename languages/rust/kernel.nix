@@ -30,8 +30,8 @@ common.makeJupyterKernelInner metaOnly (
         "{connection_file}"
       ];
       inherit language;
-      logo32 = ./logo-32x32.png;
-      logo64 = ./logo-64x64.png;
+      logo32 = ./rust-logo-32x32.png;
+      logo64 = ./rust-logo-64x64.png;
       metadata = {
         codedown = {
           inherit attrs extensions;

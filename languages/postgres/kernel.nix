@@ -44,8 +44,8 @@ common.makeJupyterKernelInner metaOnly {
       "-f" "{connection_file}"
     ];
     language = "postgres";
-    logo32 = ./logo-32x32.png;
-    logo64 = ./logo-64x64.png;
+    logo32 = ./postgres-logo-32x32.png;
+    logo64 = ./postgres-logo-64x64.png;
     metadata = {
       codedown = {
         inherit attrs extensions;

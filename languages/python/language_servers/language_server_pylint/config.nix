@@ -23,7 +23,7 @@ common.writeTextDirWithMeta python.pkgs.pylint.meta "lib/codedown/language-serve
     version = python.pkgs.pylint;
     display_name = "Pylint";
     description = python.pkgs.pylint.meta.description;
-    icon = ./logo.png;
+    icon = ./pylint-logo.png;
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;

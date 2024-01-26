@@ -65,8 +65,8 @@ common.makeJupyterKernel {
       "{connection_file}"
     ];
     language = "dot";
-    logo32 = ./logo-32x32.png;
-    logo64 = ./logo-64x64.png;
+    logo32 = ./dot-logo-32x32.png;
+    logo64 = ./dot-logo-64x64.png;
     env = { FONTCONFIG_FILE = "${fontsConf}"; };
     metadata = {
       codedown = {

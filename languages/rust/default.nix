@@ -66,7 +66,7 @@ listToAttrs (map (x:
     meta = rustPackages.rustc.meta // {
       baseName = x;
       inherit displayName;
-      icon = ./logo-64x64.png;
+      icon = ./rust-logo-64x64.png;
       inherit settingsSchema;
     };
 

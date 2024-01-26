@@ -16,7 +16,7 @@ common.writeTextDirWithMeta clojure-lsp.meta "lib/codedown/language-servers/cloj
   version = clojure-lsp.version;
   display_name = "Clojure LSP";
   description = clojure-lsp.meta.description or "Clojure & ClojureScript Language Server (LSP) implementation";
-  icon = ./logo-64x64.png;
+  icon = ./clojure-logo-64x64.png;
   extensions = ["clj"];
   notebook_suffix = ".clj";
   kernel_name = kernelName;

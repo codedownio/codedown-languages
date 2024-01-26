@@ -21,7 +21,7 @@ common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-Lang
   name = "LanguageServer";
   display_name = "LanguageServer.jl";
   description = "An implementation of the Microsoft Language Server Protocol for the Julia language";
-  icon = ./logo-64x64.png;
+  icon = ./julia-logo-64x64.png;
   extensions = ["jl"];
   notebook_suffix = ".jl";
   kernel_name = kernelName;

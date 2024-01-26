@@ -36,7 +36,7 @@ let
     baseName = "R";
     displayName = "R";
     version = R.version;
-    icon = ./logo-64x64.png;
+    icon = ./r-logo-64x64.png;
   };
 
   repls = rWithPackages: version: {
@@ -44,7 +44,7 @@ let
       display_name = "R";
       attr = "r";
       args = ["${rWithPackages}/bin/R"];
-      icon = ./logo-64x64.png;
+      icon = ./r-logo-64x64.png;
     };
   };
 

@@ -17,7 +17,7 @@ common.writeTextDirWithMeta solargraph.meta "lib/codedown/language-servers/ruby-
   version = solargraph.version;
   display_name = "Solargraph";
   description = "A Ruby language server";
-  icon = ./logo-64x64.png;
+  icon = ./iruby-64x64.png;
   extensions = ["rb"];
   notebook_suffix = ".rb";
   kernel_name = kernelName;

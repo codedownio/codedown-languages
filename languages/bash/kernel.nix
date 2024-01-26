@@ -28,8 +28,8 @@ common.makeJupyterKernelInner metaOnly {
       "{connection_file}"
     ];
     language = lib.head attrs;
-    logo32 = ./bash.png;
-    logo64 = ./bash.png;
+    logo32 = ./bash-logo-128x128.png;
+    logo64 = ./bash-logo-128x128.png;
     metadata = {
       codedown = {
         inherit attrs extensions;

@@ -24,7 +24,7 @@ common.makeJupyterKernel {
     ];
     language = "r";
     logo32 = null;
-    logo64 = ./logo-64x64.png;
+    logo64 = ./r-logo-64x64.png;
     metadata = {
       codedown = {
         inherit attrs extensions;

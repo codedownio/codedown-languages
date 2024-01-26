@@ -32,8 +32,8 @@ common.makeJupyterKernelInner metaOnly (
         "{connection_file}"
       ];
       language = lib.head attrs;
-      logo32 = ./logo-32x32.png;
-      logo64 = ./logo-64x64.png;
+      logo32 = ./julia-logo-32x32.png;
+      logo64 = ./julia-logo-64x64.png;
       env = {
         LC_ALL = "C";
         PYTHON = ''${python}/bin/python'';

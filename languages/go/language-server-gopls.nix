@@ -30,7 +30,7 @@ common.writeTextDirWithMeta gopls.meta "lib/codedown/language-servers/go-${kerne
   version = gopls.version;
   display_name = "gopls";
   description = gopls.meta.description;
-  icon = ./logo-64x64.png;
+  icon = ./go-logo-64x64.png;
   extensions = ["go"];
   notebook_suffix = ".go";
   kernel_name = kernelName;
@@ -48,7 +48,7 @@ common.writeTextDirWithMeta gopls.meta "lib/codedown/language-servers/go-${kerne
 #   name = "go-langserver";
 #   display_name = "go-langserver";
 #   description = go-langserver.meta.description;
-#   icon = ./logo-64x64.png;
+#   icon = ./go-logo-64x64.png;
 #   extensions = ["go"];
 #   notebook_suffix = ".go";
 #   kernel_name = kernelName;

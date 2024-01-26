@@ -22,7 +22,7 @@ let
       display_name = "Clojure " + clojure.version;
       attr = "clojure";
       args = ["${clojure}/bin/clojure"];
-      icon = ./logo-64x64.png;
+      icon = ./clojure-logo-64x64.png;
     };
   };
 
@@ -54,7 +54,7 @@ listToAttrs (map (x:
       baseName = x;
       displayName = "Clojure";
       version = clojure.version;
-      icon = ./logo-64x64.png;
+      icon = ./clojure-logo-64x64.png;
       inherit settingsSchema;
     };
 

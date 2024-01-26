@@ -1,14 +1,16 @@
-{ lib
-, stdenv
-, runCommand
-, writeScript
+{ callPackage
 , fetchFromGitHub
-, writeText
-, sqlite
-, packages
+, lib
+, linkFarm
 , nodejs
-, callPackage
+, packages
+, runCommand
+, sqlite
+, stdenv
+, writeScript
 , writeShellScript
+, writeText
+
 , name ? ""
 , attrPrefix ? ""
 
@@ -59,6 +61,14 @@ rec {
 
     EOF
   '';
+
+  allIcons = let
+    uniquePaths = lib.mapAttrsToList (k: v: common.safeEval (lib.attrByPath ["meta" "icon"] "" v)) filteredPackages;
+  in
+    linkFarm "all-searcher-icons" (map (path: {
+      name = builtins.hashString "md5" (toString path);
+      path = path;
+    }) uniquePaths);
 
   searcher = writeShellScript "searcher.sh" ''
     function join_by {

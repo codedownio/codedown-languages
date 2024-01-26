@@ -25,7 +25,7 @@ rec {
               inherit language;
               baseName = x;
               displayName = "Bash " + bash.version;
-              icon = ./bash.png;
+              icon = ./bash-logo-128x128.png;
             };
           }
     ) (filter (x: hasAttr x pkgs) baseCandidates);

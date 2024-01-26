@@ -31,7 +31,7 @@ let
     version = rustAnalyzerToUse.version;
     display_name = "rust-analyzer";
     description = rustAnalyzerToUse.meta.description;
-    icon = ./logo-64x64.png;
+    icon = ./rust-analyzer-logo-64x64.png;
     extensions = ["rs" "rlib"];
     notebook_suffix = if raw then ".rs" else "";
 

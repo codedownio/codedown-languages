@@ -53,7 +53,7 @@ rec {
       "{connection_file}"
     ];
     language = "ruby";
-    logo32 = runCommand "iruby-32x32.png" {} ''cp ${irubySrc}/logo/logo-32x32.png $out'';
-    logo64 = runCommand "iruby-64x64.png" {} ''cp ${irubySrc}/logo/logo-64x64.png $out'';
+    logo32 = runCommand "iruby-32x32.png" {} ''cp ${irubySrc}/logo/iruby-32x32.png $out'';
+    logo64 = runCommand "iruby-64x64.png" {} ''cp ${irubySrc}/logo/iruby-64x64.png $out'';
   };
 }

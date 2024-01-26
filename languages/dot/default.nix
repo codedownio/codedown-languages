@@ -23,7 +23,7 @@ lib.listToAttrs (map (x:
       baseName = "graphviz";
       displayName = "Graphviz " + graphviz.version;
       version = graphviz.version;
-      icon = ./logo-64x64.png;
+      icon = ./dot-logo-64x64.png;
     };
 
   in {
