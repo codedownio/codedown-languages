@@ -65,6 +65,11 @@
               pkgsStable.lib.mapAttrsToList (name: path: { inherit name path; })
                                             sample_environments
             );
+            sample_environments_metaonly = import ./sample_environments.nix { inherit codedown; metaOnly = true; };
+            sample_environments_farm_metaonly = pkgsStable.linkFarm "sample_environments_farm_metaonly" (
+              pkgsStable.lib.mapAttrsToList (name: path: { inherit name path; })
+                                            sample_environments_metaonly
+            );
 
             compilers = pkgsStable.callPackage ./languages/haskell/compilers.nix {
               ihaskell-source = pkgsStable.fetchFromGitHub {
