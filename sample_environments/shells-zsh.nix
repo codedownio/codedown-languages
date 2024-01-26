@@ -1,14 +1,14 @@
 { codedown
 , channels ? {}
 , overlays ? {}
+, metaOnly ? false
 , ...
 }:
 
 
 codedown.mkCodeDownEnvironment {
   environmentName = "shells-zsh";
-  inherit channels overlays;
-  # metaOnly = true;
+  inherit channels overlays metaOnly;
 
   kernels = [];
 
