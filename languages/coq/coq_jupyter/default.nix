@@ -29,8 +29,7 @@ rec {
   '';
 
   sizedLogo = size: stdenv.mkDerivation {
-    pname = "coq-logo-${size}x${size}.png";
-    inherit (coq) version;
+    name = "coq-${coq.version}-logo-${size}x${size}.png";
 
     src = coq.src;
 
