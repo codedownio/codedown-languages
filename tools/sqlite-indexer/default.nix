@@ -63,12 +63,12 @@ rec {
   '';
 
   allIcons = let
-    uniquePaths = lib.mapAttrsToList (k: v: common.safeEval (lib.attrByPath ["meta" "icon"] "" v)) filteredPackages;
+    uniquePaths = lib.mapAttrsToList (k: v: common.safeEval (lib.attrByPath ["meta" "icon"] null v)) filteredPackages;
   in
     linkFarm "all-searcher-icons" (map (path: {
       name = builtins.hashString "md5" (toString path);
       path = path;
-    }) uniquePaths);
+    }) (lib.filter (x: x != null) uniquePaths));
 
   searcher' = writeShellScript "searcher.sh" ''
     function join_by {
