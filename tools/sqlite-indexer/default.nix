@@ -131,7 +131,8 @@ rec {
   '';
 
   searcher = stdenv.mkDerivation {
-    name = "searcher";
+    pname = "searcher";
+    version = "1.0.0";
 
     dontUnpack = true;
     dontConfigure = true;
