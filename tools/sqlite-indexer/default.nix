@@ -70,7 +70,7 @@ rec {
       path = path;
     }) uniquePaths);
 
-  searcher = writeShellScript "searcher.sh" ''
+  searcher' = writeShellScript "searcher.sh" ''
     function join_by {
       local d=''${1-} f=''${2-}
       if shift 2; then
@@ -129,4 +129,24 @@ rec {
       echo ""
     done
   '';
+
+  searcher = stdenv.mkDerivation {
+    name = "searcher";
+
+    dontUnpack = true;
+    dontConfigure = true;
+    dontBuild = true;
+
+    installPhase =  ''
+      mkdir -p $out/lib
+      ln -s ${allIcons} $out/lib/icons
+
+      mkdir -p $out/bin
+      ln -s ${searcher'} $out/bin/searcher
+    '';
+
+    meta = {
+      mainProgram = "searcher";
+    };
+  };
 }
