@@ -1,7 +1,8 @@
-{ lib
-, callPackage
-, writeTextDir
+{ callPackage
+, lib
+, linkFarm
 , symlinkJoin
+, writeTextDir
 
 , requiredPackages
 , languages
@@ -19,6 +20,7 @@ args@{
 with lib;
 
 let
+  languagesCommon = callPackage ../languages/common.nix {};
   shellsCommon = callPackage ../shells/common.nix {};
 
   builtKernels = map (x: let kernel = (getAttr x.name languages).build (x.args // { inherit metaOnly; }); in
@@ -47,6 +49,23 @@ let
     ++ concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (if kernel.passthru ? "repls" then kernel.passthru.repls else {})) builtKernels
   ;
 
+  mkKernelUiMetadata = kernel: {
+    channel = kernel.channel;
+    name = kernel.name;
+
+    modes = let
+      addKernelInfo = modes: modes // { kernel = kernel.passthru.name; channel = kernel.passthru.channel; };
+    in
+      (if kernel.passthru ? "modes" then (map addKernelInfo kernel.passthru.modes) else []);
+
+    languageServerNames = [];
+
+    settings = if kernel ? "settings" then kernel.settings else {};
+    settingsSchema = if kernel ? "settingsSchema" then kernel.settingsSchema else {};
+
+    icon = if kernel.meta ? "icon" then kernel.meta.icon else null;
+  };
+
 in
 
 symlinkJoin {
@@ -59,4 +78,24 @@ symlinkJoin {
           ++ [(writeTextDir "lib/codedown/repls.yaml" (lib.generators.toYAML {} repls))]
           ++ [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporterInfos))]
   ;
+
+  passthru = {
+    ui_metadata = {
+      kernels = map mkKernelUiMetadata builtKernels;
+
+      icons = let
+        uniquePaths = map (v: languagesCommon.safeEval (lib.attrByPath ["meta" "icon"] "" v)) builtKernels;
+      in
+        linkFarm "all-environment-icons" (map (path: {
+          name = builtins.hashString "md5" (toString path);
+          path = path;
+        }) uniquePaths);
+
+      # modeInfos = concatMap (kernel: let
+      #   addKernelInfo = modes: modes // { kernel = kernel.passthru.name; channel = kernel.passthru.channel; };
+      # in
+      #   (if kernel.passthru ? "modes" then (map addKernelInfo kernel.passthru.modes) else [])
+      # ) builtKernels;
+    };
+  };
 }
