@@ -221,6 +221,10 @@ lib.listToAttrs (map (x:
               args = args // { baseName = x; };
               settings = settingsToUse;
               repls = repls python;
+              modes = [{
+                inherit attrs extensions;
+                code_mirror_mode = "python";
+              }];
             };
           };
 
