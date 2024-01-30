@@ -89,7 +89,6 @@ listToAttrs (mapAttrsToList (compilerName: snapshotName:
         , attrs ? [meta.baseName "haskell"]
         , extensions ? ["hs"]
         , settings ? {}
-        , metaOnly ? false
       }:
         let
           settingsToUse = defaultSettings // settings;
@@ -100,18 +99,16 @@ listToAttrs (mapAttrsToList (compilerName: snapshotName:
 
           paths = [
             (callPackage ./kernel.nix {
-              inherit displayName attrs extensions metaOnly snapshot;
+              inherit displayName attrs extensions snapshot;
 
               ihaskell = snapshot.ihaskell.components.exes.ihaskell;
               inherit ghc;
 
               # enableVariableInspector = settingsToUse.enableVariableInspector;
             })
-
-            (callPackage ./mode_info.nix { inherit attrs extensions; })
+            ghc
           ]
-          ++ (if metaOnly then [] else [ghc])
-          ++ (if metaOnly then [] else (map (y: builtins.getAttr y (allLanguageServerOptions ghc meta.baseName)) languageServers))
+          ++ (map (y: builtins.getAttr y (allLanguageServerOptions ghc meta.baseName)) languageServers)
           ;
 
           passthru = {
@@ -119,6 +116,9 @@ listToAttrs (mapAttrsToList (compilerName: snapshotName:
             settings = settingsToUse;
             inherit meta languageServerOptions packageOptions settingsSchema;
             repls = repls ghc;
+            modes = {
+              # TODO
+            };
           };
         };
 

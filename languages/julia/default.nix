@@ -127,7 +127,6 @@ mapAttrs (attr: value:
       , attrs ? [attr "julia"]
       , extensions ? ["jl"]
       , settings ? {}
-      , metaOnly ? false
     }:
       let
         settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
@@ -143,15 +142,18 @@ mapAttrs (attr: value:
 
           paths = [
             (callPackage ./kernel.nix { inherit julia python attrs extensions displayName; })
-            (callPackage ./mode_info.nix { inherit attrs extensions; })
+            julia
           ]
-          ++ (if metaOnly then [] else [julia])
-          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse attrs attr julia)
+          ++ (chooseLanguageServers settingsToUse attrs attr julia)
           ;
 
           passthru = {
             args = args // { baseName = attr; };
             inherit meta packageOptions;
+            modes = {
+              inherit attrs extensions;
+              code_mirror_mode = "julia";
+            };
           };
         };
 

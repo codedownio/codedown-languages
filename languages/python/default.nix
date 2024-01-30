@@ -191,7 +191,6 @@ lib.listToAttrs (map (x:
           , attrs ? [x "python"]
           , extensions ? ["py"]
           , settings ? {}
-          , metaOnly ? false
         }:
           let
             settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
@@ -206,14 +205,14 @@ lib.listToAttrs (map (x:
 
             paths = [
               (callPackage ./kernel.nix {
-                inherit python displayName attrs extensions metaOnly;
+                inherit python displayName attrs extensions;
                 enableVariableInspector = settingsToUse.enableVariableInspector;
               })
 
-              (callPackage ./mode_info.nix { inherit attrs extensions; })
+              python
+              ps.ipython
             ]
-            ++ (if metaOnly then [] else [python ps.ipython])
-            ++ (if metaOnly then [] else chooseLanguageServers settingsToUse pythonWithPackages x)
+            ++ (chooseLanguageServers settingsToUse pythonWithPackages x)
             ;
 
             passthru = {

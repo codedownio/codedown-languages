@@ -5,7 +5,6 @@ args@{
   channels
   , kernels ? []
   , otherPackages ? []
-  , metaOnly ? false
   , ...
 }:
 

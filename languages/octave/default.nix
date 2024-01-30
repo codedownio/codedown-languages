@@ -60,7 +60,6 @@ listToAttrs (map (x:
         , extraJupyterConfig ? null
         , attrs ? ["octave"]
         , extensions ? ["m"]
-        , metaOnly ? false
       }:
         let
           octaveComplete = baseOctave.override {
@@ -93,13 +92,16 @@ listToAttrs (map (x:
               inherit octave extraJupyterConfig attrs extensions;
               version = baseOctave.version;
             })
-            (callPackage ./mode_info.nix { inherit attrs extensions; })
             octave
           ];
           passthru = {
             inherit meta packageOptions;
             args = args // { baseName = x; };
             repls = repls octaveWithPackages baseOctave.version;
+            modes = {
+              inherit attrs extensions;
+              code_mirror_mode = "octave";
+            };
           };
         };
 

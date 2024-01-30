@@ -73,7 +73,6 @@ listToAttrs (map (x:
         , settings ? {}
         , attrs ? ["clojure"]
         , extensions ? ["clj"]
-        , metaOnly ? false
       }:
         let
           settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
@@ -81,16 +80,19 @@ listToAttrs (map (x:
           name = "clojure";
           paths = [
             (callPackage ./kernel.nix { inherit attrs extensions version; })
-            (callPackage ./mode_info.nix { inherit attrs extensions; })
+            clojure
           ]
-          ++ (if metaOnly then [] else [clojure])
-          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse x)
+          ++ (chooseLanguageServers settingsToUse x)
           ;
 
           passthru = {
             inherit meta packageOptions;
             args = args // { baseName = x; };
             repls = repls clojure;
+            modes = {
+              inherit attrs extensions;
+              code_mirror_mode = "clojure";
+            };
           };
         };
 

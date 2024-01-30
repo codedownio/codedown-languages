@@ -1,14 +1,13 @@
 { codedown
 , channels ? {}
 , overlays ? {}
-, metaOnly ? false
 , ...
 }:
 
 
 codedown.mkCodeDownEnvironment {
   environmentName = "python3";
-  inherit channels overlays metaOnly;
+  inherit channels overlays;
 
   kernels = [
     ({

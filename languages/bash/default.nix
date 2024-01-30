@@ -4,8 +4,6 @@
 , nodePackages
 , symlinkJoin
 , writeTextDir
-
-, metaOnly ? false
 }:
 
 let
@@ -58,7 +56,6 @@ lib.listToAttrs (map (x:
           packages ? []
           , attrs ? ["bash"]
           , extensions ? ["sh" "bash"]
-          , metaOnly ? false
           , settings ? {}
         }:
           let
@@ -67,16 +64,19 @@ lib.listToAttrs (map (x:
             name = "bash";
 
             paths = [
-              (callPackage ./kernel.nix { inherit attrs extensions metaOnly; })
-              (callPackage ./mode_info.nix { inherit attrs extensions; })
+              (callPackage ./kernel.nix { inherit attrs extensions; })
+              (callPackage ./man-with-pages.nix {})
             ]
-            ++ (if metaOnly then [] else [(callPackage ./man-with-pages.nix {})])
-            ++ (if metaOnly then [] else chooseLanguageServers settingsToUse x)
+            ++ (chooseLanguageServers settingsToUse x)
             ;
 
             passthru = {
               args = args // { baseName = x; };
               inherit meta packageOptions;
+              modes = {
+                inherit attrs extensions;
+                code_mirror_mode = "shell";
+              };
             };
           };
 

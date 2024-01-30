@@ -87,7 +87,6 @@ if cling == null then {} else
           , settings ? {}
           , attrs ? [x "cpp"]
           , extensions ? ["cpp" "hpp" "cxx" "hxx" "c" "h"]
-          , metaOnly ? false
         }:
           let
             settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
@@ -96,18 +95,22 @@ if cling == null then {} else
             paths = [
               ((callPackage ./kernel_xeus.nix {
                 inherit cling xeus-cling;
-                inherit attrs displayName extensions metaOnly std;
+                inherit attrs displayName extensions std;
                 attrName = x;
               }))
-              (callPackage ./mode_info.nix { inherit attrs extensions; })
+              cling
             ]
-            ++ (if metaOnly then [] else [cling])
             ;
 
             passthru = {
               inherit meta packageOptions;
               args = args // { baseName = x; };
               repls = repls (getAttr x icons);
+              modes = {
+                inherit attrs extensions;
+                code_mirror_mode = "clike";
+                code_mirror_mime_type = "text/x-c++src";
+              };
             };
           };
 

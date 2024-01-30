@@ -62,7 +62,6 @@ listToAttrs (map (x:
         , settings ? {}
         , attrs ? ["go"]
         , extensions ? ["go"]
-        , metaOnly ? false
       }:
         let
           settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
@@ -70,19 +69,22 @@ listToAttrs (map (x:
           name = "go";
           paths = [
             (callPackage ./kernel.nix {
-              inherit attrs extensions metaOnly;
+              inherit attrs extensions;
               version = go.version;
             })
-            (callPackage ./mode_info.nix { inherit attrs extensions; })
+            go
           ]
-          ++ (if metaOnly then [] else [go])
-          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse go attrs x)
+          ++ (chooseLanguageServers settingsToUse go attrs x)
           ;
 
           passthru = {
             inherit meta packageOptions;
             args = args // { baseName = x; };
             repls = repls go;
+            modes = {
+              inherit attrs extensions;
+              code_mirror_mode = "go";
+            };
           };
         };
 

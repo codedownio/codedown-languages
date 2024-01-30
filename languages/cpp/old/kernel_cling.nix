@@ -10,8 +10,6 @@
 , extensions
 , logo64
 , std
-
-, metaOnly
 }:
 
 with lib;

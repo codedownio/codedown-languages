@@ -9,7 +9,6 @@
 , displayName
 , extensions
 , language ? lib.head attrs
-, metaOnly ? false
 
 # Needed for ihaskell's PATH
 , gcc
@@ -33,7 +32,7 @@ let
 
 in
 
-common.makeJupyterKernelInner metaOnly (
+common.makeJupyterKernel (
   listToAttrs [{
     name = head attrs;
     value = {

@@ -1,14 +1,13 @@
 { codedown
 , channels ? {}
 , overlays ? {}
-, metaOnly ? false
 , ...
 }:
 
 
 codedown.mkCodeDownEnvironment {
   environmentName = "cpp23";
-  inherit channels overlays metaOnly;
+  inherit channels overlays;
 
   kernels = [
     ({

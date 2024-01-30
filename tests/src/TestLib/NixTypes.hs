@@ -62,8 +62,7 @@ data NixKernelSpec = NixKernelSpec {
 deriveJSON toSnake2 ''NixKernelSpec
 
 data NixEnvironment = NixEnvironment {
-  nixEnvironmentMetaOnly :: Maybe Bool
-  , nixEnvironmentChannels :: [NixSrcSpec]
+  nixEnvironmentChannels :: [NixSrcSpec]
   , nixEnvironmentOverlays :: [NixSrcSpec]
   , nixEnvironmentKernels :: [NixKernelSpec]
   , nixEnvironmentOtherPackages :: [ChannelAndAttr]

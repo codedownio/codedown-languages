@@ -8,7 +8,6 @@
 , extensions
 , version
 , language ? lib.head attrs
-, metaOnly ? false
 }:
 
 with lib;
@@ -18,7 +17,7 @@ let
 
 in
 
-common.makeJupyterKernelInner metaOnly (
+common.makeJupyterKernel (
   listToAttrs [{
     name = head attrs;
     version = evcxr.version;

@@ -4,7 +4,6 @@
 , bash
 , attrs
 , extensions
-, metaOnly ? false
 }:
 
 let
@@ -35,7 +34,7 @@ let
 
 in
 
-common.makeJupyterKernelInner metaOnly {
+common.makeJupyterKernel {
   postgres = {
     displayName = "PostgreSQL";
     argv = [

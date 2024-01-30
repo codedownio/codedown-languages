@@ -57,8 +57,6 @@ in
 importedChannels.codedown.mkCodeDownEnvironment {
   inherit channels overlays;
 
-  metaOnly = #{A.encode $ fromMaybe False nixEnvironmentMetaOnly};
-
   kernels = [
 #{T.intercalate "\n" [indentTo 4 $ renderKernel x | x <- nixEnvironmentKernels]}
   ];

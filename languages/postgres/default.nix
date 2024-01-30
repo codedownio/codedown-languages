@@ -3,7 +3,6 @@
 , callPackage
 , writeTextDir
 , symlinkJoin
-, metaOnly ? false
 }:
 
 let
@@ -42,7 +41,6 @@ in
       , settings ? []
       , attrs ? ["postgres"]
       , extensions ? ["sql"]
-      , metaOnly ? false
     }:
       let
         settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
@@ -50,15 +48,18 @@ in
         name = "postgres";
 
         paths = [
-          (callPackage ./kernel.nix { inherit attrs extensions metaOnly; })
-          (callPackage ./mode_info.nix { inherit attrs extensions; })
+          (callPackage ./kernel.nix { inherit attrs extensions; })
         ]
-        ++ (if metaOnly then [] else chooseLanguageServers settingsToUse)
+        ++ (chooseLanguageServers settingsToUse)
         ;
 
         passthru = {
           args = args // { baseName = "postgres"; };
           inherit meta packageOptions;
+          modes = {
+            inherit attrs extensions;
+            code_mirror_mode = "sql";
+          };
         };
       };
 

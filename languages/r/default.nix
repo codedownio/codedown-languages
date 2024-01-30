@@ -67,7 +67,6 @@ listToAttrs [{
       , settings ? {}
       , attrs ? ["r" "R"]
       , extensions ? ["r"]
-      , metaOnly ? false
     }:
       let
         settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
@@ -86,16 +85,19 @@ listToAttrs [{
               inherit rWithPackages attrs extensions;
               version = R.version;
             })
-            (callPackage ./mode_info.nix { inherit attrs extensions; })
+            rWithPackages
           ]
-          ++ (if metaOnly then [] else [rWithPackages])
-          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse rPackages rWrapper basePackages "R")
+          ++ (chooseLanguageServers settingsToUse rPackages rWrapper basePackages "R")
           ;
 
           passthru = {
             inherit meta packageOptions;
             args = args // { baseName = "R"; };
             repls = repls rWithPackages R.version;
+            modes = {
+              inherit attrs extensions;
+              code_mirror_mode = "r";
+            };
           };
         };
 

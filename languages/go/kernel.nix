@@ -2,8 +2,6 @@
 , callPackage
 , gophernotes
 
-, metaOnly
-
 , attrs
 , extensions
 , version
@@ -16,7 +14,7 @@ let
 
 in
 
-common.makeJupyterKernelInner metaOnly {
+common.makeJupyterKernel {
   go = {
     displayName = "Go";
     argv = [

@@ -39,13 +39,6 @@ let
     ruby_3_2 = pkgs.rubyPackages_3_2;
   };
 
-  modeInfo = writeTextDir "lib/codedown/modes/ruby.yaml" (pkgs.lib.generators.toYAML {} [{
-    attr_name = "ruby";
-    code_mirror_mode = "ruby";
-    extensions_to_highlight = ["rb"];
-    extensions_to_run = ["rb"];
-  }]);
-
   settingsSchema = [
     {
       target = "lsp.solargraph.enable";
@@ -91,7 +84,6 @@ listToAttrs (map (x:
         , settings ? {}
         , attrs ? [x "ruby"]
         , extensions ? ["rb"]
-        , metaOnly ? false
       }:
         let
           settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
@@ -99,14 +91,17 @@ listToAttrs (map (x:
           name = x;
           paths = [
             (callPackage ./kernel.nix { inherit attrs extensions version; })
-            modeInfo
+            ruby
           ]
-          ++ (if metaOnly then [] else [ruby])
-          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse packageOptions x)
+          ++ (chooseLanguageServers settingsToUse packageOptions x)
           ;
           passthru = {
             args = args // { baseName = x; };
             inherit meta packageOptions;
+            modes = {
+              inherit attrs extensions;
+              code_mirror_mode = "ruby";
+            };
           };
         };
 

@@ -1,13 +1,12 @@
 { codedown
 , channels ? {}
 , overlays ? {}
-, metaOnly ? false
 , ...
 }:
 
 
 codedown.mkCodeDownEnvironment {
-  inherit channels overlays metaOnly;
+  inherit channels overlays;
 
   kernels = [
     ({

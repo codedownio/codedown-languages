@@ -44,8 +44,7 @@ introduceNixEnvironment kernels otherPackages label = introduceWith [i|#{label} 
     Just locked -> return locked
 
   let nixEnv = NixEnvironment {
-        nixEnvironmentMetaOnly = Nothing
-        , nixEnvironmentChannels = [
+        nixEnvironmentChannels = [
             NixSrcPath "codedown" (T.pack rootDir)
             , lockedToNixSrcSpec "nixpkgs" nixpkgsLocked
             ]

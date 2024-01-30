@@ -4,7 +4,6 @@
 , attrs
 , extensions
 , version
-, metaOnly ? false
 }:
 
 with lib;
@@ -16,7 +15,7 @@ let
 
 in
 
-common.makeJupyterKernelInner metaOnly (
+common.makeJupyterKernel (
   listToAttrs [{
     name = head attrs;
     value = {

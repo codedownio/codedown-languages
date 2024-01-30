@@ -9,7 +9,6 @@
 , chosenPackages
 , attrs
 , extensions
-, metaOnly ? false
 }:
 
 with pkgs.lib;
@@ -27,7 +26,7 @@ let
 
 in
 
-common.makeJupyterKernelInner metaOnly (
+common.makeJupyterKernel (
   listToAttrs [{
     name = head attrs;
     value = {

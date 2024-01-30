@@ -13,7 +13,6 @@
 , attrs
 , displayName
 , extensions
-, metaOnly
 , std
 }:
 

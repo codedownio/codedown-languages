@@ -51,6 +51,11 @@ lib.listToAttrs (map (x:
           passthru = {
             args = args // { baseName = x; };
             inherit meta packageOptions;
+            modes = {
+              inherit attrs extensions;
+              code_mirror_mode = "";
+              codeMirrorMimeType = "text/plain";
+            };
           };
         };
 

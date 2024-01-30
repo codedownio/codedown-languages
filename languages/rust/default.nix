@@ -103,7 +103,6 @@ listToAttrs (map (x:
         , attrs ? [x "rust"]
         , extensions ? ["rs" "rlib"]
         , settings ? {}
-        , metaOnly ? false
       }: let
         evcxr = (evcxrBase.override {
           rustPlatform = rustPackages.rustPlatform;
@@ -121,16 +120,21 @@ listToAttrs (map (x:
             version = rustPackages.rustc.version;
           })
 
-          (callPackage ./mode_info.nix { inherit attrs extensions; })
+          rustPackages.rustc
+          rustPackages.cargo
+          pkgs.gcc
         ]
-        ++ (if metaOnly then [] else [rustPackages.rustc rustPackages.cargo pkgs.gcc])
-        ++ (if metaOnly then [] else chooseLanguageServers settingsToUse rust evcxr.cargoHome x)
+        ++ (chooseLanguageServers settingsToUse rust evcxr.cargoHome x)
         ;
 
         passthru = {
           args = args // { baseName = x; };
           inherit meta packageOptions;
           inherit (evcxr) cratesIndex;
+          modes = {
+            inherit attrs extensions;
+            code_mirror_mode = "rust";
+          };
         };
       };
 

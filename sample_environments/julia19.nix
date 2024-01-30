@@ -1,14 +1,13 @@
 { codedown
 , channels ? {}
 , overlays ? {}
-, metaOnly ? false
 , ...
 }:
 
 
 codedown.mkCodeDownEnvironment {
   environmentName = "julia19";
-  inherit channels overlays metaOnly;
+  inherit channels overlays;
 
   kernels = [
     ({

@@ -20,7 +20,6 @@ let
     (callPackage ./languages/clojure {})
     (callPackage ./languages/coq {})
     (pkgsMaster.callPackage ./languages/cpp {})
-    (callPackage ./languages/dot {})
     (callPackage ./languages/go {})
     (pkgsMaster.callPackage ./languages/haskell {})
     (callPackage ./languages/julia {})

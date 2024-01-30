@@ -70,7 +70,6 @@ lib.listToAttrs (map (x:
         , attrs ? [baseName "coq"]
         , extensions ? ["v"]
         , settings ? defaultSettings
-        , metaOnly ? false
       }:
         let
           settingsToUse = defaultSettings // settings;
@@ -82,23 +81,25 @@ lib.listToAttrs (map (x:
 
           paths = [
             (callPackage ./kernel.nix {
-              inherit coq displayName attrs extensions metaOnly;
+              inherit coq displayName attrs extensions;
               enableVariableInspector = settingsToUse.enableVariableInspector;
               chosenPackages = map (x: builtins.getAttr x packageOptions) packages;
             })
 
-            (callPackage ./mode_info.nix { inherit attrs extensions; })
-          ]
-          ++ (if metaOnly then [] else [
             coq
-          ])
-          ++ (if metaOnly then [] else chooseLanguageServers settingsToUse coq baseName);
+          ]
+          ++ (chooseLanguageServers settingsToUse coq baseName)
+          ;
 
           passthru = {
             args = args // { inherit baseName; };
             settings = settingsToUse;
             repls = repls coq;
             inherit meta packageOptions settingsSchema;
+            modes = {
+              inherit attrs extensions;
+              code_mirror_mode = "coq";
+            };
           };
         };
 
