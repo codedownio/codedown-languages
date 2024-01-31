@@ -30,23 +30,35 @@ let
                            };
                          })) kernels;
 
-  shellToReplInfo = shell: {
-    name = shell.contents.name;
-    display_name = shell.contents.displayName;
-    attr = shell.contents.attr;
-    args = ["${shell.contents}/lib/codedown/shell"];
-    icon = shell.contents.icon;
-  };
-
   shells = filter (x: lib.hasPrefix "shells." x.attr) otherPackages;
 
   exporters = filter (x: lib.hasPrefix "exporters." x.attr) otherPackages;
   exporterInfos = concatMap (exporter: exporter.contents.meta.exporterInfos) exporters;
 
-  repls =
+  repls = let
+    shellToReplInfo = shell: {
+      name = shell.contents.name;
+      display_name = shell.contents.displayName;
+      attr = shell.contents.attr;
+      args = ["${shell.contents}/lib/codedown/shell"];
+      icon = shell.contents.icon;
+    };
+  in
     map shellToReplInfo shells
     ++ concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (if kernel.passthru ? "repls" then kernel.passthru.repls else {})) builtKernels
   ;
+
+  chooseInterestingMeta = lib.filterAttrs (n: v:
+    n == "description"
+    || n == "homepage"
+    || n == "changelog"
+    || (n == "available" && !v)
+    || (n == "broken" && v)
+    || (n == "unfree" && v)
+    || (n == "unsupported" && v)
+    || (n == "insecure" && v)
+    # || (n == "license.spdxId") # TODO
+  );
 
   mkChannelUiMetadata = name: channel: {
     foo = "bar";
@@ -70,16 +82,10 @@ let
   };
 
   mkOtherPackageUiMetadata = package: {
-    package = package;
+    channel = package.channel;
+    attr = package.attr;
+    meta = if package.contents ? "meta" then chooseInterestingMeta package.contents.meta else {};
   };
-
-  icons = let
-    uniquePaths = map (v: languagesCommon.safeEval (lib.attrByPath ["meta" "icon"] "" v)) builtKernels;
-  in
-    linkFarm "all-environment-icons" (map (path: {
-      name = builtins.hashString "md5" (toString path);
-      path = path;
-    }) uniquePaths);
 
   ui_metadata = {
     channels = lib.mapAttrsToList mkChannelUiMetadata channels;
@@ -87,8 +93,6 @@ let
     kernels = map mkKernelUiMetadata builtKernels;
 
     other_packages = map mkOtherPackageUiMetadata otherPackages;
-
-    inherit icons;
   };
 
   ui_metadata_yaml = writeText "ui-metadata.yaml" (lib.generators.toYAML {} ui_metadata);

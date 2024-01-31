@@ -1,5 +1,6 @@
 { codedown
 , channels ? {}
+, pkgsStable
 , ...
 }:
 
@@ -27,5 +28,7 @@ codedown.mkCodeDownEnvironment {
     })
   ];
 
-  otherPackages = [];
+  otherPackages = [
+    { channel = "nixpkgs"; attr = "htop"; contents = pkgsStable.htop; }
+  ];
 }

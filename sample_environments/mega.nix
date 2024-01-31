@@ -1,4 +1,5 @@
 { codedown
+, pkgsStable
 , channels ? {}
 , ...
 }:
@@ -251,6 +252,6 @@ codedown.mkCodeDownEnvironment {
     { channel = "codedown"; attr = "exporters.nbconvert-small"; contents = codedown.exporters.nbconvert-small; }
     { channel = "codedown"; attr = "exporters.nbconvert-large"; contents = codedown.exporters.nbconvert-large; }
 
-    # { channel = "nixpkgs"; attr = "htop"; contents = nixpkgs.htop; }
+    { channel = "nixpkgs"; attr = "htop"; contents = pkgsStable.htop; }
   ];
 }

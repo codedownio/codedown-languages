@@ -60,7 +60,12 @@
                     --set PATH ${lib.makeBinPath packages}
                 '';
 
-            sample_environments = import ./sample_environments.nix { inherit codedown; };
+            sample_environments = import ./sample_environments.nix {
+              inherit codedown pkgsStable;
+              channels = {
+                # nixpkgs = pkgsStable;
+              };
+            };
             sample_environments_farm = pkgsStable.linkFarm "sample_environments_farm" (
               pkgsStable.lib.mapAttrsToList (name: path: { inherit name path; })
                                             sample_environments
