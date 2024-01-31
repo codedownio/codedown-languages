@@ -1,12 +1,11 @@
 { codedown
 , channels ? {}
-, overlays ? {}
 , ...
 }:
 
 
 codedown.mkCodeDownEnvironment {
-  inherit channels overlays;
+  inherit channels;
 
   kernels = [
     ({
@@ -251,5 +250,7 @@ codedown.mkCodeDownEnvironment {
 
     { channel = "codedown"; attr = "exporters.nbconvert-small"; contents = codedown.exporters.nbconvert-small; }
     { channel = "codedown"; attr = "exporters.nbconvert-large"; contents = codedown.exporters.nbconvert-large; }
+
+    # { channel = "nixpkgs"; attr = "htop"; contents = nixpkgs.htop; }
   ];
 }

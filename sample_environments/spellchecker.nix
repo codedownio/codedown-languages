@@ -1,13 +1,12 @@
 { codedown
 , channels ? {}
-, overlays ? {}
 , ...
 }:
 
 
 codedown.mkCodeDownEnvironment {
   environmentName = "spellchecker";
-  inherit channels overlays;
+  inherit channels;
 
   kernels = [];
 

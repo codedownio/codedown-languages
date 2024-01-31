@@ -1,13 +1,12 @@
 { codedown
 , channels ? {}
-, overlays ? {}
 , ...
 }:
 
 
 codedown.mkCodeDownEnvironment {
   environmentName = "shells-fish";
-  inherit channels overlays;
+  inherit channels;
 
   kernels = [];
 

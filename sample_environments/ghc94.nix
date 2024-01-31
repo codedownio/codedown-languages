@@ -1,13 +1,12 @@
 { codedown
 , channels ? {}
-, overlays ? {}
 , ...
 }:
 
 
 codedown.mkCodeDownEnvironment {
   environmentName = "ghc94";
-  inherit channels overlays;
+  inherit channels;
 
   kernels = [
     ({

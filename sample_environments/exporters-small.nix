@@ -1,13 +1,12 @@
 { codedown
 , channels ? {}
-, overlays ? {}
 , ...
 }:
 
 
 codedown.mkCodeDownEnvironment {
   environmentName = "exporters-small";
-  inherit channels overlays;
+  inherit channels;
 
   kernels = [];
 

@@ -1,13 +1,12 @@
 { codedown
 , channels ? {}
-, overlays ? {}
 , ...
 }:
 
 
 codedown.mkCodeDownEnvironment {
   environmentName = "coq";
-  inherit channels overlays;
+  inherit channels;
 
   kernels = [
     ({

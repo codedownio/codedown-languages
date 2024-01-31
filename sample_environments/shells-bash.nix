@@ -1,13 +1,12 @@
 { codedown
 , channels ? {}
-, overlays ? {}
 , ...
 }:
 
 
 codedown.mkCodeDownEnvironment {
   environmentName = "shells-bash";
-  inherit channels overlays;
+  inherit channels;
 
   kernels = [];
 
