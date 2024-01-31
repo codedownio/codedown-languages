@@ -195,8 +195,8 @@ lib.listToAttrs (map (x:
           let
             settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
             ps = packageOptions;
-            allPackages = [ps.ipykernel ps.ipywidgets]
-                          ++ (map (x: builtins.getAttr x ps) packages);
+            chosenPackages = map (x: builtins.getAttr x ps) packages;
+            allPackages = [ps.ipykernel ps.ipywidgets] ++ chosenPackages;
             python = basePython.withPackages (_: allPackages);
             pythonWithPackages = f: basePython.withPackages (_: allPackages ++ f ps);
 
@@ -220,10 +220,10 @@ lib.listToAttrs (map (x:
               args = args // { baseName = x; };
               settings = settingsToUse;
               repls = repls python;
-              modes = [{
+              modes = {
                 inherit attrs extensions;
                 code_mirror_mode = "python";
-              }];
+              };
             };
           };
 
