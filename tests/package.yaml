@@ -84,3 +84,4 @@ executables:
     - monad-logger
     - row-types
     - tests
+    - unliftio
