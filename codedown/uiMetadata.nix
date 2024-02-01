@@ -13,8 +13,8 @@ rec {
       # || (n == "license.spdxId") # TODO
   );
 
-  mkChannelUiMetadata = name: channel: {
-    foo = "bar";
+  mkChannelUiMetadata = name: channel: channel // {
+    name = name;
   };
 
   mkKernelUiMetadata = kernel: {
