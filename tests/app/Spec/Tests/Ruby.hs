@@ -5,6 +5,7 @@
 module Spec.Tests.Ruby (tests) where
 
 import Control.Lens
+import Control.Monad
 import Data.Aeson as A
 import Data.String.Interpolate
 import Data.Text as T
@@ -26,6 +27,7 @@ tests = describe "Ruby" $ do
   kernelTests "ruby_3_0"
   kernelTests "ruby_3_1"
   kernelTests "ruby_3_2"
+  -- kernelTests "ruby_3_3"
 
 
 kernelTests :: Text -> LanguageSpec
@@ -34,6 +36,17 @@ kernelTests lang = do
     testKernelSearchersNonempty lang
 
     testKernelStdout lang [__i|puts "hi"|] "hi\n"
+
+    when ("_" `T.isInfixOf` lang) $ do
+      let versionString = lang
+                        & T.drop 5
+                        & T.replace "_" "."
+      it [i|The Ruby version contains the string '#{versionString}'|] $ do
+        testKernelStdout'' lang [__i|puts RUBY_VERSION|] $ \case
+          Nothing -> expectationFailure [i|Got no stdout|]
+          Just t -> do
+            info [i|RUBY_VERSION result: #{t}|]
+            t `textShouldContain` versionString
 
     itHasHoverSatisfying "solargraph" "test.rb" Nothing [__i|puts "hi"|] (Position 0 2) $ \hover -> do
       let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents

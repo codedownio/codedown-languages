@@ -1,6 +1,8 @@
 { lib
 , callPackage
 
+, iruby
+
 , attrs
 , extensions
 , version
@@ -10,8 +12,6 @@ with lib;
 
 let
   common = callPackage ../common.nix {};
-
-  iruby = (callPackage ./iruby {}).iruby;
 
 in
 

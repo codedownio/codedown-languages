@@ -22,7 +22,7 @@ let
     sha256 = "0fc8slrfapvajnfnw76x31g5s5p9vxhbl85smfh8p39nqkh0cs6g";
   };
 
-  iruby = bundlerApp {
+  iruby = (bundlerApp.override { inherit ruby; }) {
     pname = "iruby";
     gemdir = ./.;
     exes = [ "iruby" ];

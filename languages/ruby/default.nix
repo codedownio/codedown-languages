@@ -23,6 +23,7 @@ let
     "ruby_3_0"
     "ruby_3_1"
     "ruby_3_2"
+    "ruby_3_3"
   ];
 
   packagesLookup = lib.filterAttrs (k: v: filterFn k) {
@@ -37,6 +38,7 @@ let
     ruby_3_0 = pkgs.rubyPackages_3_0;
     ruby_3_1 = pkgs.rubyPackages_3_1;
     ruby_3_2 = pkgs.rubyPackages_3_2;
+    ruby_3_3 = pkgs.rubyPackages_3_3;
   };
 
   settingsSchema = [
@@ -90,7 +92,10 @@ listToAttrs (map (x:
         in symlinkJoin {
           name = x;
           paths = [
-            (callPackage ./kernel.nix { inherit attrs extensions version; })
+            (callPackage ./kernel.nix {
+              iruby = (callPackage ./iruby { inherit ruby; }).iruby;
+              inherit attrs extensions version;
+            })
             ruby
           ]
           ++ (chooseLanguageServers settingsToUse packageOptions x)
