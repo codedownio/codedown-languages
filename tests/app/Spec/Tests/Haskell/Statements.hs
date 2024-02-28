@@ -9,6 +9,7 @@ import Spec.Tests.Haskell.Common
 import Spec.Tests.Haskell.DocumentHighlight
 import Test.Sandwich as Sandwich
 import TestLib.LSP
+import UnliftIO.Timeout
 
 
 statementsTests :: (LspContext context m) => SpecFree context m ()
@@ -16,7 +17,7 @@ statementsTests = describe "Statements" $ do
   describe "Single-line" $ do
     it "doesn't choke" $ doNotebookSession lsName statementsCode $ \filename -> do
       ident <- openDoc filename "haskell"
-      getHighlights ident (Position 0 1) >>= (`shouldBe` documentHighlightResults)
+      timeout 120_000_000 (getHighlights ident (Position 0 1)) >>= (`shouldBe` (Just documentHighlightResults))
 
     testDiagnostics lsName "main.ipynb" Nothing statementsCode $ \diagnostics -> do
       -- Note: normally the server wouldn't send empty diagnostics. But the statement inserts "= unsafePerformIO $ ",
@@ -26,7 +27,7 @@ statementsTests = describe "Statements" $ do
   describe "Multi-line" $ do
     it "doesn't choke" $ doNotebookSession lsName statementsCode $ \filename -> do
       ident <- openDoc filename "haskell"
-      getHighlights ident (Position 0 1) >>= (`shouldBe` documentHighlightResults)
+      timeout 120_000_000 (getHighlights ident (Position 0 1)) >>= (`shouldBe` (Just documentHighlightResults))
 
     testDiagnostics lsName "main.ipynb" Nothing statementsCodeMultiline $ \diagnostics -> do
       info [i|Got diagnostics: #{diagnostics}|]
