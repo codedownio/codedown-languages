@@ -70,7 +70,7 @@ searcherResults expr = do
     Right (A.Array ((V.! 0) -> (A.Object (aesonLookup "outputs" -> Just (A.Object (aesonLookup "out" -> Just (A.String x))))))) -> pure x
     Right x -> expectationFailure [i|Unexpected JSON: #{x}|]
 
-  let cp = (proc (T.unpack built) []) {
+  let cp = (proc (T.unpack built </> "bin" </> "searcher") []) {
         cwd = Just rootDir
         , std_in = CreatePipe
         , std_out = CreatePipe
