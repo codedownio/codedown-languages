@@ -14,6 +14,7 @@ rec {
     , icon
   }: stdenv.mkDerivation {
     name = baseDerivation.name;
+    version = baseDerivation.version;
 
     dontUnpack = true;
 
