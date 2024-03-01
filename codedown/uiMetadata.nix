@@ -1,9 +1,9 @@
 { lib }:
 
 rec {
-  chooseInterestingMeta = contents: {
+  chooseInterestingMeta = contents: (lib.optionalAttrs (contents ? "version") {
     version = contents.version;
-  } // (lib.optionalAttrs (contents ? "meta") (
+  }) // (lib.optionalAttrs (contents ? "meta") (
     lib.filterAttrs (n: v:
       n == "description"
       || n == "homepage"
