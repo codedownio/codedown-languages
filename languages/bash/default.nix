@@ -73,6 +73,7 @@ lib.listToAttrs (map (x:
             passthru = {
               args = args // { baseName = x; };
               inherit meta packageOptions;
+              inherit settingsSchema settings;
               modes = {
                 inherit attrs extensions;
                 code_mirror_mode = "shell";

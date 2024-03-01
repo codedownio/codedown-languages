@@ -111,8 +111,8 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
 
           passthru = {
             args = args // { baseName = meta.baseName; };
-            settings = settingsToUse;
-            inherit meta packageOptions settingsSchema;
+            inherit settingsSchema settings;
+            inherit meta packageOptions;
             repls = repls ghc;
             modes = {
               inherit attrs extensions;

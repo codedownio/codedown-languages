@@ -1,17 +1,25 @@
 { lib }:
 
 rec {
-  chooseInterestingMeta = lib.filterAttrs (n: v:
-    n == "description"
-    || n == "homepage"
-    || n == "changelog"
-    || (n == "available" && !v)
-    || (n == "broken" && v)
-    || (n == "unfree" && v)
-    || (n == "unsupported" && v)
-    || (n == "insecure" && v)
-      # || (n == "license.spdxId") # TODO
-  );
+  chooseInterestingMeta = contents: {
+    version = contents.version;
+  } // (lib.optionalAttrs (contents ? "meta") (
+    lib.filterAttrs (n: v:
+      n == "description"
+      || n == "homepage"
+      || n == "downloadPage"
+      || n == "changelog"
+      || (n == "available" && !v)
+      || (n == "broken" && v)
+      || (n == "unfree" && v)
+      || (n == "unsupported" && v)
+      || (n == "insecure" && v)
+      || (n == "maintainers")
+    )
+      contents.meta
+  )) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "license" "spdxId"] contents) {
+    spdxId = contents.meta.license.spdxId;
+  });
 
   mkChannelUiMetadata = name: channel: channel // {
     name = name;
@@ -37,6 +45,6 @@ rec {
   mkOtherPackageUiMetadata = package: {
     channel = package.channel;
     attr = package.attr;
-    meta = if package.contents ? "meta" then chooseInterestingMeta package.contents.meta else {};
+    meta = if package.contents ? "meta" then chooseInterestingMeta package.contents else {};
   };
 }

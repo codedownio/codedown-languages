@@ -92,6 +92,7 @@ listToAttrs [{
 
           passthru = {
             inherit meta packageOptions;
+            inherit settingsSchema settings;
             args = args // { baseName = "R"; };
             repls = repls rWithPackages R.version;
             modes = {

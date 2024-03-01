@@ -86,7 +86,8 @@ listToAttrs (map (x:
           ;
 
           passthru = {
-            inherit meta packageOptions;
+            inherit meta packageOptions settingsSchema;
+            inherit settings;
             args = args // { baseName = x; };
             repls = repls clojure;
             modes = {

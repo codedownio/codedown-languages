@@ -56,6 +56,7 @@ in
         passthru = {
           args = args // { baseName = "postgres"; };
           inherit meta packageOptions;
+          inherit settingsSchema settings;
           modes = {
             inherit attrs extensions;
             code_mirror_mode = "sql";

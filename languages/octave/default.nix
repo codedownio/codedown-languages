@@ -71,6 +71,8 @@ listToAttrs (map (x:
             python = python3;
           };
 
+          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+
           octaveWithPackages = if lib.hasAttr "withPackages" octaveComplete
                                then
                                  let chosenPackages = map (x: lib.getAttr x octaveComplete.pkgs) packages; in
@@ -98,6 +100,7 @@ listToAttrs (map (x:
             inherit meta packageOptions;
             args = args // { baseName = x; };
             repls = repls octaveWithPackages baseOctave.version;
+            inherit settingsSchema settings;
             modes = {
               inherit attrs extensions;
               code_mirror_mode = "octave";

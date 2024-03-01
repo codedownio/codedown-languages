@@ -216,9 +216,9 @@ lib.listToAttrs (map (x:
             ;
 
             passthru = {
-              inherit meta packageOptions settingsSchema;
+              inherit meta packageOptions;
+              inherit settingsSchema settings;
               args = args // { baseName = x; };
-              settings = settingsToUse;
               repls = repls python;
               modes = {
                 inherit attrs extensions;

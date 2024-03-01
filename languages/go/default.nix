@@ -79,6 +79,7 @@ listToAttrs (map (x:
 
           passthru = {
             inherit meta packageOptions;
+            inherit settingsSchema settings;
             args = args // { baseName = x; };
             repls = repls go;
             modes = {

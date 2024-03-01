@@ -104,6 +104,7 @@ if cling == null then {} else
 
             passthru = {
               inherit meta packageOptions;
+              inherit settings settingsSchema;
               args = args // { baseName = x; };
               repls = repls (getAttr x icons);
               modes = {

@@ -63,16 +63,14 @@ lib.listToAttrs (map (x:
         coq = baseCoq.version;
       };
 
-      defaultSettings = {};
-
       build = args@{
         packages ? []
         , attrs ? [baseName "coq"]
         , extensions ? ["v"]
-        , settings ? defaultSettings
+        , settings ? {}
       }:
         let
-          settingsToUse = defaultSettings // settings;
+          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
 
           coq = baseCoq;
 
@@ -92,10 +90,10 @@ lib.listToAttrs (map (x:
           ;
 
           passthru = {
+            inherit meta packageOptions;
+            inherit settings settingsSchema;
             args = args // { inherit baseName; };
-            settings = settingsToUse;
             repls = repls coq;
-            inherit meta packageOptions settingsSchema;
             modes = {
               inherit attrs extensions;
               code_mirror_mode = "coq";

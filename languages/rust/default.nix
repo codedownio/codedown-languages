@@ -130,6 +130,7 @@ listToAttrs (map (x:
         passthru = {
           args = args // { baseName = x; };
           inherit meta packageOptions;
+          inherit settingsSchema settings;
           inherit (evcxr) cratesIndex;
           modes = {
             inherit attrs extensions;

@@ -101,8 +101,9 @@ listToAttrs (map (x:
           ++ (chooseLanguageServers settingsToUse packageOptions x)
           ;
           passthru = {
-            args = args // { baseName = x; };
             inherit meta packageOptions;
+            inherit settingsSchema settings;
+            args = args // { baseName = x; };
             modes = {
               inherit attrs extensions;
               code_mirror_mode = "ruby";
