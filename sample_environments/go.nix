@@ -13,7 +13,9 @@ codedown.mkCodeDownEnvironment {
       name = "go";
       channel = "codedown";
       args = {
-        packages = ["rand"];
+        packages = [
+          "rand"
+        ];
       };
     })
   ];

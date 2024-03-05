@@ -50,6 +50,8 @@
 
             inherit (codedown) settingsSchemas;
 
+            inherit pkgsStable;
+
             jupyter-runner = with pkgsUnstable;
               let
                 pythonEnv = python3.withPackages (ps: with ps; [papermill]);
@@ -68,6 +70,10 @@
             };
             sample_environments_farm = pkgsStable.linkFarm "sample_environments_farm" (
               pkgsStable.lib.mapAttrsToList (name: path: { inherit name path; })
+                                            sample_environments
+            );
+            ui_metadata_farm = pkgsStable.linkFarm "ui_metadata_farm" (
+              pkgsStable.lib.mapAttrsToList (name: deriv: { inherit name; path = deriv.ui_metadata_yaml; })
                                             sample_environments
             );
 

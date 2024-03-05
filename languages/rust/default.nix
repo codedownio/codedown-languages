@@ -77,11 +77,14 @@ listToAttrs (map (x:
   in {
     name = x;
     value = rec {
-      packageOptions = listToAttrs (map (x: { name = x; value = {
-        meta = {
-          name = x;
+      packageOptions = listToAttrs (map (x: {
+        name = x;
+        value = {
+          meta = {
+            name = x;
+          };
         };
-      }; }) allPackageNames);
+      }) allPackageNames);
 
       packageSearch = common.searcher' {
         packageMustBeDerivation = false;

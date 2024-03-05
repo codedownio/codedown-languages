@@ -25,12 +25,21 @@ rec {
     name = name;
   };
 
+  packageName = p: if lib.isString p then p else p.name;
+
+  mkKernelPackageMetadata = kernel: p: {
+    name = packageName p;
+    meta = if lib.hasAttrByPath ["packageOptions" (packageName p)] kernel then chooseInterestingMeta (kernel.packageOptions.${p}) else {};
+  };
+
   mkKernelUiMetadata = kernel: {
     # Dry
     channel = kernel.channel;
     name = kernel.name;
-    packages = kernel.args.packages;
     settings = if kernel ? "settings" then kernel.settings else {};
+
+    # Different for hydrated
+    packages = map (p: mkKernelPackageMetadata kernel p) kernel.args.packages;
 
     # Hydrated
     display_name = if kernel.meta ? "displayName" then kernel.meta.displayName else null;
