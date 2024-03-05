@@ -31,6 +31,4 @@ with bootstrapNixpkgs;
 
   exporters = importedChannels.nixpkgs.codedown.exportersSearcher;
   exportersSqlite = importedChannels.nixpkgs.codedown.exportersSearcherSqlite;
-
-  haskell = (callPackage ./languages/haskell/default.nix {})."haskell-stackage-lts-18.18".packageSearch;
 }
