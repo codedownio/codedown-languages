@@ -6,19 +6,29 @@ rec {
   }) // (lib.optionalAttrs (contents ? "meta") (
     lib.filterAttrs (n: v:
       n == "description"
+      || n == "displayName"
+      || n == "icon"
+
       || n == "homepage"
       || n == "downloadPage"
       || n == "changelog"
+
       || (n == "available" && !v)
       || (n == "broken" && v)
       || (n == "unfree" && v)
       || (n == "unsupported" && v)
       || (n == "insecure" && v)
+      || (n == "lessCommon" && v)
+
       || (n == "maintainers")
     )
       contents.meta
   )) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "license" "spdxId"] contents) {
     spdxId = contents.meta.license.spdxId;
+  }) // (lib.optionalAttrs (contents ? "settingsSchema") {
+    inherit (contents) settingsSchema;
+  }) // (lib.optionalAttrs (contents ? "modes") {
+    inherit (contents) modes;
   });
 
   mkChannelUiMetadata = name: channel: channel // {

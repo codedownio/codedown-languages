@@ -21,6 +21,8 @@
 let
   common = callPackage ../../languages/common.nix {};
 
+  uiMetadata = callPackage ../../codedown/uiMetadata.nix {};
+
   numVersionComponents = 5;
   componentPadLength = 3;
 
@@ -34,10 +36,7 @@ let
     attr = attrPrefix + k;
     name = common.safeEval (lib.attrByPath ["meta" "name"] "" v);
     version = common.safeEval (common.lexicographyVersionNumber' numVersionComponents componentPadLength (lib.attrByPath ["meta" "version"] "" v));
-    description = common.safeEval (lib.attrByPath ["meta" "description"] "" v);
-    display_name = common.safeEval (lib.attrByPath ["meta" "displayName"] "" v);
-    icon = common.safeEval (lib.attrByPath ["meta" "icon"] "" v);
-    less_common = common.safeEval (lib.attrByPath ["meta" "lessCommon"] false v);
+    meta = uiMetadata.chooseInterestingMeta v;
   }) filteredPackages));
 
 in
@@ -45,16 +44,13 @@ in
 rec {
   index = runCommand "search-index.db" { buildInputs = [nodejs sqlite]; inherit json; } ''
     echo | sqlite3 $out <<- EOF
-    CREATE VIRTUAL TABLE main using fts5(attr, name, version, description, display_name, icon UNINDEXED, less_common UNINDEXED);
+    CREATE VIRTUAL TABLE main using fts5(attr, name, version, meta UNINDEXED);
 
     INSERT INTO main SELECT
       json_extract(value, '$.attr'),
       json_extract(value, '$.name'),
       json_extract(value, '$.version'),
-      json_extract(value, '$.description'),
-      json_extract(value, '$.display_name'),
-      json_extract(value, '$.icon'),
-      json_extract(value, '$.less_common')
+      json_extract(value, '$.meta')
     FROM json_each(readfile('${json}'));
 
     INSERT INTO main(main) VALUES('optimize');
@@ -107,10 +103,7 @@ rec {
           attr = '$query' as attr_matches,
           name,
           name = '$query' as name_matches,
-          description,
-          display_name,
-          icon,
-          less_common,
+          meta,
           rank \
         FROM main $filterClause \
         ORDER BY \
