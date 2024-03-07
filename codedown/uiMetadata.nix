@@ -54,6 +54,7 @@ rec {
     packages = map (p: mkKernelPackageMetadata kernel p) kernel.args.packages;
 
     # Hydrated
+    modes = kernel.modes;
     meta = chooseInterestingMeta kernel;
   };
 
