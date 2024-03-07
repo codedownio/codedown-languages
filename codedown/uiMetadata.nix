@@ -6,11 +6,9 @@ rec {
   }) // (lib.optionalAttrs (contents ? "meta") (
     lib.filterAttrs (n: v:
       n == "description"
-      || n == "displayName"
       || n == "icon"
 
       || n == "homepage"
-      || n == "downloadPage"
       || n == "changelog"
 
       || (n == "available" && !v)
@@ -24,9 +22,13 @@ rec {
     )
       contents.meta
   )) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "license" "spdxId"] contents) {
-    spdxId = contents.meta.license.spdxId;
+    spdx_id = contents.meta.license.spdxId;
+  }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "downloadPage"] contents) {
+    download_page = contents.meta.downloadPage;
+  }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "displayName"] contents) {
+    display_name = contents.meta.displayName;
   }) // (lib.optionalAttrs (contents ? "settingsSchema") {
-    inherit (contents) settingsSchema;
+    settings_schema = contents.settingsSchema;
   }) // (lib.optionalAttrs (contents ? "modes") {
     inherit (contents) modes;
   });
@@ -52,14 +54,7 @@ rec {
     packages = map (p: mkKernelPackageMetadata kernel p) kernel.args.packages;
 
     # Hydrated
-    display_name = if kernel.meta ? "displayName" then kernel.meta.displayName else null;
-    icon = if kernel.meta ? "icon" then kernel.meta.icon else null;
-    modes = kernel.modes;
-    settings_schema = if kernel ? "settingsSchema" then kernel.settingsSchema else {};
     meta = chooseInterestingMeta kernel;
-
-    # TODO?
-    languageServerNames = [];
   };
 
   mkOtherPackageUiMetadata = package: {
