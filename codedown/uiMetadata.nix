@@ -56,6 +56,7 @@ rec {
     icon = if kernel.meta ? "icon" then kernel.meta.icon else null;
     modes = kernel.modes;
     settings_schema = if kernel ? "settingsSchema" then kernel.settingsSchema else {};
+    meta = chooseInterestingMeta kernel;
 
     # TODO?
     languageServerNames = [];
