@@ -37,12 +37,15 @@ rec {
     name = name;
   };
 
+  # This is duplicated from languages/common.nix, which we'd rather not import here
   packageName = p: if lib.isString p then p else p.name;
 
   mkKernelPackageMetadata = kernel: p: {
     name = packageName p;
-    meta = if lib.hasAttrByPath ["packageOptions" (packageName p)] kernel then chooseInterestingMeta (kernel.packageOptions.${p}) else {};
-  };
+    meta = if lib.hasAttrByPath ["packageOptions" (packageName p)] kernel then chooseInterestingMeta (kernel.packageOptions.${packageName p}) else {};
+  } // (lib.optionalAttrs (lib.isAttrs p && p ? "settings") {
+    inherit (p) settings;
+  });
 
   mkKernelUiMetadata = kernel: {
     # Dry

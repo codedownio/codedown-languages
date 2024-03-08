@@ -110,7 +110,7 @@ listToAttrs (map (x:
         evcxr = (evcxrBase.override {
           rustPlatform = rustPackages.rustPlatform;
           cargo = rustPackages.cargo;
-        }).withPackages packages;
+        }).withPackages (map common.packageName packages);
 
         settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
       in symlinkJoin {

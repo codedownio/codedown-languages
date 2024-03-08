@@ -15,7 +15,12 @@ codedown.mkCodeDownEnvironment {
       args = {
         packages = [
           "rand"
-          { name = "serde"; features = ["derive"]; }
+          {
+            name = "serde";
+            settings = {
+              features = ["derive"];
+            };
+          }
         ];
       };
     })

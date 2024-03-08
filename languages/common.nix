@@ -93,4 +93,6 @@ rec {
     name = item.target;
     value = item.defaultValue;
   }) (filter (hasAttr "target") settingsSchema));
+
+  packageName = p: if lib.isString p then p else p.name;
 }
