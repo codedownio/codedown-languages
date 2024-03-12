@@ -15,7 +15,7 @@ let
 
   chooseLanguageServers = settings:
     []
-    ;
+  ;
 
   meta = {
     name = "postgres";
@@ -27,41 +27,39 @@ let
     inherit settingsSchema;
   };
 
+  versions = {
+    postgres-kernel = meta.version;
+  };
+
 in
 
 {
-  postgres = {
-    inherit packageOptions packageSearch;
-    versions = {
-      postgres-kernel = meta.version;
-    };
+  postgres = lib.makeOverridable ({
+    packages ? []
+    , settings ? []
+    , attrs ? ["postgres"]
+    , extensions ? ["sql"]
+  }@args:
+    let
+      settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+    in symlinkJoin {
+      name = "postgres";
 
-    build = args@{
-      packages ? []
-      , settings ? []
-      , attrs ? ["postgres"]
-      , extensions ? ["sql"]
-    }:
-      let
-        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
-      in symlinkJoin {
-        name = "postgres";
+      paths = [
+        (callPackage ./kernel.nix { inherit attrs extensions; })
+      ]
+      ++ (chooseLanguageServers settingsToUse)
+      ;
 
-        paths = [
-          (callPackage ./kernel.nix { inherit attrs extensions; })
-        ]
-        ++ (chooseLanguageServers settingsToUse)
-        ;
-
-        passthru = {
-          args = args // { baseName = "postgres"; };
-          inherit meta packageOptions;
-          inherit settingsSchema settings;
-          modes = {
-            inherit attrs extensions;
-            code_mirror_mode = "sql";
-          };
+      passthru = {
+        args = args // { baseName = "postgres"; };
+        inherit meta packageOptions packageSearch versions;
+        inherit settingsSchema settings;
+        modes = {
+          inherit attrs extensions;
+          code_mirror_mode = "sql";
         };
       };
-  };
+    }
+  ) {};
 }

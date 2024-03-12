@@ -22,6 +22,7 @@ import TestLib.Util
 tests :: LanguageSpec
 tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ introduceJupyterRunner $ do
   testKernelSearchersBuild "rust"
+  testHasExpectedFields "rust"
 
   testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 

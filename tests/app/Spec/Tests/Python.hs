@@ -29,6 +29,7 @@ tests = describe "Python" $ parallel $ do
 tests' :: Text -> LanguageSpec
 tests' kernelName = describe [i|Python (#{kernelName})|] $ introduceNixEnvironment [kernelSpec kernelName] [] "Python 3" $ introduceJupyterRunner $ do
   testKernelSearchersNonempty kernelName
+  testHasExpectedFields kernelName
 
   testKernelStdout kernelName [i|print("hi")|] "hi\n"
   testKernelStdout kernelName [i|print(42)|] "42\n"

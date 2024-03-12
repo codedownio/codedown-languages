@@ -53,7 +53,7 @@ let
   chooseLanguageServers = settings: packageOptions: kernelName:
     []
     ++ lib.optionals (common.isTrue settings "lsp.solargraph.enable") [(callPackage ./solargraph.nix { rubyPackages = packageOptions; inherit kernelName; })]
-    ;
+  ;
 
 in
 
@@ -71,46 +71,45 @@ listToAttrs (map (x:
       inherit settingsSchema;
     };
 
+    packageOptions = getAttr x packagesLookup;
+    packageSearch = common.searcher packageOptions;
+    versions = {
+      ruby = builtins.toString ruby.version;
+      solargraph = packageOptions.solargraph.version;
+    };
+
   in {
     name = x;
-    value = rec {
-      packageOptions = getAttr x packagesLookup;
-      packageSearch = common.searcher packageOptions;
-      versions = {
-        ruby = builtins.toString ruby.version;
-        solargraph = packageOptions.solargraph.version;
-      };
-
-      build = args@{
-        packages ? []
-        , settings ? {}
-        , attrs ? [x "ruby"]
-        , extensions ? ["rb"]
-      }:
-        let
-          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
-        in symlinkJoin {
-          name = x;
-          paths = [
-            (callPackage ./kernel.nix {
-              iruby = (callPackage ./iruby { inherit ruby; }).iruby;
-              inherit attrs extensions version;
-            })
-            ruby
-          ]
-          ++ (chooseLanguageServers settingsToUse packageOptions x)
-          ;
-          passthru = {
-            inherit meta packageOptions;
-            inherit settingsSchema settings;
-            args = args // { baseName = x; };
-            modes = {
-              inherit attrs extensions;
-              code_mirror_mode = "ruby";
-            };
+    value = lib.makeOverridable ({
+      packages ? []
+      , settings ? {}
+      , attrs ? [x "ruby"]
+      , extensions ? ["rb"]
+    }@args:
+      let
+        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+      in symlinkJoin {
+        name = x;
+        paths = [
+          (callPackage ./kernel.nix {
+            iruby = (callPackage ./iruby { inherit ruby; }).iruby;
+            inherit attrs extensions version;
+          })
+          ruby
+        ]
+        ++ (chooseLanguageServers settingsToUse packageOptions x)
+        ;
+        passthru = {
+          inherit meta packageOptions packageSearch versions;
+          inherit settingsSchema settings;
+          args = args // { baseName = x; };
+          modes = {
+            inherit attrs extensions;
+            code_mirror_mode = "ruby";
           };
         };
-    };
+      }
+    ) {};
   }
 
 ) baseCandidates)

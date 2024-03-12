@@ -25,8 +25,8 @@ let
   ];
 
   chooseLanguageServers = settings: go: attrs: kernelName:
-  []
-  ++ lib.optionals (common.isTrue settings "lsp.gopls.enable") [(callPackage ./language-server-gopls.nix { inherit go attrs; inherit kernelName; })]
+    []
+    ++ lib.optionals (common.isTrue settings "lsp.gopls.enable") [(callPackage ./language-server-gopls.nix { inherit go attrs; inherit kernelName; })]
   ;
 
   repls = go: {};
@@ -47,48 +47,46 @@ listToAttrs (map (x:
       inherit settingsSchema;
     };
 
+    packageOptions = {};
+    packageSearch = common.searcher packageOptions;
+    versions = {
+      go = go.version;
+      gopls = gopls.version;
+    };
+
   in {
     name = x;
-    value = rec {
-      packageOptions = {};
-      packageSearch = common.searcher packageOptions;
-      versions = {
-        go = go.version;
-        gopls = gopls.version;
-      };
+    value = lib.makeOverridable ({
+      packages ? []
+      , settings ? {}
+      , attrs ? ["go"]
+      , extensions ? ["go"]
+    }@args:
+      let
+        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+      in symlinkJoin {
+        name = "go";
+        paths = [
+          (callPackage ./kernel.nix {
+            inherit attrs extensions;
+            version = go.version;
+          })
+          go
+        ]
+        ++ (chooseLanguageServers settingsToUse go attrs x)
+        ;
 
-      build = args@{
-        packages ? []
-        , settings ? {}
-        , attrs ? ["go"]
-        , extensions ? ["go"]
-      }:
-        let
-          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
-        in symlinkJoin {
-          name = "go";
-          paths = [
-            (callPackage ./kernel.nix {
-              inherit attrs extensions;
-              version = go.version;
-            })
-            go
-          ]
-          ++ (chooseLanguageServers settingsToUse go attrs x)
-          ;
-
-          passthru = {
-            inherit meta packageOptions;
-            inherit settingsSchema settings;
-            args = args // { baseName = x; };
-            repls = repls go;
-            modes = {
-              inherit attrs extensions;
-              code_mirror_mode = "go";
-            };
+        passthru = {
+          inherit meta packageOptions packageSearch versions;
+          inherit settingsSchema settings;
+          args = args // { baseName = x; };
+          repls = repls go;
+          modes = {
+            inherit attrs extensions;
+            code_mirror_mode = "go";
           };
         };
-    };
+      }
+    ) {};
   }
-
 ) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))

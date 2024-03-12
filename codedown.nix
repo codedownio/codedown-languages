@@ -74,10 +74,7 @@ rec {
 
   languages = languagesFn false;
   languagesSearcher = common.searcher' {
-    packages = let
-      filterOverrideKeys = lib.filterAttrs (k: _: !(lib.hasPrefix "override") k);
-    in
-      filterOverrideKeys (lib.mapAttrs (n: v: v.build {}) (languagesFn true));
+    packages = languagesFn true;
   };
   languagesIcons = common.searcherIcons' {
     packages = languagesFn true;

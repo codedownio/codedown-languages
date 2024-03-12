@@ -22,7 +22,7 @@ let
   languagesCommon = callPackage ../languages/common.nix {};
   shellsCommon = callPackage ../shells/common.nix {};
 
-  builtKernels = map (x: let kernel = (getAttr x.name languages).build x.args; in
+  builtKernels = map (x: let kernel = (getAttr x.name languages).override x.args; in
                          kernel.overrideAttrs (old: {
                            passthru = old.passthru // {
                              name = x.name;

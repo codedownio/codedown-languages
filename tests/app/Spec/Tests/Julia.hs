@@ -31,6 +31,7 @@ tests = do
 juliaTests :: Text -> LanguageSpec
 juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kernelSpec lang] [] [i|Julia (#{lang})|] $ introduceJupyterRunner $ do
   testKernelSearchersNonempty lang
+  testHasExpectedFields lang
 
   testKernelStdout lang [i|println("hi")|] "hi\n"
 

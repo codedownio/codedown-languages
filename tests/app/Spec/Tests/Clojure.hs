@@ -28,6 +28,7 @@ kernelSpec = NixKernelSpec {
 tests :: LanguageSpec
 tests = describe "Clojure" $ introduceNixEnvironment [kernelSpec] [] "Clojure" $ introduceJupyterRunner $ do
   testKernelSearchersBuild "clojure"
+  testHasExpectedFields "clojure"
 
   testKernelStdout "clojure" [__i|(println "hi")|] "hi\n"
 

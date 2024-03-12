@@ -20,7 +20,7 @@ let
   chooseLanguageServers = settings: snapshot: ghc: kernelName:
     []
     ++ lib.optionals (common.isTrue settings "lsp.haskell-language-server.enable" && hasHlsSupport ghc.version)
-                     [((callPackage ./language-server-hls/hls.nix {}) snapshot ghc kernelName (common.focusSettings "lsp.haskell-language-server." settings))]
+      [((callPackage ./language-server-hls/hls.nix {}) snapshot ghc kernelName (common.focusSettings "lsp.haskell-language-server." settings))]
   ;
 
   compilers = callPackage ./compilers.nix {
@@ -58,68 +58,68 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
       icon = ./haskell-logo-64x64.png;
     };
 
+    packageOptions = snapshot;
+    versions = {
+      ghc = snapshot.ghc.version;
+      haskell-language-server = snapshot.haskell-language-server.version;
+    };
+
+    # Grab the meta from the library component
+    # Could also search over other components?
+    packageSearch = common.searcher (mapAttrs (name: value:
+      let meta = (attrByPath ["components" "library" "meta"] null value); in
+      if meta == null then value else value // { inherit meta; }) packageOptions);
+
   in {
     name = meta.baseName;
-    value = rec {
-      packageOptions = snapshot;
-      versions = {
-        ghc = snapshot.ghc.version;
-        haskell-language-server = snapshot.haskell-language-server.version;
-      };
+    value = lib.makeOverridable ({
+      packages ? []
+      , attrs ? [meta.baseName "haskell"]
+      , extensions ? ["hs"]
+      , settings ? {}
+    }@args:
+      let
+        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+        ghc = snapshot.ghcWithPackages (ps:
+          [ps.directory]
+          ++ (map (x: builtins.getAttr x ps) packages)
+          ++ (if (common.isTrue settingsToUse "lsp.haskell-language-server.enable") then [ps.haskell-language-server] else [])
+        );
 
-      # Grab the meta from the library component
-      # Could also search over other components?
-      packageSearch = common.searcher (mapAttrs (name: value:
-        let meta = (attrByPath ["components" "library" "meta"] null value); in
-        if meta == null then value else value // { inherit meta; }) packageOptions);
+      in symlinkJoin {
+        name = meta.baseName;
 
-      build = args@{
-        packages ? []
-        , attrs ? [meta.baseName "haskell"]
-        , extensions ? ["hs"]
-        , settings ? {}
-      }:
-        let
-          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
-          ghc = snapshot.ghcWithPackages (ps:
-            [ps.directory]
-            ++ (map (x: builtins.getAttr x ps) packages)
-            ++ (if (common.isTrue settingsToUse "lsp.haskell-language-server.enable") then [ps.haskell-language-server] else [])
-          );
+        paths = [
+          (callPackage ./kernel.nix {
+            inherit displayName attrs extensions snapshot;
 
-        in symlinkJoin {
-          name = meta.baseName;
+            language = "haskell";
 
-          paths = [
-            (callPackage ./kernel.nix {
-              inherit displayName attrs extensions snapshot;
+            ihaskell = if settingsToUse.enableHlintOutput then snapshot.ihaskell else snapshot.ihaskell.overrideAttrs (oldAttrs: {
+              configureFlags = ["-f" "-use-hlint"];
+            });
+            inherit ghc;
 
-              language = "haskell";
+            # enableVariableInspector = settingsToUse.enableVariableInspector;
+          })
 
-              ihaskell = if settingsToUse.enableHlintOutput then snapshot.ihaskell else snapshot.ihaskell.overrideAttrs (oldAttrs: {
-                configureFlags = ["-f" "-use-hlint"];
-              });
-              inherit ghc;
+          ghc
+        ]
+        ++ (chooseLanguageServers settingsToUse snapshot ghc meta.baseName)
+        ;
 
-              # enableVariableInspector = settingsToUse.enableVariableInspector;
-            })
-
-            ghc
-          ]
-          ++ (chooseLanguageServers settingsToUse snapshot ghc meta.baseName)
-          ;
-
-          passthru = {
-            args = args // { baseName = meta.baseName; };
-            inherit settingsSchema settings;
-            inherit meta packageOptions;
-            repls = repls ghc;
-            modes = {
-              inherit attrs extensions;
-              code_mirror_mode = "haskell";
-            };
+        passthru = {
+          args = args // { baseName = meta.baseName; };
+          inherit meta packageOptions packageSearch versions;
+          inherit settingsSchema settings;
+          repls = repls ghc;
+          modes = {
+            inherit attrs extensions;
+            code_mirror_mode = "haskell";
           };
         };
-    };
+      }
+    ) {}
+    ;
   }
 ) (lib.filterAttrs (k: _: !(hasPrefix "override") k) compilers))

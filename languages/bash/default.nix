@@ -19,7 +19,7 @@ let
   chooseLanguageServers = settings: kernelName:
     []
     ++ lib.optionals (common.isTrue settings "lsp.bash-language-server.enable") [(callPackage ./language_server_bash { inherit kernelName; })]
-    ;
+  ;
 
   settingsSchema = [
     {
@@ -42,22 +42,20 @@ lib.listToAttrs (map (x:
       icon = ./bash-logo-128x128.png;
       inherit settingsSchema;
     };
+    versions = {
+      bash = bash.version;
+      bash-language-server = nodePackages.bash-language-server.version;
+    };
   in
     {
       name = x;
-      value = rec {
-        inherit packageOptions packageSearch;
-        versions = {
-          bash = bash.version;
-          bash-language-server = nodePackages.bash-language-server.version;
-        };
-
-        build = args@{
+      value =
+        lib.makeOverridable ({
           packages ? []
           , attrs ? ["bash"]
           , extensions ? ["sh" "bash"]
           , settings ? {}
-        }:
+        }@args:
           let
             settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
           in symlinkJoin {
@@ -72,14 +70,14 @@ lib.listToAttrs (map (x:
 
             passthru = {
               args = args // { baseName = x; };
-              inherit meta packageOptions;
+              inherit meta packageOptions packageSearch versions;
               inherit settingsSchema settings;
               modes = {
                 inherit attrs extensions;
                 code_mirror_mode = "shell";
               };
             };
-          };
-      };
+          }
+        ) {};
     }
 ) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))

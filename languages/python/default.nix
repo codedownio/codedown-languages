@@ -24,7 +24,7 @@ let
     ++ lib.optionals (common.isTrue settings "lsp.microsoft.enable") [(callPackage ./language_servers/language_server_microsoft/config.nix { inherit pythonWithPackages kernelName; })]
     ++ lib.optionals (common.isTrue settings "lsp.python-lsp-server.enable" && (hasPythonLspServer (pythonWithPackages (ps: [])))) [(callPackage ./language_servers/language_server_pythonlsp/config.nix { inherit pythonWithPackages kernelName; })]
     ++ lib.optionals (common.isTrue settings "lsp.python-language-server.enable" && (hasPythonLanguageServer (pythonWithPackages (ps: [])))) [(callPackage ./language_servers/language_server_palantir/config.nix { inherit pythonWithPackages kernelName; })]
-    ;
+  ;
 
   repls = python: {
     ipython = {
@@ -169,63 +169,62 @@ lib.listToAttrs (map (x:
       icon = ./python-logo-64x64.png;
     };
 
+    packageOptions = basePython.pkgs;
+    packageSearch = common.searcher packageOptions;
+    versions = {
+      python = basePython.version;
+      jedi-language-server = basePython.pkgs.jedi-language-server.version;
+      pyright = pyright.version;
+      pylint = basePython.pkgs.pylint.version;
+      flake8 = basePython.pkgs.flake8.version;
+      pycodestyle = basePython.pkgs.pycodestyle.version;
+    }
+    // lib.optionalAttrs (hasPythonLspServer basePython) { python-lsp-server = basePython.pkgs.python-lsp-server.version; }
+    ;
+
   in
     {
       name = x;
-      value = rec {
-        packageOptions = basePython.pkgs;
-        packageSearch = common.searcher packageOptions;
-        versions = {
-          python = basePython.version;
-          jedi-language-server = basePython.pkgs.jedi-language-server.version;
-          pyright = pyright.version;
-          pylint = basePython.pkgs.pylint.version;
-          flake8 = basePython.pkgs.flake8.version;
-          pycodestyle = basePython.pkgs.pycodestyle.version;
-        }
-        // lib.optionalAttrs (hasPythonLspServer basePython) { python-lsp-server = basePython.pkgs.python-lsp-server.version; }
-        ;
+      value = lib.makeOverridable ({
+        packages ? []
+        , attrs ? [x "python"]
+        , extensions ? ["py"]
+        , settings ? {}
+      }@args:
+        let
+          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+          ps = packageOptions;
+          chosenPackages = map (x: builtins.getAttr x ps) packages;
+          allPackages = [ps.ipykernel ps.ipywidgets] ++ chosenPackages;
+          python = basePython.withPackages (_: allPackages);
+          pythonWithPackages = f: basePython.withPackages (_: allPackages ++ f ps);
 
-        build = args@{
-          packages ? []
-          , attrs ? [x "python"]
-          , extensions ? ["py"]
-          , settings ? {}
-        }:
-          let
-            settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
-            ps = packageOptions;
-            chosenPackages = map (x: builtins.getAttr x ps) packages;
-            allPackages = [ps.ipykernel ps.ipywidgets] ++ chosenPackages;
-            python = basePython.withPackages (_: allPackages);
-            pythonWithPackages = f: basePython.withPackages (_: allPackages ++ f ps);
+        in symlinkJoin {
+          name = x;
 
-          in symlinkJoin {
-            name = x;
+          paths = [
+            (callPackage ./kernel.nix {
+              inherit python displayName attrs extensions;
+              enableVariableInspector = settingsToUse.enableVariableInspector;
+            })
 
-            paths = [
-              (callPackage ./kernel.nix {
-                inherit python displayName attrs extensions;
-                enableVariableInspector = settingsToUse.enableVariableInspector;
-              })
+            python
+            ps.ipython
+          ]
+          ++ (chooseLanguageServers settingsToUse pythonWithPackages x)
+          ;
 
-              python
-              ps.ipython
-            ]
-            ++ (chooseLanguageServers settingsToUse pythonWithPackages x)
-            ;
-
-            passthru = {
-              inherit meta packageOptions;
-              inherit settingsSchema settings;
-              args = args // { baseName = x; };
-              repls = repls python;
-              modes = {
-                inherit attrs extensions;
-                code_mirror_mode = "python";
-              };
+          passthru = {
+            inherit meta packageOptions packageSearch versions;
+            inherit settingsSchema settings;
+            args = args // { baseName = x; };
+            repls = repls python;
+            modes = {
+              inherit attrs extensions;
+              code_mirror_mode = "python";
             };
           };
-      };
+        }
+      ) {};
     }
 ) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))

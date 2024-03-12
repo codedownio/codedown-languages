@@ -40,12 +40,12 @@ let
   ];
 
   chooseLanguageServers = settings: attrs: attr: julia:
-  []
-  ++ lib.optionals (common.isTrue settings "lsp.LanguageServer.enable") [(callPackage ./language-server-LanguageServer.nix {
-    inherit attrs julia;
-    kernelName = attr;
-    settings = common.focusSettings "lsp.LanguageServer." settings;
-  })]
+    []
+    ++ lib.optionals (common.isTrue settings "lsp.LanguageServer.enable") [(callPackage ./language-server-LanguageServer.nix {
+      inherit attrs julia;
+      kernelName = attr;
+      settings = common.focusSettings "lsp.LanguageServer." settings;
+    })]
   ;
 
   packageOverrides = {
@@ -112,7 +112,6 @@ mapAttrs (attr: value:
 
     python = python3;
 
-  in rec {
     packageOptions = {};
     packageSearch = common.searcher' {
       packages = packageSet;
@@ -122,12 +121,13 @@ mapAttrs (attr: value:
       julia = baseJulia.version;
     };
 
-    build = args@{
+  in
+    lib.makeOverridable ({
       packages ? []
       , attrs ? [attr "julia"]
       , extensions ? ["jl"]
       , settings ? {}
-    }:
+    }@args:
       let
         settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
 
@@ -149,13 +149,13 @@ mapAttrs (attr: value:
 
           passthru = {
             args = args // { baseName = attr; };
-            inherit meta packageOptions;
+            inherit meta packageOptions packageSearch versions;
             inherit settingsSchema settings;
             modes = {
               inherit attrs extensions;
               code_mirror_mode = "julia";
             };
           };
-        };
-  }
+        }
+    ) {}
 ) baseCandidates

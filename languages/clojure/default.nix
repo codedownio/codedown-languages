@@ -38,8 +38,8 @@ let
   clojure-lsp = (builtins.getFlake "github:clojure-lsp/clojure-lsp/5e3584014f2ac9c13a877dfd7984383346d81609").packages.x86_64-linux.default;
 
   chooseLanguageServers = settings: kernelName:
-  []
-  ++ lib.optionals (common.isTrue settings "lsp.clojure-lsp.enable") [(callPackage ./language-server.nix { inherit clojure-lsp kernelName; })]
+    []
+    ++ lib.optionals (common.isTrue settings "lsp.clojure-lsp.enable") [(callPackage ./language-server.nix { inherit clojure-lsp kernelName; })]
   ;
 
 in
@@ -58,45 +58,45 @@ listToAttrs (map (x:
       inherit settingsSchema;
     };
 
+    packageOptions = getAttr x packagesLookup;
+    packageSearch = common.searcher packageOptions;
+    versions = {
+      clojure = clojure.version;
+      clojure-lsp = clojure-lsp.version;
+    };
+
   in {
     name = x;
-    value = rec {
-      packageOptions = getAttr x packagesLookup;
-      packageSearch = common.searcher packageOptions;
-      versions = {
-        clojure = clojure.version;
-        clojure-lsp = clojure-lsp.version;
-      };
+    value = lib.makeOverridable (args@{
+      packages ? []
+      , settings ? {}
+      , attrs ? ["clojure"]
+      , extensions ? ["clj"]
+    }:
+      let
+        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+      in symlinkJoin {
+        name = "clojure";
+        paths = [
+          (callPackage ./kernel.nix { inherit attrs extensions version; })
+          clojure
+        ]
+        ++ (chooseLanguageServers settingsToUse x)
+        ;
 
-      build = args@{
-        packages ? []
-        , settings ? {}
-        , attrs ? ["clojure"]
-        , extensions ? ["clj"]
-      }:
-        let
-          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
-        in symlinkJoin {
-          name = "clojure";
-          paths = [
-            (callPackage ./kernel.nix { inherit attrs extensions version; })
-            clojure
-          ]
-          ++ (chooseLanguageServers settingsToUse x)
-          ;
-
-          passthru = {
-            inherit meta packageOptions settingsSchema;
-            inherit settings;
-            args = args // { baseName = x; };
-            repls = repls clojure;
-            modes = {
-              inherit attrs extensions;
-              code_mirror_mode = "clojure";
-            };
+        passthru = {
+          inherit meta packageOptions packageSearch versions;
+          inherit settingsSchema settings;
+          args = args // { baseName = x; };
+          repls = repls clojure;
+          modes = {
+            inherit attrs extensions;
+            code_mirror_mode = "clojure";
           };
         };
-    };
+      }
+    ) {}
+    ;
   }
 
 ) (filter (x: (common.hasAttrSafe x pkgs) && !(attrByPath [x "meta" "broken"] false pkgs)) baseCandidates))

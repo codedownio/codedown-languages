@@ -34,6 +34,7 @@ kernelTests :: Text -> LanguageSpec
 kernelTests lang = do
   describe (T.unpack lang) $ introduceNixEnvironment [kernelSpec lang] [] [i|Ruby (#{lang})|] $ introduceJupyterRunner $ do
     testKernelSearchersNonempty lang
+    testHasExpectedFields lang
 
     testKernelStdout lang [__i|puts "hi"|] "hi\n"
 

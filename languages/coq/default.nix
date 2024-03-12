@@ -38,68 +38,68 @@ let
 
   chooseLanguageServers = settings: coq: kernelName:
     []
-    ;
+  ;
 
 in
 
 lib.listToAttrs (map (x:
-  let coqPackages = lib.getAttr x pkgs;
-      baseCoq = coqPackages.coq;
-      baseName = with builtins; (substring 0 3 x) + (substring 11 (stringLength x - 11) x);
-      displayName = "Coq";
-      meta = baseCoq.meta // {
-        inherit baseName displayName settingsSchema;
-        version = baseCoq.version;
-        icon = coq_jupyter.sizedLogo "64";
-        lessCommon = isLessCommon x;
-      };
+  let
+    coqPackages = lib.getAttr x pkgs;
+    baseCoq = coqPackages.coq;
+    baseName = with builtins; (substring 0 3 x) + (substring 11 (stringLength x - 11) x);
+    displayName = "Coq";
+    meta = baseCoq.meta // {
+      inherit baseName displayName settingsSchema;
+      version = baseCoq.version;
+      icon = coq_jupyter.sizedLogo "64";
+      lessCommon = isLessCommon x;
+    };
+
+    packageOptions = coqPackages;
+    packageSearch = common.searcher packageOptions;
+    versions = {
+      coq = baseCoq.version;
+    };
 
   in {
     name = baseName;
-    value = rec {
-      packageOptions = coqPackages;
-      packageSearch = common.searcher packageOptions;
-      versions = {
-        coq = baseCoq.version;
-      };
+    value = lib.makeOverridable ({
+      packages ? []
+      , attrs ? [baseName "coq"]
+      , extensions ? ["v"]
+      , settings ? {}
+    }@args:
+      let
+        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
 
-      build = args@{
-        packages ? []
-        , attrs ? [baseName "coq"]
-        , extensions ? ["v"]
-        , settings ? {}
-      }:
-        let
-          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+        coq = baseCoq;
 
-          coq = baseCoq;
+      in symlinkJoin {
+        name = baseName;
 
-        in symlinkJoin {
-          name = baseName;
+        paths = [
+          (callPackage ./kernel.nix {
+            inherit coq displayName attrs extensions;
+            enableVariableInspector = settingsToUse.enableVariableInspector;
+            chosenPackages = map (x: builtins.getAttr x packageOptions) packages;
+          })
 
-          paths = [
-            (callPackage ./kernel.nix {
-              inherit coq displayName attrs extensions;
-              enableVariableInspector = settingsToUse.enableVariableInspector;
-              chosenPackages = map (x: builtins.getAttr x packageOptions) packages;
-            })
+          coq
+        ]
+        ++ (chooseLanguageServers settingsToUse coq baseName)
+        ;
 
-            coq
-          ]
-          ++ (chooseLanguageServers settingsToUse coq baseName)
-          ;
-
-          passthru = {
-            inherit meta packageOptions;
-            inherit settings settingsSchema;
-            args = args // { inherit baseName; };
-            repls = repls coq;
-            modes = {
-              inherit attrs extensions;
-              code_mirror_mode = "coq";
-            };
+        passthru = {
+          inherit meta packageOptions packageSearch versions;
+          inherit settings settingsSchema;
+          args = args // { inherit baseName; };
+          repls = repls coq;
+          modes = {
+            inherit attrs extensions;
+            code_mirror_mode = "coq";
           };
         };
-    };
+      }
+    ) {};
   }
 ) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))

@@ -32,6 +32,7 @@ kernelSpec = NixKernelSpec {
 tests :: LanguageSpec
 tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ introduceJupyterRunner $ do
   testKernelSearchersBuild "bash"
+  testHasExpectedFields "bash"
 
   testKernelStdout "bash" [i|echo hi|] "hi\n"
 

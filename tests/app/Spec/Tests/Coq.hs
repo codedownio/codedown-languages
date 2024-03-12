@@ -28,6 +28,7 @@ kernelSpec = NixKernelSpec {
 tests :: LanguageSpec
 tests = describe "Coq" $ introduceNixEnvironment [kernelSpec] [] "Coq" $ introduceJupyterRunner $ do
   testKernelSearchersBuild "coq"
+  testHasExpectedFields "coq"
 
   itHasExecuteTexts "coq" [__i|Require Import Bignums.BigN.BigN.
                                Check (BigN.add_comm 1 2).|] [Just $ Array [

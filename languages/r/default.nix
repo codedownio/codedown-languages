@@ -48,58 +48,57 @@ let
     };
   };
 
+  packageOptions = rPackages;
+  packageSearch = common.searcher packageOptions;
+  versions = {
+    r = R.version;
+    languageserver = (callPackage ./language-server-languageserver/languageserver.nix {}).version;
+  };
+
 in
 
 with lib;
 
 listToAttrs [{
   name = "R";
-  value = rec {
-    packageOptions = rPackages;
-    packageSearch = common.searcher packageOptions;
-    versions = {
-      r = R.version;
-      languageserver = (callPackage ./language-server-languageserver/languageserver.nix {}).version;
-    };
+  value = lib.makeOverridable ({
+    packages ? []
+    , settings ? {}
+    , attrs ? ["r" "R"]
+    , extensions ? ["r"]
+  }@args:
+    let
+      settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
 
-    build = args@{
-      packages ? []
-      , settings ? {}
-      , attrs ? ["r" "R"]
-      , extensions ? ["r"]
-    }:
-      let
-        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+      basePackages = [rPackages.IRkernel] ++ (map (x: lib.getAttr x rPackages) packages);
 
-        basePackages = [rPackages.IRkernel] ++ (map (x: lib.getAttr x rPackages) packages);
+      rWithPackages = rWrapper.override {
+        packages = basePackages;
+      };
+    in
+      symlinkJoin {
+        name = "r";
 
-        rWithPackages = rWrapper.override {
-          packages = basePackages;
-        };
-      in
-        symlinkJoin {
-          name = "r";
+        paths = [
+          (callPackage ./kernel.nix {
+            inherit rWithPackages attrs extensions;
+            version = R.version;
+          })
+          rWithPackages
+        ]
+        ++ (chooseLanguageServers settingsToUse rPackages rWrapper basePackages "R")
+        ;
 
-          paths = [
-            (callPackage ./kernel.nix {
-              inherit rWithPackages attrs extensions;
-              version = R.version;
-            })
-            rWithPackages
-          ]
-          ++ (chooseLanguageServers settingsToUse rPackages rWrapper basePackages "R")
-          ;
-
-          passthru = {
-            inherit meta packageOptions;
-            inherit settingsSchema settings;
-            args = args // { baseName = "R"; };
-            repls = repls rWithPackages R.version;
-            modes = {
-              inherit attrs extensions;
-              code_mirror_mode = "r";
-            };
+        passthru = {
+          inherit meta packageOptions packageSearch versions;
+          inherit settingsSchema settings;
+          args = args // { baseName = "R"; };
+          repls = repls rWithPackages R.version;
+          modes = {
+            inherit attrs extensions;
+            code_mirror_mode = "r";
           };
         };
-  };
+      }
+  ) {};
 }]

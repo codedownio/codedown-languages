@@ -26,6 +26,7 @@ kernelSpec = NixKernelSpec {
 tests :: LanguageSpec
 tests = describe "R" $ introduceNixEnvironment [kernelSpec] [] "R" $ introduceJupyterRunner $ do
   testKernelSearchersNonempty "R"
+  testHasExpectedFields "R"
 
   testKernelStdout "R" [__i|cat("hi")|] "hi"
   testKernelStdout "R" [__i|print("hi")|] [i|[1] "hi"\n|]

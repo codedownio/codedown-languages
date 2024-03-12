@@ -74,73 +74,68 @@ listToAttrs (map (x:
       inherit (darwin.apple_sdk.frameworks) CoreServices Security;
     };
 
+    packageOptions = listToAttrs (map (x: {
+      name = x;
+      value = {
+        meta = {
+          name = x;
+        };
+      };
+    }) allPackageNames);
+
+    packageSearch = common.searcher' {
+      packageMustBeDerivation = false;
+      packages = packageOptions;
+    };
+
+    versions = {
+      rust = rustPackages.rustc.version;
+      rust-analyzer = rust-analyzer.version;
+      cargo = rustPackages.cargo.version;
+    };
+
   in {
     name = x;
-    value = rec {
-      packageOptions = listToAttrs (map (x: {
-        name = x;
-        value = {
-          meta = {
-            name = x;
-          };
-        };
-      }) allPackageNames);
+    value = lib.makeOverridable ({
+      packages ? []
+      , attrs ? [x "rust"]
+      , extensions ? ["rs" "rlib"]
+      , settings ? {}
+    }@args: let
+      evcxr = (evcxrBase.override {
+        rustPlatform = rustPackages.rustPlatform;
+        cargo = rustPackages.cargo;
+      }).withPackages (map common.packageName packages);
 
-      packageSearch = common.searcher' {
-        packageMustBeDerivation = false;
-        packages = packageOptions;
-      };
+      settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+    in symlinkJoin {
+      name = "rust";
 
-      versions = {
-        rust = rustPackages.rustc.version;
-        rust-analyzer = rust-analyzer.version;
-        cargo = rustPackages.cargo.version;
-      };
+      paths = [
+        (callPackage ./kernel.nix {
+          inherit evcxr;
+          inherit displayName attrs extensions;
+          version = rustPackages.rustc.version;
+        })
+
+        rustPackages.rustc
+        rustPackages.cargo
+        pkgs.gcc
+      ]
+      ++ (chooseLanguageServers settingsToUse rust evcxr.cargoHome x)
+      ;
 
       passthru = {
-        inherit (evcxrBase) cratesIndex;
-      };
-
-      build = args@{
-        packages ? []
-        , attrs ? [x "rust"]
-        , extensions ? ["rs" "rlib"]
-        , settings ? {}
-      }: let
-        evcxr = (evcxrBase.override {
-          rustPlatform = rustPackages.rustPlatform;
-          cargo = rustPackages.cargo;
-        }).withPackages (map common.packageName packages);
-
-        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
-      in symlinkJoin {
-        name = "rust";
-
-        paths = [
-          (callPackage ./kernel.nix {
-            inherit evcxr;
-            inherit displayName attrs extensions;
-            version = rustPackages.rustc.version;
-          })
-
-          rustPackages.rustc
-          rustPackages.cargo
-          pkgs.gcc
-        ]
-        ++ (chooseLanguageServers settingsToUse rust evcxr.cargoHome x)
-        ;
-
-        passthru = {
-          args = args // { baseName = x; };
-          inherit meta packageOptions;
-          inherit settingsSchema settings;
-          inherit (evcxr) cratesIndex;
-          modes = {
-            inherit attrs extensions;
-            code_mirror_mode = "rust";
-          };
+        args = args // { baseName = x; };
+        inherit meta packageOptions packageSearch versions;
+        inherit settingsSchema settings;
+        inherit (evcxr) cratesIndex;
+        modes = {
+          inherit attrs extensions;
+          code_mirror_mode = "rust";
         };
       };
-    };
+    }
+    ) {};
   }
 ) (filter (x: hasAttr x pkgs) baseCandidates))

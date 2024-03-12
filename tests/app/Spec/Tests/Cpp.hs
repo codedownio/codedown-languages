@@ -25,6 +25,7 @@ tests = describe "C++" $ parallel $ do
 tests' :: Text -> LanguageSpec
 tests' kernelName = describe [i|C++ (#{kernelName})|] $ introduceNixEnvironment [kernelSpec kernelName] [] "C++" $ introduceJupyterRunner $ do
   testKernelSearchersBuild kernelName
+  testHasExpectedFields kernelName
 
   testKernelStdout kernelName [__i|\#include <iostream>
                                    using namespace std;

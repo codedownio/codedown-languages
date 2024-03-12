@@ -51,6 +51,7 @@ haskellCommonTests lang = do
   describe [i|Haskell #{lang}|] $ introduceNixEnvironment [kernelSpec lang] [] "Haskell" $ do
     introduceJupyterRunner $ do
       testKernelSearchersNonempty lang
+      testHasExpectedFields lang
 
       describe "Kernel" $ do
         itHasDisplayDatas lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
