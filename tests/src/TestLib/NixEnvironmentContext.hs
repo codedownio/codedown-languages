@@ -48,7 +48,6 @@ introduceNixEnvironment kernels otherPackages label = introduceWith [i|#{label} 
             NixSrcPath "codedown" (T.pack rootDir)
             , lockedToNixSrcSpec "nixpkgs" nixpkgsLocked
             ]
-        , nixEnvironmentOverlays = []
         , nixEnvironmentKernels = kernels
         , nixEnvironmentOtherPackages = otherPackages
         }

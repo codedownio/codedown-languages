@@ -37,25 +37,19 @@ let
     else if (channel.tag == "fetch_git") then fetchgit (removeAttrs channel ["tag" "name"])
     else if (channel.tag == "path") then channel.path else null;
 
-  overlays = {
-#{T.intercalate "\n\n" [indentTo 4 $ renderChannel x | x <- nixEnvironmentOverlays]}
-  };
-
   channels = rec {
 #{T.intercalate "\n\n" [indentTo 4 $ renderChannel x | x <- nixEnvironmentChannels]}
   };
 
-  importedOverlays = lib.mapAttrsToList (name: value: import (channelSpecToChannel name value)) overlays;
   importedChannels = lib.mapAttrs (name: value: let imported = import (channelSpecToChannel name value); in
-    if (builtins.isFunction imported && builtins.hasAttr "overlays" (builtins.functionArgs imported)) then imported { overlays = importedOverlays; }
-    else if (builtins.isFunction imported) then bootstrapNixpkgs.callPackage imported {}
+    if (builtins.isFunction imported) then bootstrapNixpkgs.callPackage imported {}
     else imported
   ) channels;
 
 in
 
 importedChannels.codedown.mkCodeDownEnvironment {
-  inherit channels overlays;
+  inherit channels;
 
   kernels = [
 #{T.intercalate "\n" [indentTo 4 $ renderKernel x | x <- nixEnvironmentKernels]}
