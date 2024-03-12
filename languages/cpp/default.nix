@@ -114,8 +114,6 @@ if cling == null then {} else
               };
             };
           };
-
-        inherit meta;
       };
     }
   ) baseCandidates)

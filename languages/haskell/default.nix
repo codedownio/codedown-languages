@@ -120,8 +120,6 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
             };
           };
         };
-
-      inherit meta;
     };
   }
 ) (lib.filterAttrs (k: _: !(hasPrefix "override") k) compilers))

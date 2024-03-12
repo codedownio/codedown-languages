@@ -101,7 +101,5 @@ listToAttrs [{
             };
           };
         };
-
-    inherit meta;
   };
 }]

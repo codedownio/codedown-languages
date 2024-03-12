@@ -63,7 +63,5 @@ in
           };
         };
       };
-
-    inherit meta;
   };
 }

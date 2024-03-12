@@ -40,6 +40,8 @@ let
     (pkgsMaster.callPackage ./languages/rust {})
   ];
 
+  lib = pkgsStable.lib;
+
 in
 
 rec {
@@ -72,16 +74,18 @@ rec {
 
   languages = languagesFn false;
   languagesSearcher = common.searcher' {
-    packages = languagesFn true;
-    packageMustBeDerivation = false;
+    packages = let
+      filterOverrideKeys = lib.filterAttrs (k: _: !(lib.hasPrefix "override") k);
+    in
+      filterOverrideKeys (lib.mapAttrs (n: v: v.build {}) (languagesFn true));
   };
   languagesIcons = common.searcherIcons' {
     packages = languagesFn true;
     packageMustBeDerivation = false;
   };
 
-  settingsSchemas = pkgsStable.lib.mapAttrs (attr: value:
-    common.safeEval (pkgsStable.lib.attrByPath ["meta" "settingsSchema"] [] value)
+  settingsSchemas = lib.mapAttrs (attr: value:
+    common.safeEval (lib.attrByPath ["meta" "settingsSchema"] [] value)
   ) languages;
 
   mkCodeDownEnvironment = callPackage ./codedown/mkCodeDownEnvironment.nix {

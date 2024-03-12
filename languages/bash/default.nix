@@ -80,8 +80,6 @@ lib.listToAttrs (map (x:
               };
             };
           };
-
-        inherit meta;
       };
     }
 ) (lib.filter (x: lib.hasAttr x pkgs) baseCandidates))

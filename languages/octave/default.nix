@@ -107,8 +107,6 @@ listToAttrs (map (x:
             };
           };
         };
-
-      inherit meta;
     };
   }
 ) (filter (x: hasAttr x pkgs) baseCandidates))

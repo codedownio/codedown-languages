@@ -157,7 +157,5 @@ mapAttrs (attr: value:
             };
           };
         };
-
-    inherit meta;
   }
 ) baseCandidates

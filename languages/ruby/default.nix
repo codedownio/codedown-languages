@@ -110,8 +110,6 @@ listToAttrs (map (x:
             };
           };
         };
-
-      inherit meta;
     };
   }
 
