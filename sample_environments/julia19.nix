@@ -13,7 +13,10 @@ codedown.mkCodeDownEnvironment {
       name = "julia19";
       channel = "codedown";
       args = {
-        packages = ["JSON3" "Plots"];
+        packages = ["JSON3" "Plots" "RDatasets"];
+        # settings = {
+        #   precompile = false;
+        # };
       };
     })
   ];

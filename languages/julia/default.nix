@@ -18,6 +18,13 @@ let
 
   settingsSchema = [
     {
+      target = "precompile";
+      title = "Precompile environment";
+      description = "Whether to precompile Julia code when building the environment for faster imports. In some cases, precompilation can make the build fail, so turning this off can help.";
+      type = "boolean";
+      defaultValue = true;
+    }
+    {
       target = "lsp.LanguageServer.enable";
       title = "Enable LanguageServer language server";
       type = "boolean";
@@ -131,7 +138,7 @@ mapAttrs (attr: value:
       let
         settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
 
-        julia = value (
+        julia = (value.override { inherit (settingsToUse) precompile; }) (
           ["IJulia"]
           ++ packages
           ++ lib.optionals (common.isTrue settingsToUse "lsp.LanguageServer.enable") ["LanguageServer" "SymbolServer"]
