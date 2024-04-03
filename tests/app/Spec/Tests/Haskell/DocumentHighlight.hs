@@ -13,7 +13,6 @@ import Language.LSP.Test hiding (message)
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
 import TestLib.LSP
-import TestLib.NixEnvironmentContext
 
 
 documentHighlightTests :: (LspContext context m) => SpecFree context m ()
@@ -48,7 +47,7 @@ documentHighlightCodeRegular = [__i|foo = "hello"
 
 -------------------------------------
 
-main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $ do
-  introduceNixEnvironment [kernelSpec "haskell-ghc92"] [] "Haskell" $ do
-    documentHighlightTests
+-- main :: IO ()
+-- main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $ do
+--   introduceNixEnvironment [kernelSpec "haskell-ghc92"] [] "Haskell" $ do
+--     documentHighlightTests

@@ -36,6 +36,7 @@ let
   indexJs = stdenv.mkDerivation {
     name = "markdown-spellcheck-lsp-index.js";
 
+    # src = /nix/store/p5bvd7wfib8992v2cpdn0hfk8kxnf2m7-markdown-spellcheck-lsp-tarball/markdown-spellcheck-lsp.tar.gz;
     src = fetchTarball {
       url = https://github.com/codedownio/markdown-spellcheck-lsp/releases/download/v0.5.0/markdown-spellcheck-lsp.tar.gz;
       sha256 = "sha256:020kvqcv38d2nxcj6wgi1wamnpfdwqzss4fm3w3svwcn5ki22psz";
@@ -75,6 +76,8 @@ common.writeTextDirWithMeta hunspell.meta "lib/codedown/language-servers/codedow
     "${contents}/bin/markdown-spellcheck-lsp"
     "--affix-file" "${hunspellDicts.en-us}/share/hunspell/en_US.aff"
     "--dic-file" "${hunspellDicts.en-us}/share/hunspell/en_US.dic"
+    # "--personal-dic-file" ".codedown/personal-dictionary.dic"
+    # "--log-level" "4"
     "--stdio"
   ];
 }])

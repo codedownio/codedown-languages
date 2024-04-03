@@ -9,6 +9,7 @@ import Control.Concurrent.QSem
 import Control.Monad
 import Control.Monad.Catch
 import Control.Monad.IO.Class
+import Data.Typeable
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Options.Applicative hiding (action)
 import Test.Sandwich
@@ -21,6 +22,7 @@ import TestLib.JupyterRunnerContext
 tests :: forall context. (
   HasBaseContext context
   , HasCommandLineOptions context SpecialOptions
+  , Typeable context
   ) => SpecFree context IO ()
 tests =
   introduceJupyterRunner $

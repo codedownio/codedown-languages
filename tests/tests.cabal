@@ -79,10 +79,10 @@ library
     , row-types
     , safe
     , sandwich
+    , sandwich-contexts
     , string-interpolate
     , temporary
     , text
-    , time
     , unliftio
     , unliftio-core
     , vector
@@ -156,6 +156,7 @@ executable tests-exe
     , row-types
     , safe
     , sandwich
+    , sandwich-contexts
     , string-interpolate
     , tests
     , text

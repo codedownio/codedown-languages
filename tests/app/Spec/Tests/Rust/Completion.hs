@@ -9,9 +9,8 @@ import Language.LSP.Protocol.Types
 import Language.LSP.Test
 import Safe
 import Test.Sandwich as Sandwich
-
+import Test.Sandwich.Contexts.Waits (waitUntil)
 import TestLib.LSP
-import TestLib.Util
 
 
 completionTests :: (LspContext context m) => SpecFree context m ()

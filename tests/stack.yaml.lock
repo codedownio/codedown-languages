@@ -5,7 +5,7 @@
 
 packages:
 - completed:
-    commit: abe10b96fc28b1efa1f71d99ccb980a83602c81e
+    commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
     git: https://github.com/codedownio/lsp.git
     name: lsp
     pantry-tree:
@@ -14,11 +14,11 @@ packages:
     subdir: lsp
     version: 2.0.0.0
   original:
-    commit: abe10b96fc28b1efa1f71d99ccb980a83602c81e
+    commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
     git: https://github.com/codedownio/lsp.git
     subdir: lsp
 - completed:
-    commit: abe10b96fc28b1efa1f71d99ccb980a83602c81e
+    commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
     git: https://github.com/codedownio/lsp.git
     name: lsp-types
     pantry-tree:
@@ -27,63 +27,48 @@ packages:
     subdir: lsp-types
     version: 2.0.0.1
   original:
-    commit: abe10b96fc28b1efa1f71d99ccb980a83602c81e
+    commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-types
 - completed:
-    commit: abe10b96fc28b1efa1f71d99ccb980a83602c81e
+    commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
     git: https://github.com/codedownio/lsp.git
     name: lsp-test
     pantry-tree:
-      sha256: d1d0590717bd79ab441570f7d7dd4e7becd1f712e2e9cfd1042f84fb779587df
+      sha256: d4da318a522097888a0ec7ccadfb8ca552150bae7812b0d8b29e69558fbbe686
       size: 2225
     subdir: lsp-test
     version: 0.15.0.0
   original:
-    commit: abe10b96fc28b1efa1f71d99ccb980a83602c81e
+    commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-test
 - completed:
-    commit: 557515bc9d2934e56d2995ffacb888941ee57716
+    commit: 9f6769f6ec743bb98d07f9a89b90ebe9032f4d4c
     git: https://github.com/codedownio/sandwich.git
     name: sandwich
     pantry-tree:
-      sha256: 99d3bc4ddcefea67e7a5f43ed947bc6047edb840d9a1a9ea9ecc544ce708e294
-      size: 6020
+      sha256: 0b691dbfa34654e0290ed64efe730d3b83a3fdd78355d8f3c45fd9ffff3d7e9c
+      size: 6096
     subdir: sandwich
-    version: 0.2.1.0
+    version: 0.2.2.0
   original:
-    commit: 557515bc9d2934e56d2995ffacb888941ee57716
+    commit: 9f6769f6ec743bb98d07f9a89b90ebe9032f4d4c
     git: https://github.com/codedownio/sandwich.git
     subdir: sandwich
 - completed:
-    hackage: brick-2.1.1@sha256:ff36d64f1027eac17a14a83de053067413accb58b79e5002dce2a79cb8a3dcb3,17385
+    commit: 9f6769f6ec743bb98d07f9a89b90ebe9032f4d4c
+    git: https://github.com/codedownio/sandwich.git
+    name: sandwich-contexts
     pantry-tree:
-      sha256: c70beaff3ad9126bc2a9a57649ef63becd534b7eb6b015092cb28437fe3f916d
-      size: 4671
+      sha256: b0ff043dd5cd0ff4465843f8bacde757cc1e83daed57dd5c0f8907deea66fdac
+      size: 1711
+    subdir: sandwich-contexts
+    version: 0.1.0.0
   original:
-    hackage: brick-2.1.1
-- completed:
-    hackage: vty-6.1@sha256:524d124223c02373260ebc409ddd622fbe97cacd1ea0ee98476b5992bddbc4f3,3661
-    pantry-tree:
-      sha256: 4ed3b229066617a0f3429b7b7dadc8e01d14111ac675801053cd35fbb6ee3f14
-      size: 2104
-  original:
-    hackage: vty-6.1
-- completed:
-    hackage: vty-crossplatform-0.4.0.0@sha256:50593f91ad16777d921138475a8d2784d538fd206addd30664c620278d6c8544,3172
-    pantry-tree:
-      sha256: ff010cf0ab3f48c43432268a00113e051599285d6ed60cfada7f53e44dbe00f8
-      size: 582
-  original:
-    hackage: vty-crossplatform-0.4.0.0
-- completed:
-    hackage: vty-unix-0.2.0.0@sha256:2af3d0bdae3c4b7b7e567ee374efe32c7439fabdf9096465ce011a6c6736e9ae,2932
-    pantry-tree:
-      sha256: 0e3dd52406c263fd4b54d03123e71423d1ef6939fb8c179745486243c519fdf7
-      size: 1926
-  original:
-    hackage: vty-unix-0.2.0.0
+    commit: 9f6769f6ec743bb98d07f9a89b90ebe9032f4d4c
+    git: https://github.com/codedownio/sandwich.git
+    subdir: sandwich-contexts
 - completed:
     hackage: vty-windows-0.2.0.0@sha256:91a11bab7bb79f8ee0d4a8166824ed855251cbac101eed3fdf607ad519a13557,2815
     pantry-tree:
@@ -98,9 +83,27 @@ packages:
       size: 253
   original:
     hackage: ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293
+- completed:
+    hackage: crypton-connection-0.3.1@sha256:4d0958537197956b536ea91718b1749949757022532f50b8f683290056a19021,1581
+    pantry-tree:
+      sha256: e35ac3a35611afab9fafac633d0c4e6328b9cce4c8262378671d6c5a739e7e70
+      size: 394
+  original:
+    hackage: crypton-connection-0.3.1@sha256:4d0958537197956b536ea91718b1749949757022532f50b8f683290056a19021,1581
+- completed:
+    commit: 768665c90321d118fdd3cde2c6ac6c01310d76a0
+    git: https://github.com/codedownio/minio-hs
+    name: minio-hs
+    pantry-tree:
+      sha256: 63fecbf5146f8704eba62c12ba86494f7bc477d8d882e74846ea0d1dfce03a1a
+      size: 4744
+    version: 1.7.0
+  original:
+    commit: 768665c90321d118fdd3cde2c6ac6c01310d76a0
+    git: https://github.com/codedownio/minio-hs
 snapshots:
 - completed:
-    sha256: 7d4b649cf368f9076d8aa049aa44efe58950971d105892734e9957b2a26a2186
-    size: 640060
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/21/21.yaml
-  original: lts-21.21
+    sha256: 5b002d57c51092aa58a8696ccf0993e74fa6ed2efd48e2bbca349e9c2f67c5ef
+    size: 713334
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/15.yaml
+  original: lts-22.15

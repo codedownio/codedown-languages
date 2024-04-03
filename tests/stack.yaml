@@ -1,5 +1,5 @@
 
-resolver: lts-21.21
+resolver: lts-22.15
 
 nix:
   pure: false
@@ -17,22 +17,24 @@ packages:
 
 extra-deps:
 - git: https://github.com/codedownio/lsp.git
-  commit: abe10b96fc28b1efa1f71d99ccb980a83602c81e
+  commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
   subdirs:
   - lsp
   - lsp-types
   - lsp-test
 
 - git: https://github.com/codedownio/sandwich.git
-  commit: 557515bc9d2934e56d2995ffacb888941ee57716
+  commit: 9f6769f6ec743bb98d07f9a89b90ebe9032f4d4c
   subdirs:
   - sandwich
+  - sandwich-contexts
 
 # Needed by newer sandwich
-- brick-2.1.1
-- vty-6.1
-- vty-crossplatform-0.4.0.0
-- vty-unix-0.2.0.0
 - vty-windows-0.2.0.0
 
 - ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293
+
+- crypton-connection-0.3.1@sha256:4d0958537197956b536ea91718b1749949757022532f50b8f683290056a19021,1581
+
+- git: https://github.com/codedownio/minio-hs
+  commit: 768665c90321d118fdd3cde2c6ac6c01310d76a0

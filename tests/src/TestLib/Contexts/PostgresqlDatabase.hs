@@ -22,6 +22,7 @@ import Control.Monad.Logger
 import Control.Monad.Reader
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Control.Retry
+import Data.Function
 import Data.List as L
 import Data.Map as M
 import Data.Maybe

@@ -3,11 +3,11 @@ module Spec.Tests.Rust.Hovers where
 
 import Control.Monad
 import Data.String.Interpolate
-import Language.LSP.Test
 import Language.LSP.Protocol.Types
+import Language.LSP.Test
 import Test.Sandwich as Sandwich
+import Test.Sandwich.Contexts.Waits (waitUntil)
 import TestLib.LSP
-import TestLib.Util
 
 
 hoverTests :: (LspContext context m) => SpecFree context m ()

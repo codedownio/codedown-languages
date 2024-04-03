@@ -40,6 +40,7 @@ dependencies:
 - optparse-applicative
 - safe
 - sandwich
+- sandwich-contexts
 - string-interpolate
 - text
 - vector
@@ -67,7 +68,6 @@ library:
   - row-types
   - safe
   - temporary
-  - time
   - unliftio
   - unliftio-core
 

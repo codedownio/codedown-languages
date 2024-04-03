@@ -36,9 +36,9 @@ import Language.LSP.Test
 import System.FilePath
 import System.IO.Temp (createTempDirectory)
 import Test.Sandwich as Sandwich
+import Test.Sandwich.Contexts.Waits (waitUntil)
 import TestLib.Aeson
 import TestLib.Types
-import TestLib.Util
 import UnliftIO.Directory
 import UnliftIO.Exception
 import UnliftIO.IO
@@ -110,9 +110,9 @@ testDiagnostics'' :: (
   LspContext ctx m
   ) => String -> Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb = it label $ do
-  withLspSession' id name filename codeToTest extraFiles $ do
+  withLspSession' (waitUntil 300.0) name filename codeToTest extraFiles $ do
     _ <- openDoc filename (fromMaybe name maybeLanguageId)
-    waitUntil 300.0 (waitForDiagnostics >>= lift . cb)
+    waitForDiagnostics >>= lift . cb
 
 itHasHoverSatisfying :: (
   LspContext ctx m
@@ -192,14 +192,15 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
            & set (workspace . _Just . didChangeWatchedFiles . _Just . dynamicRegistration) (Just False)
            & set (workspace . _Just . didChangeConfiguration . _Just . dynamicRegistration) (Just False)
 
+  -- TODO: pass home dir to session
   handleFn $ runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir session
 
-assertDiagnosticRanges :: (HasCallStack, MonadThrow m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
+assertDiagnosticRanges :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
   where
     ranges = fmap (\x -> (x ^. range, x ^. code)) diagnostics
 
-assertDiagnosticRanges' :: (HasCallStack, MonadThrow m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)] -> m ()
+assertDiagnosticRanges' :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)] -> m ()
 assertDiagnosticRanges' diagnostics desired = ranges `shouldBe` desired
   where
     ranges = fmap (\x -> (x ^. range, x ^. code, x ^. LSP.message)) diagnostics
