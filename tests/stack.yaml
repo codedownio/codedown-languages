@@ -4,10 +4,11 @@ resolver: lts-22.15
 nix:
   pure: false
   packages:
-  - zlib
-  - postgresql
   - nix
   - openssh
+  - pkg-config
+  - postgresql
+  - zlib
 
 packages:
 - .
