@@ -93,7 +93,7 @@ doSession' :: (
   LspContext ctx m
   ) => Text -> Text -> Text -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
 doSession' filename lsName codeToUse cb = do
-  withLspSession lsName (T.unpack filename) codeToUse [] $ do
+  withLspSession lsName (T.unpack filename) codeToUse [] $ \_homeDir -> do
     cb (T.unpack filename)
 
 testDiagnostics :: (
@@ -110,15 +110,15 @@ testDiagnostics'' :: (
   LspContext ctx m
   ) => String -> Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb = it label $ do
-  withLspSession' (waitUntil 300.0) name filename codeToTest extraFiles $ do
+  withLspSession' id name filename codeToTest extraFiles $ \_homeDir -> do
     _ <- openDoc filename (fromMaybe name maybeLanguageId)
-    waitForDiagnostics >>= lift . cb
+    waitUntil 300.0 (waitForDiagnostics >>= lift . cb)
 
 itHasHoverSatisfying :: (
   LspContext ctx m
   ) => Text -> FilePath -> Maybe Text -> Text -> Position -> (Hover -> ExampleT ctx m ()) -> SpecFree ctx m ()
 itHasHoverSatisfying name filename maybeLanguageId codeToTest pos cb = it [i|#{name}: #{show codeToTest} (hover)|] $ do
-  withLspSession name filename codeToTest [] $ do
+  withLspSession name filename codeToTest [] $ \_homeDir -> do
     ident <- openDoc filename (fromMaybe name maybeLanguageId)
     getHover ident pos >>= \case
       Nothing -> expectationFailure [i|Expected a hover.|]
@@ -126,12 +126,12 @@ itHasHoverSatisfying name filename maybeLanguageId codeToTest pos cb = it [i|#{n
 
 withLspSession :: (
   LspContext ctx m
-  ) => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> Session (ExampleT ctx m) a -> ExampleT ctx m a
+  ) => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
 withLspSession = withLspSession' (handle (\(e :: SessionException) -> expectationFailure [i|LSP session failed with SessionException: #{e}|]))
 
 withLspSession' :: (
   LspContext ctx m
-  ) => (ExampleT ctx m a -> ExampleT ctx m a) -> Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> Session (ExampleT ctx m) a -> ExampleT ctx m a
+  ) => (ExampleT ctx m a -> ExampleT ctx m a) -> Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
 withLspSession' handleFn name filename codeToTest extraFiles session = do
   Just currentFolder <- getCurrentFolder
 
@@ -155,21 +155,16 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
   pathToUse <- withFile "/dev/null" WriteMode $ \devNullHandle ->
     (T.unpack . T.strip . T.pack) <$> readCreateProcess ((proc "nix" ["run", ".#print-basic-path"]) { std_err = UseHandle devNullHandle }) ""
 
-  dataDir <- liftIO $ createTempDirectory currentFolder (T.unpack name)
-
   forM_ extraFiles $ \(path, bytes) -> do
     unless (isAbsolute path) $ do
-      case takeDirectory path of
-        "." -> return ()
-        initialDirs -> do
-          createDirectoryIfMissing True (dataDir </> initialDirs)
-      debug [i|Writing extra file: #{dataDir </> path}|]
-      liftIO $ B.writeFile (dataDir </> path) bytes
+      debug [i|Writing extra file: #{homeDir </> path}|]
+      createDirectoryIfMissing True (homeDir </> takeDirectory path)
+      liftIO $ B.writeFile (homeDir </> path) bytes
 
-  createDirectoryIfMissing True (dataDir </> takeDirectory filename)
+  createDirectoryIfMissing True (homeDir </> takeDirectory filename)
 
-  -- Comment this and use openDoc' above to simulate an unsaved document
-  liftIO $ T.writeFile (dataDir </> filename) codeToTest
+  -- Comment this and use openDoc' to simulate an unsaved document
+  liftIO $ T.writeFile (homeDir </> filename) codeToTest
 
   let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
                           , logStdErr = True
@@ -192,8 +187,7 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
            & set (workspace . _Just . didChangeWatchedFiles . _Just . dynamicRegistration) (Just False)
            & set (workspace . _Just . didChangeConfiguration . _Just . dynamicRegistration) (Just False)
 
-  -- TODO: pass home dir to session
-  handleFn $ runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps dataDir session
+  handleFn $ runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps homeDir (session homeDir)
 
 assertDiagnosticRanges :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired

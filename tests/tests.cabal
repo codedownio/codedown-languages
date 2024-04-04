@@ -147,11 +147,13 @@ executable tests-exe
     , base >=4.7 && <5
     , containers
     , exceptions
+    , filepath
     , lens
     , lsp-test
     , lsp-types
     , monad-control
     , monad-logger
+    , mtl
     , optparse-applicative
     , row-types
     , safe

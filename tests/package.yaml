@@ -33,10 +33,12 @@ dependencies:
 - aeson
 - containers
 - exceptions
+- filepath
 - lens
 - lsp-test
 - lsp-types
 - monad-control
+- mtl
 - optparse-applicative
 - safe
 - sandwich
@@ -56,9 +58,7 @@ library:
   - data-default
   - directory
   - ex-pool
-  - filepath
   - monad-logger
-  - mtl
   - network
   - postgresql-libpq
   - postgresql-simple
