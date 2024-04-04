@@ -17,16 +17,32 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1701140563,
-        "narHash": "sha256-wtNoJq2O46x9JJLkYx2p+I5c/bnFmZuN8PoTpahPCQU=",
+        "lastModified": 1712217116,
+        "narHash": "sha256-AYZLTctK+w2Xh/BXl5fm7DOecq7rnsfL+UAWbI0VXyw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "922913d8f51616ebeaeace98daf1cc88d21bb5ff",
+        "rev": "c6149db25c6ca2d606c5f2425a08f458e7f0123b",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "release-23.05",
+        "ref": "release-23.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgsUnstable": {
+      "locked": {
+        "lastModified": 1712129508,
+        "narHash": "sha256-FBVpEX0eLiqX3jnSL3rmJHqHhbuCikJZyDyV3Cl3qAY=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "d03a4482228d4d6dbd2d4b425b6dfcd49ebe765f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -34,7 +50,8 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "nixpkgsUnstable": "nixpkgsUnstable"
       }
     }
   },
