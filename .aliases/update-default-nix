@@ -1,15 +1,27 @@
-#!/usr/bin/env bash
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p nix gnused
 
+set -e
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPTDIR/.."
 
 output=$(nix flake metadata --json)
 
+escape_for_sed() {
+    local string="$1"
+    string="${string//\//\\/}"
+    string="${string//\-/\\\-}"
+    string="${string//\+/\\\+}"
+    echo "$string"
+}
+
 for input in nixpkgs nixpkgs-unstable nixpkgs-master; do
     echo "Processing input: $input"
     rev=$(echo "$output" | jq -r ".locks.nodes[\"${input}\"].locked.rev")
     hash=$(echo "$output" | jq -r ".locks.nodes[\"${input}\"].locked.narHash")
+    echo "Got ${input} original hash: $hash"
+    hash=$(escape_for_sed "$hash")
     echo "Got ${input} rev: $rev"
     echo "Got ${input} hash: $hash"
     sed -i "s/rev = \".*\"; # ${input}-rev/rev = \"$rev\"; # ${input}-rev/g" ./default.nix
