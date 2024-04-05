@@ -30,9 +30,16 @@ let
     "coqPackages_8_18"
     "coqPackages_8_19"
     "coqPackages_8_20"
+    "coqPackages_8_21"
+    "coqPackages_8_22"
+    "coqPackages_8_23"
+    "coqPackages_8_24"
+    "coqPackages_8_25"
   ];
 
-  isLessCommon = candidate: !(lib.elem candidate ["coqPackages" "coqPackages_8_20"]);
+  latestAvailable = lib.last (lib.filter (x: lib.hasAttr x pkgs) baseCandidates);
+
+  isLessCommon = candidate: !(lib.elem candidate ["coqPackages" latestAvailable]);
 
   settingsSchema = [];
 
