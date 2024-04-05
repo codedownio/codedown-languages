@@ -6,19 +6,6 @@
 , ihaskell-source
 }:
 
-let
-  ghc-syntax-highlighter_0_0_10_0 = callCabal2nix: let
-    src = fetchFromGitHub {
-      owner = "mrkkrp";
-      repo = "ghc-syntax-highlighter";
-      rev = "71ff751eaa6034d4aef254d6bc5a8be4f6595344";
-      sha256 = "wQmWSuvIJpg11zKl1qOSWpqxjp2DoJwa20vaS2KHypM=";
-    };
-  in
-    callCabal2nix "ghc-syntax-highlighter" src {};
-
-in
-
 {
   # ghc810 = haskell.packages.ghc810.override {
   #   overrides = self: super: {
@@ -84,9 +71,6 @@ in
 
       ihaskell = self.callCabal2nixWithOptions "ihaskell" ihaskell-source "--no-check" {};
 
-      ghc-lib-parser = self.ghc-lib-parser_9_6_3_20231014;
-      ghc-syntax-highlighter = ghc-syntax-highlighter_0_0_10_0 self.callCabal2nix;
-
       zeromq4-haskell = super.zeromq4-haskell.overrideAttrs (oldAttrs: {
         buildInputs = oldAttrs.buildInputs ++ [libsodium];
       });
@@ -105,12 +89,25 @@ in
 
       ihaskell = self.callCabal2nixWithOptions "ihaskell" ihaskell-source "--no-check" {};
 
-      ghc-lib-parser = self.ghc-lib-parser_9_6_3_20231014;
-      ghc-lib-parser-ex = self.ghc-lib-parser-ex_9_6_0_2;
+      warp_3_3_29 = null;
+    };
+  };
+
+  ghc98 = haskell.packages.ghc98.override {
+    overrides = self: super: {
+      ghc-parser = self.callCabal2nix "ghc-parser" (
+        runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out"
+      ) {};
+
+      ipython-kernel = self.callCabal2nix "ipython-kernel" (
+        runCommand "ipython-kernel" {} "cp -r ${ihaskell-source}/ipython-kernel $out"
+      ) {};
+
+      ihaskell = self.callCabal2nixWithOptions "ihaskell" ihaskell-source "--no-check" {};
 
       warp_3_3_29 = null;
 
-      ghc-syntax-highlighter = ghc-syntax-highlighter_0_0_10_0 self.callCabal2nix;
+      ghc-syntax-highlighter = self.ghc-syntax-highlighter_0_0_11_0;
     };
   };
 }

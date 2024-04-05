@@ -1,7 +1,7 @@
 {
   description = "CodeDown languages";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-23.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
   inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   inputs.nixpkgs-master.url = "github:NixOS/nixpkgs/master";
 
@@ -54,7 +54,7 @@
 
             inherit pkgsStable;
 
-            jupyter-runner = with pkgsUnstable;
+            jupyter-runner = with pkgsMaster;
               let
                 pythonEnv = python3.withPackages (ps: with ps; [papermill]);
                 packages = [coreutils findutils pythonEnv];

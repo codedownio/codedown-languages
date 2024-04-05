@@ -24,10 +24,9 @@ import TestLib.Util (aesonFromList)
 tests :: LanguageSpec
 tests = describe "Ruby" $ do
   kernelTests "ruby"
-  kernelTests "ruby_3_0"
   kernelTests "ruby_3_1"
   kernelTests "ruby_3_2"
-  -- kernelTests "ruby_3_3"
+  kernelTests "ruby_3_3"
 
 
 kernelTests :: Text -> LanguageSpec
