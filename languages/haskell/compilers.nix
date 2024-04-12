@@ -31,19 +31,19 @@
   #   };
   # };
 
-  ghc90 = haskell.packages.ghc90.override {
-    overrides = self: super: {
-      ghc-parser = self.callCabal2nix "ghc-parser" (
-        runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out"
-      ) {};
+  # ghc90 = haskell.packages.ghc90.override {
+  #   overrides = self: super: {
+  #     ghc-parser = self.callCabal2nix "ghc-parser" (
+  #       runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out"
+  #     ) {};
 
-      ipython-kernel = self.callCabal2nix "ipython-kernel" (
-        runCommand "ipython-kernel" {} "cp -r ${ihaskell-source}/ipython-kernel $out"
-      ) {};
+  #     ipython-kernel = self.callCabal2nix "ipython-kernel" (
+  #       runCommand "ipython-kernel" {} "cp -r ${ihaskell-source}/ipython-kernel $out"
+  #     ) {};
 
-      ihaskell = self.callCabal2nixWithOptions "ihaskell" ihaskell-source "--no-check" {};
-    };
-  };
+  #     ihaskell = self.callCabal2nixWithOptions "ihaskell" ihaskell-source "--no-check" {};
+  #   };
+  # };
 
   ghc92 = haskell.packages.ghc92.override {
     overrides = self: super: {
@@ -108,6 +108,8 @@
       warp_3_3_29 = null;
 
       ghc-syntax-highlighter = self.ghc-syntax-highlighter_0_0_11_0;
+
+      ghc-lib = self.ghc-lib_9_8_2_20240223;
     };
   };
 }
