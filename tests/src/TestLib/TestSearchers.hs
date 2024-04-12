@@ -67,7 +67,7 @@ searcherResults :: (MonadUnliftIO m, MonadThrow m, MonadLogger m, MonadFail m) =
 searcherResults expr = do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
-  built <- ((A.eitherDecode . BL8.pack) <$> readCreateProcess ((proc "nix" ["build", expr, "--no-link", "--json"]) { cwd = Just rootDir, std_err = CreatePipe }) "") >>= \case
+  built <- ((A.eitherDecode . BL8.pack) <$> readCreateProcessWithLogging ((proc "nix" ["build", expr, "--no-link", "--json"]) { cwd = Just rootDir, std_err = CreatePipe }) "") >>= \case
     Left err -> expectationFailure [i|Failed to decode JSON: #{err}|]
     Right (A.Array ((V.! 0) -> (A.Object (aesonLookup "outputs" -> Just (A.Object (aesonLookup "out" -> Just (A.String x))))))) -> pure x
     Right x -> expectationFailure [i|Unexpected JSON: #{x}|]
