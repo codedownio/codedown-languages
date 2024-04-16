@@ -111,6 +111,7 @@ if cling == null then {} else
               code_mirror_mode = "clike";
               code_mirror_mime_type = "text/x-c++src";
             };
+            languageServerNames = [];
           };
         }
       ) {};

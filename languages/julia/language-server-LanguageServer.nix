@@ -15,10 +15,16 @@ let
 
   juliaIndices = callPackage ./julia-modules/indexing { inherit julia; };
 
+  languageServerName = "LanguageServer";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta julia.meta "lib/codedown/language-servers/julia-LanguageServerJl.yaml" (lib.generators.toYAML {} [{
-  name = "LanguageServer";
+common.writeTextDirWithMetaAndPassthru julia.meta passthru "lib/codedown/language-servers/julia-LanguageServerJl.yaml" (lib.generators.toYAML {} [{
+  name = languageServerName;
   display_name = "LanguageServer.jl";
   description = "An implementation of the Microsoft Language Server Protocol for the Julia language";
   icon = ./julia-logo-64x64.png;

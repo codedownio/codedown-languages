@@ -75,6 +75,8 @@ listToAttrs [{
       rWithPackages = rWrapper.override {
         packages = basePackages;
       };
+
+      languageServers = chooseLanguageServers settingsToUse rPackages rWrapper basePackages "R";
     in
       symlinkJoin {
         name = "r";
@@ -86,7 +88,7 @@ listToAttrs [{
           })
           rWithPackages
         ]
-        ++ (chooseLanguageServers settingsToUse rPackages rWrapper basePackages "R")
+        ++ languageServers
         ;
 
         passthru = {
@@ -98,6 +100,7 @@ listToAttrs [{
             inherit attrs extensions;
             code_mirror_mode = "r";
           };
+          languageServerNames = map (x: x.languageServerName) languageServers;
         };
       }
   ) {};

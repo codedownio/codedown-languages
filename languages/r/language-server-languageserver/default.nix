@@ -17,10 +17,16 @@ let
     packages = [languageserver] ++ languageserver.languageServerDeps ++ basePackages;
   };
 
+  languageServerName = "languageserver";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta languageserver.meta "lib/codedown/language-servers/r-${kernelName}-languageserver.yaml" (lib.generators.toYAML {} [{
-  name = "languageserver";
+common.writeTextDirWithMetaAndPassthru languageserver.meta passthru "lib/codedown/language-servers/r-${kernelName}-languageserver.yaml" (lib.generators.toYAML {} [{
+  name = languageServerName;
   version = languageserver.version;
   display_name = "";
   description = "An implementation of the Language Server Protocol for R";

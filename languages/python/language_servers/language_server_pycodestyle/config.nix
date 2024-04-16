@@ -15,11 +15,17 @@ let
 
   python = pythonWithPackages (ps: [ps.pycodestyle]);
 
+  languageServerName = "pycodestyle";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta python.pkgs.pycodestyle.meta "lib/codedown/language-servers/python-${kernelName}-pycodestyle.yaml"
+common.writeTextDirWithMetaAndPassthru python.pkgs.pycodestyle.meta passthru "lib/codedown/language-servers/python-${kernelName}-pycodestyle.yaml"
   (lib.generators.toYAML {} [{
-    name = "pycodestyle";
+    name = languageServerName;
     version = python.pkgs.pycodestyle.version;
     display_name = "pycodestyle";
     description = python.pkgs.pycodestyle.meta.description;

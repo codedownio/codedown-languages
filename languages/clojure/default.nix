@@ -75,13 +75,14 @@ listToAttrs (map (x:
     }:
       let
         settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+        languageServers = chooseLanguageServers settingsToUse x;
       in symlinkJoin {
         name = "clojure";
         paths = [
           (callPackage ./kernel.nix { inherit attrs extensions version; })
           clojure
         ]
-        ++ (chooseLanguageServers settingsToUse x)
+        ++ languageServers
         ;
 
         passthru = {
@@ -93,6 +94,7 @@ listToAttrs (map (x:
             inherit attrs extensions;
             code_mirror_mode = "clojure";
           };
+          languageServerNames = map (x: x.languageServerName) languageServers;
         };
       }
     ) {}

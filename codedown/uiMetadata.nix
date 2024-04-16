@@ -31,6 +31,8 @@ rec {
     settings_schema = contents.settingsSchema;
   }) // (lib.optionalAttrs (contents ? "modes") {
     inherit (contents) modes;
+  }) // (lib.optionalAttrs (contents ? "languageServerNames") {
+    inherit (contents) languageServerNames;
   });
 
   mkChannelUiMetadata = name: channel: channel // {

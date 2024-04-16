@@ -22,10 +22,16 @@ let
       --set PYTHONPATH $pythonEnv/${pythonEnv.sitePackages}
   '';
 
+  languageServerName = "pyright";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta pyright.meta "lib/codedown/language-servers/python-${kernelName}-pyright.yaml" (lib.generators.toYAML {} [{
-  name = "pyright";
+common.writeTextDirWithMetaAndPassthru pyright.meta passthru "lib/codedown/language-servers/python-${kernelName}-pyright.yaml" (lib.generators.toYAML {} [{
+  name = languageServerName;
   version = pyright.version;
   display_name = "Pyright";
   description = pyright.meta.description;

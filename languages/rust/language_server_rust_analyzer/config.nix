@@ -26,8 +26,16 @@ let
 
   shadowDirTemplate = cargoHome;
 
-  config = raw: {
-    name = "rust-analyzer${if raw then "-raw" else ""}";
+  raw = false;
+
+  languageServerName = "rust-analyzer${if raw then "-raw" else ""}";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
+  config = {
+    name = languageServerName;
     version = rustAnalyzerToUse.version;
     display_name = "rust-analyzer";
     description = rustAnalyzerToUse.meta.description;
@@ -169,6 +177,6 @@ let
 
 in
 
-common.writeTextDirWithMeta rust-analyzer.meta "lib/codedown/language-servers/rust-${kernelName}-rust-analyzer.yaml" (lib.generators.toYAML {} [
-  (config false)
+common.writeTextDirWithMetaAndPassthru rust-analyzer.meta passthru "lib/codedown/language-servers/rust-${kernelName}-rust-analyzer.yaml" (lib.generators.toYAML {} [
+  config
 ])
