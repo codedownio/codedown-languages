@@ -13,10 +13,16 @@ let
 
   jls = pythonEnv.pkgs.jedi-language-server;
 
+  languageServerName = "jedi";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta jls.meta "lib/codedown/language-servers/python-${kernelName}-jedi.yaml" (lib.generators.toYAML {} [{
-  name = "jedi";
+common.writeTextDirWithMetaAndPassthru jls.meta passthru "lib/codedown/language-servers/python-${kernelName}-jedi.yaml" (lib.generators.toYAML {} [{
+  name = languageServerName;
   version = jls.version;
   display_name = "Jedi";
   description = jls.meta.description;

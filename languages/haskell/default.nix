@@ -20,7 +20,7 @@ let
   chooseLanguageServers = settings: snapshot: ghc: kernelName:
     []
     ++ lib.optionals (common.isTrue settings "lsp.haskell-language-server.enable" && hasHlsSupport ghc.version)
-      [((callPackage ./language-server-hls/hls.nix {}) snapshot ghc kernelName (common.focusSettings "lsp.haskell-language-server." settings))]
+      [((callPackage ./language-server-hls {}) snapshot ghc kernelName (common.focusSettings "lsp.haskell-language-server." settings))]
   ;
 
   compilers = callPackage ./compilers.nix {
@@ -85,6 +85,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
           ++ (map (x: builtins.getAttr x ps) packages)
           ++ (if (common.isTrue settingsToUse "lsp.haskell-language-server.enable") then [ps.haskell-language-server] else [])
         );
+        languageServers = chooseLanguageServers settingsToUse snapshot ghc meta.baseName;
 
       in symlinkJoin {
         name = meta.baseName;
@@ -105,7 +106,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
 
           ghc
         ]
-        ++ (chooseLanguageServers settingsToUse snapshot ghc meta.baseName)
+        ++ languageServers
         ;
 
         passthru = {
@@ -117,6 +118,7 @@ listToAttrs (mapAttrsToList (compilerName: snapshot:
             inherit attrs extensions;
             code_mirror_mode = "haskell";
           };
+          languageServerNames = map (x: x.languageServerName) languageServers;
         };
       }
     ) {}

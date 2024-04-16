@@ -33,8 +33,16 @@ let
       --suffix PATH ':' ${lib.makeBinPath [coreutils findutils gnused]}
   '';
 
-  config = raw: {
-    name = "haskell-language-server${if raw then "-raw" else ""}";
+  raw = false;
+
+  languageServerName = "haskell-language-server${if raw then "-raw" else ""}";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
+  config = {
+    name = languageServerName;
     version = haskell-language-server.version;
     display_name = "Haskell Language Server";
     description = haskell-language-server.meta.description;
@@ -59,6 +67,6 @@ let
 
 in
 
-common.writeTextDirWithMeta haskell-language-server.meta "lib/codedown/language-servers/haskell-${kernelName}-hls.yaml" (lib.generators.toYAML {} [
-  (config false)
+common.writeTextDirWithMetaAndPassthru haskell-language-server.meta passthru "lib/codedown/language-servers/haskell-${kernelName}-hls.yaml" (lib.generators.toYAML {} [
+  config
 ])

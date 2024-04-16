@@ -143,6 +143,8 @@ mapAttrs (attr: value:
           ++ packages
           ++ lib.optionals (common.isTrue settingsToUse "lsp.LanguageServer.enable") ["LanguageServer" "SymbolServer"]
         );
+
+        languageServers = chooseLanguageServers settingsToUse attrs attr julia;
       in
         symlinkJoin {
           name = attr;
@@ -151,7 +153,7 @@ mapAttrs (attr: value:
             (callPackage ./kernel.nix { inherit julia python attrs extensions displayName; })
             julia
           ]
-          ++ (chooseLanguageServers settingsToUse attrs attr julia)
+          ++ languageServers
           ;
 
           passthru = {
@@ -162,6 +164,7 @@ mapAttrs (attr: value:
               inherit attrs extensions;
               code_mirror_mode = "julia";
             };
+            languageServerNames = map (x: x.languageServerName) languageServers;
           };
         }
     ) {}

@@ -64,6 +64,7 @@ listToAttrs (map (x:
     }@args:
       let
         settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+        languageServers = chooseLanguageServers settingsToUse go attrs x;
       in symlinkJoin {
         name = "go";
         paths = [
@@ -73,7 +74,7 @@ listToAttrs (map (x:
           })
           go
         ]
-        ++ (chooseLanguageServers settingsToUse go attrs x)
+        ++ languageServers
         ;
 
         passthru = {
@@ -85,6 +86,7 @@ listToAttrs (map (x:
             inherit attrs extensions;
             code_mirror_mode = "go";
           };
+          languageServerNames = map (x: x.languageServerName) languageServers;
         };
       }
     ) {};

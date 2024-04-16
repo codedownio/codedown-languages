@@ -108,6 +108,7 @@ listToAttrs (map (x:
       }).withPackages (map common.packageName packages);
 
       settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+      languageServers = chooseLanguageServers settingsToUse rust evcxr.cargoHome x;
     in symlinkJoin {
       name = "rust";
 
@@ -122,7 +123,7 @@ listToAttrs (map (x:
         rustPackages.cargo
         pkgs.gcc
       ]
-      ++ (chooseLanguageServers settingsToUse rust evcxr.cargoHome x)
+      ++ languageServers
       ;
 
       passthru = {
@@ -134,6 +135,7 @@ listToAttrs (map (x:
           inherit attrs extensions;
           code_mirror_mode = "rust";
         };
+        languageServerNames = map (x: x.languageServerName) languageServers;
       };
     }
     ) {};

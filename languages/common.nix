@@ -44,6 +44,10 @@ rec {
     inherit meta;
   });
 
+  writeTextDirWithMetaAndPassthru = meta: passthru: path: text: (writeTextDir path text).overrideAttrs (old: {
+    inherit meta passthru;
+  });
+
   writeShellScriptBinWithMeta = meta: path: text: (writeTextDir path text).overrideAttrs (old: {
     inherit meta;
   });

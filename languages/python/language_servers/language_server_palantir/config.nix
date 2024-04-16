@@ -40,11 +40,17 @@ let
   #   # ignoreCollisions = python == pkgs.python27;
   # };
 
+  languageServerName = "python-language-server";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta python.pkgs.python-language-server.meta "lib/codedown/language-servers/python-${kernelName}-palantir.yaml"
+common.writeTextDirWithMetaAndPassthru python.pkgs.python-language-server.meta passthru "lib/codedown/language-servers/python-${kernelName}-palantir.yaml"
   (lib.generators.toYAML {} [{
-    name = "python-language-server";
+    name = languageServerName;
     version = python.pkgs.python-language-server.version;
     display_name = "Python Language Server";
     description = python.pkgs.python-language-server.meta.description;

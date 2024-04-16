@@ -41,11 +41,17 @@ let
   #   # ignoreCollisions = python == pkgs.python27;
   # };
 
+  languageServerName = "python-lsp-server";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta python.pkgs.python-lsp-server.meta "lib/codedown/language-servers/python-${kernelName}-pythonlsp.yaml"
+common.writeTextDirWithMetaAndPassthru python.pkgs.python-lsp-server.meta passthru "lib/codedown/language-servers/python-${kernelName}-pythonlsp.yaml"
   (lib.generators.toYAML {} [{
-    name = "python-lsp-server";
+    name = languageServerName;
     version = python.pkgs.python-lsp-server.version;
     display_name = "Python LSP Server";
     description = python.pkgs.python-lsp-server.meta.description;

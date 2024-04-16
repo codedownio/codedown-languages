@@ -15,11 +15,17 @@ let
 
   python = pythonWithPackages (ps: [ps.pylint]);
 
+  languageServerName = "pylint";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta python.pkgs.pylint.meta "lib/codedown/language-servers/python-${kernelName}-pylint.yaml"
+common.writeTextDirWithMetaAndPassthru python.pkgs.pylint.meta passthru "lib/codedown/language-servers/python-${kernelName}-pylint.yaml"
   (lib.generators.toYAML {} [{
-    name = "pylint";
+    name = languageServerName;
     version = python.pkgs.pylint;
     display_name = "Pylint";
     description = python.pkgs.pylint.meta.description;

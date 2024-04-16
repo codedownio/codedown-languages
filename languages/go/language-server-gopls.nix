@@ -23,10 +23,16 @@ let
       --set GOPATH ${go}/share/go
   '';
 
+  languageServerName = "gopls";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta gopls.meta "lib/codedown/language-servers/go-${kernelName}-gopls.yaml" (lib.generators.toYAML {} [{
-  name = "gopls";
+common.writeTextDirWithMetaAndPassthru gopls.meta passthru "lib/codedown/language-servers/go-${kernelName}-gopls.yaml" (lib.generators.toYAML {} [{
+  name = languageServerName;
   version = gopls.version;
   display_name = "gopls";
   description = gopls.meta.description;

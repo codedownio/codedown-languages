@@ -9,10 +9,16 @@
 let
   common = callPackage ../common.nix {};
 
+  languageServerName = "clojure-lsp";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta clojure-lsp.meta "lib/codedown/language-servers/clojre-${kernelName}-clojure-lsp.yaml" (lib.generators.toYAML {} [{
-  name = "clojure-lsp";
+common.writeTextDirWithMetaAndPassthru clojure-lsp.meta passthru "lib/codedown/language-servers/clojre-${kernelName}-clojure-lsp.yaml" (lib.generators.toYAML {} [{
+  name = languageServerName;
   version = clojure-lsp.version;
   display_name = "Clojure LSP";
   description = clojure-lsp.meta.description or "Clojure & ClojureScript Language Server (LSP) implementation";

@@ -64,11 +64,17 @@ let
     dontFixup = true;
   };
 
+  languageServerName = "python-language-server";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta python-language-server.meta "lib/codedown/language-servers/python-${kernelName}-microsoft.yaml"
+common.writeTextDirWithMetaAndPassthru python-language-server.meta passthru "lib/codedown/language-servers/python-${kernelName}-microsoft.yaml"
   (lib.generators.toYAML {} [{
-    name = "python-language-server";
+    name = languageServerName;
     version = python-language-server.version;
     display_name = "Python Language Server";
     description = python-language-server.meta.description;

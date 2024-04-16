@@ -60,6 +60,7 @@ lib.listToAttrs (map (x:
         }@args:
           let
             settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+            languageServers = chooseLanguageServers settingsToUse x;
           in symlinkJoin {
             name = "bash";
 
@@ -67,7 +68,7 @@ lib.listToAttrs (map (x:
               (callPackage ./kernel.nix { inherit attrs extensions; })
               (callPackage ./man-with-pages.nix {})
             ]
-            ++ (chooseLanguageServers settingsToUse x)
+            ++ languageServers
             ;
 
             passthru = {
@@ -78,6 +79,7 @@ lib.listToAttrs (map (x:
                 inherit attrs extensions;
                 code_mirror_mode = "shell";
               };
+              languageServerNames = map (x: x.languageServerName) languageServers;
             };
           }
         ) {};

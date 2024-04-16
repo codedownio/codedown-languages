@@ -1,19 +1,24 @@
-{ pkgs
+{ callPackage
+, lib
+
 , rubyPackages
 , solargraph ? rubyPackages.solargraph
 , kernelName
 }:
 
-with pkgs;
-with pkgs.lib;
-
 let
   common = callPackage ../common.nix {};
 
+  languageServerName = "solargraph";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta solargraph.meta "lib/codedown/language-servers/ruby-solargraph.yaml" (lib.generators.toYAML {} [{
-  name = "solargraph";
+common.writeTextDirWithMetaAndPassthru solargraph.meta passthru "lib/codedown/language-servers/ruby-solargraph.yaml" (lib.generators.toYAML {} [{
+  name = languageServerName;
   version = solargraph.version;
   display_name = "Solargraph";
   description = "A Ruby language server";

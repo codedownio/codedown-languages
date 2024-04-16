@@ -29,10 +29,17 @@ let
                   --suffix PATH ':' ${shellcheck}/bin \
                   --set SHELLCHECK_PATH ${shellcheck}/bin/shellcheck
     '';
+
+  languageServerName = "bash-language-server";
+
+  passthru = {
+    inherit languageServerName;
+  };
+
 in
 
-common.writeTextDirWithMeta bashLanguageServerWithMan.meta "lib/codedown/language-servers/bash-${kernelName}-bash-language-server.yaml" (lib.generators.toYAML {} [{
-  name = "bash-language-server";
+common.writeTextDirWithMetaAndPassthru bashLanguageServerWithMan.meta passthru "lib/codedown/language-servers/bash-${kernelName}-bash-language-server.yaml" (lib.generators.toYAML {} [{
+  name = languageServerName;
   version = bashLanguageServer.version;
   extensions = ["sh" "bash"];
   notebook_suffix = ".bash";

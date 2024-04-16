@@ -198,6 +198,7 @@ lib.listToAttrs (map (x:
           allPackages = [ps.ipykernel ps.ipywidgets] ++ chosenPackages;
           python = basePython.withPackages (_: allPackages);
           pythonWithPackages = f: basePython.withPackages (_: allPackages ++ f ps);
+          languageServers = chooseLanguageServers settingsToUse pythonWithPackages x;
 
         in symlinkJoin {
           name = x;
@@ -211,7 +212,7 @@ lib.listToAttrs (map (x:
             python
             ps.ipython
           ]
-          ++ (chooseLanguageServers settingsToUse pythonWithPackages x)
+          ++ languageServers
           ;
 
           passthru = {
@@ -223,6 +224,7 @@ lib.listToAttrs (map (x:
               inherit attrs extensions;
               code_mirror_mode = "python";
             };
+            languageServerNames = map (x: x.languageServerName) languageServers;
           };
         }
       ) {};

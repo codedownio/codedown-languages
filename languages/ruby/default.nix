@@ -88,6 +88,7 @@ listToAttrs (map (x:
     }@args:
       let
         settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+        languageServers = chooseLanguageServers settingsToUse packageOptions x;
       in symlinkJoin {
         name = x;
         paths = [
@@ -97,7 +98,7 @@ listToAttrs (map (x:
           })
           ruby
         ]
-        ++ (chooseLanguageServers settingsToUse packageOptions x)
+        ++ languageServers
         ;
         passthru = {
           inherit meta packageOptions packageSearch versions;
@@ -107,6 +108,7 @@ listToAttrs (map (x:
             inherit attrs extensions;
             code_mirror_mode = "ruby";
           };
+          languageServerNames = map (x: x.languageServerName) languageServers;
         };
       }
     ) {};
