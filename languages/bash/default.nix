@@ -1,6 +1,7 @@
 { callPackage
 , lib
 , pkgs
+, python3
 , nodePackages
 , symlinkJoin
 , writeTextDir
@@ -45,6 +46,7 @@ lib.listToAttrs (map (x:
     versions = {
       bash = bash.version;
       bash-language-server = nodePackages.bash-language-server.version;
+      bash_kernel = python3.pkgs.bash_kernel.version;
     };
   in
     {
