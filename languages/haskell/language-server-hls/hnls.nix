@@ -15,14 +15,9 @@ let
   #   sha256 = "sha256-PDYgUllJovVXMLRPZ8ps9MnAgGpEgM7do4+fMPtXqbE=";
   # };
 
-  # hnlsSrc = /home/tom/tools/haskell-notebook-language-server;
+  hnlsSrc = /home/tom/tools/haskell-notebook-language-server;
 
-  # hnlsFromSource = snapshot.callPackage hnlsSrc {
-  #   lsp-types = snapshot.callPackage ./lsp-types.nix {};
-  #   myers-diff = snapshot.callPackage ./myers-diff.nix {};
-  #   sandwich = null;
-  #   sandwich-quickcheck = null;
-  # };
+  hnlsFromSource = (builtins.getFlake "/home/tom/tools/haskell-notebook-language-server").packages.x86_64-linux.ghc928-static;
 
   ghcVersionToHnls = let
     prebuilt = src: stdenv.mkDerivation {
@@ -67,12 +62,14 @@ let
 
 in
 
-with lib.versions;
+hnlsFromSource
 
-if majorMinor ghc.version == "8.10" then ghcVersionToHnls.v810
-else if majorMinor ghc.version == "9.0" then ghcVersionToHnls.v90
-else if majorMinor ghc.version == "9.2" then ghcVersionToHnls.v92
-else if majorMinor ghc.version == "9.4" then ghcVersionToHnls.v94
-else if majorMinor ghc.version == "9.6" then ghcVersionToHnls.v96
-else if majorMinor ghc.version == "9.8" then ghcVersionToHnls.v98
-else throw ("Unsupported GHC version: " + ghc.version)
+# with lib.versions;
+
+# if majorMinor ghc.version == "8.10" then ghcVersionToHnls.v810
+# else if majorMinor ghc.version == "9.0" then ghcVersionToHnls.v90
+# else if majorMinor ghc.version == "9.2" then ghcVersionToHnls.v92
+# else if majorMinor ghc.version == "9.4" then ghcVersionToHnls.v94
+# else if majorMinor ghc.version == "9.6" then ghcVersionToHnls.v96
+# else if majorMinor ghc.version == "9.8" then ghcVersionToHnls.v98
+# else throw ("Unsupported GHC version: " + ghc.version)
