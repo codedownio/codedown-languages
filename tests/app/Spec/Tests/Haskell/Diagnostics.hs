@@ -26,7 +26,7 @@ diagnosticsTests lsName = describe "Diagnostics" $ do
   testDiagnostics lsName "Foo.hs" Nothing etaExpandCode $ \diagnostics -> do
     assertDiagnosticRanges diagnostics [(Range (Position 6 0) (Position 6 14), Just (InR "refact:Eta reduce"))]
 
-  testDiagnostics lsName "main.ipynb" Nothing [__i|-- Some comment
+  testDiagnostics lsName "main.ipynb" Nothing [__i|-- A comment
                                                    foo = bar
 
                                                    putStrLn "HI"
