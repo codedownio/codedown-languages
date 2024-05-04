@@ -26,7 +26,7 @@ kernelSpec lang = NixKernelSpec {
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Just $ HM.fromList [
-      ("haskell-language-server.debug", A.Bool True)
+      ("lsp.haskell-language-server.debug", A.Bool True)
       ]
   }
 
