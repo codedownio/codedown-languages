@@ -42,27 +42,27 @@ let
     {
       "v810" = prebuilt (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc8107-x86_64-linux.tar.gz";
-        sha256 = "04lv7vkli9w87r5vcs85sl47i91rr0jxlj122sv7v8vh5wbjgz61";
+        sha256 = "14xl74v9yxy0j83xblmvrlynjr651d23fjlw1sw00aw9fxxi77xx";
       });
       "v90" = prebuilt (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc902-x86_64-linux.tar.gz";
-        sha256 = "08h3sc1b85pjwch2wmplljghfj6dq9slrarka8hrjn3mkhj476kq";
+        sha256 = "1nkynldgmmbgpsklqgd0rxzb1cbp0vz1j9q2js3p1azj1givbbh9";
       });
       "v92" = prebuilt (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc928-x86_64-linux.tar.gz";
-        sha256 = "1rrfl255af7hf1rr0d56vfvcn3x02sq8rwyvkkqxqblkjyqqr0ii";
+        sha256 = "051k2jmikyrk4j7nv7r6r0mrvnb92qy6j5k2kkksyqzalrjaiwxg";
       });
       "v94" = prebuilt (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc948-x86_64-linux.tar.gz";
-        sha256 = "03sva25lq18x5zlhi8wggjfh7l3326g8an9v42qs16rcglyrgxsd";
+        sha256 = "04s68hf6j4gsgpv3wn5cjjdld4vnwvbfranamadvdpbcc3kamqym";
       });
       "v96" = prebuilt (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc964-x86_64-linux.tar.gz";
-        sha256 = "1rzld09p9ybqg4ymsjh8n190jfgnb6787aadn3mc1qrf2s9vb7fq";
+        sha256 = "1q1m5kx4rh5gb1pibpc6n69pwa34gsm6qd3k7dl7nz1n1z81n4vx";
       });
       "v98" = prebuilt (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc982-x86_64-linux.tar.gz";
-        sha256 = "0r3rp30vv4l31fya7kmsad3wd4in6nj0mi9z345fhi0r92aq3r88";
+        sha256 = "0a2ckf85nrzq0v0ap6590ksx37dghlaixsvpmibvjsk5wp9m14as";
       });
     };
 
