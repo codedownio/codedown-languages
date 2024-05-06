@@ -18,46 +18,48 @@ import TestLib.NixEnvironmentContext
 
 diagnosticsTests :: (LspContext context m) => Text -> SpecFree context m ()
 diagnosticsTests lsName = describe "Diagnostics" $ do
-  testDiagnostics lsName "Foo.hs" Nothing [__i|module Foo where
-                                               foo = bar
-                                              |] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
+  describe "Foo.hs" $ do
+    testDiagnosticsLabel "Out of scope variable" lsName "Foo.hs" Nothing [__i|module Foo where
+                                                                              foo = bar
+                                                                             |] $ \diagnostics -> do
+      assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
-  testDiagnostics lsName "Foo.hs" Nothing etaExpandCode $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics [(Range (Position 6 0) (Position 6 14), Just (InR "refact:Eta reduce"))]
+    testDiagnosticsLabel "Eta reduce" lsName "Foo.hs" Nothing etaExpandCode $ \diagnostics -> do
+      assertDiagnosticRanges diagnostics [(Range (Position 6 0) (Position 6 14), Just (InR "refact:Eta reduce"))]
 
-  testDiagnostics lsName "main.ipynb" Nothing [__i|-- A comment
-                                                   foo = bar
+  describe "main.ipynb" $ do
+    testDiagnosticsLabel "Top-level putStrLn" lsName "main.ipynb" Nothing [__i|-- A comment
+                                                                               foo = bar
 
-                                                   putStrLn "HI"
-                                                  |] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
+                                                                               putStrLn "HI"
+                                                                              |] $ \diagnostics -> do
+      assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
-  testDiagnostics lsName "main.ipynb" Nothing [__i|import Data.Aeson.TH
-                                                   {-\# LANGUAGE TemplateHaskell \#-}
-                                                   foo = bar -- This should be the only diagnostic we get
-                                                   data Foo = Bar | Baz
-                                                   $(deriveJSON defaultOptions ''Foo)|] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics [(Range (Position 2 6) (Position 2 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
+    testDiagnosticsLabel "Top-level putStrLn with diagnostic" lsName "main.ipynb" Nothing [__i|-- Some comment
+                                                                                               import Data.ByteString.Lazy.Char8 as BL
+                                                                                               foo = bar
 
-  testDiagnostics lsName "main.ipynb" Nothing [__i|import Data.Aeson as A
-                                                   import Data.Aeson.TH
-                                                   :set -XTemplateHaskell
-                                                   foo = bar -- This should be the only diagnostic we get
-                                                   data Foo = Bar | Baz
-                                                   $(deriveJSON defaultOptions ''Foo)
-                                                   import Data.ByteString.Lazy.Char8 as BL
-                                                   Prelude.putStrLn $ BL.unpack $ A.encode Bar|] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics [(Range (Position 3 6) (Position 3 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
+                                                                                               putStrLn "HI"
+                                                                                              |] $ \diagnostics -> case [(x ^. range, x ^. message) | x <- diagnostics] of
+      [(Range (Position 4 0) (Position 4 8), x)] | containsAll x ["Ambiguous occurrence", "putStrLn"] -> return ()
+      xs -> expectationFailure [i|Unexpected diagnostics: #{xs}|]
 
-  testDiagnostics lsName "main.ipynb" Nothing [__i|-- Some comment
-                                                   import Data.ByteString.Lazy.Char8 as BL
-                                                   foo = bar
+    testDiagnosticsLabel "Reordering" lsName "main.ipynb" Nothing [__i|import Data.Aeson.TH
+                                                                       {-\# LANGUAGE TemplateHaskell \#-}
+                                                                       foo = bar -- This should be the only diagnostic we get
+                                                                       data Foo = Bar | Baz
+                                                                       $(deriveJSON defaultOptions ''Foo)|] $ \diagnostics -> do
+      assertDiagnosticRanges diagnostics [(Range (Position 2 6) (Position 2 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
-                                                   putStrLn "HI"
-                                                  |] $ \diagnostics -> case [(x ^. range, x ^. message) | x <- diagnostics] of
-    [(Range (Position 4 0) (Position 4 8), x)] | containsAll x ["Ambiguous occurrence", "putStrLn"] -> return ()
-    xs -> expectationFailure [i|Unexpected diagnostics: #{xs}|]
+    testDiagnosticsLabel "Complicated reordering" lsName "main.ipynb" Nothing [__i|import Data.Aeson as A
+                                                                                   import Data.Aeson.TH
+                                                                                   :set -XTemplateHaskell
+                                                                                   foo = bar -- This should be the only diagnostic we get
+                                                                                   data Foo = Bar | Baz
+                                                                                   $(deriveJSON defaultOptions ''Foo)
+                                                                                   import Data.ByteString.Lazy.Char8 as BL
+                                                                                   Prelude.putStrLn $ BL.unpack $ A.encode Bar|] $ \diagnostics -> do
+      assertDiagnosticRanges diagnostics [(Range (Position 3 6) (Position 3 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
 
 etaExpandCode :: Text

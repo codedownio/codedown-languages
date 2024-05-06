@@ -106,6 +106,11 @@ testDiagnostics' :: (
   ) => Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics' name filename maybeLanguageId codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest} (diagnostics)|] name filename maybeLanguageId codeToTest
 
+testDiagnosticsLabel :: (
+  LspContext ctx m
+  ) => String -> Text -> FilePath -> Maybe Text -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnosticsLabel label name filename maybeLanguageId codeToTest = testDiagnostics'' label name filename maybeLanguageId codeToTest []
+
 testDiagnostics'' :: (
   LspContext ctx m
   ) => String -> Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
