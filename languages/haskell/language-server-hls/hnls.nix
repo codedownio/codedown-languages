@@ -26,8 +26,8 @@ let
 
   ghcVersionToHnls = let
     version = "0.3.2.0";
-    prebuilt = src: stdenv.mkDerivation {
-      pname = "haskell-notebook-language-server";
+    prebuilt = ghcName: src: stdenv.mkDerivation {
+      pname = "haskell-notebook-language-server-" + ghcName;
       inherit version;
 
       inherit src;
@@ -48,19 +48,19 @@ let
       #   url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc902-x86_64-linux.tar.gz";
       #   hash = lib.fakeHash;
       # });
-      "ghc928" = prebuilt (fetchzip {
+      "ghc928" = prebuilt "ghc928" (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc928-x86_64-linux.tar.gz";
         hash = "sha256-KCXrGNHBFRy1UWsRX75LST8JSaWk5nQ8lc8rrZ9Pqgw=";
       });
-      "ghc948" = prebuilt (fetchzip {
+      "ghc948" = prebuilt "ghc948" (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc948-x86_64-linux.tar.gz";
         hash = "sha256-HBY3XgKlTThOoWuSBQ1iWE0Nbr/OrXQfbwACFyeBxXE=";
       });
-      "ghc964" = prebuilt (fetchzip {
+      "ghc964" = prebuilt "ghc964" (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc964-x86_64-linux.tar.gz";
         hash = "sha256-qvVzvY/sx8QxS6iGT7yBIKSBUSidgV8i5M5PQ/xpuhg=";
       });
-      "ghc982" = prebuilt (fetchzip {
+      "ghc982" = prebuilt "ghc982" (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc982-x86_64-linux.tar.gz";
         hash = "sha256-hBQW7mGP02jQrMndxa0d7magge+ZwOo7nyWAAh5A08E=";
       });
