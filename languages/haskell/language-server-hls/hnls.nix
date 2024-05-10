@@ -25,7 +25,7 @@ let
   # };
 
   ghcVersionToHnls = let
-    version = "0.3.2.0";
+    version = "0.4.0.0";
     prebuilt = ghcName: src: stdenv.mkDerivation {
       pname = "haskell-notebook-language-server-" + ghcName;
       inherit version;
@@ -50,26 +50,25 @@ let
       # });
       "ghc928" = prebuilt "ghc928" (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc928-x86_64-linux.tar.gz";
-        hash = "sha256-KCXrGNHBFRy1UWsRX75LST8JSaWk5nQ8lc8rrZ9Pqgw=";
+        hash = "sha256-KkQZfEn3ZPQOtwCuveQHyhRtRR8tbJ9Q+H/SBildNOI=";
       });
       "ghc948" = prebuilt "ghc948" (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc948-x86_64-linux.tar.gz";
-        hash = "sha256-HBY3XgKlTThOoWuSBQ1iWE0Nbr/OrXQfbwACFyeBxXE=";
+        hash = "sha256-DUKMuKqwoRb1FkEzr8eEUEjgweFOe1q8ZJJgCIG74EA=";
       });
       "ghc964" = prebuilt "ghc964" (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc964-x86_64-linux.tar.gz";
-        hash = "sha256-qvVzvY/sx8QxS6iGT7yBIKSBUSidgV8i5M5PQ/xpuhg=";
+        hash = "sha256-fXcp1JoXFpW4I4YnPL7demmXRCDJ4p/E6qfnBZUs2JE=";
       });
       "ghc982" = prebuilt "ghc982" (fetchzip {
         url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc982-x86_64-linux.tar.gz";
-        hash = "sha256-hBQW7mGP02jQrMndxa0d7magge+ZwOo7nyWAAh5A08E=";
+        hash = "sha256-BVnNc/cLUIKMrHNHsWvGPIFT+U1U7pIoPrK3e+e4QEY=";
       });
     };
 
 in
 
 with lib.versions;
-
 # if majorMinor ghc.version == "8.10" then ghcVersionToHnls.ghc8107
 # else if majorMinor ghc.version == "9.0" then ghcVersionToHnls.ghc902
 if majorMinor ghc.version == "9.2" then ghcVersionToHnls.ghc928

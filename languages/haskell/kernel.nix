@@ -19,16 +19,13 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
+  util = import ./util.nix;
+
   repls = [{
     display_name = "GHCi";
     attr = "ghci";
     proc = "${ghc.out}/bin/ghci";
   }];
-
-  # Note: can actually get libdir by calling "ghc --print-libdir"
-  libDir = if builtins.compareVersions ghc.version "9.6" < 0
-    then "${ghc.out}/lib/${ghc.meta.name}"
-    else "${ghc.out}/lib/${ghc.meta.name}/lib";
 
 in
 
@@ -41,7 +38,7 @@ common.makeJupyterKernel (
         "${ihaskell}/bin/ihaskell"
         "kernel"
         "{connection_file}"
-        "-l" libDir
+        "-l" (util.getLibDir ghc)
         "--html-code-wrapper-class" "cm-s-hite"
         "--html-code-token-prefix" ""
         "+RTS" "-M3g" "-N2" "-RTS"

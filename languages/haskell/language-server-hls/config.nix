@@ -24,6 +24,7 @@ with lib;
 
 let
   common = callPackage ../../common.nix {};
+  util = import ../util.nix;
 
   hnls = callPackage ./hnls.nix { inherit ghc snapshot; };
 
@@ -58,10 +59,13 @@ let
       "--lsp"
     ] else [
       "${hnls}/bin/haskell-notebook-language-server"
+
       "--wrapped-hls" "${hlsWrapped}/bin/haskell-language-server"
       "--hls-args" "--lsp"
+
+      "--ghc-lib" (util.getLibDir ghc)
     ]
-    ++ lib.optionals settings.debug ["--log-level" "debug"];
+    ++ lib.optionals settings.debug ["--log-level" "debug" "--debug-writes" "--debug-reads"];
     env = {};
   };
 
