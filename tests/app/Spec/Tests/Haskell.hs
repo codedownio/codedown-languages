@@ -64,10 +64,10 @@ haskellCommonTests lang = do
 
     describe "LSP" $ do
       codeActionsTests
-      diagnosticsTests lsName
+      diagnosticsTests lang lsName
       documentHighlightTests
       hoverTests
-      statementsTests
+      statementsTests lang
       symbolsTests
 
 

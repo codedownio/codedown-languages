@@ -5,6 +5,7 @@
 module Spec.Tests.Haskell.Diagnostics where
 
 import Control.Lens ((^.))
+import Control.Monad
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Protocol.Lens hiding (diagnostics)
@@ -16,16 +17,17 @@ import TestLib.LSP
 import TestLib.NixEnvironmentContext
 
 
-diagnosticsTests :: (LspContext context m) => Text -> SpecFree context m ()
-diagnosticsTests lsName = describe "Diagnostics" $ do
+diagnosticsTests :: (LspContext context m) => Text -> Text -> SpecFree context m ()
+diagnosticsTests lang lsName = describe "Diagnostics" $ do
   describe "Foo.hs" $ do
     testDiagnosticsLabel "Out of scope variable" lsName "Foo.hs" Nothing [__i|module Foo where
                                                                               foo = bar
                                                                              |] $ \diagnostics -> do
       assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
-    testDiagnosticsLabel "Eta reduce" lsName "Foo.hs" Nothing etaExpandCode $ \diagnostics -> do
-      assertDiagnosticRanges diagnostics [(Range (Position 6 0) (Position 6 14), Just (InR "refact:Eta reduce"))]
+    when (lang /= "haskell-ghc98") $ -- TODO: re-enable hlint test with haskell-language-server 2.8.0.0
+      testDiagnosticsLabel "Eta reduce" lsName "Foo.hs" Nothing etaExpandCode $ \diagnostics -> do
+        assertDiagnosticRanges diagnostics [(Range (Position 6 0) (Position 6 14), Just (InR "refact:Eta reduce"))]
 
   describe "main.ipynb" $ do
     testDiagnosticsLabel "Top-level putStrLn" lsName "main.ipynb" Nothing [__i|-- A comment
@@ -74,5 +76,7 @@ etaExpandCode = [__i|module Foo where
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
-  introduceNixEnvironment [kernelSpec "haskell-ghc92"] [] "Haskell" $
-    diagnosticsTests HaskellCommon.lsName
+  introduceNixEnvironment [kernelSpec lang] [] "Haskell" $
+    diagnosticsTests lang HaskellCommon.lsName
+  where
+    lang = "haskell-ghc92"
