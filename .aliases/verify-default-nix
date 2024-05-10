@@ -1,5 +1,7 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i bash -p nix
+#! nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/1a8e95f61ac804903e4e949f5380faa0540900ce.tar.gz
+# The hash above is from nixpkgs release-23.11 on 5/10/2024
 
 set -e
 
