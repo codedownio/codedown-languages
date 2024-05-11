@@ -136,40 +136,66 @@ runKernelCode kernel code cb = do
   let jupyterPath = nixEnv </> "lib" </> "codedown"
   debug [i|Got jupyterPath: #{jupyterPath}|]
 
-  jr <- getContext jupyterRunner
+  -- Get the path to the Jupyter runner in the Nix store
+  jr <- getContext jupyterRunner >>= canonicalizePath
   debug [i|Got jupyterRunner: #{jr}|]
 
   Just folder <- getCurrentFolder
+  let outerRunDir = folder </> "run"
+  createDirectoryIfMissing True outerRunDir
 
-  let runDir = folder </> "run"
-  createDirectoryIfMissing True runDir
+  let notebook = "notebook.ipynb"
+  let outFile = "out.txt"
+  let errFile = "err.txt"
 
-  let notebook = runDir </> "notebook.ipynb"
-  let outFile = runDir </> "out.txt"
-  let errFile = runDir </> "err.txt"
+  let outerHomeDir = folder </> "home"
+  createDirectoryIfMissing True outerHomeDir
 
-  let homeDir = folder </> "home"
-  createDirectoryIfMissing True homeDir
+  let innerRunDir = "/papermill_run"
 
-  liftIO $ BL.writeFile notebook (A.encode (notebookWithCode kernel code))
+  let relativeToOuterRunDir = (outerRunDir </>)
+  let relativeToInnerRunDir = (innerRunDir </>)
 
-  let cp = (proc jr ["notebook.ipynb", "out.ipynb"
-                    , "--stdout-file", outFile
-                    , "--stderr-file", errFile
-                    , "--start-timeout", "120"
-                    , "--cwd", homeDir
-                    , "--log-level", "DEBUG"
-                    , "-k", T.unpack kernel
-                    ]) {
-        env = Just [
-            ("JUPYTER_PATH", jupyterPath)
-            , ("HOME", homeDir)
-            ]
-        , cwd = Just runDir
-        }
+  liftIO $ BL.writeFile (relativeToOuterRunDir notebook) (A.encode (notebookWithCode kernel code))
+
+  -- Get the full closure of the Nix environment and jupyter runner
+  fullClosure <- (Prelude.filter (/= "") . T.splitOn "\n" . T.pack) <$> readCreateProcessWithLogging (
+    proc "nix" ["path-info", "-r"
+               , jr
+               , nixEnv
+               ]) ""
+
+  let papermillArgs = [
+        "notebook.ipynb", "out.ipynb"
+        , "--stdout-file", relativeToInnerRunDir outFile
+        , "--stderr-file", relativeToInnerRunDir errFile
+        , "--start-timeout", "120"
+        , "--cwd", innerRunDir
+        , "--log-level", "DEBUG"
+        , "-k", T.unpack kernel
+        ]
+
+  let bwrapArgs = ["--tmpfs", "/tmp"
+                  , "--bind", outerRunDir, innerRunDir
+                  , "--bind", outerHomeDir, "/home"
+                  , "--clearenv"
+                  , "--setenv", "HOME", "/home"
+                  , "--setenv", "JUPYTER_PATH", jupyterPath
+                  , "--chdir", innerRunDir
+
+                  , "--proc", "/proc"
+                  , "--dev", "/dev"
+                  ]
+                  <> mconcat [["--ro-bind", x, x] | x <- fmap T.unpack fullClosure]
+                  <> ["--"]
+                  <> (jr : papermillArgs)
+
+  info [i|bwrap #{T.intercalate " " $ fmap T.pack bwrapArgs}|]
+
+  let cp = proc "bwrap" bwrapArgs
   createProcessWithLogging cp >>= waitForProcess >>= (`shouldBe` ExitSuccess)
 
-  cb notebook (runDir </> "out.ipynb") outFile errFile
+  cb notebook (relativeToOuterRunDir "out.ipynb") (relativeToOuterRunDir outFile) (relativeToOuterRunDir errFile)
 
 
 notebookWithCode :: Text -> Text -> A.Value
