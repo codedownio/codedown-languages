@@ -67,6 +67,17 @@ let
     ]
     ++ lib.optionals settings.debug ["--log-level" "debug" "--debug-writes" "--debug-reads"];
     env = {};
+
+    initialization_options = {
+      # TODO: expose some of these options, as needed
+      # https://haskell-language-server.readthedocs.io/en/latest/configuration.html
+      haskell = {
+        # formattingProvider = "ormolu"; # floskell, ormolu, fourmolu, stylish-haskell
+        # maxCompletions = 40;
+        # checkProject = true;
+        # checkParents = "CheckOnSave";
+      };
+    };
   };
 
 in
