@@ -3,6 +3,7 @@
 module Spec.Tests.Go (tests) where
 
 import Data.String.Interpolate
+import Data.Text as T
 import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
@@ -33,12 +34,15 @@ tests = describe "Go" $ introduceNixEnvironment [kernelSpec] [] "Go" $ introduce
   testKernelStdout "go" [__i|import("fmt")
                              fmt.Println("hi")|] "hi\n"
 
-  testDiagnostics "gopls" "test.go" Nothing [__i|package main
-                                                 import ("fmt")
-                                                 func main() {
-                                                     fmt.Println(foo)
-                                                 }|] $ \diagnostics -> do
-    assertDiagnosticRanges diagnostics [(Range (Position 3 16) (Position 3 19), Just (InR "UndeclaredName"))]
+  testDiagnosticsLabel "gopls: Undeclared name" "gopls" "test.go" Nothing printUnknownCode $ \diagnostics ->
+    assertDiagnosticRanges diagnostics [(Range (Position 3 12) (Position 3 15), Just (InR "UndeclaredName"))]
+
+printUnknownCode :: Text
+printUnknownCode = [__i|package main
+                        import ("fmt")
+                        func main() {
+                        fmt.Println(foo)
+                        }|]
 
 main :: IO ()
 main = jupyterMain tests

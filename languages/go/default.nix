@@ -22,6 +22,13 @@ let
       type = "boolean";
       defaultValue = true;
     }
+
+    {
+      target = "go.gocache";
+      title = "Value of GOCACHE environment variable";
+      type = "string";
+      defaultValue = "/home/.gocache";
+    }
   ];
 
   chooseLanguageServers = settings: go: attrs: kernelName:
