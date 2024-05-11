@@ -42,12 +42,22 @@ introduceJupyterRunner = introduceWith [i|Jupyter runner|] jupyterRunner $ \acti
   createProcessWithLogging cp >>= waitForProcess >>= (`shouldBe` ExitSuccess)
   void $ action runnerPath
 
-parseJson :: V.Vector A.Value -> Maybe Text
-parseJson ((flip (V.!?) 0) -> Just (A.Object (aesonLookup "outputs" -> Just (A.Object (aesonLookup "out" -> Just (A.String t)))))) = Just t
-parseJson _ = Nothing
+-- | TODO: pipe through a command-line argument to control whether bwrap is used?
+introduceMaybeBubblewrap :: (
+  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  ) => SpecFree (LabelValue "maybeBubblewrap" (Maybe FilePath) :> context) m () -> SpecFree context m ()
+introduceMaybeBubblewrap = introduceWith [i|Maybe bubblewrap|] maybeBubblewrap $ \action -> do
+  liftIO (findExecutable "bwrap") >>= \case
+    Nothing -> expectationFailure [i|The tests currently require bubblewrap to be present.|]
+    Just path -> void $ action (Just path)
+
+-- parseNixBuildJson :: V.Vector A.Value -> Maybe Text
+-- parseNixBuildJson ((flip (V.!?) 0) -> Just (A.Object (aesonLookup "outputs" -> Just (A.Object (aesonLookup "out" -> Just (A.String t)))))) = Just t
+-- parseNixBuildJson _ = Nothing
 
 type HasJupyterRunnerContext context = (
   HasJupyterRunner context
+  , HasMaybeBubblewrap context
   , HasNixEnvironment context
   , HasBaseContext context
   )
@@ -59,32 +69,53 @@ type JupyterRunnerMonad m = (
   , MonadFail m
   )
 
-testKernelStdout :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> Text -> SpecFree context m ()
-testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ testKernelStdout'' kernel code (`shouldBe` Just desired)
+testKernelStdout :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> Text -> SpecFree context m ()
+testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $
+  testKernelStdout'' kernel code (`shouldBe` Just desired)
 
-testKernelStdout' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> Maybe Text -> SpecFree context m ()
-testKernelStdout' kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $ testKernelStdout'' kernel code (`shouldBe` desired)
+testKernelStdout' :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> Maybe Text -> SpecFree context m ()
+testKernelStdout' kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $
+  testKernelStdout'' kernel code (`shouldBe` desired)
 
-testKernelStdoutCallback :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> (Maybe Text -> ExampleT context m ()) -> SpecFree context m ()
-testKernelStdoutCallback kernel code cb = it [i|#{kernel}: #{code}|] $ testKernelStdout'' kernel code cb
+testKernelStdoutCallback :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> (Maybe Text -> ExampleT context m ()) -> SpecFree context m ()
+testKernelStdoutCallback kernel code cb = it [i|#{kernel}: #{code}|] $
+  testKernelStdout'' kernel code cb
 
-testKernelStdout'' :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> (Maybe Text -> ExampleT context m ()) -> ExampleT context m ()
+testKernelStdout'' :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> (Maybe Text -> ExampleT context m ()) -> ExampleT context m ()
 testKernelStdout'' kernel code cb = do
   runKernelCode kernel code $ \_notebookFile _outputNotebookFile outFile _errFile -> do
     doesFileExist outFile >>= \case
       True -> liftIO (T.readFile outFile) >>= cb . Just
       False -> cb Nothing
 
-itHasDisplayDatas :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
-itHasDisplayDatas kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ displayDatasShouldBe kernel code desired
+itHasDisplayDatas :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
+itHasDisplayDatas kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $
+  displayDatasShouldBe kernel code desired
 
-itHasDisplayTexts :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Maybe A.Value] -> SpecFree context m ()
-itHasDisplayTexts kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ displayTextsShouldBe kernel code desired
+itHasDisplayTexts :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> [Maybe A.Value] -> SpecFree context m ()
+itHasDisplayTexts kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $
+  displayTextsShouldBe kernel code desired
 
-displayDatasShouldBe :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> ExampleT context m ()
+displayDatasShouldBe :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> [Map MimeType A.Value] -> ExampleT context m ()
 displayDatasShouldBe kernel code desired = displayDatasShouldSatisfy kernel code (`shouldBe` desired)
 
-displayTextsShouldBe :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Maybe A.Value] -> ExampleT context m ()
+displayTextsShouldBe :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> [Maybe A.Value] -> ExampleT context m ()
 displayTextsShouldBe kernel code desired = displayDatasShouldSatisfy kernel code ((`shouldBe` desired) . fmap (M.lookup (MimeType "text/plain")))
 
 displayDatasShouldSatisfy :: (
@@ -96,16 +127,26 @@ displayDatasShouldSatisfy kernel code cb = notebookShouldSatisfy kernel code $ \
 
 -- * Execute result helpers
 
-itHasExecuteDatas :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
-itHasExecuteDatas kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ executeDatasShouldBe kernel code desired
+itHasExecuteDatas :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
+itHasExecuteDatas kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $
+  executeDatasShouldBe kernel code desired
 
-itHasExecuteTexts :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Maybe A.Value] -> SpecFree context m ()
-itHasExecuteTexts kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $ executeTextsShouldBe kernel code desired
+itHasExecuteTexts :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> [Maybe A.Value] -> SpecFree context m ()
+itHasExecuteTexts kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $
+  executeTextsShouldBe kernel code desired
 
-executeDatasShouldBe :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Map MimeType A.Value] -> ExampleT context m ()
+executeDatasShouldBe :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> [Map MimeType A.Value] -> ExampleT context m ()
 executeDatasShouldBe kernel code desired = executeResultsShouldSatisfy kernel code (`shouldBe` desired)
 
-executeTextsShouldBe :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> Text -> [Maybe A.Value] -> ExampleT context m ()
+executeTextsShouldBe :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> [Maybe A.Value] -> ExampleT context m ()
 executeTextsShouldBe kernel code desired = executeResultsShouldSatisfy kernel code ((`shouldBe` desired) . fmap (M.lookup (MimeType "text/plain")))
 
 executeResultsShouldSatisfy :: (
@@ -127,7 +168,8 @@ notebookShouldSatisfy kernel code cb = do
       Right nb -> cb nb
 
 runKernelCode :: (
-  (HasJupyterRunnerContext context, JupyterRunnerMonad m)
+  HasJupyterRunnerContext context
+  , JupyterRunnerMonad m
   , MonadReader context m
   , MonadLoggerIO m
   ) => Text -> Text -> (FilePath -> FilePath -> FilePath -> FilePath -> m b) -> m b
@@ -140,30 +182,29 @@ runKernelCode kernel code cb = do
   jr <- getContext jupyterRunner >>= canonicalizePath
   debug [i|Got jupyterRunner: #{jr}|]
 
-  Just folder <- getCurrentFolder
-  let outerRunDir = folder </> "run"
-  createDirectoryIfMissing True outerRunDir
+  maybeBwrap <- getContext maybeBubblewrap
 
   let notebook = "notebook.ipynb"
   let outFile = "out.txt"
   let errFile = "err.txt"
 
+  Just folder <- getCurrentFolder
+
   let outerHomeDir = folder </> "home"
   createDirectoryIfMissing True outerHomeDir
 
-  let innerRunDir = "/papermill_run"
-
+  let outerRunDir = folder </> "run"
+  createDirectoryIfMissing True outerRunDir
   let relativeToOuterRunDir = (outerRunDir </>)
-  let relativeToInnerRunDir = (innerRunDir </>)
+
+  let innerRunDir = case maybeBwrap of
+        Just _ -> "/papermill_run"
+        Nothing -> outerRunDir
+  let relativeToInnerRunDir = case maybeBwrap of
+        Just _ -> (innerRunDir </>)
+        Nothing -> (outerRunDir </>)
 
   liftIO $ BL.writeFile (relativeToOuterRunDir notebook) (A.encode (notebookWithCode kernel code))
-
-  -- Get the full closure of the Nix environment and jupyter runner
-  fullClosure <- (Prelude.filter (/= "") . T.splitOn "\n" . T.pack) <$> readCreateProcessWithLogging (
-    proc "nix" ["path-info", "-r"
-               , jr
-               , nixEnv
-               ]) ""
 
   let papermillArgs = [
         "notebook.ipynb", "out.ipynb"
@@ -175,24 +216,42 @@ runKernelCode kernel code cb = do
         , "-k", T.unpack kernel
         ]
 
-  let bwrapArgs = ["--tmpfs", "/tmp"
-                  , "--bind", outerRunDir, innerRunDir
-                  , "--bind", outerHomeDir, "/home"
-                  , "--clearenv"
-                  , "--setenv", "HOME", "/home"
-                  , "--setenv", "JUPYTER_PATH", jupyterPath
-                  , "--chdir", innerRunDir
+  cp <- case maybeBwrap of
+    Just bwrap -> do
+      -- Get the full closure of the Nix environment and jupyter runner
+      fullClosure <- (Prelude.filter (/= "") . T.splitOn "\n" . T.pack) <$> readCreateProcessWithLogging (
+        proc "nix" ["path-info", "-r"
+                   , jr
+                   , nixEnv
+                   ]) ""
 
-                  , "--proc", "/proc"
-                  , "--dev", "/dev"
-                  ]
-                  <> mconcat [["--ro-bind", x, x] | x <- fmap T.unpack fullClosure]
-                  <> ["--"]
-                  <> (jr : papermillArgs)
+      let bwrapArgs = ["--tmpfs", "/tmp"
+                      , "--bind", outerRunDir, innerRunDir
+                      , "--bind", outerHomeDir, "/home"
+                      , "--clearenv"
+                      , "--setenv", "HOME", "/home"
+                      , "--setenv", "JUPYTER_PATH", jupyterPath
+                      , "--chdir", innerRunDir
 
-  info [i|bwrap #{T.intercalate " " $ fmap T.pack bwrapArgs}|]
+                      , "--proc", "/proc"
+                      , "--dev", "/dev"
+                      ]
+                      <> mconcat [["--ro-bind", x, x] | x <- fmap T.unpack fullClosure]
+                      <> ["--"]
+                      <> (jr : papermillArgs)
 
-  let cp = proc "bwrap" bwrapArgs
+      info [i|#{bwrap} #{T.intercalate " " $ fmap T.pack bwrapArgs}|]
+      return $ proc bwrap bwrapArgs
+    Nothing -> do
+      info [i|#{jr} #{T.intercalate " " $ fmap T.pack papermillArgs}|]
+      return $ (proc jr papermillArgs) {
+        env = Just [
+            ("JUPYTER_PATH", jupyterPath)
+            , ("HOME", outerHomeDir)
+            ]
+        , cwd = Just outerRunDir
+        }
+
   createProcessWithLogging cp >>= waitForProcess >>= (`shouldBe` ExitSuccess)
 
   cb notebook (relativeToOuterRunDir "out.ipynb") (relativeToOuterRunDir outFile) (relativeToOuterRunDir errFile)
@@ -233,4 +292,7 @@ notebookWithCode kernel code = A.object [
 -- * Utility main function
 
 jupyterMain :: LanguageSpec -> IO ()
-jupyterMain tests = runSandwichWithCommandLineArgs' Sandwich.defaultOptions specialOptions (introduceJupyterRunner tests)
+jupyterMain tests = runSandwichWithCommandLineArgs' Sandwich.defaultOptions specialOptions $
+  introduceJupyterRunner $
+  introduceMaybeBubblewrap
+  tests

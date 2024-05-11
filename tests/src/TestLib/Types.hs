@@ -61,11 +61,16 @@ jupyterRunner :: Label "jupyterRunner" FilePath
 jupyterRunner = Label
 type HasJupyterRunner context = HasLabel context "jupyterRunner" FilePath
 
+maybeBubblewrap :: Label "maybeBubblewrap" (Maybe FilePath)
+maybeBubblewrap = Label
+type HasMaybeBubblewrap context = HasLabel context "maybeBubblewrap" (Maybe FilePath)
+
 -- * Spec types
 
 type SomeLanguageSpec context = (
   HasBaseContext context
   , HasJupyterRunner context
+  , HasMaybeBubblewrap context
   )
 
 type LanguageSpec = forall context. SomeLanguageSpec context => SpecFree context IO ()
