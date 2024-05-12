@@ -28,6 +28,8 @@ import TestLib.Util
 import UnliftIO.Directory
 import UnliftIO.Process
 
+-- import qualified Data.ByteString.Lazy.Char8 as BL8
+
 
 introduceJupyterRunner :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
@@ -43,17 +45,23 @@ introduceJupyterRunner = introduceWith [i|Jupyter runner|] jupyterRunner $ \acti
   void $ action runnerPath
 
 -- | TODO: pipe through a command-line argument to control whether bwrap is used?
-introduceMaybeBubblewrap :: (
+introduceJustBubblewrap :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => SpecFree (LabelValue "maybeBubblewrap" (Maybe FilePath) :> context) m () -> SpecFree context m ()
-introduceMaybeBubblewrap = introduceWith [i|Maybe bubblewrap|] maybeBubblewrap $ \action -> do
+introduceJustBubblewrap = introduceWith [i|Just bubblewrap|] maybeBubblewrap $ \action -> do
   liftIO (findExecutable "bwrap") >>= \case
     Nothing -> expectationFailure [i|The tests currently require bubblewrap to be present.|]
     Just path -> void $ action (Just path)
 
--- parseNixBuildJson :: V.Vector A.Value -> Maybe Text
--- parseNixBuildJson ((flip (V.!?) 0) -> Just (A.Object (aesonLookup "outputs" -> Just (A.Object (aesonLookup "out" -> Just (A.String t)))))) = Just t
--- parseNixBuildJson _ = Nothing
+introduceNothingBubblewrap :: (
+  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  ) => SpecFree (LabelValue "maybeBubblewrap" (Maybe FilePath) :> context) m () -> SpecFree context m ()
+introduceNothingBubblewrap = introduceWith [i|Nothing bubblewrap|] maybeBubblewrap $ \action ->
+  void $ action Nothing
+
+parseNixBuildJson :: V.Vector A.Value -> Maybe Text
+parseNixBuildJson ((flip (V.!?) 0) -> Just (A.Object (aesonLookup "outputs" -> Just (A.Object (aesonLookup "out" -> Just (A.String t)))))) = Just t
+parseNixBuildJson _ = Nothing
 
 type HasJupyterRunnerContext context = (
   HasJupyterRunner context
@@ -218,12 +226,27 @@ runKernelCode kernel code cb = do
 
   cp <- case maybeBwrap of
     Just bwrap -> do
+      -- https://github.com/codedownio/codedown-languages/issues/63
+      -- binPathsJson <- readCreateProcessWithLogging (
+      --   proc "nix" ["build"
+      --              , "--impure"
+      --              , "--expr", [i|with import <nixpkgs> {}; symlinkJoin { name = "base-paths"; paths = [which coreutils]; }|]
+      --              , "--json"
+      --              ]) ""
+      -- binPaths <- case parseNixBuildJson <$> (A.eitherDecode (BL8.pack binPathsJson)) of
+      --   Left err -> expectationFailure [i|Failed to parse bin paths: #{err}. JSON: #{binPathsJson}|]
+      --   Right Nothing -> expectationFailure [i|Didn't find Nix output in: #{binPathsJson}|]
+      --   Right (Just output) -> pure $ T.unpack output
+      -- info [i|PATH: #{binPaths </> "bin"}|]
+
       -- Get the full closure of the Nix environment and jupyter runner
       fullClosure <- (Prelude.filter (/= "") . T.splitOn "\n" . T.pack) <$> readCreateProcessWithLogging (
-        proc "nix" ["path-info", "-r"
-                   , jr
-                   , nixEnv
-                   ]) ""
+        proc "nix" (["path-info", "-r"
+                    , jr
+                    , nixEnv
+                    -- , binPaths
+                    ])
+        ) ""
 
       let bwrapArgs = ["--tmpfs", "/tmp"
                       , "--bind", outerRunDir, innerRunDir
@@ -232,6 +255,8 @@ runKernelCode kernel code cb = do
                       , "--setenv", "HOME", "/home"
                       , "--setenv", "JUPYTER_PATH", jupyterPath
                       , "--chdir", innerRunDir
+
+                      -- , "--setenv", "PATH", binPaths </> "bin"
 
                       , "--proc", "/proc"
                       , "--dev", "/dev"
@@ -294,5 +319,5 @@ notebookWithCode kernel code = A.object [
 jupyterMain :: LanguageSpec -> IO ()
 jupyterMain tests = runSandwichWithCommandLineArgs' Sandwich.defaultOptions specialOptions $
   introduceJupyterRunner $
-  introduceMaybeBubblewrap
+  introduceJustBubblewrap
   tests

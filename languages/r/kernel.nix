@@ -1,6 +1,10 @@
 { callPackage
 , rWithPackages
 
+# , lib
+# , coreutils
+# , which
+
 , attrs
 , extensions
 , version
@@ -23,8 +27,16 @@ common.makeJupyterKernel {
       "{connection_file}"
     ];
     language = "r";
+
     logo32 = null;
     logo64 = ./r-logo-64x64.png;
+
+    # The kernel calls "which uname"
+    # https://github.com/codedownio/codedown-languages/issues/63
+    # env = {
+    #   PATH = lib.makeBinPath [coreutils which];
+    # };
+
     metadata = {
       codedown = {
         inherit attrs extensions;

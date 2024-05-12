@@ -26,7 +26,7 @@ tests :: forall context. (
   ) => SpecFree context IO ()
 tests =
   introduceJupyterRunner $
-  introduceMaybeBubblewrap $
+  introduceJustBubblewrap $
     introduce' (defaultNodeOptions { nodeOptionsCreateFolder = False }) "Introduce parallel semaphore" parallelSemaphore getQSem (const $ return ()) $
       $(getSpecFromFolder $ defaultGetSpecFromFolderOptions {
            getSpecCombiner = 'describeParallel
