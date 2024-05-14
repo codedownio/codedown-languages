@@ -171,6 +171,7 @@ let
         rust.packages.stable.cargo
         gcc.out
       ];
+
       # "RA_LOG" = "rust_analyzer=info";
     };
   };
