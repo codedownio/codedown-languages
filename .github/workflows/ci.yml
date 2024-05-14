@@ -17,29 +17,36 @@ jobs:
       run: ./.aliases/verify-default-nix
 
   test:
-    name: ${{matrix.suite}}
+    name: ${{matrix.suite.name}} (${{matrix.suite.flags}})
     runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
         suite:
-        - bash
-        - clojure
-        - coq
-        - cpp
-        - go
-        - haskell
-        - julia
-        - octave
-        - postgres
-        - python
-        - r
-        - ruby
-        - rust
-        - sample-environments
-        - searchers
-        - zsh
-        - spellchecker
+        - name: bash
+        - name: clojure
+        - name: coq
+        - name: cpp
+        - name: go
+        - name: haskell
+          flags: "-f haskell-ghc92"
+        - name: haskell
+          flags: "-f haskell-ghc94"
+        - name: haskell
+          flags: "-f haskell-ghc96"
+        - name: haskell
+          flags: "-f haskell-ghc98"
+        - name: julia
+        - name: octave
+        - name: postgres
+        - name: python
+        - name: r
+        - name: ruby
+        - name: rust
+        - name: sample-environments
+        - name: searchers
+        - name: zsh
+        - name: spellchecker
 
     steps:
     - uses: actions/checkout@v4
@@ -74,7 +81,7 @@ jobs:
           --print-failures \
           --fixed-root "$TEST_ROOT" \
           --markdown-summary "$GITHUB_STEP_SUMMARY" \
-          --${{matrix.suite}}
+          --${{matrix.suite.name}} ${{matrix.suite.flags}}
 
     - name: Upload test artifacts
       if: ${{ always() }}
@@ -86,5 +93,5 @@ jobs:
             -e "ssh -F /secrets/ci_ssh_config" \
             -azW --progress --mkpath \
             "$TEST_ROOT/" \
-            tester@desktop1:/home/tester/all_test_runs/languages_${{github.workflow}}_${{github.run_number}}/${{matrix.suite}}
+            tester@desktop1:"/home/tester/all_test_runs/languages_${{github.workflow}}_${{github.run_number}}/${{matrix.suite.name}}-${{matrix.suite.flags}}"
         fi
