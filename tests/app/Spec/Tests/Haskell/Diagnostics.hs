@@ -13,6 +13,7 @@ import Language.LSP.Protocol.Types
 import qualified Spec.Tests.Haskell.Common as HaskellCommon
 import Spec.Tests.Haskell.Common hiding (lsName)
 import Test.Sandwich as Sandwich
+import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
 
@@ -77,6 +78,7 @@ etaExpandCode = [__i|module Foo where
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
   introduceNixEnvironment [kernelSpec lang] [] "Haskell" $
-    diagnosticsTests lang HaskellCommon.lsName
+    introduceJustBubblewrap $
+      diagnosticsTests lang HaskellCommon.lsName
   where
     lang = "haskell-ghc92"

@@ -15,6 +15,7 @@ import Safe
 import System.FilePath
 import Test.Sandwich as Sandwich
 import Test.Sandwich.Contexts.Waits (waitUntil)
+import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
@@ -27,7 +28,7 @@ otherPackages = [
   ]
 
 tests :: TopSpec
-tests = describe "Spellchecker" $ introduceNixEnvironment [] otherPackages "Spellchecker env" $ do
+tests = describe "Spellchecker" $ introduceNixEnvironment [] otherPackages "Spellchecker env" $ introduceJustBubblewrap $ do
   it "Gets diagnostics and a working code action" $ do
     withLspSession' id "spellchecker" "test.md" [i|\# This is mispelled|] [] $ \lspHomeDir -> do
       ident <- openDoc "test.md" "spellchecker"
