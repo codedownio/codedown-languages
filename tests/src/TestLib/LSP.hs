@@ -153,7 +153,7 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
     Just x -> return x
   info [i|LSP config: #{A.encode config}|]
 
-  homeDir <- liftIO $ createTempDirectory currentFolder (T.unpack (name <> "_home"))
+  homeDir <- liftIO $ createTempDirectory currentFolder "home"
   pathToUse <- withFile "/dev/null" WriteMode $ \devNullHandle ->
     (T.unpack . T.strip . T.pack) <$> readCreateProcess ((proc "nix" ["run", ".#print-basic-path"]) { std_err = UseHandle devNullHandle }) ""
 
