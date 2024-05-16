@@ -25,7 +25,8 @@ let
     mkdir -p $out/src
     touch $out/src/lib.rs
 
-    cat <<EOT >> $out/config.toml
+    mkdir -p $out/.cargo
+    cat <<EOT >> $out/.cargo/config.toml
     [source.crates-io]
     replace-with = "vendored-sources"
 
@@ -35,6 +36,10 @@ let
     [net]
     offline = true
     EOT
+
+    # For some reason evcxr seems to only find config.toml when it's here,
+    # even though the cargo docs say it should be inside a .cargo folder:
+    ln -s $out/.cargo/config.toml $out/config.toml
   '';
 
 in

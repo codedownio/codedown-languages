@@ -32,7 +32,7 @@ rec {
   }) // (lib.optionalAttrs (contents ? "modes") {
     inherit (contents) modes;
   }) // (lib.optionalAttrs (contents ? "languageServerNames") {
-    inherit (contents) languageServerNames;
+    language_server_names = contents.languageServerNames;
   });
 
   mkChannelUiMetadata = name: channel: channel // {

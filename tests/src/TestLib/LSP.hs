@@ -80,8 +80,9 @@ type LspContext ctx m = (
   , MonadThrow m
   , MonadMask m
 
-  , HasNixEnvironment ctx
   , HasBaseContext ctx
+  , HasNixEnvironment ctx
+  , HasMaybeBubblewrap ctx
   )
 
 doNotebookSession :: (
@@ -105,6 +106,11 @@ testDiagnostics' :: (
   LspContext ctx m
   ) => Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics' name filename maybeLanguageId codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest} (diagnostics)|] name filename maybeLanguageId codeToTest
+
+testDiagnosticsLabel :: (
+  LspContext ctx m
+  ) => String -> Text -> FilePath -> Maybe Text -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnosticsLabel label name filename maybeLanguageId codeToTest = testDiagnostics'' label name filename maybeLanguageId codeToTest []
 
 testDiagnostics'' :: (
   LspContext ctx m
@@ -147,10 +153,6 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
     Just x -> return x
   info [i|LSP config: #{A.encode config}|]
 
-  let cmd:args = fmap T.unpack $ lspConfigArgs config
-  let lspCommand = proc cmd args
-  info [i|LSP command: #{lspCommand}|]
-
   homeDir <- liftIO $ createTempDirectory currentFolder (T.unpack (name <> "_home"))
   pathToUse <- withFile "/dev/null" WriteMode $ \devNullHandle ->
     (T.unpack . T.strip . T.pack) <$> readCreateProcess ((proc "nix" ["run", ".#print-basic-path"]) { std_err = UseHandle devNullHandle }) ""
@@ -169,16 +171,48 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
   let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
                           , logStdErr = True
                           , logMessages = True
+                          , messageTimeout = 120
                           }
 
-  -- env <- getEnvironment
-  -- let cleanEnv = [(k, v) | (k, v) <- env, k /= "PATH", k /= "HOME", k /= "GHC_PACKAGE_PATH"]
+  let cmd:args = fmap T.unpack $ lspConfigArgs config
+  (cp, modifyCp) <- getContext maybeBubblewrap >>= \case
+    Nothing -> do
+      let configEnv = maybe mempty (fmap (bimap T.unpack T.unpack) . M.toList) (lspConfigEnv config)
+      let finalEnv = ("HOME", homeDir) : ("PATH", pathToUse) : configEnv
+      info [i|Language server environment: #{finalEnv}|]
+      let modifyCp cp = cp { env = Just finalEnv
+                           , cwd = Just homeDir }
+      return (proc cmd args, modifyCp)
+    Just bwrapBinary -> do
+      -- Get the full closure of the Nix environment and jupyter runner
+      nixEnv <- getContext nixEnvironment
+      fullClosure <- (Prelude.filter (/= "") . T.splitOn "\n" . T.pack) <$> readCreateProcessWithLogging (
+        proc "nix" (["path-info", "-r"
+                    , nixEnv
+                    ]
+                    <> (splitSearchPath pathToUse)
+                   )
+        ) ""
 
-  let configEnv = maybe mempty (fmap (bimap T.unpack T.unpack) . M.toList) (lspConfigEnv config)
-  let finalEnv = ("HOME", homeDir) : ("PATH", pathToUse) : configEnv
-  info [i|Language server environment: #{finalEnv}|]
-  let modifyCp cp = cp { env = Just finalEnv
-                       , cwd = Just homeDir }
+      let bwrapArgs = ["--tmpfs", "/tmp"
+                      , "--bind", homeDir, homeDir
+                      , "--clearenv"
+                      , "--setenv", "HOME", homeDir
+                      , "--chdir", homeDir
+
+                      , "--setenv", "PATH", pathToUse
+
+                      , "--proc", "/proc"
+                      , "--dev", "/dev"
+                      ]
+                      <> mconcat [["--ro-bind", x, x] | x <- fmap T.unpack fullClosure]
+                      <> mconcat [["--setenv", T.unpack n, T.unpack v] | (n, v) <- M.toList (fromMaybe mempty (lspConfigEnv config))]
+                      <> ["--"]
+                      <> (cmd : args)
+
+      return (proc bwrapBinary bwrapArgs, id)
+
+  info [i|LSP command: #{cp}|]
 
   -- We don't support certain server-to-client requests, since the waitForDiagnostics doesn't handle them
   let caps = fullCaps
@@ -187,7 +221,7 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
            & set (workspace . _Just . didChangeWatchedFiles . _Just . dynamicRegistration) (Just False)
            & set (workspace . _Just . didChangeConfiguration . _Just . dynamicRegistration) (Just False)
 
-  handleFn $ runSessionWithConfigCustomProcess modifyCp sessionConfig lspCommand caps homeDir (session homeDir)
+  handleFn $ runSessionWithConfigCustomProcess modifyCp sessionConfig cp caps homeDir (session homeDir)
 
 assertDiagnosticRanges :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired

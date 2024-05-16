@@ -111,17 +111,6 @@ codedown.mkCodeDownEnvironment {
     # })
 
     ({
-      name = "haskell-ghc90";
-      channel = "codedown";
-      args = {
-        packages = ["aeson"];
-        settings = {
-          "lsp.haskell-language-server.debug" = true;
-        };
-      };
-    })
-
-    ({
       name = "haskell-ghc92";
       channel = "codedown";
       args = {
@@ -150,6 +139,17 @@ codedown.mkCodeDownEnvironment {
         packages = ["aeson"];
         settings = {
           "lsp.haskell-language-server.enable" = false;
+        };
+      };
+    })
+
+    ({
+      name = "haskell-ghc98";
+      channel = "codedown";
+      args = {
+        packages = ["aeson"];
+        settings = {
+          "lsp.haskell-language-server.debug" = true;
         };
       };
     })

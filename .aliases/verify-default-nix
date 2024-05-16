@@ -1,13 +1,15 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i bash -p nix
+#! nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/1a8e95f61ac804903e4e949f5380faa0540900ce.tar.gz
+# The hash above is from nixpkgs release-23.11 on 5/10/2024
 
 set -e
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPTDIR/.."
 
-FLAKE_NIXPKGS_REV=$(nix flake info --json | jq -r .locks.nodes.nixpkgs.locked.rev)
-FLAKE_NIXPKGS_UNSTABLE_REV=$(nix flake info --json | jq -r '.locks.nodes["nixpkgs-unstable"].locked.rev')
+FLAKE_NIXPKGS_REV=$(nix flake metadata --json | jq -r .locks.nodes.nixpkgs.locked.rev)
+FLAKE_NIXPKGS_UNSTABLE_REV=$(nix flake metadata --json | jq -r '.locks.nodes["nixpkgs-unstable"].locked.rev')
 
 echo "FLAKE_NIXPKGS_REV: $FLAKE_NIXPKGS_REV"
 echo "FLAKE_NIXPKGS_UNSTABLE_REV: $FLAKE_NIXPKGS_UNSTABLE_REV"

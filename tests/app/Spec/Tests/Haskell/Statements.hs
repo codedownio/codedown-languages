@@ -1,6 +1,7 @@
 
 module Spec.Tests.Haskell.Statements where
 
+import Control.Monad
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Protocol.Types
@@ -12,26 +13,28 @@ import TestLib.LSP
 import UnliftIO.Timeout
 
 
-statementsTests :: (LspContext context m) => SpecFree context m ()
-statementsTests = describe "Statements" $ do
+statementsTests :: (LspContext context m) => Text -> SpecFree context m ()
+statementsTests lang = describe "Statements" $ do
   describe "Single-line" $ do
     it "doesn't choke" $ doNotebookSession lsName statementsCode $ \filename -> do
       ident <- openDoc filename "haskell"
       timeout 120_000_000 (getHighlights ident (Position 0 1)) >>= (`shouldBe` (Just documentHighlightResults))
 
-    testDiagnostics lsName "main.ipynb" Nothing statementsCode $ \diagnostics -> do
-      -- Note: normally the server wouldn't send empty diagnostics. But the statement inserts "= unsafePerformIO $ ",
-      -- which causes it to emit a "redundant bracket" diagnostic, which then gets filtered out by untransformPosition
-      diagnostics `shouldBe` []
+    when (lang /= "haskell-ghc98") $ -- TODO: re-enable hlint test with haskell-language-server 2.8.0.0
+      testDiagnosticsLabel "Empty diagnostics" lsName "main.ipynb" Nothing statementsCode $ \diagnostics -> do
+        -- Note: normally the server wouldn't send empty diagnostics. But the statement inserts "= unsafePerformIO $ ",
+        -- which causes it to emit a "redundant bracket" diagnostic, which then gets filtered out by untransformPosition
+        diagnostics `shouldBe` []
 
   describe "Multi-line" $ do
     it "doesn't choke" $ doNotebookSession lsName statementsCode $ \filename -> do
       ident <- openDoc filename "haskell"
       timeout 120_000_000 (getHighlights ident (Position 0 1)) >>= (`shouldBe` (Just documentHighlightResults))
 
-    testDiagnostics lsName "main.ipynb" Nothing statementsCodeMultiline $ \diagnostics -> do
-      info [i|Got diagnostics: #{diagnostics}|]
-      assertDiagnosticRanges diagnostics [(Range (Position 1 9) (Position 1 14), Just (InR "refact:Redundant bracket"))]
+    when (lang /= "haskell-ghc98") $ -- TODO: re-enable hlint test with haskell-language-server 2.8.0.0
+      testDiagnosticsLabel "Redundant bracket" lsName "main.ipynb" Nothing statementsCodeMultiline $ \diagnostics -> do
+        info [i|Got diagnostics: #{diagnostics}|]
+        assertDiagnosticRanges diagnostics [(Range (Position 1 9) (Position 1 14), Just (InR "refact:Redundant bracket"))]
 
 statementsCode :: Text
 statementsCode = [__i|foo = "hello"

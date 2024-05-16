@@ -9,10 +9,10 @@ args: {
   cpp23 = import ./sample_environments/cpp23.nix args;
   exporters-large = import ./sample_environments/exporters-large.nix args;
   exporters-small = import ./sample_environments/exporters-small.nix args;
-  ghc90 = import ./sample_environments/ghc90.nix args;
   ghc92 = import ./sample_environments/ghc92.nix args;
   ghc94 = import ./sample_environments/ghc94.nix args;
   ghc96 = import ./sample_environments/ghc96.nix args;
+  ghc98 = import ./sample_environments/ghc98.nix args;
   go = import ./sample_environments/go.nix args;
   julia16 = import ./sample_environments/julia16.nix args;
   julia18 = import ./sample_environments/julia18.nix args;

@@ -1,14 +1,12 @@
-{ pkgs
-, lib
-, jupyter-kernel
-, runCommand
+{ lib
+, pkgs
+
 , callPackage
-, writeTextDir
+, jupyter-kernel
 , python3
-, ghostscript
-, gnuplot
-, graphicsmagick
+, runCommand
 , symlinkJoin
+, writeTextDir
 }:
 
 let
@@ -62,12 +60,7 @@ listToAttrs (map (x:
     }@args:
       let
         octaveComplete = baseOctave.override {
-          qscintilla = null;
-          overridePlatforms = ["x86_64-linux" "x86_64-darwin"];
-          gnuplot = gnuplot;
-          ghostscript = ghostscript;
-          graphicsmagick = graphicsmagick;
-          python = python3;
+          python3 = python3;
         };
 
         settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;

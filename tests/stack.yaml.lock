@@ -5,7 +5,7 @@
 
 packages:
 - completed:
-    commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
+    commit: 256c19e13faa3b105cf882f75d37f441e7f2cb02
     git: https://github.com/codedownio/lsp.git
     name: lsp
     pantry-tree:
@@ -14,11 +14,24 @@ packages:
     subdir: lsp
     version: 2.0.0.0
   original:
-    commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
+    commit: 256c19e13faa3b105cf882f75d37f441e7f2cb02
     git: https://github.com/codedownio/lsp.git
     subdir: lsp
 - completed:
-    commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
+    commit: 256c19e13faa3b105cf882f75d37f441e7f2cb02
+    git: https://github.com/codedownio/lsp.git
+    name: lsp-test
+    pantry-tree:
+      sha256: a2268cea5b4ffa29253c4511e3d7c6de92e30f8626a7531f2052ca683aa499e6
+      size: 2225
+    subdir: lsp-test
+    version: 0.15.0.0
+  original:
+    commit: 256c19e13faa3b105cf882f75d37f441e7f2cb02
+    git: https://github.com/codedownio/lsp.git
+    subdir: lsp-test
+- completed:
+    commit: 256c19e13faa3b105cf882f75d37f441e7f2cb02
     git: https://github.com/codedownio/lsp.git
     name: lsp-types
     pantry-tree:
@@ -27,24 +40,11 @@ packages:
     subdir: lsp-types
     version: 2.0.0.1
   original:
-    commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
+    commit: 256c19e13faa3b105cf882f75d37f441e7f2cb02
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-types
 - completed:
-    commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
-    git: https://github.com/codedownio/lsp.git
-    name: lsp-test
-    pantry-tree:
-      sha256: d4da318a522097888a0ec7ccadfb8ca552150bae7812b0d8b29e69558fbbe686
-      size: 2225
-    subdir: lsp-test
-    version: 0.15.0.0
-  original:
-    commit: cc4b50ce04d22895c92bdd384540a7d7b8531a4f
-    git: https://github.com/codedownio/lsp.git
-    subdir: lsp-test
-- completed:
-    commit: 9f6769f6ec743bb98d07f9a89b90ebe9032f4d4c
+    commit: 567ac0f24acddd4951db8707b0b3137372931a88
     git: https://github.com/codedownio/sandwich.git
     name: sandwich
     pantry-tree:
@@ -53,20 +53,20 @@ packages:
     subdir: sandwich
     version: 0.2.2.0
   original:
-    commit: 9f6769f6ec743bb98d07f9a89b90ebe9032f4d4c
+    commit: 567ac0f24acddd4951db8707b0b3137372931a88
     git: https://github.com/codedownio/sandwich.git
     subdir: sandwich
 - completed:
-    commit: 9f6769f6ec743bb98d07f9a89b90ebe9032f4d4c
+    commit: 567ac0f24acddd4951db8707b0b3137372931a88
     git: https://github.com/codedownio/sandwich.git
     name: sandwich-contexts
     pantry-tree:
-      sha256: b0ff043dd5cd0ff4465843f8bacde757cc1e83daed57dd5c0f8907deea66fdac
-      size: 1711
+      sha256: cd1268f0514e3f3f3806f3992447938f13ef9206576e48701d59b284c073dafb
+      size: 1627
     subdir: sandwich-contexts
     version: 0.1.0.0
   original:
-    commit: 9f6769f6ec743bb98d07f9a89b90ebe9032f4d4c
+    commit: 567ac0f24acddd4951db8707b0b3137372931a88
     git: https://github.com/codedownio/sandwich.git
     subdir: sandwich-contexts
 - completed:

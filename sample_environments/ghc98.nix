@@ -5,12 +5,12 @@
 
 
 codedown.mkCodeDownEnvironment {
-  environmentName = "ghc90";
+  environmentName = "ghc98";
   inherit channels;
 
   kernels = [
     ({
-      name = "haskell-ghc90";
+      name = "haskell-ghc98";
       channel = "codedown";
       args = {
         packages = ["aeson"];

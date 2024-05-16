@@ -1,7 +1,7 @@
 { lib
 , callPackage
 , python3
-, bash
+, bashInteractive
 
 , attrs
 , extensions
@@ -11,7 +11,7 @@ let
   common = callPackage ../common.nix {};
 
   python = python3.withPackages (ps: [
-    (ps.bash_kernel.override { inherit bash; })
+    (ps.bash_kernel.override { bash = bashInteractive; })
   ]);
 
 in
@@ -32,7 +32,7 @@ common.makeJupyterKernel {
     metadata = {
       codedown = {
         inherit attrs extensions;
-        language_version = bash.version;
+        language_version = bashInteractive.version;
         priority = 10;
       };
     };
