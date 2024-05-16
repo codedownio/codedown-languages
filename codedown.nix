@@ -45,37 +45,30 @@ let
 in
 
 rec {
-  searcher = common.searcher;
-
   nixpkgsStableSearcher = common.searcher pkgsStable;
 
   spellchecker = pkgsUnstable.callPackage ./language_servers/markdown-spellcheck-lsp {};
+
+  languages = languagesFn false;
 
   shells = {
     zsh = callPackage ./shells/zsh {};
     fish = callPackage ./shells/fish {};
     bash = callPackage ./shells/bash {};
   };
-  availableShells = shells;
-  shellsSearcher = common.searcher' {
-    attrPrefix = "shells.";
-    packages = shells;
-  };
 
   exporters = {
     nbconvert-small = callPackage ./exporters/nbconvert.nix { size = "small"; };
     nbconvert-large = callPackage ./exporters/nbconvert.nix { size = "large"; };
   };
-  availableExporters = exporters;
-  exportersSearcher = common.searcher' {
-    attrPrefix = "exporters.";
-    packages = exporters;
+
+  searcher = common.searcher' {
+    packages = languagesFn true
+      // shells
+      // exporters
+      // { inherit spellchecker; };
   };
 
-  languages = languagesFn false;
-  languagesSearcher = common.searcher' {
-    packages = languagesFn true;
-  };
   languagesIcons = common.searcherIcons' {
     packages = languagesFn true;
     packageMustBeDerivation = false;

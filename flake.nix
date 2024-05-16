@@ -21,21 +21,13 @@
       in
         rec {
           apps = {
-            languagesSearcher = {
+            searcher = {
               type = "app";
-              program = "${self.packages.${system}.languagesSearcher}";
-            };
-            exportersSearcher = {
-              type = "app";
-              program = "${self.packages.${system}.exportersSearcher}";
-            };
-            shellsSearcher = {
-              type = "app";
-              program = "${self.packages.${system}.shellsSearcher}";
+              program = "${self.packages.${system}.searcher}/bin/searcher";
             };
             nixpkgsStableSearcher = {
               type = "app";
-              program = "${self.packages.${system}.nixpkgsStableSearcher}";
+              program = "${self.packages.${system}.nixpkgsStableSearcher}/bin/searcher";
             };
             notebook = {
               type = "app";
@@ -46,7 +38,7 @@
           packages = rec {
             nixpkgsPath = pkgsStable.writeShellScriptBin "nixpkgsPath.sh" "echo -n ${pkgsStable.path}";
 
-            inherit (codedown) spellchecker nixpkgsStableSearcher shellsSearcher exportersSearcher languagesSearcher languagesIcons;
+            inherit (codedown) spellchecker nixpkgsStableSearcher searcher languagesIcons;
 
             inherit (codedown) languages;
 
