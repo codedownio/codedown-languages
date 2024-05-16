@@ -65,7 +65,7 @@ let
 
       "--ghc-lib" (util.getLibDir ghc)
     ]
-    ++ lib.optionals settings.debug ["--log-level" "debug" "--debug-writes" "--debug-reads"];
+    ++ lib.optionals settings.debug ["--log-level" "debug"];
     env = {};
 
     initialization_options = {
