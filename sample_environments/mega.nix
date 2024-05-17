@@ -127,7 +127,7 @@ codedown.mkCodeDownEnvironment {
       args = {
         packages = ["aeson"];
         settings = {
-          "lsp.haskell-language-server.enable" = false;
+          "lsp.haskell-language-server.enable" = true;
         };
       };
     })
@@ -138,7 +138,7 @@ codedown.mkCodeDownEnvironment {
       args = {
         packages = ["aeson"];
         settings = {
-          "lsp.haskell-language-server.enable" = false;
+          "lsp.haskell-language-server.enable" = true;
         };
       };
     })

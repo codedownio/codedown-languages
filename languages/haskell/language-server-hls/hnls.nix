@@ -25,7 +25,7 @@ let
   # };
 
   ghcVersionToHnls = let
-    version = "0.4.0.0";
+    version = "0.4.2.0";
     prebuilt = ghcName: src: stdenv.mkDerivation {
       pname = "haskell-notebook-language-server-" + ghcName;
       inherit version;
@@ -40,39 +40,39 @@ let
     };
   in
     {
-      # "ghc8107" = prebuilt (fetchzip {
-      #   url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc8107-x86_64-linux.tar.gz";
+      # "ghc810" = prebuilt (fetchzip {
+      #   url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc810-x86_64-linux.tar.gz";
       #   hash = lib.fakeHash;
       # });
-      # "ghc902" = prebuilt (fetchzip {
-      #   url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc902-x86_64-linux.tar.gz";
+      # "ghc90" = prebuilt (fetchzip {
+      #   url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc90-x86_64-linux.tar.gz";
       #   hash = lib.fakeHash;
       # });
-      "ghc928" = prebuilt "ghc928" (fetchzip {
-        url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc928-x86_64-linux.tar.gz";
-        hash = "sha256-KkQZfEn3ZPQOtwCuveQHyhRtRR8tbJ9Q+H/SBildNOI=";
+      "ghc92" = prebuilt "ghc92" (fetchzip {
+        url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc92-x86_64-linux.tar.gz";
+        hash = "sha256-q+4ZieWDxatxO7ei26UjGi8W+jatHiwVZSxqpu4UyAU=";
       });
-      "ghc948" = prebuilt "ghc948" (fetchzip {
-        url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc948-x86_64-linux.tar.gz";
-        hash = "sha256-DUKMuKqwoRb1FkEzr8eEUEjgweFOe1q8ZJJgCIG74EA=";
+      "ghc94" = prebuilt "ghc94" (fetchzip {
+        url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc94-x86_64-linux.tar.gz";
+        hash = "sha256-sPHnQ7tbmI1b6Vl5GSMhOcd7PP+IY18QCZBbSJLNH5E=";
       });
-      "ghc964" = prebuilt "ghc964" (fetchzip {
-        url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc964-x86_64-linux.tar.gz";
-        hash = "sha256-fXcp1JoXFpW4I4YnPL7demmXRCDJ4p/E6qfnBZUs2JE=";
+      "ghc96" = prebuilt "ghc96" (fetchzip {
+        url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc96-x86_64-linux.tar.gz";
+        hash = "sha256-1qnEjaWebho0t9RNXMtXHdO+H602Tb83qIoMHz5DMBs=";
       });
-      "ghc982" = prebuilt "ghc982" (fetchzip {
-        url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc982-x86_64-linux.tar.gz";
-        hash = "sha256-BVnNc/cLUIKMrHNHsWvGPIFT+U1U7pIoPrK3e+e4QEY=";
+      "ghc98" = prebuilt "ghc98" (fetchzip {
+        url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc98-x86_64-linux.tar.gz";
+        hash = "sha256-Cqr3X5zyVuzPZolaJTxlD6J5G0j1uht9SzISPQ6BRxc=";
       });
     };
 
 in
 
 with lib.versions;
-# if majorMinor ghc.version == "8.10" then ghcVersionToHnls.ghc8107
-# else if majorMinor ghc.version == "9.0" then ghcVersionToHnls.ghc902
-if majorMinor ghc.version == "9.2" then ghcVersionToHnls.ghc928
-else if majorMinor ghc.version == "9.4" then ghcVersionToHnls.ghc948
-else if majorMinor ghc.version == "9.6" then ghcVersionToHnls.ghc964
-else if majorMinor ghc.version == "9.8" then ghcVersionToHnls.ghc982
+# if majorMinor ghc.version == "8.10" then ghcVersionToHnls.ghc810
+# else if majorMinor ghc.version == "9.0" then ghcVersionToHnls.ghc90
+if majorMinor ghc.version == "9.2" then ghcVersionToHnls.ghc92
+else if majorMinor ghc.version == "9.4" then ghcVersionToHnls.ghc94
+else if majorMinor ghc.version == "9.6" then ghcVersionToHnls.ghc96
+else if majorMinor ghc.version == "9.8" then ghcVersionToHnls.ghc98
 else throw ("Unsupported GHC version: " + ghc.version)
