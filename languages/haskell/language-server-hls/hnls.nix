@@ -68,7 +68,7 @@ let
 
 in
 
-/nix/store/2ggwlf7zwkccydblb2q7n358513y64g0-haskell-notebook-language-server-exe-haskell-notebook-language-server-x86_64-unknown-linux-musl-0.4.2.0/bin/haskell-notebook-language-server
+/nix/store/2ggwlf7zwkccydblb2q7n358513y64g0-haskell-notebook-language-server-exe-haskell-notebook-language-server-x86_64-unknown-linux-musl-0.4.2.0
 
 # (builtins.getFlake "/home/tom/tools/haskell-notebook-language-server").packages.x86_64-linux.ghc98-static
 
