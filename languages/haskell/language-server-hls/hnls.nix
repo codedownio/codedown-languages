@@ -68,11 +68,13 @@ let
 
 in
 
-with lib.versions;
-# if majorMinor ghc.version == "8.10" then ghcVersionToHnls.ghc810
-# else if majorMinor ghc.version == "9.0" then ghcVersionToHnls.ghc90
-if majorMinor ghc.version == "9.2" then ghcVersionToHnls.ghc92
-else if majorMinor ghc.version == "9.4" then ghcVersionToHnls.ghc94
-else if majorMinor ghc.version == "9.6" then ghcVersionToHnls.ghc96
-else if majorMinor ghc.version == "9.8" then ghcVersionToHnls.ghc98
-else throw ("Unsupported GHC version: " + ghc.version)
+(builtins.getFlake "github:codedownio/haskell-notebook-language-server/1e6e7a49a8adc1d138a80270627469b07b257e62").packages.x86_64-linux.ghc96-static
+
+# with lib.versions;
+# # if majorMinor ghc.version == "8.10" then ghcVersionToHnls.ghc810
+# # else if majorMinor ghc.version == "9.0" then ghcVersionToHnls.ghc90
+# if majorMinor ghc.version == "9.2" then ghcVersionToHnls.ghc92
+# else if majorMinor ghc.version == "9.4" then ghcVersionToHnls.ghc94
+# else if majorMinor ghc.version == "9.6" then ghcVersionToHnls.ghc96
+# else if majorMinor ghc.version == "9.8" then ghcVersionToHnls.ghc98
+# else throw ("Unsupported GHC version: " + ghc.version)
