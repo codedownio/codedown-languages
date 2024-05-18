@@ -68,11 +68,15 @@ let
 
 in
 
-with lib.versions;
-# if majorMinor ghc.version == "8.10" then ghcVersionToHnls.ghc810
-# else if majorMinor ghc.version == "9.0" then ghcVersionToHnls.ghc90
-if majorMinor ghc.version == "9.2" then ghcVersionToHnls.ghc92
-else if majorMinor ghc.version == "9.4" then ghcVersionToHnls.ghc94
-else if majorMinor ghc.version == "9.6" then ghcVersionToHnls.ghc96
-else if majorMinor ghc.version == "9.8" then ghcVersionToHnls.ghc98
-else throw ("Unsupported GHC version: " + ghc.version)
+/nix/store/2ggwlf7zwkccydblb2q7n358513y64g0-haskell-notebook-language-server-exe-haskell-notebook-language-server-x86_64-unknown-linux-musl-0.4.2.0/bin/haskell-notebook-language-server
+
+# (builtins.getFlake "/home/tom/tools/haskell-notebook-language-server").packages.x86_64-linux.ghc98-static
+
+# with lib.versions;
+# # if majorMinor ghc.version == "8.10" then ghcVersionToHnls.ghc810
+# # else if majorMinor ghc.version == "9.0" then ghcVersionToHnls.ghc90
+# if majorMinor ghc.version == "9.2" then ghcVersionToHnls.ghc92
+# else if majorMinor ghc.version == "9.4" then ghcVersionToHnls.ghc94
+# else if majorMinor ghc.version == "9.6" then ghcVersionToHnls.ghc96
+# else if majorMinor ghc.version == "9.8" then ghcVersionToHnls.ghc98
+# else throw ("Unsupported GHC version: " + ghc.version)

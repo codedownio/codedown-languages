@@ -21,14 +21,18 @@ codeActionsTests = describe "Code actions" $ do
     actions `shouldBe` (Just [])
 
   it "gets code actions for foo" $ doNotebookSession lsName codeActionsCode $ \filename -> do
+    info "Got here 1"
     ident <- openDoc filename "haskell"
+    info "Got here 2"
     actions <- timeout 60_000_000 $ getCodeActions ident (Range (Position 0 0) (Position 0 3))
+    info "Got here 3"
     fmap (fmap getTitle) actions `shouldBe` (
       Just ["Unfold foo"
            , "Unfold foo in current file"
            , "Fold foo"
            , "Fold foo in current file"
            ])
+    info "Got here 4"
 
 getTitle :: (HasTitle a Text, HasTitle b Text) => (a |? b) -> Text
 getTitle (InL x) = x ^. title
