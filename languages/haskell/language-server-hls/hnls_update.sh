@@ -1,13 +1,16 @@
-#!/usr/bin/env sh
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p nix-prefetch
 
-VERSION=0.3.2.0
+VERSION=$(nix eval --raw --expr 'import ./hnls-version.nix' --impure)
 
-for ghc in ghc8107 ghc902 ghc928 ghc948 ghc964 ghc982; do
+echo "Got version: $VERSION"
+
+for ghc in ghc810 ghc90 ghc92 ghc94 ghc96 ghc98; do
   URL="https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${VERSION}/haskell-notebook-language-server-${VERSION}-${ghc}-x86_64-linux.tar.gz"
-  HASH=$(nix-prefetch-url "$URL" --unpack 2>/dev/null)
+  HASH=$(nix-prefetch fetchzip --url "$URL" 2>/dev/null)
 
-  echo "      \"$ghc\" = prebuilt (fetchzip {"
-  echo "        url = \"$URL\";"
+  echo "      \"$ghc\" = prebuilt \"$ghc\" (fetchzip {"
+  echo "        url = mkUrl \"$ghc\";"
   echo "        sha256 = \"$HASH\";"
   echo "      });"
 done

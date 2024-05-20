@@ -1,4 +1,5 @@
 { fetchFromGitHub
+, fetchurl
 , fetchzip
 , lib
 , stdenv
@@ -8,24 +9,8 @@
 }:
 
 let
-  # hnlsSrc = fetchFromGitHub {
-  #   owner = "codedownio";
-  #   repo = "haskell-notebook-language-server";
-  #   rev = "66ba3c72badd59aa28bad8a32580808fdab7e8e1";
-  #   sha256 = "sha256-PDYgUllJovVXMLRPZ8ps9MnAgGpEgM7do4+fMPtXqbE=";
-  # };
-
-  # hnlsSrc = /home/tom/tools/haskell-notebook-language-server;
-
-  # hnlsFromSource = snapshot.callPackage hnlsSrc {
-  #   lsp-types = snapshot.callPackage ./lsp-types.nix {};
-  #   myers-diff = snapshot.callPackage ./myers-diff.nix {};
-  #   sandwich = null;
-  #   sandwich-quickcheck = null;
-  # };
-
-  ghcVersionToHnls = let
-    version = "0.5.0.0";
+  githubVersions = let
+    version = import ./hnls-version.nix;
     prebuilt = ghcName: src: stdenv.mkDerivation {
       pname = "haskell-notebook-language-server-" + ghcName;
       inherit version;
@@ -33,46 +18,57 @@ let
       inherit src;
 
       installPhase = ''
-      binary=$(find . -executable -type f | head -n 1)
-      mkdir -p $out/bin
-      cp "$binary" $out/bin/haskell-notebook-language-server
-    '';
+        binary=$(find . -executable -type f | head -n 1)
+        mkdir -p $out/bin
+        cp "$binary" $out/bin/haskell-notebook-language-server
+      '';
     };
+    mkUrl = ghc: "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-${ghc}-x86_64-linux.tar.gz";
   in
     {
-      # "ghc810" = prebuilt (fetchzip {
-      #   url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc810-x86_64-linux.tar.gz";
-      #   hash = lib.fakeHash;
-      # });
-      # "ghc90" = prebuilt (fetchzip {
-      #   url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc90-x86_64-linux.tar.gz";
-      #   hash = lib.fakeHash;
-      # });
+      "ghc810" = prebuilt "ghc810" (fetchzip {
+        url = mkUrl "ghc810";
+        sha256 = "sha256-MZkn7CsQUfOqz0Zs4j5Kz3fBnTvDVKnL5WDjjSfuZLQ=";
+      });
+      "ghc90" = prebuilt "ghc90" (fetchzip {
+        url = mkUrl "ghc90";
+        sha256 = "sha256-YPUKNpdMtTuPthjWO/rbX880XqyvyaD++9Iy1j0L6gg=";
+      });
       "ghc92" = prebuilt "ghc92" (fetchzip {
-        url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc92-x86_64-linux.tar.gz";
-        hash = "sha256-BiTTbVNfh1SS9wzXoy1Z7emWccyDyOHgwOiUzdWJT7A=";
+        url = mkUrl "ghc92";
+        sha256 = "sha256-A8jGJ+0uE0Y4plAWsuexANZvvEF6IqqjWEeIR14EcAE=";
       });
       "ghc94" = prebuilt "ghc94" (fetchzip {
-        url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc94-x86_64-linux.tar.gz";
-        hash = "sha256-KIidA7UibdTkr0HA2bM8PMZe7JlK1PEC78B0ebbmJt0=";
+        url = mkUrl "ghc94";
+        sha256 = "sha256-mVjZoPy/v6UbcbGgh5DH3N7F8ZdzL1EwmC8sqT6fPbA=";
       });
       "ghc96" = prebuilt "ghc96" (fetchzip {
-        url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc96-x86_64-linux.tar.gz";
-        hash = "sha256-p2pE9enilg9+w6A2jhGmq90GZ10Ja42uex0uKGDQ/2E=";
+        url = mkUrl "ghc96";
+        sha256 = "sha256-WJRfnCQHWjjqZk54Awws881m7Zozw5L4irIukdE+z/M=";
       });
       "ghc98" = prebuilt "ghc98" (fetchzip {
-        url = "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-ghc98-x86_64-linux.tar.gz";
-        hash = "sha256-vEjoS7B9XNWNAbUprd2WZhovTDL3W5sBTiPHKfcbx3o=";
+        url = mkUrl "ghc98";
+        sha256 = "sha256-gkxQG6xcitPP9s0Fdz2aA8qYIoyGVl6Wp+lBIuxZz7k=";
       });
     };
+  versions = githubVersions;
+
+  # localFlakeVersions = let
+  #   flakePackages = (builtins.getFlake "/home/tom/tools/haskell-notebook-language-server").packages.x86_64-linux;
+  #   in {
+  #     ghc8107 = flakePackages.ghc8107-static;
+  #     ghc90 = flakePackages.ghc90-static;
+  #     ghc92 = flakePackages.ghc92-static;
+  #     ghc94 = flakePackages.ghc94-static;
+  #     ghc96 = flakePackages.ghc96-static;
+  #     ghc98 = flakePackages.ghc98-static;
+  #   };
+  # versions = localFlakeVersions;
+
+  desiredVersion = "ghc" + (builtins.replaceStrings ["."] [""] (lib.versions.majorMinor ghc.version));
 
 in
 
-with lib.versions;
-# if majorMinor ghc.version == "8.10" then ghcVersionToHnls.ghc810
-# else if majorMinor ghc.version == "9.0" then ghcVersionToHnls.ghc90
-if majorMinor ghc.version == "9.2" then ghcVersionToHnls.ghc92
-else if majorMinor ghc.version == "9.4" then ghcVersionToHnls.ghc94
-else if majorMinor ghc.version == "9.6" then ghcVersionToHnls.ghc96
-else if majorMinor ghc.version == "9.8" then ghcVersionToHnls.ghc98
+if builtins.hasAttr desiredVersion versions
+then builtins.getAttr desiredVersion versions
 else throw ("Unsupported GHC version: " + ghc.version)
