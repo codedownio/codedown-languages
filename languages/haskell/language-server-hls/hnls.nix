@@ -26,6 +26,7 @@ let
     mkUrl = ghc: "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-${ghc}-x86_64-linux.tar.gz";
   in
     {
+      # HASHES_START
       "ghc810" = prebuilt "ghc810" (fetchzip {
         url = mkUrl "ghc810";
         sha256 = "sha256-MZkn7CsQUfOqz0Zs4j5Kz3fBnTvDVKnL5WDjjSfuZLQ=";
@@ -50,6 +51,7 @@ let
         url = mkUrl "ghc98";
         sha256 = "sha256-gkxQG6xcitPP9s0Fdz2aA8qYIoyGVl6Wp+lBIuxZz7k=";
       });
+      # HASHES_END
     };
   versions = githubVersions;
 
