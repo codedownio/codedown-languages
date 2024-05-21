@@ -62,7 +62,10 @@ rec {
     nbconvert-large = callPackage ./exporters/nbconvert.nix { size = "large"; };
   };
 
-  searcher = common.searcher' {
+  # Exported so clients can build searchers for other package sets, like "codedown.searcher nixpkgs"
+  searcher = common.searcher;
+
+  codedownSearcher = common.searcher' {
     packages = languagesFn true
       // shells
       // exporters
