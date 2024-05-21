@@ -67,8 +67,8 @@ rec {
 
   codedownSearcher = common.searcher' {
     packages = languagesFn true
-      // shells
-      // exporters
+      // (lib.mapAttrs' (n: v: lib.nameValuePair ("shells." + n) v) shells)
+      // (lib.mapAttrs' (n: v: lib.nameValuePair ("exporters." + n) v) exporters)
       // { inherit spellchecker; };
   };
 
