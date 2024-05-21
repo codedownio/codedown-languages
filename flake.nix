@@ -38,7 +38,7 @@
           packages = rec {
             nixpkgsPath = pkgsStable.writeShellScriptBin "nixpkgsPath.sh" "echo -n ${pkgsStable.path}";
 
-            inherit (codedown) spellchecker nixpkgsStableSearcher searcher languagesIcons;
+            inherit (codedown) spellchecker nixpkgsStableSearcher codedownSearcher languagesIcons;
 
             inherit (codedown) languages;
 
