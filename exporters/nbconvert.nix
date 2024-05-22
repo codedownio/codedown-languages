@@ -48,6 +48,9 @@ symlinkJoin {
 
     icon = ../codedown-icon.png;
 
+    # To separate these out in search results
+    category = "Exporters";
+
     exporterInfos = map (x: {
       name = x.name;
       display_name = x.display_name;

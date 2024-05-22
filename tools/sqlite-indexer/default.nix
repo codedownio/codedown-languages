@@ -44,12 +44,13 @@ in
 rec {
   index = runCommand "search-index.db" { buildInputs = [nodejs sqlite]; inherit json; } ''
     echo | sqlite3 $out <<- EOF
-    CREATE VIRTUAL TABLE main using fts5(attr, name, version, meta UNINDEXED);
+    CREATE VIRTUAL TABLE main using fts5(attr, name, version, category, meta UNINDEXED);
 
     INSERT INTO main SELECT
       json_extract(value, '$.attr'),
       json_extract(value, '$.name'),
       json_extract(value, '$.version'),
+      json_extract(value, '$.meta.category'),
       json_extract(value, '$.meta')
     FROM json_each(readfile('${json}'));
 
@@ -104,9 +105,11 @@ rec {
           name,
           name = '$query' as name_matches,
           meta,
-          rank \
+          rank,
+          category \
         FROM main $filterClause \
         ORDER BY \
+          category ASC, \
           attr_matches DESC, \
           name_matches DESC, \
           bm25(main, 100.0, 1.0, 1.0, 1.0, 1.0) ASC, \

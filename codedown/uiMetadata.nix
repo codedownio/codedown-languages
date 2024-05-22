@@ -7,6 +7,7 @@ rec {
     lib.filterAttrs (n: v:
       n == "description"
       || n == "icon"
+      || n == "category"
 
       || n == "homepage"
       || n == "changelog"

@@ -30,6 +30,9 @@ rec {
 
     meta = baseDerivation.meta // {
       inherit icon displayName;
+
+      # To separate these out in search results
+      category = "Shells";
     };
 
     inherit icon displayName attr;

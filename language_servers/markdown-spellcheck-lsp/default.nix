@@ -63,6 +63,7 @@ let
 
   meta = hunspell.meta // {
     icon = ./pen-alt.png;
+    category = "Language servers";
   };
 
 in
