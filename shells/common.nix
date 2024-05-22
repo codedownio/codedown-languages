@@ -28,7 +28,9 @@ rec {
 
     dontInstall = true;
 
-    meta = baseDerivation.meta;
+    meta = baseDerivation.meta // {
+      inherit icon displayName;
+    };
 
     inherit icon displayName attr;
   };
