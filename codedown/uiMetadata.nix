@@ -16,7 +16,6 @@ rec {
       || (n == "unfree" && v)
       || (n == "unsupported" && v)
       || (n == "insecure" && v)
-      || (n == "lessCommon" && v)
 
       || (n == "maintainers")
     )
@@ -27,6 +26,8 @@ rec {
     download_page = contents.meta.downloadPage;
   }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "displayName"] contents) {
     display_name = contents.meta.displayName;
+  }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "lessCommon"] contents) {
+    less_common = contents.meta.lessCommon;
   }) // (lib.optionalAttrs (contents ? "settingsSchema") {
     settings_schema = contents.settingsSchema;
   }) // (lib.optionalAttrs (contents ? "modes") {
