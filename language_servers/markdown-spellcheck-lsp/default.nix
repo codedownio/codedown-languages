@@ -61,9 +61,13 @@ let
       --add-flags ${indexJs}
   '';
 
+  meta = hunspell.meta // {
+    icon = ./pen-alt.png;
+  };
+
 in
 
-common.writeTextDirWithMeta hunspell.meta "lib/codedown/language-servers/codedown-spellchecker.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMeta meta "lib/codedown/language-servers/codedown-spellchecker.yaml" (lib.generators.toYAML {} [{
   name = "spellchecker";
   version = "1.1.0";
   extensions = ["md" "ipynb"];
