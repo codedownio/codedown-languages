@@ -58,8 +58,8 @@ rec {
   };
 
   exporters = {
-    nbconvert-small = callPackage ./exporters/nbconvert.nix { size = "small"; };
-    nbconvert-large = callPackage ./exporters/nbconvert.nix { size = "large"; };
+    nbconvert-small = pkgsMaster.callPackage ./exporters/nbconvert.nix { size = "small"; };
+    nbconvert-large = pkgsMaster.callPackage ./exporters/nbconvert.nix { size = "large"; };
   };
 
   # Exported so clients can build searchers for other package sets, like "codedown.searcher nixpkgs"
