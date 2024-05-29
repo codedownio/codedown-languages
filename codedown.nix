@@ -62,10 +62,15 @@ rec {
     nbconvert-large = pkgsMaster.callPackage ./exporters/nbconvert.nix { size = "large"; };
   };
 
+  testing = {
+    builds-forever = pkgsMaster.callPackage ./misc/builds-forever.nix {};
+  };
+
   # Exported so clients can build searchers for other package sets, like "codedown.searcher nixpkgs"
   searcher = common.searcher;
 
   codedownSearcher = common.searcher' {
+    # Note that we deliberately don't include "testing" packages in the searcher
     packages = languagesFn true
       // (lib.mapAttrs' (n: v: lib.nameValuePair ("shells." + n) v) shells)
       // (lib.mapAttrs' (n: v: lib.nameValuePair ("exporters." + n) v) exporters)
