@@ -75,10 +75,10 @@ rec {
       fi
     }
 
-    while true; do
-      read page_size
-      read page
-      read query
+    function do_search() {
+      page_size="$1"
+      page="$2"
+      query="$3"
 
       filterClause=""
       if [[ -n "$query" ]]; then
@@ -123,7 +123,23 @@ rec {
       echo -n "$result"
 
       echo ""
-    done
+    }
+
+    if [[ "$1" == "--oneshot" ]]; then
+      page_size="$2"
+      page="$3"
+      query="$4"
+
+      do_search "$page_size" "$page" "$query"
+    else
+      while true; do
+        read page_size
+        read page
+        read query
+
+        do_search "$page_size" "$page" "$query"
+      done
+    fi
   '';
 
   searcher = stdenv.mkDerivation {
