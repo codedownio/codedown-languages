@@ -7,7 +7,11 @@
 }:
 
 let
-  nbconvert = python3.pkgs.nbconvert;
+  nbconvert = python3.pkgs.nbconvert.overrideAttrs (oldAttrs: {
+    patches = oldAttrs.patches ++ [
+      ./fix-asciidoc.patch
+    ];
+  });
 
   common = callPackage ../languages/common.nix {};
 
