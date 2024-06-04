@@ -5,7 +5,8 @@ rec {
     version = contents.version;
   }) // (lib.optionalAttrs (contents ? "meta") (
     lib.filterAttrs (n: v:
-      n == "description"
+      n == "name"
+      || n == "description"
       || n == "icon"
       || n == "category"
 
