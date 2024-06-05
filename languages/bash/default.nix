@@ -29,6 +29,12 @@ let
       type = "boolean";
       defaultValue = true;
     }
+    {
+      target = "test-setting.enable";
+      title = "A dummy setting for testing metadata";
+      type = "boolean";
+      defaultValue = true;
+    }
   ];
 
 in
