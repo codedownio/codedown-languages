@@ -64,12 +64,11 @@ let
   meta = hunspell.meta // {
     icon = ./pen-alt.png;
     category = "Language servers";
-    languageServerNames = ["spellchecker"];
   };
 
 in
 
-common.writeTextDirWithMeta meta "lib/codedown/language-servers/codedown-spellchecker.yaml" (lib.generators.toYAML {} [{
+(common.writeTextDirWithMeta meta "lib/codedown/language-servers/codedown-spellchecker.yaml" (lib.generators.toYAML {} [{
   name = "spellchecker";
   version = "1.1.0";
   extensions = ["md" "ipynb"];
@@ -85,4 +84,8 @@ common.writeTextDirWithMeta meta "lib/codedown/language-servers/codedown-spellch
     # "--log-level" "4"
     "--stdio"
   ];
-}])
+}])).overrideAttrs (old: {
+  passthru = {
+    languageServerNames = ["spellchecker"];
+  };
+})
