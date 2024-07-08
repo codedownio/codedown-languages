@@ -1,3 +1,0 @@
-[submodule "languages/postgres/postgres_kernel"]
-	path = languages/postgres/postgres_kernel
-	url = git@github.com:codedownio/postgres_kernel.git
