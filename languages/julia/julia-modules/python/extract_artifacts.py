@@ -71,7 +71,6 @@ def get_archive_derivation(uuid, artifact_name, url, sha256):
               patchelf --set-rpath \$ORIGIN:\$ORIGIN/../lib:${{lib.makeLibraryPath (["$out" glibc] ++ libs ++ (with pkgs; [{" ".join(other_libs)}]))}} {{}} \;
             find $out -type f -executable -exec \
               patchelf --set-interpreter ${{glibc}}/lib/ld-linux-x86-64.so.2 {{}} \;
-            rm -f $out/env-vars
           ''"""
 
   return f"""stdenv.mkDerivation {{
@@ -80,6 +79,10 @@ def get_archive_derivation(uuid, artifact_name, url, sha256):
           url = "{url}";
           sha256 = "{sha256}";
         }};
+        preUnpack = ''
+          mkdir unpacked
+          cd unpacked
+        '';
         sourceRoot = ".";
         dontConfigure = true;
         dontBuild = true;
