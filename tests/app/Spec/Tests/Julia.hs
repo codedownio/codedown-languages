@@ -25,8 +25,9 @@ import TestLib.Util
 tests :: LanguageSpec
 tests = do
   juliaTests "julia16"
-  juliaTests "julia18"
+  -- juliaTests "julia18"
   juliaTests "julia19"
+  juliaTests "julia110"
 
 juliaTests :: Text -> LanguageSpec
 juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kernelSpec lang] [] [i|Julia (#{lang})|] $ introduceJupyterRunner $ do

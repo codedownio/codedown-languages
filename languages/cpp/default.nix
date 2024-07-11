@@ -4,6 +4,7 @@
 , symlinkJoin
 , cling
 , clang
+, xeus-cling
 }:
 
 let
@@ -51,69 +52,64 @@ in
 
 with lib;
 
-if cling == null then {} else
-  listToAttrs (map (x:
-    let
-      std = getAttr x stds;
+listToAttrs (map (x:
+  let
+    std = getAttr x stds;
 
-      displayName = "C++";
+    displayName = "C++";
 
-      meta = clang.meta // {
-        baseName = x;
-        inherit displayName;
-        version = clang.version;
-        icon = getAttr x icons;
-        inherit settingsSchema;
-      };
+    meta = clang.meta // {
+      baseName = x;
+      inherit displayName;
+      version = clang.version;
+      icon = getAttr x icons;
+      inherit settingsSchema;
+    };
 
-      cling = callPackage ./cling {};
+    packageOptions = {};
+    packageSearch = common.searcher packageOptions;
+    versions = {
+      clang = clang.version;
+      cling = cling.unwrapped.version;
+      xeus-cling = xeus-cling.version;
+      std = std;
+    };
 
-      xeus-cling = callPackage ./xeus-cling/xeus-cling.nix { inherit cling; };
+  in {
+    name = x;
+    value = lib.makeOverridable ({
+      packages ? []
+      , settings ? {}
+      , attrs ? [x "cpp"]
+      , extensions ? ["cpp" "hpp" "cxx" "hxx" "c" "h"]
+    }@args:
+      let
+        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
+      in symlinkJoin {
+        name = x;
+        paths = [
+          ((callPackage ./kernel_xeus.nix {
+            inherit cling xeus-cling;
+            inherit attrs displayName extensions std;
+            attrName = x;
+          }))
+          cling
+        ]
+        ;
 
-      packageOptions = {};
-      packageSearch = common.searcher packageOptions;
-      versions = {
-        clang = clang.version;
-        cling = cling.unwrapped.version;
-        xeus-cling = xeus-cling.version;
-        std = std;
-      };
-
-    in {
-      name = x;
-      value = lib.makeOverridable ({
-        packages ? []
-        , settings ? {}
-        , attrs ? [x "cpp"]
-        , extensions ? ["cpp" "hpp" "cxx" "hxx" "c" "h"]
-      }@args:
-        let
-          settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
-        in symlinkJoin {
-          name = x;
-          paths = [
-            ((callPackage ./kernel_xeus.nix {
-              inherit cling xeus-cling;
-              inherit attrs displayName extensions std;
-              attrName = x;
-            }))
-            cling
-          ]
-          ;
-
-          passthru = {
-            inherit meta packageOptions packageSearch versions;
-            inherit settings settingsSchema;
-            args = args // { baseName = x; };
-            repls = repls (getAttr x icons);
-            modes = {
-              inherit attrs extensions;
-              code_mirror_mode = "clike";
-              code_mirror_mime_type = "text/x-c++src";
-            };
-            languageServerNames = [];
+        passthru = {
+          inherit meta packageOptions packageSearch versions;
+          inherit settings settingsSchema;
+          args = args // { baseName = x; };
+          repls = repls (getAttr x icons);
+          modes = {
+            inherit attrs extensions;
+            code_mirror_mode = "clike";
+            code_mirror_mime_type = "text/x-c++src";
           };
-        }
-      ) {};
-    }
-  ) baseCandidates)
+          languageServerNames = [];
+        };
+      }
+    ) {};
+  }
+) baseCandidates)

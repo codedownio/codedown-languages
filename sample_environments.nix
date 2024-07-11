@@ -14,8 +14,8 @@ args: {
   ghc96 = import ./sample_environments/ghc96.nix args;
   ghc98 = import ./sample_environments/ghc98.nix args;
   go = import ./sample_environments/go.nix args;
+  julia110 = import ./sample_environments/julia110.nix args;
   julia16 = import ./sample_environments/julia16.nix args;
-  julia18 = import ./sample_environments/julia18.nix args;
   julia19 = import ./sample_environments/julia19.nix args;
   mega = import ./sample_environments/mega.nix args;
   octave = import ./sample_environments/octave.nix args;

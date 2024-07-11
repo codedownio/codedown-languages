@@ -10,9 +10,7 @@
 let
   common = callPackage ../common.nix {};
 
-  python = python3.withPackages (ps: [
-    (ps.bash_kernel.override { bash = bashInteractive; })
-  ]);
+  python = python3.withPackages (ps: [ps.bash_kernel]);
 
 in
 

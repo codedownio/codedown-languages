@@ -1,7 +1,7 @@
 {
   description = "CodeDown languages";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
   inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   inputs.nixpkgs-master.url = "github:NixOS/nixpkgs/master";
 

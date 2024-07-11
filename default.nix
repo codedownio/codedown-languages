@@ -8,22 +8,22 @@ let
   pkgsStable = import (fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
-    rev = "c6149db25c6ca2d606c5f2425a08f458e7f0123b"; # nixpkgs-rev
-    sha256 = "sha256-AYZLTctK+w2Xh/BXl5fm7DOecq7rnsfL+UAWbI0VXyw="; # nixpkgs-sha256
+    rev = "de429c2a20520e0f81a1fd9d2677686a68cae739"; # nixpkgs-rev
+    hash = "sha256-D2YTs7K33zAzoQdAcVzePgDn6bdIEexGgHluoB07+Yw="; # nixpkgs-sha256
   }) { inherit overlays; };
 
   pkgsUnstable = import (fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
-    rev = "d03a4482228d4d6dbd2d4b425b6dfcd49ebe765f"; # nixpkgs-unstable-rev
-    sha256 = "sha256-FBVpEX0eLiqX3jnSL3rmJHqHhbuCikJZyDyV3Cl3qAY="; # nixpkgs-unstable-sha256
+    rev = "ab82a9612aa45284d4adf69ee81871a389669a9e"; # nixpkgs-unstable-rev
+    hash = "sha256-5r0pInVo5d6Enti0YwUSQK4TebITypB42bWy5su3MrQ="; # nixpkgs-unstable-sha256
   }) { inherit overlays; };
 
   pkgsMaster = import (fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
-    rev = "a9f70e6bba466a6db6f0e5689608bf76c1e126c2"; # nixpkgs-master-rev
-    sha256 = "sha256-y6v4t6UZMjwbDU5QMgHQEkb5jAFu1V0KUHVoeSSXUik="; # nixpkgs-master-sha256
+    rev = "05bbf675397d5366259409139039af8077d695ce"; # nixpkgs-master-rev
+    hash = "sha256-IE7PZn9bSjxI4/MugjAEx49oPoxu0uKXdfC+X7HcRuQ="; # nixpkgs-master-sha256
   }) { inherit overlays; };
 
 in

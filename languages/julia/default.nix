@@ -2,6 +2,7 @@
 , julia_16-bin
 , julia_18
 , julia_19
+, julia_110
 , python3
 , callPackage
 , fetchFromGitHub
@@ -81,13 +82,16 @@ let
   };
 
   baseCandidates = rec {
-    julia = julia18;
+    julia = julia110;
 
     julia16 = juliaWithPackages.override { inherit packageOverrides; julia = julia_16-bin; };
 
-    julia18 = juliaWithPackages.override { inherit packageOverrides; julia = julia_18; };
+    # Removed as EOL in release 24.05
+    # julia18 = juliaWithPackages.override { inherit packageOverrides; julia = julia_18; };
 
     julia19 = juliaWithPackages.override { inherit packageOverrides; julia = julia_19; };
+
+    julia110 = juliaWithPackages.override { inherit packageOverrides; julia = julia_110; };
   };
 
   packageSet = lib.listToAttrs (map (x: {

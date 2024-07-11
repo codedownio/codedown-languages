@@ -25,5 +25,5 @@ for input in nixpkgs nixpkgs-unstable nixpkgs-master; do
     echo "Got ${input} rev: $rev"
     echo "Got ${input} hash: $hash"
     sed -i "s/rev = \".*\"; # ${input}-rev/rev = \"$rev\"; # ${input}-rev/g" ./default.nix
-    sed -i "s/sha256 = \".*\"; # ${input}-sha256/sha256 = \"$hash\"; # ${input}-sha256/g" ./default.nix
+    sed -i "s/hash = \".*\"; # ${input}-sha256/hash = \"$hash\"; # ${input}-sha256/g" ./default.nix
 done

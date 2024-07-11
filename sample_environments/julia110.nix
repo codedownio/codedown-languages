@@ -5,12 +5,12 @@
 
 
 codedown.mkCodeDownEnvironment {
-  environmentName = "julia18";
+  environmentName = "julia110";
   inherit channels;
 
   kernels = [
     ({
-      name = "julia18";
+      name = "julia110";
       channel = "codedown";
       args = {
         packages = ["JSON3" "Plots"];

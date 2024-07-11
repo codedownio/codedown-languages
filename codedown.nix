@@ -36,7 +36,7 @@ let
       };
     })
     (callPackage ./languages/r {})
-    (callPackage ./languages/ruby {})
+    (pkgsMaster.callPackage ./languages/ruby {})
     (pkgsMaster.callPackage ./languages/rust {})
   ];
 

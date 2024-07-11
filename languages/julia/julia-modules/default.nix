@@ -169,6 +169,7 @@ runCommand "julia-${julia.version}-env" {
 
   inherit julia;
   inherit juliaWrapped;
+  version = julia.version;
   meta = julia.meta;
 
   # Expose the steps we used along the way in case the user wants to use them, for example to build
