@@ -12,8 +12,7 @@
 , node2nix
 , nodePackages
 , nodehun
-, nodejs-18_x
-, nodejs-slim-18_x
+, nodejs-slim
 
 , python3
 , unixtools
@@ -24,7 +23,7 @@ with lib.lists;
 let
   common = callPackage ../../languages/common.nix {};
 
-  nodejs = nodejs-slim-18_x;
+  nodejs = nodejs-slim;
 
   nodeHeaders = runCommand "node-${nodejs.version}-headers.tar.gz" { buildInputs = []; } ''
     dir="node-v${nodejs.version}"
