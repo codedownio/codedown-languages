@@ -51,8 +51,8 @@ tests' kernelName = describe [i|Python (#{kernelName})|] $ introduceNixEnvironme
                                                    f("asdf", 42)
                                                   |] $ \diagnostics -> do
     assertDiagnosticRanges' diagnostics [
-      (Range (Position 3 2) (Position 3 8), Just (InR "reportGeneralTypeIssues"), "Argument of type \"Literal['asdf']\" cannot be assigned to parameter \"x\" of type \"int\" in function \"f\"\n\160\160\"Literal['asdf']\" is incompatible with \"int\"")
-      , (Range (Position 3 10) (Position 3 12), Just (InR "reportGeneralTypeIssues"), "Argument of type \"Literal[42]\" cannot be assigned to parameter \"y\" of type \"str\" in function \"f\"\n\160\160\"Literal[42]\" is incompatible with \"str\"")
+      (Range (Position 3 2) (Position 3 8), Just (InR "reportArgumentType"), "Argument of type \"Literal['asdf']\" cannot be assigned to parameter \"x\" of type \"int\" in function \"f\"\n\160\160\"Literal['asdf']\" is incompatible with \"int\"")
+      , (Range (Position 3 10) (Position 3 12), Just (InR "reportArgumentType"), "Argument of type \"Literal[42]\" cannot be assigned to parameter \"y\" of type \"str\" in function \"f\"\n\160\160\"Literal[42]\" is incompatible with \"str\"")
 
       , (Range (Position 1 6) (Position 1 7), Nothing, "\"x\" is not accessed")
       , (Range (Position 1 14) (Position 1 15), Nothing, "\"y\" is not accessed")

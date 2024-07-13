@@ -25,7 +25,7 @@ import TestLib.Util
 tests :: LanguageSpec
 tests = do
   juliaTests "julia16"
-  -- juliaTests "julia18"
+  -- juliaTests "julia18" -- EOL
   juliaTests "julia19"
   juliaTests "julia110"
 
@@ -37,7 +37,7 @@ juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kerne
   testKernelStdout lang [i|println("hi")|] "hi\n"
 
   describe "LSP" $ do
-    diagnosticsTests lsName
+    diagnosticsTests lang lsName
 
     itHasHoverSatisfying lsName "test.jl" Nothing [__i|print("hi")|] (Position 0 2) $ \hover -> do
       let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents

@@ -4,11 +4,20 @@
 , symlinkJoin
 , cling
 , clang
+, llvmPackages_13
 , xeus-cling
 }:
 
 let
   common = callPackage ../common.nix {};
+
+  # Fix for https://github.com/NixOS/nixpkgs/issues/306782
+  clingToUse = cling.override {
+    llvmPackages_13 = llvmPackages_13.override { enableSharedLibraries = false; };
+  };
+  xeusClingToUse = xeus-cling.override {
+    cling = clingToUse;
+  };
 
   baseCandidates = [
     # "cpp98"
@@ -41,9 +50,9 @@ let
 
   repls = icon: {
     cling = {
-      display_name = "Cling " + cling.unwrapped.version;
+      display_name = "Cling " + clingToUse.unwrapped.version;
       attr = "cling";
-      args = ["${cling}/bin/cling"];
+      args = ["${clingToUse}/bin/cling"];
       icon = icon;
     };
   };
@@ -89,7 +98,8 @@ listToAttrs (map (x:
         name = x;
         paths = [
           ((callPackage ./kernel_xeus.nix {
-            inherit cling xeus-cling;
+            cling = clingToUse;
+            xeus-cling = xeusClingToUse;
             inherit attrs displayName extensions std;
             attrName = x;
           }))

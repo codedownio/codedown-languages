@@ -224,14 +224,16 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
   handleFn $ runSessionWithConfigCustomProcess modifyCp sessionConfig cp caps homeDir (session homeDir)
 
 assertDiagnosticRanges :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
-assertDiagnosticRanges diagnostics desired = ranges `shouldBe` desired
-  where
-    ranges = fmap (\x -> (x ^. range, x ^. code)) diagnostics
+assertDiagnosticRanges diagnostics desired = (getDiagnosticRanges diagnostics) `shouldBe` desired
+
+getDiagnosticRanges :: [Diagnostic] -> [(Range, Maybe (Int32 |? Text))]
+getDiagnosticRanges = fmap (\x -> (x ^. range, x ^. code))
 
 assertDiagnosticRanges' :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)] -> m ()
-assertDiagnosticRanges' diagnostics desired = ranges `shouldBe` desired
-  where
-    ranges = fmap (\x -> (x ^. range, x ^. code, x ^. LSP.message)) diagnostics
+assertDiagnosticRanges' diagnostics desired = (getDiagnosticRanges' diagnostics) `shouldBe` desired
+
+getDiagnosticRanges' :: [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)]
+getDiagnosticRanges' = fmap (\x -> (x ^. range, x ^. code, x ^. LSP.message))
 
 -- hoverShouldSatisfy :: MonadThrow m => Position -> (Maybe Hover -> ExampleT ctx m ()) -> ExampleT ctx m ()
 -- hoverShouldSatisfy pos pred = getHover (TextDocumentIdentifier (Uri undefined)) pos >>= pred
