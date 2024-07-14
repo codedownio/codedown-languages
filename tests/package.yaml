@@ -85,3 +85,4 @@ executables:
     - row-types
     - tests
     - unliftio
+    - unliftio-core
