@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
   inputs.nixpkgsUnstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -10,7 +10,7 @@
       let
         pkgs = import nixpkgs { inherit system; };
         pkgsUnstable = import nixpkgsUnstable { inherit system; };
-        tests = pkgs.haskell.packages.ghc928.callPackage ./tests.nix {};
+        tests = pkgs.haskell.packages.ghc965.callPackage ./tests.nix {};
       in
         rec {
           packages = rec {
