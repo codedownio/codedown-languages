@@ -55,7 +55,6 @@ in
 symlinkJoin {
   name = environmentName;
   paths = builtKernels
-          ++ [((callPackage ./spec_yaml.nix {}) (args //  { inherit shells exporters; kernels = builtKernels; }))]
           ++ [(shellsCommon.wrapShells shells)]
           ++ (map (x: x.contents) otherPackages)
           ++ requiredPackages
