@@ -90,6 +90,10 @@ rec {
     inherit requiredPackages languages;
   };
 
+  makeEnvironment = callPackage ./codedown/makeEnvironment.nix {
+    inherit mkCodeDownEnvironment;
+  };
+
   validateCodeDownEnvironment = callPackage ./codedown/validateCodeDownEnvironment.nix {};
 
   # Exposed so it's easier to compute build dependencies in the presence of IFD

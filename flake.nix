@@ -71,6 +71,41 @@
                                             sample_environments
             );
 
+            new_style_env = codedown.makeEnvironment {
+              channels = {
+                nixpkgs = pkgsStable.fetchFromGitHub {
+                  owner = "NixOS";
+                  repo = "nixpkgs";
+                  rev = "7144d6241f02d171d25fba3edeaf15e0f2592105";
+                  hash = "sha256-gvFhEf5nszouwLAkT9nWsDzocUTqLWHuL++dvNjMp9I=";
+                };
+              };
+
+              packages = {
+                "codedown.kernels.python3" = {
+                  packages = ["matplotlib"];
+                  settings = {
+                    enableVariableInspector = true;
+                    "lsp.flake8.enable" = false;
+                    "lsp.jedi.enable" = true;
+                    "lsp.microsoft.enable" = false;
+                    "lsp.pycodestyle.enable" = false;
+                    "lsp.pylint.enable" = false;
+                    "lsp.pyright.enable" = false;
+                    "lsp.python-language-server.enable" = false;
+                    "lsp.python-lsp-server.enable" = false;
+                    permitUserSite = false;
+                  };
+                };
+
+                "codedown.kernels.bash" = {
+                  packages = [];
+                };
+
+                "nixpkgs.htop" = {};
+              };
+            };
+
             compilers = pkgsStable.callPackage ./languages/haskell/compilers.nix {
               ihaskell-source = pkgsStable.fetchFromGitHub {
                 owner = "codedownio";
