@@ -32,11 +32,6 @@ let
   runCommand = bootstrapNixpkgs.runCommand;
   lib = bootstrapNixpkgs.lib;
 
-  channelSpecToChannel = name: channel:
-    if (channel.tag == "fetch_from_github") then fetchFromGitHub ((removeAttrs channel ["tag" "name"]))
-    else if (channel.tag == "fetch_git") then fetchgit (removeAttrs channel ["tag" "name"])
-    else if (channel.tag == "path") then channel.path else null;
-
   channels = rec {
 #{T.intercalate "\n\n" [indentTo 4 $ renderChannel x | x <- nixEnvironmentChannels]}
   };
