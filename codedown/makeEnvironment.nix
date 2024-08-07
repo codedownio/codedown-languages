@@ -1,4 +1,5 @@
 { callPackage
+, lib
 , fetchgit
 , fetchFromGitHub
 
@@ -11,6 +12,8 @@
   , packages ? {}
 }:
 
+with lib;
+
 let
   importedOverlays = [];
 
@@ -20,9 +23,25 @@ let
     else imported
   ) channels;
 
-  kernels = [];
+  kernels = let
+    kernelPackages = filterAttrs (k: _: hasPrefix "codedown.kernels." k) packages;
+    in
+      mapAttrsToList (n: v: {
+        name = builtins.substring (builtins.stringLength "codedown.kernels.") (builtins.stringLength n) n;
+        channel = "codedown";
+        args = v;
+      }) kernelPackages;
 
-  otherPackages = [];
+  getByChannelAndPackageName = k: v: null;
+
+  otherPackages = let
+    byChannelAndPackageName = filterAttrs (n: v: v != null) (mapAttrs (k: v: getByChannelAndPackageName k v) packages);
+    in
+      mapAttrsToList (n: v: {
+        channel = v.channel;
+        attr = v.attr;
+        contents = getAttr v.attr importedChannels.${v.channel};
+      }) byChannelAndPackageName;
 
 in
 
