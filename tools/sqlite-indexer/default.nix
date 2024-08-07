@@ -1,5 +1,6 @@
 { callPackage
 , fetchFromGitHub
+, gnused
 , lib
 , linkFarm
 , nodejs
@@ -87,7 +88,7 @@ rec {
           # Escape any double quotes in the query SQL-style, then surround the whole thing in double
           # quotes to form an FTS string followed by star; see
           # https://www.sqlite.org/fts5.html#full_text_query_syntax
-          escaped=$(echo "$word" | sed -E 's/"/""/g')
+          escaped=$(echo "$word" | ${gnused}/bin/sed -E 's/"/""/g')
           words+=("\"$escaped\"*")
         done
 
