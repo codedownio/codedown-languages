@@ -3,20 +3,12 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "bash";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "bash";
-      channel = "codedown";
-      args = {
-        packages = [];
-      };
-    })
-  ];
-
-  otherPackages = [];
+  packages = {
+    "codedown.kernels.bash" = {
+      packages = {};
+    };
+  };
 }

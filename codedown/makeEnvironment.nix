@@ -36,6 +36,9 @@ let
         attr = concatStringsSep "." (tail parts);
       };
 
+  repackPackages = packages: if builtins.isList packages then packages else
+    mapAttrsToList (n: v: { name = n; settings = v; }) packages;
+
 in
 
 mkCodeDownEnvironment {
@@ -45,7 +48,7 @@ mkCodeDownEnvironment {
   kernels = mapAttrsToList (n: v: {
     name = builtins.substring (builtins.stringLength "codedown.kernels.") (builtins.stringLength n) n;
     channel = "codedown";
-    args = v;
+    args = if hasAttr "packages" v then v // { packages = repackPackages v.packages; } else v;
   }) kernelPackages;
 
   otherPackages = let

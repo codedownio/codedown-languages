@@ -194,7 +194,7 @@ lib.listToAttrs (map (x:
         let
           settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
           ps = packageOptions;
-          chosenPackages = map (x: builtins.getAttr x ps) packages;
+          chosenPackages = map (x: builtins.getAttr x ps) (map common.packageName packages);
           allPackages = [ps.ipykernel ps.ipywidgets] ++ chosenPackages;
           python = basePython.withPackages (_: allPackages);
           pythonWithPackages = f: basePython.withPackages (_: allPackages ++ f ps);

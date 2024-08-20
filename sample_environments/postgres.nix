@@ -3,20 +3,12 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "postgres";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "postgres";
-      channel = "codedown";
-      args = {
-        packages = [];
-      };
-    })
-  ];
-
-  otherPackages = [];
+  packages = {
+    "codedown.kernels.postgres" = {
+      packages = {};
+    };
+  };
 }

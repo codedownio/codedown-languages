@@ -3,21 +3,13 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "cpp20";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "cpp20";
-      channel = "codedown";
-      args = {
-        packages = [];
-        attrs = ["cpp20" "cpp"];
-      };
-    })
-  ];
-
-  otherPackages = [];
+  packages = {
+    "codedown.kernels.cpp20" = {
+      packages = [];
+      attrs = ["cpp20" "cpp"];
+    };
+  };
 }

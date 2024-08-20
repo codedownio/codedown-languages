@@ -3,22 +3,12 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "go";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "go";
-      channel = "codedown";
-      args = {
-        packages = [
-          "rand"
-        ];
-      };
-    })
-  ];
-
-  otherPackages = [];
+  packages = {
+    "codedown.kernels.go" = {
+      packages = ["rand"];
+    };
+  };
 }

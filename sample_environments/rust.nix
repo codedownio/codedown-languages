@@ -3,28 +3,17 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "rust";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "rust";
-      channel = "codedown";
-      args = {
-        packages = [
-          "rand"
-          {
-            name = "serde";
-            settings = {
-              features = ["derive"];
-            };
-          }
-        ];
+  packages = {
+    "codedown.kernels.rust" = {
+      packages = {
+        "rand" = {};
+        "serde" = {
+          features = ["derive"];
+        };
       };
-    })
-  ];
-
-  otherPackages = [];
+    };
+  };
 }

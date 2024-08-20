@@ -3,20 +3,12 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "clojure";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "clojure";
-      channel = "codedown";
-      args = {
-        packages = [];
-      };
-    })
-  ];
-
-  otherPackages = [];
+  packages = {
+    "codedown.kernels.clojure" = {
+      packages = {};
+    };
+  };
 }

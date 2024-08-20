@@ -3,7 +3,6 @@
 , ...
 }:
 
-
 codedown.mkCodeDownEnvironment {
   environmentName = "spellchecker";
   inherit channels;
@@ -14,3 +13,11 @@ codedown.mkCodeDownEnvironment {
     { channel = "codedown"; attr = "spellchecker"; contents = codedown.spellchecker; }
   ];
 }
+
+# codedown.makeEnvironment {
+#   inherit channels;
+
+#   packages = {
+#     "codedown.spellchecker" = {};
+#   };
+# }

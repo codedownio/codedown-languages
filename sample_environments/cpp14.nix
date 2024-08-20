@@ -3,21 +3,13 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "cpp14";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "cpp14";
-      channel = "codedown";
-      args = {
-        packages = [];
-        attrs = ["cpp14" "cpp"];
-      };
-    })
-  ];
-
-  otherPackages = [];
+  packages = {
+    "codedown.kernels.cpp14" = {
+      packages = [];
+      attrs = ["cpp14" "cpp"];
+    };
+  };
 }

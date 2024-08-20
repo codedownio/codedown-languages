@@ -3,23 +3,15 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "ghc96";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "haskell-ghc96";
-      channel = "codedown";
-      args = {
-        packages = ["aeson"];
-        settings = {
-          "lsp.haskell-language-server.debug" = true;
-        };
+  packages = {
+    "codedown.kernels.haskell-ghc96" = {
+      packages = ["aeson"];
+      settings = {
+        "lsp.haskell-language-server.debug" = true;
       };
-    })
-  ];
-
-  otherPackages = [];
+    };
+  };
 }

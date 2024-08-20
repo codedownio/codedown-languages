@@ -3,20 +3,15 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "octave";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "octave";
-      channel = "codedown";
-      args = {
-        packages = [];
-      };
-    })
-  ];
-
-  otherPackages = [];
+  packages = {
+    "codedown.kernels.octave" = {
+      packages = {};
+      extraJupyterConfig = ''
+        c.OctaveKernel.plot_settings = dict(format='svg')
+      '';
+    };
+  };
 }

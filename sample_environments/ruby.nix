@@ -3,20 +3,12 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "ruby";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "ruby";
-      channel = "codedown";
-      args = {
-        packages = [];
-      };
-    })
-  ];
-
-  otherPackages = [];
+  packages = {
+    "codedown.kernels.ruby" = {
+      packages = {};
+    };
+  };
 }

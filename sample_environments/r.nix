@@ -3,20 +3,14 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "r";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "R";
-      channel = "codedown";
-      args = {
-        packages = [];
+  packages = {
+    "codedown.kernels.R" = {
+      packages = {
+        "ggplot2" = {};
       };
-    })
-  ];
-
-  otherPackages = [];
+    };
+  };
 }

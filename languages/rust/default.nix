@@ -50,6 +50,11 @@ let
     "rust_1_75"
     "rust_1_76"
     "rust_1_77"
+    "rust_1_78"
+    "rust_1_79"
+    "rust_1_80"
+    "rust_1_81"
+    "rust_1_82"
   ];
 
 in

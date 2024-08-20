@@ -3,20 +3,12 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "coq";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "coq";
-      channel = "codedown";
-      args = {
-        packages = [];
-      };
-    })
-  ];
-
-  otherPackages = [];
+  packages = {
+    "codedown.kernels.coq" = {
+      packages = {};
+    };
+  };
 }

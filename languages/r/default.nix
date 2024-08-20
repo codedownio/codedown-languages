@@ -70,7 +70,7 @@ listToAttrs [{
     let
       settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
 
-      basePackages = [rPackages.IRkernel] ++ (map (x: lib.getAttr x rPackages) packages);
+      basePackages = [rPackages.IRkernel] ++ (map (x: lib.getAttr x rPackages) (map common.packageName packages));
 
       rWithPackages = rWrapper.override {
         packages = basePackages;

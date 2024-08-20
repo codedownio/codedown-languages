@@ -3,20 +3,12 @@
 , ...
 }:
 
-
-codedown.mkCodeDownEnvironment {
-  environmentName = "julia16";
+codedown.makeEnvironment {
   inherit channels;
 
-  kernels = [
-    ({
-      name = "julia16";
-      channel = "codedown";
-      args = {
-        packages = ["JSON3" "Plots"];
-      };
-    })
-  ];
-
-  otherPackages = [];
+  packages = {
+    "codedown.kernels.julia16" = {
+      packages = ["JSON3" "Plots"];
+    };
+  };
 }
