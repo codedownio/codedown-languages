@@ -6,16 +6,13 @@
 module TestLib.NixRendering where
 
 import Data.Aeson as A
-import Data.Maybe
 import Data.String.Interpolate
 import Data.Text
 import qualified Data.Text as T
 import qualified Data.Vector as V
-import TestLib.Aeson
 import TestLib.NixTypes
 
 #if MIN_VERSION_aeson(2,0,0)
-import qualified Data.Aeson.Key             as A
 import qualified Data.Aeson.KeyMap          as HM
 #else
 import qualified Data.HashMap.Strict        as HM
@@ -36,14 +33,9 @@ let
 #{T.intercalate "\n\n" [indentTo 4 $ renderChannel x | x <- nixEnvironmentChannels]}
   };
 
-  importedChannels = lib.mapAttrs (name: value: let imported = import (channelSpecToChannel name value); in
-    if (builtins.isFunction imported) then bootstrapNixpkgs.callPackage imported {}
-    else imported
-  ) channels;
-
 in
 
-importedChannels.codedown.mkCodeDownEnvironment {
+(import channels.codedown { inherit fetchFromGitHub; }).mkCodeDownEnvironment {
   inherit channels;
 
   kernels = [
@@ -60,29 +52,24 @@ renderChannel :: NixSrcSpec -> Text
 renderChannel nixSrcSpec = [i|#{nixSrcName nixSrcSpec} = (#{renderNixSrcSpec nixSrcSpec});|]
 
 renderNixSrcSpec :: NixSrcSpec -> Text
-renderNixSrcSpec nixSrcSpec = "{\n" <> (T.intercalate "\n" $ mapMaybe toLine keysAndValues) <> "\n}"
+renderNixSrcSpec (NixSrcPath {..}) = nixSrcPath
+renderNixSrcSpec (NixSrcFetchGit {..}) = [__i|fetchgit {
+                                               url = "#{nixSrcUrl}";
+                                               rev = "#{nixSrcRev}";
+                                               sha256 = "#{nixSrcSha256}";
+                                               #{maybeBranch}
+                                             }|]
   where
-    keysAndValues = case A.toJSON nixSrcSpec of
-      A.Object hm -> HM.toList hm
-      _ -> []
-
-    showValue :: A.Value -> Text
-    showValue (A.String t) = quote t
-    showValue (A.Number n) = quote $ T.pack $ show n
-    showValue A.Null = "null"
-    showValue _ = [i|(throw "Couldn't render expression in NixEnvironment.hs.")|]
-
-#if MIN_VERSION_aeson(2,0,0)
-    toLine :: (A.Key, A.Value) -> Maybe Text
-    toLine (A.toText -> "name", _) = Nothing
-    toLine (A.toText -> k, v) = Just [i|  #{snakeToCamelCase $ T.unpack k} = #{showValue v};|]
-#else
-    toLine :: (Text, A.Value) -> Maybe Text
-    toLine ("name", _) = Nothing
-    toLine (k, v) = Just [i|  #{snakeToCamelCase $ T.unpack k} = #{showValue v};|]
-#endif
-
-    quote t = [i|''#{t}''|]
+    maybeBranch = case nixSrcBranchName of
+      Nothing -> "" :: Text
+      Just branch -> [i|ref = "#{branch}";|]
+renderNixSrcSpec (NixSrcFetchFromGithub {..}) =
+  [__i|fetchFromGitHub {
+        owner = "#{nixSrcOwner}";
+        repo = "#{nixSrcRepo}";
+        rev = "#{nixSrcRev}";
+        sha256 = "#{nixSrcSha256}";
+      }|]
 
 renderOtherPackage :: ChannelAndAttr -> Text
 renderOtherPackage (ChannelAndAttr {..}) = [i|{ channel = "#{channelAndAttrChannel}"; attr = "#{channelAndAttrAttr}"; contents = importedChannels.#{channelAndAttrChannel}.#{channelAndAttrAttr};  }|]
