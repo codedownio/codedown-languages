@@ -33,6 +33,11 @@ let
 #{T.intercalate "\n\n" [indentTo 4 $ renderChannel x | x <- nixEnvironmentChannels]}
   };
 
+  importedChannels = lib.mapAttrs (name: value: let imported = import value; in
+    if (builtins.isFunction imported) then bootstrapNixpkgs.callPackage imported {}
+    else imported
+  ) channels;
+
 in
 
 (import channels.codedown { inherit fetchFromGitHub; }).mkCodeDownEnvironment {
