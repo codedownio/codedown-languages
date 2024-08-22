@@ -94,9 +94,10 @@ listToAttrs (map (x:
     };
 
     versions = {
+      cargo = rustPackages.cargo.version;
+      evcxr = evcxrBase.version;
       rust = rustPackages.rustc.version;
       rust-analyzer = rust-analyzer.version;
-      cargo = rustPackages.cargo.version;
     };
 
   in {
@@ -110,7 +111,7 @@ listToAttrs (map (x:
       evcxr = (evcxrBase.override {
         rustPlatform = rustPackages.rustPlatform;
         cargo = rustPackages.cargo;
-      }).withPackages (map common.packageName packages);
+      }).withPackages packages;
 
       settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
       languageServers = chooseLanguageServers settingsToUse rust evcxr.cargoHome x;

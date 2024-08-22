@@ -29,14 +29,14 @@ data NixSrcSpec = NixSrcFetchGit {
   deriving (Show, Eq, Ord)
 deriveJSON toSnakeBoth2 ''NixSrcSpec
 
-data NameAndMeta = NameAndMeta {
-  nameAndMetaName :: Text
-  , nameAndMetaMeta :: Maybe Value
+data NameAndSettings = NameAndSettings {
+  nameAndSettingsName :: Text
+  , nameAndSettingsSettings :: Maybe Value
   } deriving (Show, Eq, Ord)
-deriveJSON toSnake3 ''NameAndMeta
+deriveJSON toSnake3 ''NameAndSettings
 
-nameOnly :: Text -> NameAndMeta
-nameOnly name = NameAndMeta name Nothing
+nameOnly :: Text -> NameAndSettings
+nameOnly name = NameAndSettings name Nothing
 
 data ChannelAndAttr = ChannelAndAttr {
   channelAndAttrChannel :: Text
@@ -53,7 +53,7 @@ data NixKernelSpec = NixKernelSpec {
   nixKernelName :: Text
   , nixKernelChannel :: Text
   , nixKernelDisplayName :: Maybe Text
-  , nixKernelPackages :: [NameAndMeta]
+  , nixKernelPackages :: [NameAndSettings]
   , nixKernelExtraJupyterConfig :: Maybe Text
   , nixKernelMeta :: Maybe Value
   , nixKernelIcon :: Maybe Text

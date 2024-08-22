@@ -29,12 +29,13 @@ let
     echo "]" >> $out
   '';
 
-  renderPackageName = pn:
-    if builtins.isString pn
-    then ''${pn} = "*"''
-    else ''${pn.name} = { version = "*", features = [${lib.concatStringsSep ", " (map (feat: ''"'' + feat + ''"'') pn.features)}] }'';
+  renderPackage = pn:
+    if builtins.isString pn then ''${pn} = "*"''
+    else if builtins.isAttrs pn && lib.hasAttrByPath ["settings" "features"] pn
+      then ''${pn.name} = { version = "*", features = [${lib.concatStringsSep ", " (map (feat: ''"'' + feat + ''"'') pn.settings.features)}] }''
+      else ''${pn.name} = { version = "*" }'';
 
-  cargoToml = packageNames: writeTextFile {
+  cargoToml = packages: writeTextFile {
     name = "Cargo.toml";
     text = ''
       [package]
@@ -43,11 +44,11 @@ let
       edition = "2018"
 
       [dependencies]
-    '' + lib.concatStringsSep "\n" (map renderPackageName packageNames);
+    '' + lib.concatStringsSep "\n" (map renderPackage packages);
   };
 
-  cargoNix = packageNames: runCommand "Cargo-nix" { buildInputs = [cargo]; } ''
-    cp "${cargoToml packageNames}" Cargo.toml
+  cargoNix = packages: runCommand "Cargo-nix" { buildInputs = [cargo]; } ''
+    cp "${cargoToml packages}" Cargo.toml
 
     # Generate lib.rs
     mkdir -p "src"
@@ -73,22 +74,22 @@ let
     cp -r Cargo.toml Cargo.lock default.nix $out
   '';
 
-  vendorDependencies = packageNames:
-    callPackage "${cargoNix packageNames}" {
+  vendorDependencies = packages:
+    callPackage "${cargoNix packages}" {
       inherit rustPlatform;
     };
 
-  evcxrConfigDir = packageNames:
+  evcxrConfigDir = packages:
     let
-      deps = vendorDependencies packageNames;
+      deps = vendorDependencies packages;
     in
       runCommand "evcxr-config" { buildInputs = [(python3.withPackages (ps: [ps.toml]))]; } ''
         mkdir -p $out
         echo ":offline 1" >> $out/init.evcxr
         python ${./python}/build_init_evcxr.py \
           '${deps}'\
-          '${lib.generators.toJSON {} packageNames}' \
-          "${cargoNix packageNames}/Cargo.lock" \
+          '${lib.generators.toJSON {} packages}' \
+          "${cargoNix packages}/Cargo.lock" \
           "$out/init.evcxr"
       '';
 

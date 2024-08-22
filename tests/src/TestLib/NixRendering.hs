@@ -6,6 +6,7 @@
 module TestLib.NixRendering where
 
 import Data.Aeson as A
+import Data.Function
 import Data.String.Interpolate
 import Data.Text
 import qualified Data.Text as T
@@ -84,13 +85,19 @@ renderKernel (NixKernelSpec {..}) = [i|({
   name = "#{nixKernelName}";
   channel = "#{nixKernelChannel}";
   args = {
-    packages = [#{T.unwords $ fmap quote $ fmap nameAndMetaName nixKernelPackages}];#{settings}
+    packages = [#{T.unwords $ fmap renderKernelPackage nixKernelPackages}];#{kernelSettings}
   };
 })|]
   where
+    renderKernelPackage (NameAndSettings name Nothing) = quote name
+    renderKernelPackage (NameAndSettings name (Just settings)) = aesonToNix (A.object [("name", A.String name), ("settings", settings)])
+      & parenQuote
+
+    parenQuote x = "(" <> x <> ")"
+
     quote x = "\"" <> x <> "\""
 
-    settings = maybe "" (("\n" <>) . indentTo 4 . (\x -> [i|settings = #{x};|]) . aesonToNix . A.Object) nixKernelSettings
+    kernelSettings = maybe "" (("\n" <>) . indentTo 4 . (\x -> [i|settings = #{x};|]) . aesonToNix . A.Object) nixKernelSettings
 
 aesonToNix :: A.Value -> Text
 aesonToNix (A.Bool True) = "true"

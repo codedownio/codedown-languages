@@ -5,6 +5,7 @@ module Spec.Tests.Rust (tests) where
 import Data.Aeson as A
 import Data.String.Interpolate
 import qualified Data.Text as T
+import qualified Data.Vector as V
 import Safe
 import Spec.Tests.Rust.Changes
 import Spec.Tests.Rust.Completion
@@ -20,17 +21,29 @@ import TestLib.Util
 
 
 tests :: LanguageSpec
-tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ introduceJupyterRunner $ do
-  testKernelSearchersBuild "rust"
-  testHasExpectedFields "rust"
+tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ do
+  introduceJupyterRunner $ describe "Kernel" $ do
+    testKernelSearchersBuild "rust"
+    testHasExpectedFields "rust"
 
-  testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
+    testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
-  testKernelStdoutCallback "rust" randCode $ \case
-    Just t -> case readMay (T.unpack (T.strip t)) of
-      Just (x :: Int) | x >= 0 && x < 256 -> return ()
-      _ -> expectationFailure [i|Unexpected output: #{show t}|]
-    Nothing -> expectationFailure [i|Kernel produced no output.|]
+    testKernelStdout "rust" [__i|use serde::{Serialize, Deserialize};
+
+                                 \#[derive(Serialize, Deserialize, Debug)]
+                                 struct Point {
+                                     x: i32,
+                                     y: i32,
+                                 }
+
+                                 let serialized = serde_json::to_string(&point).unwrap();
+                                 println!("serialized = {}", serialized);
+                                 |] [i|{"x":1,"y":2}|]
+    testKernelStdoutCallback "rust" randCode $ \case
+      Just t -> case readMay (T.unpack (T.strip t)) of
+        Just (x :: Int) | x >= 0 && x < 256 -> return ()
+        _ -> expectationFailure [i|Unexpected output: #{show t}|]
+      Nothing -> expectationFailure [i|Kernel produced no output.|]
 
   describe "LSP" $ do
     changesTests
@@ -51,7 +64,10 @@ kernelSpec = NixKernelSpec {
   nixKernelName = "rust"
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Rust"
-  , nixKernelPackages = [nameOnly "rand"]
+  , nixKernelPackages = [
+      nameOnly "rand"
+      , NameAndSettings "serde" (Just (A.object [("features", A.Array (V.fromList ["derive"]))]))
+      ]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
