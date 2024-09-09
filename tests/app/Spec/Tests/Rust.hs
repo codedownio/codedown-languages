@@ -29,12 +29,17 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ do
     testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
     testKernelStdout "rust" [__i|use serde::{Serialize, Deserialize};
+                                 :dep serde_derive
+                                 use serde_derive::Serialize;
+                                 use serde_derive::Deserialize;
 
                                  \#[derive(Serialize, Deserialize, Debug)]
                                  struct Point {
                                      x: i32,
                                      y: i32,
                                  }
+
+                                 let point = Point { x: 1, y: 2 };
 
                                  let serialized = serde_json::to_string(&point).unwrap();
                                  println!("serialized = {}", serialized);
@@ -66,7 +71,10 @@ kernelSpec = NixKernelSpec {
   , nixKernelDisplayName = Just "Rust"
   , nixKernelPackages = [
       nameOnly "rand"
+
+      -- , nameOnly "serde"
       , NameAndSettings "serde" (Just (A.object [("features", A.Array (V.fromList ["derive"]))]))
+      , nameOnly "serde_json"
       ]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing

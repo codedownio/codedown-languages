@@ -11,8 +11,11 @@ codedown.makeEnvironment {
       packages = {
         "rand" = {};
         "serde" = {
+          # features = ["std" "derive"];
           features = ["derive"];
         };
+        "serde_json" = {};
+        "serde_derive" = {};
       };
     };
   };
