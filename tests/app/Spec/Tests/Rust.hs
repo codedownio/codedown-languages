@@ -29,9 +29,6 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ do
     testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
     testKernelStdout "rust" [__i|use serde::{Serialize, Deserialize};
-                                 :dep serde_derive
-                                 use serde_derive::Serialize;
-                                 use serde_derive::Deserialize;
 
                                  \#[derive(Serialize, Deserialize, Debug)]
                                  struct Point {
@@ -72,9 +69,9 @@ kernelSpec = NixKernelSpec {
   , nixKernelPackages = [
       nameOnly "rand"
 
-      -- , nameOnly "serde"
       , NameAndSettings "serde" (Just (A.object [("features", A.Array (V.fromList ["derive"]))]))
       , nameOnly "serde_json"
+      , nameOnly "serde_derive"
       ]
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing

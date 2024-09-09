@@ -15,7 +15,6 @@ codedown.makeEnvironment {
           features = ["derive"];
         };
         "serde_json" = {};
-        "serde_derive" = {};
       };
     };
   };

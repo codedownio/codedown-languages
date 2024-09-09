@@ -25,5 +25,10 @@ for subdir in (f for f in vendor_dir.resolve().glob('**/*') if f.is_dir()):
 with open(out, "a") as f:
   for package in package_names:
     package_name = package if isinstance(package, str) else package["name"]
+    settings = {} if isinstance(package, str) else package.get("settings", {})
     if package_name in name_to_dir:
-      f.write(f""":dep {package_name} = {{ path = "{str(name_to_dir[package_name])}" }}\n""")
+      features_clause = ""
+      if "features" in settings:
+        features_clause = f""", features = {json.dumps(settings["features"])}"""
+
+      f.write(f""":dep {package_name} = {{ path = "{str(name_to_dir[package_name])}"{features_clause} }}\n""")

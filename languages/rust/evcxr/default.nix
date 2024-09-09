@@ -17,10 +17,10 @@ let
     inherit cargo rustPlatform;
   };
 
-  cargoHome = packageNames: runCommand "cargo-home" {} ''
+  cargoHome = packages: runCommand "cargo-home" {} ''
     mkdir -p $out
-    cp "${withPackages.cargoNix packageNames}"/Cargo.toml $out
-    cp "${withPackages.cargoNix packageNames}"/Cargo.lock $out
+    cp "${withPackages.cargoNix packages}"/Cargo.toml $out
+    cp "${withPackages.cargoNix packages}"/Cargo.lock $out
 
     mkdir -p $out/src
     touch $out/src/lib.rs
@@ -31,7 +31,7 @@ let
     replace-with = "vendored-sources"
 
     [source.vendored-sources]
-    directory = "${withPackages.vendorDependencies packageNames}"
+    directory = "${withPackages.vendorDependencies packages}"
 
     [net]
     offline = true
@@ -48,20 +48,20 @@ evcxr.overrideAttrs (oldAttrs: {
   passthru = (oldAttrs.passthru or {}) // {
     cratesIndex = withPackages.cratesIndex;
 
-    withPackages = packageNames:
+    withPackages = packages:
       runCommand "evcxr" {
         version = evcxr.version;
 
         buildInputs = [makeWrapper];
 
         makeWrapperArgs = [
-          "--set" "EVCXR_CONFIG_DIR" "${withPackages.evcxrConfigDir packageNames}"
-          "--set" "CARGO_HOME" "${cargoHome packageNames}"
+          "--set" "EVCXR_CONFIG_DIR" "${withPackages.evcxrConfigDir packages}"
+          "--set" "CARGO_HOME" "${cargoHome packages}"
           "--prefix" "PATH" ":" "${lib.makeBinPath [rustc cargo]}"
         ];
 
         passthru = {
-          cargoHome = cargoHome packageNames;
+          cargoHome = cargoHome packages;
         };
       } ''
         mkdir -p $out/bin
