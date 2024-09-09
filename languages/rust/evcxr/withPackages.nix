@@ -11,11 +11,12 @@
 }:
 
 let
+  # nix-prefetch-github rust-lang crates.io-index
   cratesIndex = fetchFromGitHub {
     owner = "rust-lang";
     repo = "crates.io-index";
-    rev = "d3be09973f4126cda5f8e8e77402e93be5f11bfe";
-    sha256 = "1pnsk6a7w71mv792rgf6l5jn3di0zmdibv8h4vbh0jwjr2w37yf2";
+    rev = "b6c0211bd5c02fcff4ae199e7efcf8c2e087e239";
+    sha256 = "sha256-iJCUHbQoOYoXj0a/qvn4OxQdcnahukm+zOhsXlQI+Hs=";
   };
 
   allPackageNames = runCommand "rust-package-names.nix" {} ''
