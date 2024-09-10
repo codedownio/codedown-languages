@@ -1,6 +1,7 @@
 { callPackage
 , lib
 , makeWrapper
+, python3
 , runCommand
 
 , CoreServices
@@ -17,7 +18,7 @@ let
     inherit cargo rustPlatform;
   };
 
-  cargoHome = packages: runCommand "cargo-home" {} ''
+  cargoHome = packages: runCommand "cargo-home" { buildInputs = [cargo]; } ''
     mkdir -p $out
     cp "${withPackages.cargoNix packages}"/Cargo.toml $out
     cp "${withPackages.cargoNix packages}"/Cargo.lock $out
@@ -40,7 +41,24 @@ let
     # For some reason evcxr seems to only find config.toml when it's here,
     # even though the cargo docs say it should be inside a .cargo folder:
     ln -s $out/.cargo/config.toml $out/config.toml
+
+    cd $out
+    cargo metadata --offline >> metadata.json
   '';
+
+  evcxrConfigDir = packages:
+    let
+      deps = withPackages.vendorDependencies packages;
+    in
+      runCommand "evcxr-config" { buildInputs = [(python3.withPackages (ps: [ps.toml]))]; } ''
+        mkdir -p $out
+        echo ":offline 1" >> $out/init.evcxr
+        python ${./python}/build_init_evcxr.py \
+          '${deps}'\
+          '${lib.generators.toJSON {} packages}' \
+          "${cargoHome packages}/metadata.json" \
+          "$out/init.evcxr"
+      '';
 
 in
 
@@ -55,8 +73,8 @@ evcxr.overrideAttrs (oldAttrs: {
         buildInputs = [makeWrapper];
 
         makeWrapperArgs = [
-          "--set" "EVCXR_CONFIG_DIR" "${withPackages.evcxrConfigDir packages}"
           "--set" "CARGO_HOME" "${cargoHome packages}"
+          "--set" "EVCXR_CONFIG_DIR" "${evcxrConfigDir packages}"
           "--prefix" "PATH" ":" "${lib.makeBinPath [rustc cargo]}"
         ];
 

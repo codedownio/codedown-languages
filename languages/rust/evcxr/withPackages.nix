@@ -4,8 +4,6 @@
 , runCommand
 , writeTextFile
 
-, python3
-
 , cargo
 , rustPlatform
 }:
@@ -67,11 +65,12 @@ let
     local-registry = "$(pwd)/index_base"
     EOT
 
+    mkdir -p $out
+
     cargo generate-lockfile --offline
 
     echo "{rustPlatform}: rustPlatform.importCargoLock { lockFile = ./Cargo.lock; }" >> default.nix
 
-    mkdir -p $out
     cp -r Cargo.toml Cargo.lock default.nix $out
   '';
 
@@ -79,20 +78,6 @@ let
     callPackage "${cargoNix packages}" {
       inherit rustPlatform;
     };
-
-  evcxrConfigDir = packages:
-    let
-      deps = vendorDependencies packages;
-    in
-      runCommand "evcxr-config" { buildInputs = [(python3.withPackages (ps: [ps.toml]))]; } ''
-        mkdir -p $out
-        echo ":offline 1" >> $out/init.evcxr
-        python ${./python}/build_init_evcxr.py \
-          '${deps}'\
-          '${lib.generators.toJSON {} packages}' \
-          "${cargoNix packages}/Cargo.lock" \
-          "$out/init.evcxr"
-      '';
 
 in
 
@@ -106,6 +91,4 @@ rec {
   inherit cargoNix;
 
   inherit vendorDependencies;
-
-  inherit evcxrConfigDir;
 }

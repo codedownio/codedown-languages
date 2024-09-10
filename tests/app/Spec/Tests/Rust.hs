@@ -40,7 +40,7 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ do
 
                                  let serialized = serde_json::to_string(&point).unwrap();
                                  println!("serialized = {}", serialized);
-                                 |] [i|{"x":1,"y":2}|]
+                                 |] [i|serialized = {"x":1,"y":2}\n|]
     testKernelStdoutCallback "rust" randCode $ \case
       Just t -> case readMay (T.unpack (T.strip t)) of
         Just (x :: Int) | x >= 0 && x < 256 -> return ()

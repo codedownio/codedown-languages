@@ -6,8 +6,8 @@ import toml
 import sys
 
 vendor_dir = Path(sys.argv[1])
-package_names = json.loads(sys.argv[2])
-cargo_lock_path = Path(sys.argv[3])
+packages = json.loads(sys.argv[2])
+metadata_path = Path(sys.argv[3])
 out = Path(sys.argv[4])
 
 
@@ -22,13 +22,21 @@ for subdir in (f for f in vendor_dir.resolve().glob('**/*') if f.is_dir()):
     if "name" in cargo_toml["package"]:
       name_to_dir[cargo_toml["package"]["name"]] = subdir
 
+name_to_version = {}
+with open(metadata_path, 'r') as f:
+  metadata = json.load(f)
+for pkg in metadata["packages"]:
+  name_to_version[pkg["name"]] = pkg["version"]
+
 with open(out, "a") as f:
-  for package in package_names:
+  for package in packages:
     package_name = package if isinstance(package, str) else package["name"]
     settings = {} if isinstance(package, str) else package.get("settings", {})
     if package_name in name_to_dir:
-      features_clause = ""
+      clauses = [f"""version = \"{name_to_version.get(package_name, "*")}\""""]
       if "features" in settings:
-        features_clause = f""", features = {json.dumps(settings["features"])}"""
+        clauses.append(f"""features = {json.dumps(settings["features"])}""")
 
-      f.write(f""":dep {package_name} = {{ path = "{str(name_to_dir[package_name])}"{features_clause} }}\n""")
+      clauses_joined = ", ".join(clauses)
+
+      f.write(f""":dep {package_name} = {{ {clauses_joined} }}\n""")
