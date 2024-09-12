@@ -10,7 +10,11 @@ with lib;
     };
 
     builtKernels = lib.mkOption {
-      # type = types.attrsOf (types.attrsOf types.anything);
+      type = types.attrsOf types.package;
+      default = {};
+    };
+
+    builtShells = lib.mkOption {
       type = types.attrsOf types.package;
       default = {};
     };

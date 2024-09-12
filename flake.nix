@@ -71,39 +71,20 @@
                                             sample_environments
             );
 
-            new_style_env = codedown.makeEnvironment {
-              channels = {
-                nixpkgs = pkgsStable.fetchFromGitHub {
-                  owner = "NixOS";
-                  repo = "nixpkgs";
-                  rev = "7144d6241f02d171d25fba3edeaf15e0f2592105";
-                  hash = "sha256-gvFhEf5nszouwLAkT9nWsDzocUTqLWHuL++dvNjMp9I=";
-                };
+            channels = {
+              nixpkgs = pkgsStable.fetchFromGitHub {
+                owner = "NixOS";
+                repo = "nixpkgs";
+                rev = "7144d6241f02d171d25fba3edeaf15e0f2592105";
+                hash = "sha256-gvFhEf5nszouwLAkT9nWsDzocUTqLWHuL++dvNjMp9I=";
               };
+            };
 
-              packages = {
-                "codedown.kernels.python3" = {
-                  packages = ["matplotlib"];
-                  settings = {
-                    enableVariableInspector = true;
-                    "lsp.flake8.enable" = false;
-                    "lsp.jedi.enable" = true;
-                    "lsp.microsoft.enable" = false;
-                    "lsp.pycodestyle.enable" = false;
-                    "lsp.pylint.enable" = false;
-                    "lsp.pyright.enable" = false;
-                    "lsp.python-language-server.enable" = false;
-                    "lsp.python-lsp-server.enable" = false;
-                    permitUserSite = false;
-                  };
-                };
+            new_style_env = codedown.makeEnvironment channels {
+              kernels.bash.enable = true;
+              kernels.bash.settings.lsp.bash-language-server.enable = false;
 
-                "codedown.kernels.bash" = {
-                  packages = [];
-                };
-
-                "nixpkgs.htop" = {};
-              };
+              shells.fish.enable = true;
             };
 
             printVersions = let
@@ -136,21 +117,21 @@
               done
             '';
 
-            moduleTest = pkgsStable.lib.evalModules {
-              modules = [
-                ./modules/base.nix
-                ./languages/bash/module.nix
-                {
-                  config = {
-                    environmentPackages = [pkgsStable.emacs];
-                    pkgs = pkgsStable;
+            # moduleTest = pkgsStable.lib.evalModules {
+            #   modules = [
+            #     ./modules/base.nix
+            #     ./languages/bash/module.nix
+            #     {
+            #       config = {
+            #         environmentPackages = [pkgsStable.emacs];
+            #         pkgs = pkgsStable;
 
-                    kernels.bash.enable = true;
-                    kernels.bash.settings.lsp.bash-language-server.enable = false;
-                  };
-                }
-              ];
-            };
+            #         kernels.bash.enable = true;
+            #         kernels.bash.settings.lsp.bash-language-server.enable = false;
+            #       };
+            #     }
+            #   ];
+            # };
 
             notebook = with pkgsStable; python3.pkgs.toPythonModule (
               python3.pkgs.notebook.overridePythonAttrs (oldAttrs: {
