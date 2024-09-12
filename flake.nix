@@ -84,7 +84,9 @@
               kernels.bash.enable = true;
               kernels.bash.settings.lsp.bash-language-server.enable = false;
 
+              shells.bash.enable = true;
               shells.fish.enable = true;
+              shells.zsh.enable = true;
             };
 
             printVersions = let

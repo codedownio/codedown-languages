@@ -36,7 +36,9 @@ let
 
       ../languages/bash/module.nix
 
+      ../shells/bash/module.nix
       ../shells/fish/module.nix
+      ../shells/zsh/module.nix
 
       {
         config = {

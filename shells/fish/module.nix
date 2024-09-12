@@ -8,14 +8,14 @@ with lib;
       enable = mkOption {
         type = types.bool;
         default = false;
+        description = "Enable the Fish shell.";
       };
     };
   };
 
-  config = mkIf config.kernels.bash.enable {
+  config = mkIf config.shells.fish.enable {
     builtShells.fish = let
       baseDerivation = config.pkgs.callPackage ./fish.nix {};
-      common = config.pkgs.callPackage ../common.nix {};
     in
       baseDerivation.overrideAttrs (old: {
         meta = old.meta // {

@@ -3,12 +3,6 @@
 , ...
 }:
 
-codedown.makeEnvironmentPrime {
-  inherit channels;
-
-  packages = {
-    "codedown.kernels.bash" = {
-      packages = {};
-    };
-  };
+codedown.makeEnvironment channels {
+  kernels.bash.enable = true;
 }
