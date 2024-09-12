@@ -76,7 +76,7 @@ let
     ++ concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (if kernel.passthru ? "repls" then kernel.passthru.repls else {})) (attrValues builtKernels)
   ;
 
-  exporterInfos = concatMap (exporter: exporter.meta.exporterInfos) (attrValues builtExporters);
+  exporters = concatMap (exporter: exporter.meta.exporterInfos) (attrValues builtExporters);
 
 in
 
@@ -84,8 +84,8 @@ symlinkJoin {
   inherit name;
   paths =
     attrValues (evaluated.config.builtKernels)
-    ++ [(writeTextDir "lib/codedown/repls.yaml" (lib.generators.toYAML {} repls))]
-    ++ [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporterInfos))]
+    ++ lib.optionals (builtins.length repls > 0) [(writeTextDir "lib/codedown/repls.yaml" (lib.generators.toYAML {} repls))]
+    ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
   ;
 
   passthru = {
