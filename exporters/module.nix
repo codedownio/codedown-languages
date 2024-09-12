@@ -8,20 +8,28 @@ with lib;
       enable = mkOption {
         type = types.bool;
         default = false;
-        description = "Enable the nbconvert exporters version.";
+        description = "Enable the nbconvert exporters.";
       };
 
       texliveScheme = mkOption {
-        type = types.package;
-        default = config.pkgs.texlive.combined.scheme-small; # scheme-full
-        description = "Enable the nbconvert exporters version.";
+        type = types.enum [
+          "scheme-basic"
+          "scheme-bookpub"
+          "scheme-full"
+          "scheme-medium"
+          "scheme-minimal"
+          "scheme-small"
+          "scheme-tetex"
+        ];
+        default = "scheme-small";
+        description = "The TeX Live scheme to use, as an attribute of pkgs.texlive.combined.*";
       };
     };
   };
 
   config = mkIf config.exporters.nbconvert-exporters.enable {
     builtExporters.nbconvert-exporters = config.pkgs.callPackage ./nbconvert.nix {
-      texliveScheme = config.exporters.nbconvert-exporters.texliveScheme;
+      texliveScheme = config.pkgs.texlive.combined.${config.exporters.nbconvert-exporters.texliveScheme};
     };
   };
 }
