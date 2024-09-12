@@ -145,6 +145,18 @@
               done
             '';
 
+            moduleTest = pkgsStable.lib.evalModules {
+              modules = [
+                ./modules/base.nix
+                ./languages/bash/module.nix
+                {
+                  config = {
+                    environmentPackages = [pkgsStable.emacs];
+                  };
+                }
+              ];
+            };
+
             notebook = with pkgsStable; python3.pkgs.toPythonModule (
               python3.pkgs.notebook.overridePythonAttrs (oldAttrs: {
                 makeWrapperArgs = ["--set JUPYTER_PATH ${environment}/lib/codedown"];
