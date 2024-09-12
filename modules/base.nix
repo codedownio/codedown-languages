@@ -4,6 +4,17 @@ with lib;
 
 {
   options = {
+    pkgs = lib.mkOption {
+      type = lib.types.attrs;
+      default = pkgs;
+    };
+
+    builtKernels = lib.mkOption {
+      # type = types.attrsOf (types.attrsOf types.anything);
+      type = types.attrsOf types.package;
+      default = {};
+    };
+
     environmentPackages = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = [];
@@ -14,5 +25,7 @@ with lib;
     };
   };
 
-  config = {};
+  config = {
+
+  };
 }
