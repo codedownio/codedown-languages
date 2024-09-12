@@ -90,7 +90,7 @@ rec {
     inherit requiredPackages languages;
   };
 
-  makeEnvironment = callPackage ./codedown/makeEnvironment.nix {
+  makeEnvironmentPrime = callPackage ./codedown/makeEnvironmentPrime.nix {
     inherit mkCodeDownEnvironment;
   };
 

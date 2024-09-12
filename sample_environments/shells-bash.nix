@@ -14,7 +14,7 @@ codedown.mkCodeDownEnvironment {
   ];
 }
 
-# codedown.makeEnvironment {
+# codedown.makeEnvironmentPrime {
 #   inherit channels;
 
 #   packages = {

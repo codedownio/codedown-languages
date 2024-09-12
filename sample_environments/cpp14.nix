@@ -3,7 +3,7 @@
 , ...
 }:
 
-codedown.makeEnvironment {
+codedown.makeEnvironmentPrime {
   inherit channels;
 
   packages = {
