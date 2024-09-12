@@ -17,12 +17,13 @@ with lib;
       baseDerivation = config.pkgs.callPackage ./fish.nix {};
       common = config.pkgs.callPackage ../common.nix {};
     in
-      common.wrapShell {
-        executableName = "fish";
-        inherit baseDerivation;
-        displayName = "Fish " + baseDerivation.version;
-        attr = "fish";
-        icon = ./icon-64x64.png;
-      };
+      baseDerivation.overrideAttrs (old: {
+        meta = old.meta // {
+          icon = ./icon-64x64.png;
+          displayName = "Fish " + baseDerivation.version;
+          attr = "fish";
+          args = ["${baseDerivation}/bin/fish"];
+        };
+      });
   };
 }

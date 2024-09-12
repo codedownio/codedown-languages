@@ -55,10 +55,10 @@ let
   repls = let
     shellToReplInfo = shell: {
       name = shell.name;
-      display_name = shell.displayName;
-      attr = shell.attr;
-      args = ["${shell}/lib/codedown/shell"];
-      icon = shell.icon;
+      display_name = shell.meta.displayName;
+      attr = shell.meta.attr;
+      args = shell.meta.args;
+      icon = shell.meta.icon;
     };
   in
     map shellToReplInfo (attrValues builtShells)
