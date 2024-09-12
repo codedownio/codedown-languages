@@ -58,8 +58,8 @@ rec {
   };
 
   exporters = {
-    nbconvert-small = pkgsMaster.callPackage ./exporters/nbconvert.nix { size = "small"; };
-    nbconvert-large = pkgsMaster.callPackage ./exporters/nbconvert.nix { size = "large"; };
+    nbconvert-small = pkgsMaster.callPackage ./exporters/nbconvert.nix { texliveScheme = pkgsStable.texlive.combined.scheme-small; };
+    nbconvert-large = pkgsMaster.callPackage ./exporters/nbconvert.nix { texliveScheme = pkgsStable.texlive.combined.scheme-full; };
   };
 
   testing = {

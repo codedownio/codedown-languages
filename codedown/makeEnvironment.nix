@@ -5,6 +5,7 @@
 , symlinkJoin
 , system
 , writeTextDir
+, writeText
 
 , pkgsStable
 , pkgsUnstable
@@ -56,8 +57,9 @@ let
   builtKernels = mapAttrs (_: kernel:
     kernel.overrideAttrs (old: {
       passthru = old.passthru // {
-        name = x.name;
-        channel = x.channel;
+        name = kernel.name;
+        # channel = kernel.channel;
+        channel = "codedown";
       };
     })) evaluated.config.builtKernels;
   builtShells = evaluated.config.builtShells;
@@ -78,6 +80,8 @@ let
 
   exporters = concatMap (exporter: exporter.meta.exporterInfos) (attrValues builtExporters);
 
+  uiMetadata = callPackage ./uiMetadata.nix {};
+
 in
 
 symlinkJoin {
@@ -88,7 +92,19 @@ symlinkJoin {
     ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
   ;
 
-  passthru = {
+  passthru = rec {
     inherit evaluated;
+
+    inherit channels;
+
+    ui_metadata = {
+      channels = lib.mapAttrsToList uiMetadata.mkChannelUiMetadata channels;
+
+      # kernels = map uiMetadata.mkKernelUiMetadata (attrValues builtKernels);
+
+      # other_packages = map uiMetadata.mkOtherPackageUiMetadata otherPackages;
+    };
+
+    ui_metadata_yaml = writeText "ui-metadata.yaml" (lib.generators.toYAML {} ui_metadata);
   };
 }
