@@ -9,6 +9,11 @@ with lib;
       default = pkgs;
     };
 
+    builtExporters = lib.mkOption {
+      type = types.attrsOf types.package;
+      default = {};
+    };
+
     builtKernels = lib.mkOption {
       type = types.attrsOf types.package;
       default = {};

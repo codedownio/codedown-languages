@@ -81,6 +81,9 @@
             };
 
             new_style_env = codedown.makeEnvironment channels {
+              exporters.nbconvert-exporters.enable = true;
+              exporters.nbconvert-exporters.texliveScheme = pkgsStable.texlive.combined.scheme-full;
+
               kernels.bash.enable = true;
               kernels.bash.settings.lsp.bash-language-server.enable = false;
 

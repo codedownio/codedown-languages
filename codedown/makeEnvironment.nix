@@ -34,6 +34,8 @@ let
     modules = [
       ../modules/base.nix
 
+      ../exporters/module.nix
+
       ../languages/bash/module.nix
 
       ../shells/bash/module.nix
@@ -53,6 +55,7 @@ let
 
   builtKernels = evaluated.config.builtKernels;
   builtShells = evaluated.config.builtShells;
+  builtExporters = evaluated.config.builtExporters;
 
   repls = let
     shellToReplInfo = shell: {
@@ -67,6 +70,8 @@ let
     ++ concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (if kernel.passthru ? "repls" then kernel.passthru.repls else {})) (attrValues builtKernels)
   ;
 
+  exporterInfos = concatMap (exporter: exporter.meta.exporterInfos) (attrValues builtExporters);
+
 in
 
 symlinkJoin {
@@ -74,6 +79,7 @@ symlinkJoin {
   paths =
     attrValues (evaluated.config.builtKernels)
     ++ [(writeTextDir "lib/codedown/repls.yaml" (lib.generators.toYAML {} repls))]
+    ++ [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporterInfos))]
   ;
 
   passthru = {

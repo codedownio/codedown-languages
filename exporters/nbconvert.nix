@@ -2,8 +2,7 @@
 , symlinkJoin
 , pandoc
 , python3
-, texlive
-, size ? "small"
+, texliveScheme
 }:
 
 let
@@ -15,8 +14,6 @@ let
 
   common = callPackage ../languages/common.nix {};
 
-  texliveToUse = if size == "small" then texlive.combined.scheme-small else texlive.combined.scheme-full;
-
   makeNbconvertExporter = name: displayName: extension: to: common.writeShellScriptBinWithAttrs {
     inherit name extension;
     display_name = displayName;
@@ -24,7 +21,7 @@ let
     icon = null;
   } "export" ''
     echo_and_run() { echo "$*" ; "$@" ; }
-    echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveToUse}/bin"
+    echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveScheme}/bin"
     echo_and_run ${nbconvert}/bin/jupyter-nbconvert "$1" --to ${to}
   '';
 
@@ -35,20 +32,25 @@ let
     (makeNbconvertExporter "codedown-exporter-html" "HTML (.html)" "html" "html")
     (makeNbconvertExporter "codedown-exporter-rst" "reStructuredText (.rst)" ".rst" "rst")
     (makeNbconvertExporter "codedown-exporter-slides" "Slides (.html)" ".html" "slides")
-    (callPackage ./nbconvert/slidy.nix { inherit texliveToUse nbconvert; })
-    (callPackage ./nbconvert/beamer.nix { inherit texliveToUse; })
+    (callPackage ./nbconvert/slidy.nix {
+      inherit nbconvert;
+      texliveToUse = texliveScheme;
+    })
+    (callPackage ./nbconvert/beamer.nix {
+      texliveToUse = texliveScheme;
+    })
     (makeNbconvertExporter "codedown-exporter-markdown" "Markdown (.md)" ".md" "markdown")
   ];
 
 in
 
 symlinkJoin {
-  name = "nbconvert-exporters-" + size;
+  name = "nbconvert-exporters";
   paths = exporters;
 
   meta = {
-    name = "nbconvert-exporters-" + size;
-    description = "CodeDown exporters using a ${size} TeX Live distribution";
+    name = "nbconvert-exporters";
+    description = "CodeDown exporters for PDF, HTML, LaTeX, slides, etc.";
 
     icon = ../codedown-icon.png;
 
