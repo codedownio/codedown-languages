@@ -3,23 +3,6 @@
 , ...
 }:
 
-codedown.mkCodeDownEnvironment {
-  environmentName = "shells-bash";
-  inherit channels;
-
-  kernels = [];
-
-  otherPackages = [
-    { channel = "codedown"; attr = "shells.bash"; contents = codedown.shells.bash; }
-  ];
+codedown.makeEnvironment channels {
+  shells.bash.enable = true;
 }
-
-# codedown.makeEnvironmentPrime {
-#   inherit channels;
-
-#   packages = {
-#     "codedown.shells.bash" = {
-#       packages = {};
-#     };
-#   };
-# }
