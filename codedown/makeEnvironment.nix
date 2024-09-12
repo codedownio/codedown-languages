@@ -53,7 +53,13 @@ let
     ];
   };
 
-  builtKernels = evaluated.config.builtKernels;
+  builtKernels = mapAttrs (_: kernel:
+    kernel.overrideAttrs (old: {
+      passthru = old.passthru // {
+        name = x.name;
+        channel = x.channel;
+      };
+    })) evaluated.config.builtKernels;
   builtShells = evaluated.config.builtShells;
   builtExporters = evaluated.config.builtExporters;
 
