@@ -3,15 +3,9 @@
 , ...
 }:
 
-codedown.makeEnvironmentPrime {
-  inherit channels;
-
-  packages = {
-    "codedown.kernels.octave" = {
-      packages = {};
-      extraJupyterConfig = ''
-        c.OctaveKernel.plot_settings = dict(format='svg')
-      '';
-    };
-  };
+codedown.makeEnvironment channels {
+  kernels.octave.enable = true;
+  kernels.octave.settings.extraJupyterConfig = ''
+    c.OctaveKernel.plot_settings = dict(format='svg')
+  '';
 }
