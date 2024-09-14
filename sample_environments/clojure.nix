@@ -3,12 +3,6 @@
 , ...
 }:
 
-codedown.makeEnvironmentPrime {
-  inherit channels;
-
-  packages = {
-    "codedown.kernels.clojure" = {
-      packages = {};
-    };
-  };
+codedown.makeEnvironment channels {
+  kernels.clojure.enable = true;
 }

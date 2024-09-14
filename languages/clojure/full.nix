@@ -25,25 +25,30 @@ let
     };
   };
 
-  clojure-lsp = (builtins.getFlake "github:clojure-lsp/clojure-lsp/5e3584014f2ac9c13a877dfd7984383346d81609").packages.x86_64-linux.default;
+  clojure-lsp = callPackage ./clojure-lsp.nix {};
 
   packageOptions = {};
   packageSearch = common.searcher packageOptions;
+
+  kernelName = "clojure";
+
+  languageServers = []
+    ++ lib.optionals settings.lsp.clojure-lsp.enable [(callPackage ./language-server.nix { inherit clojure-lsp kernelName; })];
 
 in
 
 symlinkJoin {
   name = "clojure";
   paths = [
-    (callPackage ./kernel.nix { inherit attrs extensions version; })
+    (callPackage ./kernel.nix { inherit attrs extensions; version = clojure.version; })
     clojure
   ]
-  ++ lib.optionals settings.lsp.clojure-lsp.enable [(callPackage ./language-server.nix { inherit clojure-lsp kernelName; })]
+  ++ languageServers
   ;
 
   passthru = {
     meta = clojure.meta // {
-      baseName = x;
+      baseName = "clojure";
       displayName = "Clojure";
       version = clojure.version;
       icon = ./clojure-logo-64x64.png;
@@ -55,7 +60,10 @@ symlinkJoin {
       clojure-lsp = clojure-lsp.version;
     };
     inherit settingsSchema settings;
-    args = args // { baseName = x; };
+    args = {
+      inherit attrs extensions settings;
+      packages = [];
+    };
     repls = repls clojure;
     modes = {
       inherit attrs extensions;
