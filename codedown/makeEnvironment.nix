@@ -98,9 +98,9 @@ symlinkJoin {
     inherit channels;
 
     ui_metadata = {
-      channels = lib.mapAttrsToList uiMetadata.mkChannelUiMetadata channels;
+      # channels = lib.mapAttrsToList uiMetadata.mkChannelUiMetadata channels;
 
-      # kernels = map uiMetadata.mkKernelUiMetadata (attrValues builtKernels);
+      kernels = map uiMetadata.mkKernelUiMetadata (attrValues builtKernels);
 
       # other_packages = map uiMetadata.mkOtherPackageUiMetadata otherPackages;
     };

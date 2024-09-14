@@ -64,7 +64,7 @@ symlinkJoin {
 
   passthru = rec {
     ui_metadata = {
-      channels = lib.mapAttrsToList uiMetadata.mkChannelUiMetadata channels;
+      # channels = lib.mapAttrsToList uiMetadata.mkChannelUiMetadata channels;
 
       kernels = map uiMetadata.mkKernelUiMetadata builtKernels;
 

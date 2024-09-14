@@ -37,6 +37,7 @@ symlinkJoin {
   passthru = {
     args = {
       inherit attrs extensions settings;
+      packages = [];
     };
     meta = bash.meta // {
       baseName = kernelName;

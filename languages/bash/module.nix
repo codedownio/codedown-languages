@@ -2,14 +2,8 @@
 
 with lib;
 
-{
+rec {
   options = {
-    myOption = mkOption {
-      type = types.str;
-      default = "default value";
-      description = "An example option";
-    };
-
     kernels.bash = {
       enable = mkOption {
         type = types.bool;
@@ -38,6 +32,7 @@ with lib;
     builtKernels.bash = config.pkgs.callPackage ./full.nix {
       bash = config.pkgs.bash;
       inherit (config.kernels.bash) attrs extensions settings;
+      settingsSchema = config.nixosOptionsToSettingsSchema options;
     };
   };
 }

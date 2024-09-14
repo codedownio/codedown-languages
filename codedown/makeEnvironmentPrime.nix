@@ -42,7 +42,7 @@ let
 in
 
 mkCodeDownEnvironment {
-  channels = null;
+  inherit channels;
   environmentName = name;
 
   kernels = mapAttrsToList (n: v: {
