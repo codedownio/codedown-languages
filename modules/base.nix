@@ -24,11 +24,6 @@ with lib;
       default = {};
     };
 
-    nixosOptionsToSettingsSchema = lib.mkOption {
-      type = types.functionTo types.attrs;
-      default = callPackage ./base/nixos-options-to-settings-schema.nix {};
-    };
-
     environmentPackages = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = [];

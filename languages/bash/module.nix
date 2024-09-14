@@ -1,8 +1,8 @@
-{ config, lib, pkgs, ... }:
+{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, ... }:
 
 with lib;
 
-rec {
+{
   options = {
     kernels.bash = {
       enable = mkOption {
@@ -32,7 +32,7 @@ rec {
     builtKernels.bash = config.pkgs.callPackage ./full.nix {
       bash = config.pkgs.bash;
       inherit (config.kernels.bash) attrs extensions settings;
-      settingsSchema = config.nixosOptionsToSettingsSchema options;
+      settingsSchema = nixosOptionsToSettingsSchema options.kernels.bash;
     };
   };
 }

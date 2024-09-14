@@ -32,6 +32,9 @@ let
   ) channels;
 
   evaluated = lib.evalModules {
+    specialArgs = {
+      nixosOptionsToSettingsSchema = pkgsStable.callPackage ../modules/base/nixos-options-to-settings-schema.nix {};
+    };
     modules = [
       ../modules/base.nix
 

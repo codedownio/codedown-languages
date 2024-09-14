@@ -10,6 +10,7 @@
 , attrs
 , extensions
 , settings
+, settingsSchema
 }:
 
 let
@@ -19,8 +20,6 @@ let
 
   languageServers = lib.optionals settings.lsp.bash-language-server.enable
     [(callPackage ./language_server_bash { inherit kernelName; })];
-
-  settingsSchema = {}; # TODO: fill in
 
 in
 

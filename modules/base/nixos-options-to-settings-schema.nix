@@ -1,26 +1,24 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 options:
 
 let
-  flattenAttrSet = prefix: set:
-    builtins.foldl' (acc: name:
-      let
-        value = set.${name};
-        newPrefix = if prefix == "" then name else "${prefix}.${name}";
-      in
-        if builtins.isAttrs value && value != {}
-        then acc // (flattenAttrSet newPrefix value)
-        else acc // { ${newPrefix} = value; }
-    ) {} (builtins.attrNames set);
+  flattened = lib.optionAttrSetToDocList options;
 
+  convert = v: {
+    target = v.name;
+    type = v.type;
+  }
+  // lib.optionalAttrs (lib.hasAttr "default" v) { defaultValue = convertDefaultValue v.default; }
+  // lib.optionalAttrs (lib.hasAttr "description" v && builtins.typeOf v.description == "string") { description = v.description; }
+  ;
 
-  flattened = flattenAttrSet options;
+  evalString = str: builtins.scopedImport {} (builtins.toFile "expr.nix" str);
+
+  convertDefaultValue = value:
+    if value._type == "literalExpression" then builtins.toJSON (evalString value.text)
+    else builtins.throw "Can't handle this default value: ${toString value}.";
 
 in
 
-lib.mapAttrsToList (n: v: {
-  target = n;
-  title = "asdf";
-  type = "fdsa";
-})
+map convert flattened
