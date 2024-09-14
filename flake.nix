@@ -71,27 +71,6 @@
                                             sample_environments
             );
 
-            channels = {
-              nixpkgs = pkgsStable.fetchFromGitHub {
-                owner = "NixOS";
-                repo = "nixpkgs";
-                rev = "7144d6241f02d171d25fba3edeaf15e0f2592105";
-                hash = "sha256-gvFhEf5nszouwLAkT9nWsDzocUTqLWHuL++dvNjMp9I=";
-              };
-            };
-
-            new_style_env = codedown.makeEnvironment channels {
-              exporters.nbconvert-exporters.enable = true;
-              exporters.nbconvert-exporters.texliveScheme = "scheme-full";
-
-              kernels.bash.enable = true;
-              kernels.bash.settings.lsp.bash-language-server.enable = false;
-
-              shells.bash.enable = true;
-              shells.fish.enable = true;
-              shells.zsh.enable = true;
-            };
-
             printVersions = let
               versionsMap = with pkgsStable.lib;
                 mapAttrs (lang: value: if (hasAttr "versions" value) then (value.versions) else {})
@@ -121,22 +100,6 @@
                 echo "$language: $displayName ($version)"
               done
             '';
-
-            # moduleTest = pkgsStable.lib.evalModules {
-            #   modules = [
-            #     ./modules/base.nix
-            #     ./languages/bash/module.nix
-            #     {
-            #       config = {
-            #         environmentPackages = [pkgsStable.emacs];
-            #         pkgs = pkgsStable;
-
-            #         kernels.bash.enable = true;
-            #         kernels.bash.settings.lsp.bash-language-server.enable = false;
-            #       };
-            #     }
-            #   ];
-            # };
 
             notebook = with pkgsStable; python3.pkgs.toPythonModule (
               python3.pkgs.notebook.overridePythonAttrs (oldAttrs: {
