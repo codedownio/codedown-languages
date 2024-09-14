@@ -41,6 +41,7 @@ let
       ../exporters/module.nix
 
       ../languages/bash/module.nix
+      ../languages/clojure/module.nix
 
       ../shells/bash/module.nix
       ../shells/fish/module.nix
