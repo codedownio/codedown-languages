@@ -43,6 +43,7 @@ let
       ../languages/bash/module.nix
       ../languages/clojure/module.nix
       ../languages/octave/module.nix
+      ../languages/r/module.nix
 
       ../shells/bash/module.nix
       ../shells/fish/module.nix

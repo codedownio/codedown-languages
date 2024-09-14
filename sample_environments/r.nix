@@ -3,14 +3,9 @@
 , ...
 }:
 
-codedown.makeEnvironmentPrime {
-  inherit channels;
-
-  packages = {
-    "codedown.kernels.R" = {
-      packages = {
-        "ggplot2" = {};
-      };
-    };
-  };
+codedown.makeEnvironment channels {
+  kernels.R.enable = true;
+  kernels.R.packages = [
+    "ggplot2"
+  ];
 }
