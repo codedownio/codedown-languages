@@ -16,8 +16,12 @@ with lib;
       };
 
       rubyPackage = mkOption {
-        type = types.package;
-        default = config.pkgs.ruby;
+        type = types.enum (
+          ["ruby"]
+          ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "ruby_") name == "ruby_")
+                              (builtins.attrNames config.pkgs))
+        );
+        default = "ruby";
       };
 
       attrs = mkOption {
@@ -40,7 +44,8 @@ with lib;
 
   config = mkIf config.kernels.ruby.enable {
     builtKernels.ruby = config.pkgs.callPackage ./full.nix {
-      ruby = config.kernels.ruby.rubyPackage;
+      ruby = getAttr config.kernels.ruby.rubyPackage config.pkgs;
+
       inherit (config.kernels.ruby) packages attrs extensions settings;
       settingsSchema = nixosOptionsToSettingsSchema options.kernels.ruby;
     };

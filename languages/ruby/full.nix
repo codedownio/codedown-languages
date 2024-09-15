@@ -53,13 +53,15 @@ symlinkJoin {
       icon = ./iruby-64x64.png;
       inherit settingsSchema;
     };
+    args = {
+      inherit attrs extensions settings packages;
+    };
     versions = {
       ruby = builtins.toString ruby.version;
       solargraph = packageOptions.solargraph.version;
     };
     inherit packageOptions packageSearch;
     inherit settingsSchema settings;
-    args = args // { baseName = x; };
     modes = {
       inherit attrs extensions;
       code_mirror_mode = "ruby";
