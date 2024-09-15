@@ -47,6 +47,7 @@ let
       ../languages/octave/module.nix
       ../languages/r/module.nix
       ../languages/ruby/module.nix
+      ../languages/rust/module.nix
 
       ../shells/bash/module.nix
       ../shells/fish/module.nix

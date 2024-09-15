@@ -3,19 +3,16 @@
 , ...
 }:
 
-codedown.makeEnvironmentPrime {
-  inherit channels;
-
-  packages = {
-    "codedown.kernels.rust" = {
-      packages = {
-        "rand" = {};
-        "serde" = {
-          # features = ["std" "derive"];
-          features = ["derive"];
-        };
-        "serde_json" = {};
+codedown.makeEnvironment channels {
+  kernels.rust.enable = true;
+  kernels.rust.packages = [
+    "rand"
+    {
+      name = "serde";
+      settings = {
+        features = ["derive"];
       };
-    };
-  };
+    }
+    "serde_json"
+  ];
 }

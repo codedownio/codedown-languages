@@ -63,8 +63,8 @@ codedown.makeEnvironment channels {
 
   kernels.ruby.enable = true;
 
-  # kernels.rust.enable = true;
-  # kernels.rust.packages = ["rand"];
+  kernels.rust.enable = true;
+  kernels.rust.packages = ["rand"];
 
   kernels.go.enable = true;
 
