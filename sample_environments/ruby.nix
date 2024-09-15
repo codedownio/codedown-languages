@@ -3,12 +3,6 @@
 , ...
 }:
 
-codedown.makeEnvironmentPrime {
-  inherit channels;
-
-  packages = {
-    "codedown.kernels.ruby" = {
-      packages = {};
-    };
-  };
+codedown.makeEnvironment channels {
+  kernels.ruby.enable = true;
 }

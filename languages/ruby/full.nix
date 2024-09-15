@@ -1,0 +1,69 @@
+{ lib
+, callPackage
+, pkgs
+, recurseIntoAttrs
+, stdenv
+, symlinkJoin
+, writeTextDir
+
+, ruby
+
+, packages
+, attrs
+, extensions
+, settings
+, settingsSchema
+}:
+
+with lib;
+
+let
+  common = callPackage ../common.nix {};
+
+  kernelName = "ruby";
+
+  rubyPackages = recurseIntoAttrs ruby.gems;
+
+  languageServers =
+    []
+    ++ lib.optionals (common.isTrue settings "lsp.solargraph.enable") [(callPackage ./solargraph.nix { rubyPackages = packageOptions; inherit kernelName; })]
+  ;
+
+  packageOptions = rubyPackages;
+  packageSearch = common.searcher packageOptions;
+
+in
+
+symlinkJoin {
+  name = "ruby";
+  paths = [
+    (callPackage ./kernel.nix {
+      iruby = (callPackage ./iruby { inherit ruby; }).iruby;
+      inherit attrs extensions version;
+    })
+    ruby
+  ]
+  ++ languageServers
+  ;
+  passthru = {
+    meta = ruby.meta // {
+      baseName = x;
+      displayName = "Ruby";
+      version = ruby.version;
+      icon = ./iruby-64x64.png;
+      inherit settingsSchema;
+    };
+    versions = {
+      ruby = builtins.toString ruby.version;
+      solargraph = packageOptions.solargraph.version;
+    };
+    inherit packageOptions packageSearch;
+    inherit settingsSchema settings;
+    args = args // { baseName = x; };
+    modes = {
+      inherit attrs extensions;
+      code_mirror_mode = "ruby";
+    };
+    languageServerNames = map (x: x.languageServerName) languageServers;
+  };
+}
