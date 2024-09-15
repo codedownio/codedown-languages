@@ -7,7 +7,9 @@
 
 codedown.makeEnvironment channels {
   kernels.bash.enable = true;
+
   kernels.clojure.enable = true;
+
   # kernels.cpp11.enable = true;
   # kernels.cpp14.enable = true;
   # kernels.cpp17.enable = true;
@@ -48,15 +50,15 @@ codedown.makeEnvironment channels {
   kernels.R.enable = true;
   kernels.R.packages = ["ggplot2"];
 
-  # kernels.python3.enable = true;
-  # kernels.python3.packages = ["matplotlib" "scipy" "rope"];
-  # kernels.python3.settings.permitUserSite = false;
-  # kernels.python3.settings.lsp.jedi.enable = true;
-  # kernels.python3.settings.lsp.pyright.enable = true;
-  # kernels.python3.settings.lsp.pylint.enable = true;
-  # kernels.python3.settings.lsp.flake8.enable = true;
-  # kernels.python3.settings.lsp.pycodestyle.enable = true;
-  # kernels.python3.settings.lsp.python-lsp-server.enable = true;
+  kernels.python3.enable = true;
+  kernels.python3.packages = ["matplotlib" "scipy" "rope"];
+  kernels.python3.settings.permitUserSite = false;
+  kernels.python3.settings.lsp.jedi.enable = true;
+  kernels.python3.settings.lsp.pyright.enable = true;
+  kernels.python3.settings.lsp.pylint.enable = true;
+  kernels.python3.settings.lsp.flake8.enable = true;
+  kernels.python3.settings.lsp.pycodestyle.enable = true;
+  kernels.python3.settings.lsp.python-lsp-server.enable = true;
 
   # kernels.pypy3.enable = true;
   # kernels.pypy3.settings.permitUserSite = false;
