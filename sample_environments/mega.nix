@@ -10,7 +10,8 @@ codedown.makeEnvironment channels {
 
   kernels.clojure.enable = true;
 
-  # kernels.cpp11.enable = true;
+  kernels.cpp.enable = true;
+
   # kernels.cpp14.enable = true;
   # kernels.cpp17.enable = true;
   # kernels.cpp20.enable = true;

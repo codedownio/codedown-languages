@@ -43,6 +43,7 @@ let
       ../languages/bash/module.nix
       ../languages/clojure/module.nix
       ../languages/coq/module.nix
+      ../languages/cpp/module.nix
       ../languages/go/module.nix
       ../languages/octave/module.nix
       ../languages/python/module.nix
