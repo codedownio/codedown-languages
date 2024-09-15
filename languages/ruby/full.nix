@@ -26,7 +26,7 @@ let
 
   languageServers =
     []
-    ++ lib.optionals (common.isTrue settings "lsp.solargraph.enable") [(callPackage ./solargraph.nix { rubyPackages = packageOptions; inherit kernelName; })]
+    ++ lib.optionals settings.lsp.solargraph.enable [(callPackage ./solargraph.nix { rubyPackages = packageOptions; inherit kernelName; })]
   ;
 
   packageOptions = rubyPackages;
