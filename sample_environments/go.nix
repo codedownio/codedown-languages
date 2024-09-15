@@ -3,12 +3,9 @@
 , ...
 }:
 
-codedown.makeEnvironmentPrime {
-  inherit channels;
-
-  packages = {
-    "codedown.kernels.go" = {
-      packages = ["rand"];
-    };
-  };
+codedown.makeEnvironment channels {
+  kernels.go.enable = true;
+  kernels.go.packages = [
+    "rand"
+  ];
 }
