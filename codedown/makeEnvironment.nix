@@ -42,6 +42,7 @@ let
 
       ../languages/bash/module.nix
       ../languages/clojure/module.nix
+      ../languages/coq/module.nix
       ../languages/octave/module.nix
       ../languages/r/module.nix
       ../languages/ruby/module.nix

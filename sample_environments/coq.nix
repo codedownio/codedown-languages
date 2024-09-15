@@ -3,12 +3,7 @@
 , ...
 }:
 
-codedown.makeEnvironmentPrime {
-  inherit channels;
-
-  packages = {
-    "codedown.kernels.coq" = {
-      packages = {};
-    };
-  };
+codedown.makeEnvironment channels {
+  kernels.coq.enable = true;
+  # kernels.coq.coqPackages = "coqPackages_8_17";
 }
