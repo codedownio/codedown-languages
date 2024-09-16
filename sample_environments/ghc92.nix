@@ -3,15 +3,10 @@
 , ...
 }:
 
-codedown.makeEnvironmentPrime {
-  inherit channels;
-
-  packages = {
-    "codedown.kernels.haskell-ghc92" = {
-      packages = ["aeson"];
-      settings = {
-        "lsp.haskell-language-server.debug" = true;
-      };
-    };
+codedown.makeEnvironment channels {
+  kernels.haskell.enable = true;
+  kernels.haskell.ghcPackage = "ghc92";
+  kernels.haskell.settings = {
+    lsp.haskell-language-server.debug = true;
   };
 }
