@@ -46,15 +46,7 @@
 
             inherit pkgsStable;
 
-            jupyter-runner = with pkgsMaster;
-              let
-                pythonEnv = python3.withPackages (ps: with ps; [papermill]);
-                packages = [coreutils findutils pythonEnv];
-              in
-                runCommand "papermill" { buildInputs = [makeWrapper]; } ''
-                  makeWrapper ${pythonEnv}/bin/papermill $out \
-                    --set PATH ${lib.makeBinPath packages}
-                '';
+            jupyter-runner = pkgsMaster.callPackage ./nix/jupyter-runner.nix {};
 
             sample_environments = import ./sample_environments.nix {
               inherit codedown pkgsStable;
