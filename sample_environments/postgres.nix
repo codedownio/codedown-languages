@@ -3,6 +3,6 @@
 , ...
 }:
 
-codedown.makeEnvironment channels {
+codedown.makeEnvironment {
   kernels.postgres.enable = true;
 }

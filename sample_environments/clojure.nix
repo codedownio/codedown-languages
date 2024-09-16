@@ -3,6 +3,6 @@
 , ...
 }:
 
-codedown.makeEnvironment channels {
+codedown.makeEnvironment {
   kernels.clojure.enable = true;
 }

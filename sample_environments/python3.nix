@@ -3,7 +3,7 @@
 , ...
 }:
 
-codedown.makeEnvironment channels {
+codedown.makeEnvironment {
   kernels.python3.enable = true;
   kernels.python3.packages = [
     "matplotlib"

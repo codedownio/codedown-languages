@@ -14,23 +14,11 @@
 , name ? "codedown-environment"
 }:
 
-channels:
-
 config:
 
 with lib;
 
 let
-  importedOverlays = [];
-
-  importedChannels = builtins.mapAttrs (name: value: let
-    imported = import value;
-  in
-    if (builtins.isFunction imported && builtins.hasAttr "overlays" (builtins.functionArgs imported)) then imported { overlays = importedOverlays; inherit system; }
-    else if (builtins.isFunction imported) then imported { inherit fetchgit fetchFromGitHub; }
-    else imported
-  ) channels;
-
   evaluated = lib.evalModules {
     specialArgs = {
       nixosOptionsToSettingsSchema = pkgsStable.callPackage ../modules/base/nixos-options-to-settings-schema.nix {};
@@ -107,7 +95,7 @@ symlinkJoin {
     attrValues (evaluated.config.builtKernels)
     ++ lib.optionals (builtins.length repls > 0) [(writeTextDir "lib/codedown/repls.yaml" (lib.generators.toYAML {} repls))]
     ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
-    ++ evaluated.config.environmentPackages
+    ++ evaluated.config.packages
   ;
 
   passthru = rec {

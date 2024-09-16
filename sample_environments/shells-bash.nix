@@ -3,6 +3,6 @@
 , ...
 }:
 
-codedown.makeEnvironment channels {
+codedown.makeEnvironment {
   shells.bash.enable = true;
 }

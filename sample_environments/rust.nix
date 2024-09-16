@@ -3,7 +3,7 @@
 , ...
 }:
 
-codedown.makeEnvironment channels {
+codedown.makeEnvironment {
   kernels.rust.enable = true;
   kernels.rust.packages = [
     "rand"

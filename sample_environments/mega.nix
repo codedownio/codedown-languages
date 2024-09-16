@@ -5,7 +5,7 @@
 }:
 
 
-codedown.makeEnvironment channels {
+codedown.makeEnvironment {
   kernels.bash.enable = true;
 
   kernels.clojure.enable = true;

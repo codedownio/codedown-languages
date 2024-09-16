@@ -24,7 +24,7 @@ with lib;
       default = {};
     };
 
-    environmentPackages = lib.mkOption {
+    packages = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = [];
       example = lib.literalExpression "[ pkgs.firefox pkgs.thunderbird ]";
