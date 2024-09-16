@@ -53,6 +53,8 @@ let
       ../languages/ruby/module.nix
       ../languages/rust/module.nix
 
+      ../language_servers/markdown-spellcheck-lsp/module.nix
+
       ../shells/bash/module.nix
       ../shells/fish/module.nix
       ../shells/zsh/module.nix
@@ -104,6 +106,7 @@ symlinkJoin {
     attrValues (evaluated.config.builtKernels)
     ++ lib.optionals (builtins.length repls > 0) [(writeTextDir "lib/codedown/repls.yaml" (lib.generators.toYAML {} repls))]
     ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
+    ++ evaluated.config.environmentPackages
   ;
 
   passthru = rec {

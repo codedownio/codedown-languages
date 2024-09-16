@@ -3,21 +3,6 @@
 , ...
 }:
 
-codedown.mkCodeDownEnvironment {
-  environmentName = "spellchecker";
-  inherit channels;
-
-  kernels = [];
-
-  otherPackages = [
-    { channel = "codedown"; attr = "spellchecker"; contents = codedown.spellchecker; }
-  ];
+codedown.makeEnvironment channels {
+  language-servers.spellchecker.enable = true;
 }
-
-# codedown.makeEnvironmentPrime {
-#   inherit channels;
-
-#   packages = {
-#     "codedown.spellchecker" = {};
-#   };
-# }
