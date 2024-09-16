@@ -3,12 +3,8 @@
 , ...
 }:
 
-codedown.makeEnvironmentPrime {
-  inherit channels;
-
-  packages = {
-    "codedown.kernels.julia19" = {
-      packages = ["JSON3" "Plots" "RDatasets"];
-    };
-  };
+codedown.makeEnvironment channels {
+  kernels.julia.enable = true;
+  kernels.julia.juliaPackage = "julia_19";
+  kernels.julia.packages = ["JSON3" "Plots"];
 }

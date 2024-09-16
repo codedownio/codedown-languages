@@ -45,6 +45,7 @@ let
       ../languages/coq/module.nix
       ../languages/cpp/module.nix
       ../languages/go/module.nix
+      ../languages/julia/module.nix
       ../languages/octave/module.nix
       ../languages/python/module.nix
       ../languages/r/module.nix
