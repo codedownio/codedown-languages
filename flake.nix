@@ -20,25 +20,10 @@
 
       in
         rec {
-          apps = {
-            searcher = {
-              type = "app";
-              program = "${self.packages.${system}.searcher}/bin/searcher";
-            };
-            nixpkgsStableSearcher = {
-              type = "app";
-              program = "${self.packages.${system}.nixpkgsStableSearcher}/bin/searcher";
-            };
-            notebook = {
-              type = "app";
-              program = "${self.packages.${system}.notebook}/bin/jupyter-notebook";
-            };
-          };
-
           packages = rec {
             nixpkgsPath = pkgsStable.writeShellScriptBin "nixpkgsPath.sh" "echo -n ${pkgsStable.path}";
 
-            inherit (codedown) spellchecker nixpkgsStableSearcher codedownSearcher languagesIcons;
+            inherit (codedown) spellchecker codedownSearcher languagesIcons;
 
             inherit (codedown) languages;
 
