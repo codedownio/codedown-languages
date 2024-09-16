@@ -57,7 +57,6 @@ kernelSpec lang = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just [i|Ruby (#{lang})|]
   , nixKernelPackages = []
-  , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Just [

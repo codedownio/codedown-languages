@@ -19,7 +19,6 @@ kernelSpec = NixKernelSpec {
   , nixKernelName = "bash"
   , nixKernelDisplayName = Just "Bash"
   , nixKernelPackages = []
-  , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Just [

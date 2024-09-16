@@ -69,7 +69,6 @@ kernelSpec lang = NixKernelSpec {
       , nameOnly "Plots"
       , nameOnly "Roots"
       ]
-  , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Just [

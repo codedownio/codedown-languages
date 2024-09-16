@@ -72,7 +72,6 @@ kernelSpec = NixKernelSpec {
       , nameOnly "serde_json"
       , nameOnly "serde_derive"
       ]
-  , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Just [

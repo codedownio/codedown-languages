@@ -16,7 +16,6 @@ kernelSpec lang = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just [i|Haskell (#{lang})|]
   , nixKernelPackages = [nameOnly "aeson", nameOnly "bytestring"]
-  , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Just [

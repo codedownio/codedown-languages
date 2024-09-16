@@ -72,7 +72,6 @@ kernelSpec kernelName = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Python"
   , nixKernelPackages = [nameOnly "tensorflow"]
-  , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Just [

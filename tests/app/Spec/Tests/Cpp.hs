@@ -38,7 +38,6 @@ kernelSpec kernelName  = NixKernelSpec {
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "CPP"
   , nixKernelPackages = []
-  , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelSettings = Nothing
