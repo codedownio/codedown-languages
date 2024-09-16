@@ -3,7 +3,6 @@
 
 module Spec.Tests.Python (tests) where
 
-import Data.Aeson as A
 import Data.String.Interpolate
 import Data.Text
 import Language.LSP.Protocol.Types
@@ -14,7 +13,6 @@ import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
-import TestLib.Util
 
 
 tests :: LanguageSpec
@@ -77,12 +75,12 @@ kernelSpec kernelName = NixKernelSpec {
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Just $ aesonFromList [
-      ("lsp.jedi.enable", A.Bool True)
-      , ("lsp.python-lsp-server.enable", A.Bool True)
-      , ("lsp.pylint.enable", A.Bool True)
-      , ("lsp.pyright.enable", A.Bool True)
-      , ("lsp.pycodestyle.enable", A.Bool True)
+  , nixKernelSettings = Just [
+      "lsp.jedi.enable = true"
+      , "lsp.python-lsp-server.enable = true"
+      , "lsp.pylint.enable = true"
+      , "lsp.pyright.enable = true"
+      , "lsp.pycodestyle.enable = true"
       ]
   }
 

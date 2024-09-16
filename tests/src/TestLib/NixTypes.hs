@@ -57,7 +57,7 @@ data NixKernelSpec = NixKernelSpec {
   , nixKernelExtraJupyterConfig :: Maybe Text
   , nixKernelMeta :: Maybe Value
   , nixKernelIcon :: Maybe Text
-  , nixKernelSettings :: Maybe A.Object
+  , nixKernelSettings :: Maybe [Text]
   } deriving (Show, Eq, Ord)
 deriveJSON toSnake2 ''NixKernelSpec
 

@@ -41,18 +41,12 @@ let
 
 in
 
-(import channels.codedown { inherit fetchFromGitHub; }).mkCodeDownEnvironment {
-  inherit channels;
-
-  kernels = [
-#{T.intercalate "\n" [indentTo 4 $ renderKernel x | x <- nixEnvironmentKernels]}
-  ];
-
-  otherPackages = [
-#{T.intercalate "\n" [indentTo 4 $ renderOtherPackage x | x <- nixEnvironmentOtherPackages]}
-  ];
+(import channels.codedown { inherit fetchFromGitHub; }).makeEnvironment {
+#{T.intercalate "\n\n" [renderKernel x | x <- nixEnvironmentKernels]}
 }
 |]
+
+-- #{T.intercalate "\n" [indentTo 4 $ renderOtherPackage x | x <- nixEnvironmentOtherPackages]}
 
 renderChannel :: NixSrcSpec -> Text
 renderChannel nixSrcSpec = [i|#{nixSrcName nixSrcSpec} = (#{renderNixSrcSpec nixSrcSpec});|]
@@ -81,14 +75,15 @@ renderOtherPackage :: ChannelAndAttr -> Text
 renderOtherPackage (ChannelAndAttr {..}) = [i|{ channel = "#{channelAndAttrChannel}"; attr = "#{channelAndAttrAttr}"; contents = importedChannels.#{channelAndAttrChannel}.#{channelAndAttrAttr};  }|]
 
 renderKernel :: NixKernelSpec -> Text
-renderKernel (NixKernelSpec {..}) = [i|({
-  name = "#{nixKernelName}";
-  channel = "#{nixKernelChannel}";
-  args = {
-    packages = [#{T.unwords $ fmap renderKernelPackage nixKernelPackages}];#{kernelSettings}
-  };
-})|]
+renderKernel (NixKernelSpec {..}) =
+  [i|kernels.#{nixKernelName}.enable = true;|]
+  <> kernelPackages
+  <> kernelSettings
   where
+    kernelPackages = case nixKernelPackages of
+      [] -> ""
+      xs -> [i|kernels.#{nixKernelName}.packages = [#{T.unwords $ fmap renderKernelPackage xs}];|]
+
     renderKernelPackage (NameAndSettings name Nothing) = quote name
     renderKernelPackage (NameAndSettings name (Just settings)) = aesonToNix (A.object [("name", A.String name), ("settings", settings)])
       & parenQuote
@@ -97,7 +92,11 @@ renderKernel (NixKernelSpec {..}) = [i|({
 
     quote x = "\"" <> x <> "\""
 
-    kernelSettings = maybe "" (("\n" <>) . indentTo 4 . (\x -> [i|settings = #{x};|]) . aesonToNix . A.Object) nixKernelSettings
+    kernelSettings :: Text
+    kernelSettings = case nixKernelSettings of
+      Nothing -> ""
+      Just [] -> ""
+      Just xs -> "\n" <> T.intercalate "\n" (fmap (\x -> [i|kernels.#{nixKernelName}.settings.#{x};|]) xs)
 
 aesonToNix :: A.Value -> Text
 aesonToNix (A.Bool True) = "true"

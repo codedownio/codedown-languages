@@ -17,7 +17,6 @@ import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
-import TestLib.Util
 
 
 tests :: LanguageSpec
@@ -76,8 +75,8 @@ kernelSpec = NixKernelSpec {
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Just $ aesonFromList [
-      ("lsp.rust-analyzer.debug", A.Bool True)
+  , nixKernelSettings = Just [
+      "lsp.rust-analyzer.debug = true"
       ]
   }
 

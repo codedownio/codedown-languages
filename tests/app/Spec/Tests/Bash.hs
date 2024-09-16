@@ -2,7 +2,6 @@
 
 module Spec.Tests.Bash (tests) where
 
-import Data.Aeson as A
 import Data.String.Interpolate
 import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
@@ -12,7 +11,6 @@ import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
-import TestLib.Util
 
 
 kernelSpec :: NixKernelSpec
@@ -24,8 +22,8 @@ kernelSpec = NixKernelSpec {
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Just $ aesonFromList [
-      ("lsp.bash-language-server.enable", A.Bool True)
+  , nixKernelSettings = Just [
+      "lsp.bash-language-server.enable = true"
       ]
   }
 

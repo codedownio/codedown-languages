@@ -6,7 +6,6 @@ module Spec.Tests.Ruby (tests) where
 
 import Control.Lens
 import Control.Monad
-import Data.Aeson as A
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Protocol.Lens hiding (hover, text)
@@ -18,7 +17,6 @@ import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
-import TestLib.Util (aesonFromList)
 
 
 tests :: LanguageSpec
@@ -62,8 +60,8 @@ kernelSpec lang = NixKernelSpec {
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Just $ aesonFromList [
-      ("lsp.solargraph.enable", A.Bool True)
+  , nixKernelSettings = Just [
+      "lsp.solargraph.enable = true"
       ]
   }
 

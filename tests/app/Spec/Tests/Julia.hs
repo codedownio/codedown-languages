@@ -5,7 +5,6 @@
 module Spec.Tests.Julia (tests) where
 
 import Control.Lens hiding (List)
-import Data.Aeson as A
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Protocol.Lens hiding (diagnostics, hover, text)
@@ -19,7 +18,6 @@ import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
-import TestLib.Util
 
 
 tests :: LanguageSpec
@@ -74,10 +72,10 @@ kernelSpec lang = NixKernelSpec {
   , nixKernelExtraJupyterConfig = Nothing
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Just $ aesonFromList [
-      ("lsp.LanguageServer.enable", A.Bool True)
-      , ("lsp.LanguageServer.debug", A.Bool True)
-      , ("lsp.LanguageServer.index", A.Bool True)
+  , nixKernelSettings = Just [
+      "lsp.LanguageServer.enable = true"
+      , "lsp.LanguageServer.debug = true"
+      , "lsp.LanguageServer.index = true"
       ]
   }
 
