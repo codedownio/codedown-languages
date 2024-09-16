@@ -48,6 +48,7 @@ let
       ../languages/haskell/module.nix
       ../languages/julia/module.nix
       ../languages/octave/module.nix
+      ../languages/postgres/module.nix
       ../languages/python/module.nix
       ../languages/r/module.nix
       ../languages/ruby/module.nix

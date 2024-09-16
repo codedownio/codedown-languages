@@ -3,12 +3,6 @@
 , ...
 }:
 
-codedown.makeEnvironmentPrime {
-  inherit channels;
-
-  packages = {
-    "codedown.kernels.postgres" = {
-      packages = {};
-    };
-  };
+codedown.makeEnvironment channels {
+  kernels.postgres.enable = true;
 }
