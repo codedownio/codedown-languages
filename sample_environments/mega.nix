@@ -11,11 +11,7 @@ codedown.makeEnvironment channels {
   kernels.clojure.enable = true;
 
   kernels.cpp.enable = true;
-
-  kernels.cpp14.enable = true;
-  kernels.cpp17.enable = true;
-  kernels.cpp20.enable = true;
-  kernels.cpp23.enable = true;
+  kernels.cpp.flavor = "c++14";
 
   kernels.julia.enable = true;
   kernels.julia.packages = ["JSON3" "Plots"];
@@ -23,24 +19,9 @@ codedown.makeEnvironment channels {
   kernels.julia.settings.lsp.LanguageServer.index = true;
   kernels.julia.settings.lsp.LanguageServer.debug = false;
 
-  kernels.julia19.enable = true;
-  kernels.julia19.packages = ["JSON3" "Plots"];
-
-  kernels.haskell-ghc92.enable = true;
-  kernels.haskell-ghc92.packages = ["aeson"];
-  kernels.haskell-ghc92.settings.lsp.haskell-language-server.debug = true;
-
-  kernels.haskell-ghc94.enable = true;
-  kernels.haskell-ghc94.packages = ["aeson"];
-  kernels.haskell-ghc94.settings.lsp.haskell-language-server.debug = true;
-
-  kernels.haskell-ghc96.enable = true;
-  kernels.haskell-ghc96.packages = ["aeson"];
-  kernels.haskell-ghc96.settings.lsp.haskell-language-server.debug = true;
-
-  kernels.haskell-ghc98.enable = true;
-  kernels.haskell-ghc98.packages = ["aeson"];
-  kernels.haskell-ghc98.settings.lsp.haskell-language-server.debug = true;
+  kernels.haskell.enable = true;
+  kernels.haskell.packages = ["aeson"];
+  kernels.haskell.settings.lsp.haskell-language-server.debug = true;
 
   kernels.octave.enable = true;
   kernels.octave.packages = ["arduino"];
