@@ -18,15 +18,15 @@ kernelSpec lang = NixKernelSpec {
   , nixKernelPackages = [nameOnly "aeson", nameOnly "bytestring"]
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Just [
-      "lsp.haskell-language-server.debug = true"
-      -- , "lsp.haskell-language-server.super-debug = true"
+  , nixKernelExtraConfig = Just [
+      "settings.lsp.haskell-language-server.debug = true"
+      -- , "settings.lsp.haskell-language-server.super-debug = true"
       ]
   }
 
 kernelSpecWithHlintOutput :: Text -> NixKernelSpec
 kernelSpecWithHlintOutput lang = (kernelSpec lang) {
-  nixKernelSettings = Just [
-      "enableHlintOutput = true"
+  nixKernelExtraConfig = Just [
+      "settings.enableHlintOutput = true"
       ]
   }

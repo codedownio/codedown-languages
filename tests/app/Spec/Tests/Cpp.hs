@@ -15,32 +15,34 @@ import TestLib.Types
 
 tests :: LanguageSpec
 tests = describe "C++" $ parallel $ do
+  testKernelSearchersBuild "cpp"
+  testHasExpectedFields "cpp"
+
   -- tests' "cpp98"
-  tests' "cpp11"
-  tests' "cpp14"
-  tests' "cpp17"
-  tests' "cpp20"
-  tests' "cpp23"
+  tests' "c++11"
+  tests' "c++14"
+  tests' "c++17"
+  tests' "c++20"
+  tests' "c++23"
 
 tests' :: Text -> LanguageSpec
-tests' kernelName = describe [i|C++ (#{kernelName})|] $ introduceNixEnvironment [kernelSpec kernelName] [] "C++" $ introduceJupyterRunner $ do
-  testKernelSearchersBuild kernelName
-  testHasExpectedFields kernelName
-
-  testKernelStdout kernelName [__i|\#include <iostream>
-                                   using namespace std;
-                                   cout << "hi" << endl;|] "hi\n"
+tests' flavor = describe [i|C++ (#{flavor})|] $ introduceNixEnvironment [kernelSpec flavor] [] "C++" $ introduceJupyterRunner $ do
+  testKernelStdout "cpp" [__i|\#include <iostream>
+                              using namespace std;
+                              cout << "hi" << endl;|] "hi\n"
 
 
 kernelSpec :: Text -> NixKernelSpec
-kernelSpec kernelName  = NixKernelSpec {
-  nixKernelName = kernelName
+kernelSpec flavor  = NixKernelSpec {
+  nixKernelName = "cpp"
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "CPP"
   , nixKernelPackages = []
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Nothing
+  , nixKernelExtraConfig = Just [
+      [i|flavor = "#{flavor}"|]
+      ]
   }
 
 main :: IO ()

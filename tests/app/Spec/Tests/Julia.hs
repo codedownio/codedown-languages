@@ -71,10 +71,10 @@ kernelSpec lang = NixKernelSpec {
       ]
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Just [
-      "lsp.LanguageServer.enable = true"
-      , "lsp.LanguageServer.debug = true"
-      , "lsp.LanguageServer.index = true"
+  , nixKernelExtraConfig = Just [
+      "settings.lsp.LanguageServer.enable = true"
+      , "settings.lsp.LanguageServer.debug = true"
+      , "settings.lsp.LanguageServer.index = true"
       ]
   }
 

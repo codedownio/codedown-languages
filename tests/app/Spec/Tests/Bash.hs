@@ -21,8 +21,8 @@ kernelSpec = NixKernelSpec {
   , nixKernelPackages = []
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Just [
-      "lsp.bash-language-server.enable = true"
+  , nixKernelExtraConfig = Just [
+      "settings.lsp.bash-language-server.enable = true"
       ]
   }
 

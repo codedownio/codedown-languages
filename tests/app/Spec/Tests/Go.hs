@@ -22,7 +22,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelPackages = []
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Nothing
+  , nixKernelExtraConfig = Nothing
   }
 
 tests :: LanguageSpec

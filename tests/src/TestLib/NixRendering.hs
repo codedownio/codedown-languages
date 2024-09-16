@@ -93,10 +93,10 @@ renderKernel (NixKernelSpec {..}) =
     quote x = "\"" <> x <> "\""
 
     kernelSettings :: Text
-    kernelSettings = case nixKernelSettings of
+    kernelSettings = case nixKernelExtraConfig of
       Nothing -> ""
       Just [] -> ""
-      Just xs -> "\n" <> T.intercalate "\n" (fmap (\x -> [i|kernels.#{nixKernelName}.settings.#{x};|]) xs)
+      Just xs -> "\n" <> T.intercalate "\n" (fmap (\x -> [i|kernels.#{nixKernelName}.#{x};|]) xs)
 
 aesonToNix :: A.Value -> Text
 aesonToNix (A.Bool True) = "true"

@@ -59,8 +59,8 @@ kernelSpec lang = NixKernelSpec {
   , nixKernelPackages = []
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Just [
-      "lsp.solargraph.enable = true"
+  , nixKernelExtraConfig = Just [
+      "settings.lsp.solargraph.enable = true"
       ]
   }
 

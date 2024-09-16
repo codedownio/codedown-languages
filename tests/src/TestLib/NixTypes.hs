@@ -56,7 +56,7 @@ data NixKernelSpec = NixKernelSpec {
   , nixKernelPackages :: [NameAndSettings]
   , nixKernelMeta :: Maybe Value
   , nixKernelIcon :: Maybe Text
-  , nixKernelSettings :: Maybe [Text]
+  , nixKernelExtraConfig :: Maybe [Text]
   } deriving (Show, Eq, Ord)
 deriveJSON toSnake2 ''NixKernelSpec
 

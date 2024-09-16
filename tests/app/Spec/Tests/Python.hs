@@ -74,12 +74,12 @@ kernelSpec kernelName = NixKernelSpec {
   , nixKernelPackages = [nameOnly "tensorflow"]
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Just [
-      "lsp.jedi.enable = true"
-      , "lsp.python-lsp-server.enable = true"
-      , "lsp.pylint.enable = true"
-      , "lsp.pyright.enable = true"
-      , "lsp.pycodestyle.enable = true"
+  , nixKernelExtraConfig = Just [
+      "settings.lsp.jedi.enable = true"
+      , "settings.lsp.python-lsp-server.enable = true"
+      , "settings.lsp.pylint.enable = true"
+      , "settings.lsp.pyright.enable = true"
+      , "settings.lsp.pycodestyle.enable = true"
       ]
   }
 

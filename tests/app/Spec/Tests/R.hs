@@ -19,7 +19,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelPackages = [nameOnly "ggplot2"]
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelSettings = Nothing
+  , nixKernelExtraConfig = Nothing
   }
 
 tests :: LanguageSpec
