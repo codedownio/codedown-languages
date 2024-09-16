@@ -61,12 +61,12 @@ symlinkJoin {
 
       language = "haskell";
 
-      ihaskell = if settingsToUse.enableHlintOutput then snapshot.ihaskell else snapshot.ihaskell.overrideAttrs (oldAttrs: {
+      ihaskell = if settings.enableHlintOutput then snapshot.ihaskell else snapshot.ihaskell.overrideAttrs (oldAttrs: {
         configureFlags = ["-f" "-use-hlint"];
       });
       inherit ghc;
 
-      # enableVariableInspector = settingsToUse.enableVariableInspector;
+      # enableVariableInspector = settings.enableVariableInspector;
     })
 
     ghc
