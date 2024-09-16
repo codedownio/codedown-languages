@@ -3,13 +3,7 @@
 , ...
 }:
 
-codedown.makeEnvironmentPrime {
-  inherit channels;
-
-  packages = {
-    "codedown.kernels.cpp20" = {
-      packages = [];
-      attrs = ["cpp20" "cpp"];
-    };
-  };
+codedown.makeEnvironment channels {
+  kernels.cpp.enable = true;
+  kernels.cpp.flavor = "c++20";
 }
