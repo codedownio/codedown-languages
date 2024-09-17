@@ -49,8 +49,8 @@ rec {
   codedownSearcher = common.searcher' {
     # Note that we deliberately don't include "testing" packages in the searcher
     packages = everythingEnv.config.builtKernels
-      // everythingEnv.config.builtShells
-      // everythingEnv.config.builtExporters
+      // (lib.mapAttrs' (n: v: lib.nameValuePair ("shells." + n) v) everythingEnv.config.builtShells)
+      // (lib.mapAttrs' (n: v: lib.nameValuePair ("exporters." + n) v) everythingEnv.config.builtExporters)
       // { inherit spellchecker; }
     ;
   };
