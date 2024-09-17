@@ -43,7 +43,7 @@ with lib;
   };
 
   config = mkIf config.kernels.ruby.enable {
-    builtKernels.ruby = config.pkgs.callPackage ./full.nix {
+    builtKernels.ruby = config.pkgs.callPackage ./. {
       ruby = getAttr config.kernels.ruby.rubyPackage config.pkgs;
 
       inherit (config.kernels.ruby) packages attrs extensions settings;

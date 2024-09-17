@@ -1,117 +1,71 @@
 { lib
-, pkgs
 , callPackage
+, pkgs
+, recurseIntoAttrs
 , stdenv
-, writeTextDir
 , symlinkJoin
+, writeTextDir
+
+, ruby
+
+, packages
+, attrs
+, extensions
+, settings
+, settingsSchema
 }:
+
+with lib;
 
 let
   common = callPackage ../common.nix {};
 
-  filterFn = x: (common.hasAttrSafe x pkgs) && !(lib.attrByPath [x "meta" "broken"] false pkgs);
+  kernelName = "ruby";
 
-  baseCandidates = lib.filter filterFn [
-    # "ruby_2_4"
-    # "ruby_2_4_3"
-    # "ruby_2_5"
-    # "ruby_2_5_0"
-    # "ruby_2_6"
-    # "ruby_2_7"
+  rubyPackages = recurseIntoAttrs ruby.gems;
 
-    "ruby"
-    "ruby_3_0"
-    "ruby_3_1"
-    "ruby_3_2"
-    "ruby_3_3"
-  ];
+  packageOptions = rubyPackages;
+  packageSearch = common.searcher packageOptions;
 
-  packagesLookup = lib.filterAttrs (k: v: filterFn k) {
-    # ruby_2_4 = pkgs.rubyPackages_2_4;
-    # ruby_2_4_3 = pkgs.rubyPackages_2_4;
-    # ruby_2_5 = pkgs.rubyPackages_2_5;
-    # ruby_2_5_0 = pkgs.rubyPackages_2_5;
-    # ruby_2_6 = pkgs.rubyPackages_2_6;
-    # ruby_2_7 = pkgs.rubyPackages_2_7;
-
-    ruby = pkgs.rubyPackages;
-    ruby_3_0 = pkgs.rubyPackages_3_0;
-    ruby_3_1 = pkgs.rubyPackages_3_1;
-    ruby_3_2 = pkgs.rubyPackages_3_2;
-    ruby_3_3 = pkgs.rubyPackages_3_3;
-  };
-
-  settingsSchema = [
-    {
-      target = "lsp.solargraph.enable";
-      title = "Enable Solargraph language server";
-      type = "boolean";
-      defaultValue = true;
-    }
-  ];
-
-  chooseLanguageServers = settings: packageOptions: kernelName:
+  languageServers =
     []
-    ++ lib.optionals (common.isTrue settings "lsp.solargraph.enable") [(callPackage ./solargraph.nix { rubyPackages = packageOptions; inherit kernelName; })]
+    ++ lib.optionals settings.lsp.solargraph.enable [(callPackage ./solargraph.nix { rubyPackages = packageOptions; inherit kernelName; })]
   ;
 
 in
 
-with lib;
-
-listToAttrs (map (x:
-  let
-    ruby = getAttr x pkgs;
-
+symlinkJoin {
+  name = "ruby";
+  paths = [
+    (callPackage ./kernel.nix {
+      iruby = (callPackage ./iruby { inherit ruby; }).iruby;
+      inherit attrs extensions version;
+    })
+    ruby
+  ]
+  ++ languageServers
+  ;
+  passthru = {
     meta = ruby.meta // {
-      baseName = x;
+      baseName = "ruby";
       displayName = "Ruby";
       version = ruby.version;
       icon = ./iruby-64x64.png;
       inherit settingsSchema;
     };
-
-    packageOptions = getAttr x packagesLookup;
-    packageSearch = common.searcher packageOptions;
+    args = {
+      inherit attrs extensions settings packages;
+    };
     versions = {
       ruby = builtins.toString ruby.version;
       solargraph = packageOptions.solargraph.version;
     };
-
-  in {
-    name = x;
-    value = lib.makeOverridable ({
-      packages ? []
-      , settings ? {}
-      , attrs ? [x "ruby"]
-      , extensions ? ["rb"]
-    }@args:
-      let
-        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
-        languageServers = chooseLanguageServers settingsToUse packageOptions x;
-      in symlinkJoin {
-        name = x;
-        paths = [
-          (callPackage ./kernel.nix {
-            iruby = (callPackage ./iruby { inherit ruby; }).iruby;
-            inherit attrs extensions version;
-          })
-          ruby
-        ]
-        ++ languageServers
-        ;
-        passthru = {
-          inherit meta packageOptions packageSearch versions;
-          inherit settingsSchema settings;
-          args = args // { baseName = x; };
-          modes = {
-            inherit attrs extensions;
-            code_mirror_mode = "ruby";
-          };
-          languageServerNames = map (x: x.languageServerName) languageServers;
-        };
-      }
-    ) {};
-  }
-
-) baseCandidates)
+    inherit packageOptions packageSearch;
+    inherit settingsSchema settings;
+    modes = {
+      inherit attrs extensions;
+      code_mirror_mode = "ruby";
+    };
+    languageServerNames = map (x: x.languageServerName) languageServers;
+  };
+}

@@ -34,7 +34,7 @@ with lib;
   };
 
   config = mkIf config.kernels.R.enable {
-    builtKernels.R = config.pkgs.callPackage ./full.nix {
+    builtKernels.R = config.pkgs.callPackage ./. {
       R = config.pkgs.R;
       inherit (config.kernels.R) packages attrs extensions settings;
       settingsSchema = nixosOptionsToSettingsSchema options.kernels.R;

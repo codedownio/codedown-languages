@@ -48,7 +48,7 @@ with lib;
   };
 
   config = mkIf config.kernels.cpp.enable {
-    builtKernels.cpp = config.pkgs.callPackage ./full.nix {
+    builtKernels.cpp = config.pkgs.callPackage ./. {
       inherit (config.kernels.cpp) flavor packages extensions settings;
 
       attrs = [config.kernels.cpp.flavor] ++ config.kernels.cpp.attrs;

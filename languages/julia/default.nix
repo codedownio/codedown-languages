@@ -1,8 +1,4 @@
 { lib
-, julia_16-bin
-, julia_18
-, julia_19
-, julia_110
 , python3
 , callPackage
 , fetchFromGitHub
@@ -10,51 +6,20 @@
 , stdenv
 , runCommand
 , symlinkJoin
+
+, julia
+
+, packages
+, attrs
+, extensions
+, settings
+, settingsSchema
 }:
+
+with lib;
 
 let
   common = callPackage ../common.nix {};
-
-  juliaWithPackages = callPackage ./julia-modules {};
-
-  settingsSchema = [
-    {
-      target = "precompile";
-      title = "Precompile environment";
-      description = "Whether to precompile Julia code when building the environment for faster imports. In some cases, precompilation can make the build fail, so turning this off can help.";
-      type = "boolean";
-      defaultValue = true;
-    }
-    {
-      target = "lsp.LanguageServer.enable";
-      title = "Enable LanguageServer language server";
-      type = "boolean";
-      defaultValue = true;
-    }
-    {
-      target = "lsp.LanguageServer.index";
-      title = "LanguageServer: auto-index packages when building environment";
-      description = "Automatically build SymbolServer.jl indices when realizing environment (may increase build time).";
-      type = "boolean";
-      defaultValue = true;
-    }
-    {
-      target = "lsp.LanguageServer.debug";
-      title = "LanguageServer: stderr debugging";
-      description = "Log debug messages to stderr.";
-      type = "boolean";
-      defaultValue = false;
-    }
-  ];
-
-  chooseLanguageServers = settings: attrs: attr: julia:
-    []
-    ++ lib.optionals (common.isTrue settings "lsp.LanguageServer.enable") [(callPackage ./language-server-LanguageServer.nix {
-      inherit attrs julia;
-      kernelName = attr;
-      settings = common.focusSettings "lsp.LanguageServer." settings;
-    })]
-  ;
 
   packageOverrides = {
     "LanguageServer" = fetchFromGitHub {
@@ -75,101 +40,81 @@ let
       rev = "1badb724cebef0ae867c8c1f73cb08efe5b6e291";
       sha256 = "0j4cjj50mp0cm6aq684kasijk11pwagp3v9d1mf39isk6afa7inn";
     };
-
-    # "LanguageServer" = /home/tom/tools/LanguageServer.jl;
-    # "StaticLint" = /home/tom/tools/StaticLint.jl;
-    # "SymbolServer" = /home/tom/tools/SymbolServer.jl;
   };
 
-  baseCandidates = rec {
-    julia = julia110;
-
-    julia16 = juliaWithPackages.override { inherit packageOverrides; julia = julia_16-bin; };
-
-    # Removed as EOL in release 24.05
-    # julia18 = juliaWithPackages.override { inherit packageOverrides; julia = julia_18; };
-
-    julia19 = juliaWithPackages.override { inherit packageOverrides; julia = julia_19; };
-
-    julia110 = juliaWithPackages.override { inherit packageOverrides; julia = julia_110; };
+  juliaWithPackages = (callPackage ./julia-modules {}).override {
+    inherit packageOverrides julia;
+    inherit (settings) precompile;
   };
 
-  packageSet = lib.listToAttrs (map (x: {
-    name = x;
-    value = {
-      meta = {
-        name = x;
-        displayName = x;
+  displayName = "Julia";
+  kernelName = "julia";
+
+  packageOptions = {};
+  packageSearch = common.searcher' {
+    packages = lib.listToAttrs (map (x: {
+      name = x;
+      value = {
+        meta = {
+          name = x;
+          displayName = x;
+        };
       };
-    };
-  }) (import ./julia-modules/package-names.nix));
+    }) (import ./julia-modules/package-names.nix));
+    packageMustBeDerivation = false;
+  };
+
+  juliaToUse = juliaWithPackages (
+    ["IJulia"]
+    ++ packages
+    ++ lib.optionals settings.lsp.LanguageServer.enable ["LanguageServer" "SymbolServer"]
+  );
+
+  languageServers =
+    []
+    ++ lib.optionals settings.lsp.LanguageServer.enable [(callPackage ./language-server-LanguageServer.nix {
+      inherit attrs;
+      julia = juliaToUse;
+      inherit kernelName;
+      settings = settings.lsp.LanguageServer;
+    })]
+  ;
 
 in
 
-with lib;
+symlinkJoin {
+  name = "julia";
 
-mapAttrs (attr: value:
-  let
-    baseJulia = (value []).julia;
+  paths = [
+    (callPackage ./kernel.nix {
+      inherit attrs extensions displayName;
+      julia = juliaToUse;
+      python = python3;
+    })
+    juliaToUse
+  ]
+  ++ languageServers
+  ;
 
-    displayName = "Julia";
-
-    meta = baseJulia.meta // {
-      baseName = attr;
+  passthru = {
+    meta = julia.meta // {
+      baseName = "julia";
       inherit displayName settingsSchema;
-      version = baseJulia.version;
+      version = julia.version;
       icon = ./julia-logo-64x64.png;
     };
-
-    python = python3;
-
-    packageOptions = {};
-    packageSearch = common.searcher' {
-      packages = packageSet;
-      packageMustBeDerivation = false;
+    args = {
+      inherit attrs extensions settings packages;
     };
+    inherit packageOptions packageSearch;
     versions = {
-      julia = baseJulia.version;
+      julia = julia.version;
     };
-
-  in
-    lib.makeOverridable ({
-      packages ? []
-      , attrs ? [attr "julia"]
-      , extensions ? ["jl"]
-      , settings ? {}
-    }@args:
-      let
-        settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
-
-        julia = (value.override { inherit (settingsToUse) precompile; }) (
-          ["IJulia"]
-          ++ packages
-          ++ lib.optionals (common.isTrue settingsToUse "lsp.LanguageServer.enable") ["LanguageServer" "SymbolServer"]
-        );
-
-        languageServers = chooseLanguageServers settingsToUse attrs attr julia;
-      in
-        symlinkJoin {
-          name = attr;
-
-          paths = [
-            (callPackage ./kernel.nix { inherit julia python attrs extensions displayName; })
-            julia
-          ]
-          ++ languageServers
-          ;
-
-          passthru = {
-            args = args // { baseName = attr; };
-            inherit meta packageOptions packageSearch versions;
-            inherit settingsSchema settings;
-            modes = {
-              inherit attrs extensions;
-              code_mirror_mode = "julia";
-            };
-            languageServerNames = map (x: x.languageServerName) languageServers;
-          };
-        }
-    ) {}
-) baseCandidates
+    inherit settingsSchema settings;
+    modes = {
+      inherit attrs extensions;
+      code_mirror_mode = "julia";
+    };
+    languageServerNames = map (x: x.languageServerName) languageServers;
+  };
+}

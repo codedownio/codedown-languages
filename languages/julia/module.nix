@@ -63,7 +63,7 @@ with lib;
   };
 
   config = mkIf config.kernels.julia.enable {
-    builtKernels.julia = config.pkgs.callPackage ./full.nix {
+    builtKernels.julia = config.pkgs.callPackage ./. {
       julia = getAttr config.kernels.julia.juliaPackage config.pkgs;
 
       inherit (config.kernels.julia) packages attrs extensions settings;

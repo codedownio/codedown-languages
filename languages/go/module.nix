@@ -51,7 +51,7 @@ with lib;
   };
 
   config = mkIf config.kernels.go.enable {
-    builtKernels.go = config.pkgs.callPackage ./full.nix {
+    builtKernels.go = config.pkgs.callPackage ./. {
       go = getAttr config.kernels.go.goPackage config.pkgs;
 
       inherit (config.kernels.go) packages attrs extensions settings;

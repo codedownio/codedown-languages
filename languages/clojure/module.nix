@@ -29,7 +29,7 @@ with lib;
   };
 
   config = mkIf config.kernels.clojure.enable {
-    builtKernels.clojure = config.pkgs.callPackage ./full.nix {
+    builtKernels.clojure = config.pkgs.callPackage ./. {
       clojure = config.pkgs.clojure;
       inherit (config.kernels.clojure) attrs extensions settings;
       settingsSchema = nixosOptionsToSettingsSchema options.kernels.clojure;

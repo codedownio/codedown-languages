@@ -34,7 +34,7 @@ with lib;
   };
 
   config = mkIf config.kernels.octave.enable {
-    builtKernels.octave = config.pkgs.callPackage ./full.nix {
+    builtKernels.octave = config.pkgs.callPackage ./. {
       octave = config.pkgs.octave;
       inherit (config.kernels.octave) packages attrs extensions settings;
       settingsSchema = nixosOptionsToSettingsSchema options.kernels.octave;

@@ -3,6 +3,12 @@
 , callPackage
 , writeTextDir
 , symlinkJoin
+
+, packages
+, attrs
+, extensions
+, settings
+, settingsSchema
 }:
 
 let
@@ -11,55 +17,44 @@ let
   packageOptions = {};
   packageSearch = common.searcher packageOptions;
 
-  settingsSchema = [];
+  languageServers = [];
 
-  chooseLanguageServers = settings:
-    []
-  ;
+  kernel = callPackage ./kernel.nix { inherit attrs extensions; };
 
-  meta = {
-    name = "postgres";
-    baseName = "postgres";
-    displayName = "PostgreSQL";
-    description = "A simple Jupyter kernel for PostgreSQL";
-    icon = ./postgres-logo-64x64.png;
-    version = "0.1";
-    inherit settingsSchema;
-  };
-
-  versions = {
-    postgres-kernel = meta.version;
-  };
+  version = "0.1";
 
 in
 
-{
-  postgres = lib.makeOverridable ({
-    packages ? []
-    , settings ? []
-    , attrs ? ["postgres"]
-    , extensions ? ["sql"]
-  }@args:
-    let
-      settingsToUse = (common.makeDefaultSettings settingsSchema) // settings;
-    in symlinkJoin {
+symlinkJoin {
+  name = "postgres";
+
+  paths = [
+    kernel
+  ]
+  ++ languageServers
+  ;
+
+  passthru = {
+    args = {
+      inherit attrs extensions settings packages;
+    };
+    meta = {
       name = "postgres";
-
-      paths = [
-        (callPackage ./kernel.nix { inherit attrs extensions; })
-      ]
-      ++ (chooseLanguageServers settingsToUse)
-      ;
-
-      passthru = {
-        args = args // { baseName = "postgres"; };
-        inherit meta packageOptions packageSearch versions;
-        inherit settingsSchema settings;
-        modes = {
-          inherit attrs extensions;
-          code_mirror_mode = "sql";
-        };
-      };
-    }
-  ) {};
+      baseName = "postgres";
+      displayName = "PostgreSQL";
+      description = "A simple Jupyter kernel for PostgreSQL";
+      icon = ./postgres-logo-64x64.png;
+      inherit version;
+      inherit settingsSchema;
+    };
+    inherit packageOptions packageSearch;
+    versions = {
+      postgres-kernel = version;
+    };
+    inherit settingsSchema settings;
+    modes = {
+      inherit attrs extensions;
+      code_mirror_mode = "sql";
+    };
+  };
 }

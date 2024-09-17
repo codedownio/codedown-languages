@@ -37,7 +37,7 @@ with lib;
   };
 
   config = mkIf config.kernels.coq.enable {
-    builtKernels.coq = config.pkgs.callPackage ./full.nix {
+    builtKernels.coq = config.pkgs.callPackage ./. {
       coqPackages = getAttr config.kernels.coq.coqPackages config.pkgs;
 
       inherit (config.kernels.coq) packages attrs extensions;

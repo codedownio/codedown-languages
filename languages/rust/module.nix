@@ -51,7 +51,7 @@ with lib;
   };
 
   config = mkIf config.kernels.rust.enable {
-    builtKernels.rust = config.pkgs.callPackage ./full.nix {
+    builtKernels.rust = config.pkgs.callPackage ./. {
       rust = getAttr config.kernels.rust.rustPackage config.pkgs;
 
       inherit (config.kernels.rust) packages attrs extensions settings;

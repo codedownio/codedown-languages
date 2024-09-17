@@ -29,7 +29,7 @@ with lib;
   };
 
   config = mkIf config.kernels.bash.enable {
-    builtKernels.bash = config.pkgs.callPackage ./full.nix {
+    builtKernels.bash = config.pkgs.callPackage ./. {
       bash = config.pkgs.bash;
       inherit (config.kernels.bash) attrs extensions settings;
       settingsSchema = nixosOptionsToSettingsSchema options.kernels.bash;

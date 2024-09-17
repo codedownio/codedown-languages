@@ -70,7 +70,7 @@ with lib;
 
     in
 
-      pkgs.callPackage ./full.nix {
+      pkgs.callPackage ./. {
         compilerName = config.kernels.haskell.ghcPackage;
         snapshot = getAttr config.kernels.haskell.ghcPackage compilers;
 

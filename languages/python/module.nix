@@ -122,7 +122,7 @@ in
           }).overrideAttrs (_: { version = specialEnvPythons.${x}.version; })
           else lib.getAttr x config.pkgs;
       in
-        config.pkgs.callPackage ./full.nix {
+        config.pkgs.callPackage ./. {
           python3 = basePython;
 
           inherit (config.kernels.python3) packages attrs extensions settings;
@@ -132,7 +132,7 @@ in
 
     (mkIf config.kernels.pypy3.enable {
       builtKernels.pypy3 =
-        config.pkgs.callPackage ./full.nix {
+        config.pkgs.callPackage ./. {
           python3 = lib.getAttr config.kernels.pypy3.python3Package config.pkgs;
 
           inherit (config.kernels.pypy3) packages attrs extensions settings;
