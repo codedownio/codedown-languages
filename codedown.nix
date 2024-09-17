@@ -51,7 +51,7 @@ rec {
     packages = everythingEnv.config.builtKernels
       // (lib.mapAttrs' (n: v: lib.nameValuePair ("shells." + n) v) everythingEnv.config.builtShells)
       // (lib.mapAttrs' (n: v: lib.nameValuePair ("exporters." + n) v) everythingEnv.config.builtExporters)
-      // { inherit spellchecker; }
+      // { "language-servers.spellchecker" = spellchecker; }
     ;
   };
 
