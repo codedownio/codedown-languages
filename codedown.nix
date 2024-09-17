@@ -45,8 +45,6 @@ let
 in
 
 rec {
-  nixpkgsStableSearcher = common.searcher pkgsStable;
-
   spellchecker = pkgsUnstable.callPackage ./language_servers/markdown-spellcheck-lsp {};
 
   languages = languagesFn false;
@@ -92,10 +90,6 @@ rec {
 
   makeEnvironment = callPackage ./codedown/makeEnvironment.nix {
     inherit pkgsStable pkgsUnstable pkgsMaster;
-  };
-
-  makeEnvironmentPrime = callPackage ./codedown/makeEnvironmentPrime.nix {
-    inherit mkCodeDownEnvironment;
   };
 
   validateCodeDownEnvironment = callPackage ./codedown/validateCodeDownEnvironment.nix {};
