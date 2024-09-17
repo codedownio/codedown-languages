@@ -27,20 +27,23 @@ tests = describe "Ruby" $ do
   kernelTests "ruby_3_3"
 
 
+kernelName :: Text -> Text
+kernelName _rubyPackage = "ruby"
+
 kernelTests :: Text -> LanguageSpec
-kernelTests lang = do
-  describe (T.unpack lang) $ introduceNixEnvironment [kernelSpec lang] [] [i|Ruby (#{lang})|] $ introduceJupyterRunner $ do
-    testKernelSearchersNonempty lang
-    testHasExpectedFields lang
+kernelTests rubyPackage = do
+  describe (T.unpack rubyPackage) $ introduceNixEnvironment [kernelSpec rubyPackage] [] [i|Ruby (#{rubyPackage})|] $ introduceJupyterRunner $ do
+    testKernelSearchersNonempty (kernelName rubyPackage)
+    testHasExpectedFields (kernelName rubyPackage)
 
-    testKernelStdout lang [__i|puts "hi"|] "hi\n"
+    testKernelStdout (kernelName rubyPackage) [__i|puts "hi"|] "hi\n"
 
-    when ("_" `T.isInfixOf` lang) $ do
-      let versionString = lang
+    when ("_" `T.isInfixOf` rubyPackage) $ do
+      let versionString = rubyPackage
                         & T.drop 5
                         & T.replace "_" "."
       it [i|The Ruby version contains the string '#{versionString}'|] $ do
-        testKernelStdout'' lang [__i|puts RUBY_VERSION|] $ \case
+        testKernelStdout'' (kernelName rubyPackage) [__i|puts RUBY_VERSION|] $ \case
           Nothing -> expectationFailure [i|Got no stdout|]
           Just t -> do
             info [i|RUBY_VERSION result: #{t}|]
@@ -52,15 +55,16 @@ kernelTests lang = do
       text `textShouldContain` "$stdout.puts(obj"
 
 kernelSpec :: Text -> NixKernelSpec
-kernelSpec lang = NixKernelSpec {
-  nixKernelName = lang
+kernelSpec rubyPackage = NixKernelSpec {
+  nixKernelName = kernelName rubyPackage
   , nixKernelChannel = "codedown"
-  , nixKernelDisplayName = Just [i|Ruby (#{lang})|]
+  , nixKernelDisplayName = Just [i|Ruby (#{rubyPackage})|]
   , nixKernelPackages = []
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelExtraConfig = Just [
       "settings.lsp.solargraph.enable = true"
+      , [i|rubyPackage = "#{rubyPackage}"|]
       ]
   }
 

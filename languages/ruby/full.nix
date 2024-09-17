@@ -24,13 +24,13 @@ let
 
   rubyPackages = recurseIntoAttrs ruby.gems;
 
+  packageOptions = rubyPackages;
+  packageSearch = common.searcher packageOptions;
+
   languageServers =
     []
     ++ lib.optionals settings.lsp.solargraph.enable [(callPackage ./solargraph.nix { rubyPackages = packageOptions; inherit kernelName; })]
   ;
-
-  packageOptions = rubyPackages;
-  packageSearch = common.searcher packageOptions;
 
 in
 
@@ -47,7 +47,7 @@ symlinkJoin {
   ;
   passthru = {
     meta = ruby.meta // {
-      baseName = x;
+      baseName = "ruby";
       displayName = "Ruby";
       version = ruby.version;
       icon = ./iruby-64x64.png;

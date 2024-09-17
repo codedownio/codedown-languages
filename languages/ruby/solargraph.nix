@@ -2,7 +2,6 @@
 , lib
 
 , rubyPackages
-, solargraph ? rubyPackages.solargraph
 , kernelName
 }:
 
@@ -10,6 +9,8 @@ let
   common = callPackage ../common.nix {};
 
   languageServerName = "solargraph";
+
+  solargraph = rubyPackages.solargraph;
 
   passthru = {
     inherit languageServerName;

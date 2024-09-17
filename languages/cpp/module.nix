@@ -22,13 +22,20 @@ with lib;
           "c++17"
           "c++20"
           "c++23"
+
+          "gnu++11"
+          "gnu++14"
+          "gnu++17"
+          "gnu++20"
+          "gnu++23"
         ];
+
         default = "c++20";
       };
 
       attrs = mkOption {
         type = types.listOf types.str;
-        default = ["c++"];
+        default = ["cpp"];
       };
 
       extensions = mkOption {
@@ -36,9 +43,7 @@ with lib;
         default = ["cpp" "hpp" "cxx" "hxx" "c" "h"];
       };
 
-      settings = {
-
-      };
+      settings = {};
     };
   };
 

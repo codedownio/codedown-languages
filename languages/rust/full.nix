@@ -80,7 +80,7 @@ symlinkJoin {
 
   passthru = {
     meta = rustPackages.rustc.meta // {
-      baseName = x;
+      baseName = "rust";
       inherit displayName;
       icon = ./rust-logo-64x64.png;
       inherit settingsSchema;

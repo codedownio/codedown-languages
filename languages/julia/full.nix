@@ -98,7 +98,7 @@ symlinkJoin {
 
   passthru = {
     meta = julia.meta // {
-      baseName = attr;
+      baseName = "julia";
       inherit displayName settingsSchema;
       version = julia.version;
       icon = ./julia-logo-64x64.png;

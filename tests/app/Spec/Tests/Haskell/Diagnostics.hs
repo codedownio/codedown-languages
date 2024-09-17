@@ -19,14 +19,14 @@ import TestLib.NixEnvironmentContext
 
 
 diagnosticsTests :: (LspContext context m) => Text -> Text -> SpecFree context m ()
-diagnosticsTests lang lsName = describe "Diagnostics" $ do
+diagnosticsTests ghcPackage lsName = describe "Diagnostics" $ do
   describe "Foo.hs" $ do
     testDiagnosticsLabel "Out of scope variable" lsName "Foo.hs" Nothing [__i|module Foo where
                                                                               foo = bar
                                                                              |] $ \diagnostics -> do
       assertDiagnosticRanges diagnostics [(Range (Position 1 6) (Position 1 9), Just (InR "-Wdeferred-out-of-scope-variables"))]
 
-    when (lang /= "haskell-ghc98") $ -- TODO: re-enable hlint test with haskell-language-server 2.8.0.0
+    when (ghcPackage /= "haskell-ghc98") $ -- TODO: re-enable hlint test with haskell-language-server 2.8.0.0
       testDiagnosticsLabel "Eta reduce" lsName "Foo.hs" Nothing etaExpandCode $ \diagnostics -> do
         assertDiagnosticRanges diagnostics [(Range (Position 6 0) (Position 6 14), Just (InR "refact:Eta reduce"))]
 
@@ -77,8 +77,8 @@ etaExpandCode = [__i|module Foo where
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
-  introduceNixEnvironment [kernelSpec lang] [] "Haskell" $
+  introduceNixEnvironment [kernelSpec ghcPackage] [] "Haskell" $
     introduceJustBubblewrap $
-      diagnosticsTests lang HaskellCommon.lsName
+      diagnosticsTests ghcPackage HaskellCommon.lsName
   where
-    lang = "haskell-ghc92"
+    ghcPackage = "ghc92"

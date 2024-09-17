@@ -9,7 +9,7 @@
 , cling
 , xeus-cling
 
-, attrName
+, kernelName
 , attrs
 , displayName
 , extensions
@@ -25,7 +25,7 @@ in
 
 common.makeJupyterKernel (
   listToAttrs [{
-    name = attrName;
+    name = kernelName;
     value = {
       displayName = displayName;
       argv = [
@@ -40,7 +40,7 @@ common.makeJupyterKernel (
         # "-v"
         "-f" "{connection_file}"
       ];
-      language = attrName;
+      language = kernelName;
       logo32 = fetchurl {
         url = https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/32px-ISO_C%2B%2B_Logo.svg.png;
         hash = "sha256-cr0TB8/j2mkcFhfCkz9F7ZANOuTlWA2OcWtDcXyOjHw=";

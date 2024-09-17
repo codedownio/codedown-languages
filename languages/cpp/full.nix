@@ -52,7 +52,7 @@ symlinkJoin {
       xeus-cling = xeusClingToUse;
       inherit attrs displayName extensions;
       std = flavor;
-      attrName = head attrs;
+      kernelName = "cpp";
     })
     cling
   ]
