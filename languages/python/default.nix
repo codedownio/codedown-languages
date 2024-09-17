@@ -56,7 +56,7 @@ symlinkJoin {
   paths = [
     (callPackage ./kernel.nix {
       python = pythonToUse;
-      inherit displayName attrs extensions;
+      inherit displayName kernelName attrs extensions;
       enableVariableInspector = settings.enableVariableInspector;
     })
 

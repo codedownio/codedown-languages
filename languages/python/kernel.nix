@@ -1,6 +1,8 @@
 { lib
 , callPackage
 , python
+
+, kernelName
 , displayName
 
 , enableVariableInspector
@@ -24,10 +26,10 @@ in
 
 common.makeJupyterKernel (
   listToAttrs [{
-    name = head attrs;
+    name = kernelName;
     value = {
       displayName = displayName;
-      language = head attrs;
+      language = kernelName;
       argv = [
         "${python}/bin/python"
         "-m"

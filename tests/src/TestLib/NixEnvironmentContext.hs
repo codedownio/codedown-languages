@@ -25,8 +25,13 @@ import UnliftIO.Temporary
 
 introduceNixEnvironment :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
-  ) => [NixKernelSpec] -> [ChannelAndAttr] -> Text -> SpecFree (LabelValue "nixEnvironment" FilePath :> context) m () -> SpecFree context m ()
-introduceNixEnvironment kernels otherPackages label = introduceWith [i|#{label} Nix|] nixEnvironment $ \action -> do
+  )
+  => [NixKernelSpec]
+  -> [Text]
+  -> Text
+  -> SpecFree (LabelValue "nixEnvironment" FilePath :> context) m ()
+  -> SpecFree context m ()
+introduceNixEnvironment kernels otherConfig label = introduceWith [i|#{label} Nix|] nixEnvironment $ \action -> do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
   metadata :: A.Object <- withFile "/dev/null" WriteMode $ \devNullHandle -> do
@@ -49,7 +54,7 @@ introduceNixEnvironment kernels otherPackages label = introduceWith [i|#{label} 
             , lockedToNixSrcSpec "nixpkgs" nixpkgsLocked
             ]
         , nixEnvironmentKernels = kernels
-        , nixEnvironmentOtherPackages = otherPackages
+        , nixEnvironmentOtherConfig = otherConfig
         }
 
   let rendered = renderNixEnvironment "<nixpkgs>" nixEnv

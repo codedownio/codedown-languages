@@ -3,19 +3,19 @@
 module Spec.Tests.Shells.Zsh (tests) where
 
 import Data.String.Interpolate
+import Data.Text
 import Test.Sandwich as Sandwich
 import TestLib.NixEnvironmentContext
-import TestLib.NixTypes
 import TestLib.Types
 
 
-otherPackages :: [ChannelAndAttr]
-otherPackages = [
-  channelAndAttr "codedown" "shells.zsh"
+otherConfig :: [Text]
+otherConfig = [
+  "shells.zsh.enable = true;"
   ]
 
 tests :: TopSpec
-tests = describe "ZSH" $ introduceNixEnvironment [] otherPackages "ZSH environment" $ do
+tests = describe "ZSH" $ introduceNixEnvironment [] otherConfig "ZSH environment" $ do
   it "can run a command" $ do
     nixEnv <- getContext nixEnvironment
     info [i|Got nixEnv: #{nixEnv}|]

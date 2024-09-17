@@ -63,6 +63,6 @@ deriveJSON toSnake2 ''NixKernelSpec
 data NixEnvironment = NixEnvironment {
   nixEnvironmentChannels :: [NixSrcSpec]
   , nixEnvironmentKernels :: [NixKernelSpec]
-  , nixEnvironmentOtherPackages :: [ChannelAndAttr]
+  , nixEnvironmentOtherConfig :: [Text]
   } deriving (Show, Eq, Ord)
 deriveJSON toSnake2 ''NixEnvironment

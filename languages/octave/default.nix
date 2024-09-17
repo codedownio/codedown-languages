@@ -61,7 +61,7 @@ symlinkJoin {
       packages = [];
     };
     meta = octave.meta // {
-      baseName = x;
+      baseName = "octave";
       displayName = "Octave " + octave.version;
       version = octave.version;
       icon = ./octave-logo-64x64.png;
