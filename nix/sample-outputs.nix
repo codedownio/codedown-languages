@@ -32,8 +32,8 @@ in
 
     printVersions = let
       versionsMap = with lib;
-        mapAttrs (lang: value: if (hasAttr "versions" value) then (value.versions) else {})
-          (filterAttrs (k: _: !(hasPrefix "override") k) languages);
+        mapAttrs (lang: value: if (hasAttr "versions" value) then value.versions else {})
+          (filterAttrs (k: _: !(hasPrefix "override") k) codedown.languages);
 
       file = writeTextFile {
         name = "versions.yaml";

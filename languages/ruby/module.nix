@@ -1,6 +1,11 @@
-{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, ... }:
+{ config, options, lib, nixosOptionsToSettingsSchema, ... }:
 
 with lib;
+
+let
+  pkgs = config.pkgsMaster;
+
+in
 
 {
   options = {
@@ -19,7 +24,7 @@ with lib;
         type = types.enum (
           ["ruby"]
           ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "ruby_") name == "ruby_")
-                              (builtins.attrNames config.pkgs))
+                              (builtins.attrNames pkgs))
         );
         default = "ruby";
       };
@@ -43,8 +48,8 @@ with lib;
   };
 
   config = mkIf config.kernels.ruby.enable {
-    builtKernels.ruby = config.pkgs.callPackage ./. {
-      ruby = getAttr config.kernels.ruby.rubyPackage config.pkgs;
+    builtKernels.ruby = pkgs.callPackage ./. {
+      ruby = getAttr config.kernels.ruby.rubyPackage pkgs;
 
       inherit (config.kernels.ruby) packages attrs extensions settings;
       settingsSchema = nixosOptionsToSettingsSchema options.kernels.ruby;

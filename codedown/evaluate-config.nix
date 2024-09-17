@@ -1,12 +1,13 @@
 { lib
-, pkgs
+, pkgsStable
+, pkgsMaster
 }:
 
 config:
 
 lib.evalModules {
   specialArgs = {
-    nixosOptionsToSettingsSchema = pkgs.callPackage ../modules/base/nixos-options-to-settings-schema.nix {};
+    nixosOptionsToSettingsSchema = pkgsStable.callPackage ../modules/base/nixos-options-to-settings-schema.nix {};
   };
   modules = [
     ../modules/base.nix
@@ -35,7 +36,8 @@ lib.evalModules {
 
     {
       config = {
-        inherit pkgs;
+        pkgs = pkgsStable;
+        inherit pkgsMaster;
       };
     }
     {

@@ -19,9 +19,7 @@ config:
 with lib;
 
 let
-  evaluateConfig = callPackage ./evaluate-config.nix {
-    pkgs = pkgsStable;
-  };
+  evaluateConfig = callPackage ./evaluate-config.nix { inherit pkgsStable pkgsMaster; };
 
   evaluated = evaluateConfig config;
 

@@ -29,7 +29,7 @@ rec {
   ) languages;
 
   evaluateConfig = callPackage ./codedown/evaluate-config.nix {
-    pkgs = pkgsStable;
+    inherit pkgsStable pkgsMaster;
   };
 
   everythingConfig = let
