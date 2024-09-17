@@ -44,7 +44,7 @@ symlinkJoin {
 
   passthru = {
     meta = go.meta // {
-      baseName = x;
+      baseName = "go";
       displayName = "Go";
       version = go.version;
       icon = ./go-logo-64x64.png;

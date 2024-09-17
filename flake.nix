@@ -20,7 +20,14 @@
       in
         rec {
           packages = {
-            # inherit codedown;
+            # For nix repl debugging
+            inherit codedown;
+
+            # Tests use flake to do packageSearch builds
+            inherit (codedown) languages;
+
+            # For .envrc
+            nixpkgsPath = pkgsStable.writeShellScriptBin "nixpkgsPath.sh" "echo -n ${pkgsStable.path}";
 
             jupyter-runner = pkgsMaster.callPackage ./nix/jupyter-runner.nix {};
 
