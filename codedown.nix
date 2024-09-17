@@ -1,5 +1,4 @@
 { pkgsStable
-, pkgsUnstable
 , pkgsMaster
 , requiredPackages ? []
 , system ? "x86_64-linux"
@@ -15,7 +14,7 @@ let
 in
 
 rec {
-  spellchecker = pkgsUnstable.callPackage ./language_servers/markdown-spellcheck-lsp {};
+  spellchecker = pkgsMaster.callPackage ./language_servers/markdown-spellcheck-lsp {};
 
   testing = {
     builds-forever = pkgsMaster.callPackage ./misc/builds-forever.nix {};
@@ -58,11 +57,11 @@ rec {
   languages = everythingEnv.config.builtKernels;
 
   makeEnvironment = callPackage ./codedown/makeEnvironment.nix {
-    inherit pkgsStable pkgsUnstable pkgsMaster;
+    inherit pkgsStable pkgsMaster;
   };
 
   validateCodeDownEnvironment = callPackage ./codedown/validateCodeDownEnvironment.nix {};
 
   # Exposed so it's easier to compute build dependencies in the presence of IFD
-  inherit pkgsStable pkgsUnstable requiredPackages;
+  inherit pkgsStable pkgsMaster requiredPackages;
 }

@@ -8,7 +8,6 @@
 , writeText
 
 , pkgsStable
-, pkgsUnstable
 , pkgsMaster
 
 , name ? "codedown-environment"

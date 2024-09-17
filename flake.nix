@@ -2,20 +2,18 @@
   description = "CodeDown languages";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
-  inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   inputs.nixpkgs-master.url = "github:NixOS/nixpkgs/master";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, nixpkgs-master, flake-utils }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-master, flake-utils }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let
         overlays = [(import ./overlays.nix)];
         pkgsStable = import nixpkgs { inherit system overlays; };
-        pkgsUnstable = import nixpkgs-unstable { inherit system overlays; };
         pkgsMaster = import nixpkgs-master { inherit system overlays; };
 
-        codedown = import ./codedown.nix { inherit pkgsStable pkgsUnstable pkgsMaster; };
+        codedown = import ./codedown.nix { inherit pkgsStable pkgsMaster; };
 
       in
         rec {
