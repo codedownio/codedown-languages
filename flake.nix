@@ -20,7 +20,8 @@
       in
         rec {
           packages = {
-            # inherit (codedown) spellchecker codedownSearcher languagesIcons;
+            # For nix repl debugging
+            inherit codedown;
 
             jupyter-runner = pkgsMaster.callPackage ./nix/jupyter-runner.nix {};
 
