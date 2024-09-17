@@ -8,8 +8,7 @@
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
   outputs = { self, nixpkgs, nixpkgs-unstable, nixpkgs-master, flake-utils }@inputs:
-    # flake-utils.lib.eachDefaultSystem (system:
-    flake-utils.lib.eachSystem ["x86_64-linux"] (system:
+    flake-utils.lib.eachDefaultSystem (system:
       let
         overlays = [(import ./overlays.nix)];
         pkgsStable = import nixpkgs { inherit system overlays; };
@@ -20,71 +19,19 @@
 
       in
         rec {
-          packages = rec {
-            nixpkgsPath = pkgsStable.writeShellScriptBin "nixpkgsPath.sh" "echo -n ${pkgsStable.path}";
-
-            inherit (codedown) spellchecker codedownSearcher languagesIcons;
-
-            inherit (codedown) languages;
-
-            inherit (codedown) settingsSchemas;
-
-            inherit pkgsStable;
+          packages = {
+            # inherit (codedown) spellchecker codedownSearcher languagesIcons;
 
             jupyter-runner = pkgsMaster.callPackage ./nix/jupyter-runner.nix {};
-
-            sample_environments = import ./sample_environments.nix {
-              inherit codedown pkgsStable;
-              channels = {
-                inherit codedown;
-                nixpkgs = pkgsStable;
-              };
-            };
-            sample_environments_farm = pkgsStable.linkFarm "sample_environments_farm" (
-              pkgsStable.lib.mapAttrsToList (name: path: { inherit name path; })
-                                            sample_environments
-            );
-            ui_metadata_farm = pkgsStable.linkFarm "ui_metadata_farm" (
-              pkgsStable.lib.mapAttrsToList (name: deriv: { inherit name; path = deriv.ui_metadata_yaml; })
-                                            sample_environments
-            );
-
-            printVersions = let
-              versionsMap = with pkgsStable.lib;
-                mapAttrs (lang: value: if (hasAttr "versions" value) then (value.versions) else {})
-                         (filterAttrs (k: _: !(hasPrefix "override") k) languages);
-
-              file = pkgsStable.writeTextFile {
-                name = "versions.yaml";
-                text = pkgsStable.lib.generators.toPretty {} versionsMap;
-              };
-            in
-              pkgsStable.writeShellScriptBin "print-versions.sh" ''
-                cat ${file}
-              '';
-            printMegaVersions = pkgsStable.writeShellScriptBin "print-mega-versions.sh" ''
-              MEGA_ENV=${sample_environments.mega}
-
-              echo "Built mega environment: $MEGA_ENV"
-              echo ""
-
-              KERNEL_JSONS=$(find "$MEGA_ENV" -name kernel.json | sort)
-
-              for file in $KERNEL_JSONS; do
-                language=$(cat $file | jq -r .language)
-                displayName=$(cat $file | jq .display_name)
-                version=$(cat $file | jq .metadata.codedown.language_version)
-
-                echo "$language: $displayName ($version)"
-              done
-            '';
 
             notebook = with pkgsStable; python3.pkgs.toPythonModule (
               python3.pkgs.notebook.overridePythonAttrs (oldAttrs: {
                 makeWrapperArgs = ["--set JUPYTER_PATH ${sample_environments.mega}/lib/codedown"];
               })
             );
-          };
+          }
+          // (pkgsStable.callPackage ./nix/sample-outputs.nix { inherit codedown pkgsStable; }).inner
+          ;
         }
     );
 }
