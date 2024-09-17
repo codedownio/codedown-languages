@@ -60,10 +60,10 @@ symlinkJoin {
 
   passthru = {
     meta = clang.meta // {
-      baseName = x;
+      baseName = "cpp";
       inherit displayName;
       version = clang.version;
-      icon = getAttr x icons;
+      icon = getAttr flavor icons;
       inherit settingsSchema;
     };
     inherit packageOptions packageSearch;
