@@ -72,7 +72,7 @@ library:
   - unliftio-core
 
 executables:
-  tests-exe:
+  tests:
     main:                Main.hs
     source-dirs:         app
     ghc-options:

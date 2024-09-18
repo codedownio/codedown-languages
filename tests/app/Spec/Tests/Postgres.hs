@@ -8,8 +8,10 @@ import qualified Data.Map as M
 import Data.String.Interpolate
 import qualified Data.Vector as V
 import Test.Sandwich as Sandwich
+import Test.Sandwich.Contexts.Nix (introduceNixContext, nixpkgsReleaseDefault)
+import Test.Sandwich.Contexts.PostgreSQL
 import TestLib.Contexts.PostgresqlData
-import TestLib.Contexts.PostgresqlDatabase
+import TestLib.Contexts.PostgresqlData ()
 import TestLib.JupyterRunnerContext
 import TestLib.JupyterTypes
 import TestLib.NixEnvironmentContext
@@ -34,10 +36,10 @@ tests = describe "Postgres tests" $ introduceNixEnvironment [kernelSpec] [] "Pos
   testKernelSearchersBuild "postgres"
   testHasExpectedFields "postgres"
 
-  introducePostgres Nothing $ introducePostgresData $ do
+  introduceNixContext nixpkgsReleaseDefault $ introducePostgresViaNix defaultPostgresNixOptions $ introducePostgresData $ do
     it "selects from test_table" $ do
-      (_, ctx) <- getContext postgresDb
-      let connStr = postgresConnString ctx
+      PostgresContext {..} <- getContext postgres
+      let connStr = postgresConnString
       info [i|Connection string: #{connStr}|]
       displayDatasShouldSatisfy "postgres" [__i|-- connection: #{connStr}
                                                 SELECT * FROM test_table
