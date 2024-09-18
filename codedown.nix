@@ -5,7 +5,7 @@
 }:
 
 let
-  common = pkgsStable.callPackage ./languages/common.nix {};
+  common = pkgsStable.callPackage ./modules/languages/common.nix {};
 
   callPackage = pkgsStable.callPackage;
 
@@ -14,10 +14,10 @@ let
 in
 
 rec {
-  spellchecker = pkgsMaster.callPackage ./language_servers/markdown-spellcheck-lsp {};
+  spellchecker = pkgsMaster.callPackage ./modules/language_servers/markdown-spellcheck-lsp {};
 
   testing = {
-    builds-forever = pkgsMaster.callPackage ./misc/builds-forever.nix {};
+    builds-forever = pkgsMaster.callPackage ./modules/testing/builds-forever.nix {};
   };
 
   # Exported so clients can build searchers for other package sets, like "codedown.searcher nixpkgs"
@@ -27,7 +27,7 @@ rec {
     common.safeEval (lib.attrByPath ["meta" "settingsSchema"] [] value)
   ) languages;
 
-  evaluateConfig = callPackage ./codedown/evaluate-config.nix {
+  evaluateConfig = callPackage ./nix/evaluate-config.nix {
     inherit pkgsStable pkgsMaster;
   };
 
@@ -56,11 +56,11 @@ rec {
 
   languages = everythingEnv.config.builtKernels;
 
-  makeEnvironment = callPackage ./codedown/makeEnvironment.nix {
+  makeEnvironment = callPackage ./nix/makeEnvironment.nix {
     inherit pkgsStable pkgsMaster;
   };
 
-  validateCodeDownEnvironment = callPackage ./codedown/validateCodeDownEnvironment.nix {};
+  validateCodeDownEnvironment = callPackage ./nix/validateCodeDownEnvironment.nix {};
 
   # Exposed so it's easier to compute build dependencies in the presence of IFD
   inherit pkgsStable pkgsMaster requiredPackages;

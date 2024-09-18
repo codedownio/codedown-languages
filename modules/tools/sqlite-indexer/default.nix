@@ -22,7 +22,7 @@
 let
   common = callPackage ../../languages/common.nix {};
 
-  uiMetadata = callPackage ../../codedown/uiMetadata.nix {};
+  uiMetadata = callPackage ../../../nix/uiMetadata.nix {};
 
   numVersionComponents = 5;
   componentPadLength = 3;

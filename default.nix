@@ -3,7 +3,7 @@
 }:
 
 let
-  overlays = [(import ./overlays.nix)];
+  overlays = [];
 
   pkgsStable = import (fetchFromGitHub {
     owner = "NixOS";
