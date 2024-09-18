@@ -60,7 +60,7 @@ rec {
     inherit pkgsStable pkgsMaster;
   };
 
-  validateCodeDownEnvironment = callPackage ./nix/validateCodeDownEnvironment.nix {};
+  validateEnvironment = callPackage ./nix/validateEnvironment.nix {};
 
   # Exposed so it's easier to compute build dependencies in the presence of IFD
   inherit pkgsStable pkgsMaster requiredPackages;
