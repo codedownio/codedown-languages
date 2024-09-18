@@ -64,11 +64,18 @@ symlinkJoin {
       uiMetadata = callPackage ./uiMetadata.nix {};
     in
       {
-        # channels = lib.mapAttrsToList uiMetadata.mkChannelUiMetadata channels;
+        # channels = lib.mapAttrsToList (name: channel: channel // {
+        #   name = name;
+        # }) channels;
+        channels = [];
 
         kernels = map uiMetadata.mkKernelUiMetadata (attrValues builtKernels);
 
-        # other_packages = map uiMetadata.mkOtherPackageUiMetadata otherPackages;
+        other_packages = map (package: {
+          channel = "foo";
+          attr = "bar";
+          meta = if package ? "meta" then uiMetadata.chooseInterestingMeta package else {};
+        }) evaluated.config.packages;
       };
 
     ui_metadata_yaml = writeText "ui-metadata.yaml" (lib.generators.toYAML {} ui_metadata);

@@ -38,10 +38,6 @@ rec {
     language_server_names = contents.languageServerNames;
   });
 
-  mkChannelUiMetadata = name: channel: channel // {
-    name = name;
-  };
-
   # This is duplicated from languages/common.nix, which we'd rather not import here
   packageName = p: if lib.isString p then p else p.name;
 
@@ -64,11 +60,5 @@ rec {
     # Hydrated
     modes = kernel.modes;
     meta = chooseInterestingMeta kernel;
-  };
-
-  mkOtherPackageUiMetadata = package: {
-    channel = package.channel;
-    attr = package.attr;
-    meta = if package.contents ? "meta" then chooseInterestingMeta package.contents else {};
   };
 }
