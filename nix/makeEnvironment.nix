@@ -18,9 +18,7 @@ config:
 with lib;
 
 let
-  evaluateConfig = callPackage ./evaluate-config.nix { inherit pkgsStable pkgsMaster; };
-
-  evaluated = evaluateConfig config;
+  evaluated = (callPackage ./evaluate-config.nix { inherit pkgsStable pkgsMaster; }) config;
 
   builtKernels = mapAttrs (_: kernel:
     kernel.overrideAttrs (old: {
@@ -37,18 +35,14 @@ let
     shellToReplInfo = shell: {
       name = shell.name;
       display_name = shell.meta.displayName;
-      attr = shell.meta.attr;
-      args = shell.meta.args;
-      icon = shell.meta.icon;
+      inherit (shell.meta) attr args icon;
     };
   in
     map shellToReplInfo (attrValues builtShells)
-    ++ concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (if kernel.passthru ? "repls" then kernel.passthru.repls else {})) (attrValues builtKernels)
+    ++ concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (kernel.repls or {})) (attrValues builtKernels)
   ;
 
   exporters = concatMap (exporter: exporter.meta.exporterInfos) (attrValues builtExporters);
-
-  uiMetadata = callPackage ./uiMetadata.nix {};
 
 in
 
@@ -66,13 +60,16 @@ symlinkJoin {
 
     inherit channels;
 
-    ui_metadata = {
-      # channels = lib.mapAttrsToList uiMetadata.mkChannelUiMetadata channels;
+    ui_metadata = let
+      uiMetadata = callPackage ./uiMetadata.nix {};
+    in
+      {
+        # channels = lib.mapAttrsToList uiMetadata.mkChannelUiMetadata channels;
 
-      kernels = map uiMetadata.mkKernelUiMetadata (attrValues builtKernels);
+        kernels = map uiMetadata.mkKernelUiMetadata (attrValues builtKernels);
 
-      # other_packages = map uiMetadata.mkOtherPackageUiMetadata otherPackages;
-    };
+        # other_packages = map uiMetadata.mkOtherPackageUiMetadata otherPackages;
+      };
 
     ui_metadata_yaml = writeText "ui-metadata.yaml" (lib.generators.toYAML {} ui_metadata);
   };
