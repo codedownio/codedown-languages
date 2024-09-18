@@ -69,7 +69,7 @@ jobs:
       run: |
         cd tests
 
-        export NIX_PATH=nixpkgs=$(nix run .#nixpkgsUnstablePath)
+        export NIX_PATH=nixpkgs=$(nix run .#nixpkgsPath)
 
         export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
         echo "Got path: $PATH"
@@ -85,7 +85,7 @@ jobs:
         echo "Got TEST_ROOT: $TEST_ROOT"
         echo TEST_ROOT="$TEST_ROOT" >> $GITHUB_ENV
 
-        export NIX_PATH=nixpkgs=$(nix run .#nixpkgsUnstablePath)
+        export NIX_PATH=nixpkgs=$(nix run .#nixpkgsPath)
         export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
 
         stack run --nix --no-nix-pure -- \
