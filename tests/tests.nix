@@ -1,10 +1,9 @@
 { mkDerivation, aeson, base, bytestring, conduit, conduit-aeson
-, containers, data-default, directory, ex-pool, exceptions
-, filepath, lens, lib, lsp-test, lsp-types, monad-control
-, monad-logger, mtl, network, optparse-applicative
-, postgresql-libpq, postgresql-simple, process, random, retry
-, row-types, safe, sandwich, sandwich-contexts, string-interpolate
-, temporary, text, unliftio, unliftio-core, vector
+, containers, data-default, directory, exceptions, filepath, lens
+, lib, lsp-test, lsp-types, monad-control, monad-logger, mtl
+, optparse-applicative, postgresql-simple, row-types, safe
+, sandwich, sandwich-contexts, string-interpolate, temporary, text
+, unliftio, unliftio-core, vector
 }:
 mkDerivation {
   pname = "tests";
@@ -14,10 +13,9 @@ mkDerivation {
   isExecutable = true;
   libraryHaskellDepends = [
     aeson base bytestring conduit conduit-aeson containers data-default
-    directory ex-pool exceptions filepath lens lsp-test lsp-types
-    monad-control monad-logger mtl network optparse-applicative
-    postgresql-libpq postgresql-simple process random retry row-types
-    safe sandwich sandwich-contexts string-interpolate temporary text
+    directory exceptions filepath lens lsp-test lsp-types monad-control
+    monad-logger mtl optparse-applicative postgresql-simple row-types
+    sandwich sandwich-contexts string-interpolate temporary text
     unliftio unliftio-core vector
   ];
   executableHaskellDepends = [

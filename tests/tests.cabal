@@ -59,7 +59,6 @@ library
     , containers
     , data-default
     , directory
-    , ex-pool
     , exceptions
     , filepath
     , lens
@@ -68,15 +67,9 @@ library
     , monad-control
     , monad-logger
     , mtl
-    , network
     , optparse-applicative
-    , postgresql-libpq
     , postgresql-simple
-    , process
-    , random
-    , retry
     , row-types
-    , safe
     , sandwich
     , sandwich-contexts
     , string-interpolate
