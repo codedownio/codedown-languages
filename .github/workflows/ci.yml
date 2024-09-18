@@ -48,6 +48,9 @@ jobs:
         - name: haskell
           flags: "-f haskell-ghc98"
         - name: julia
+          flags: "-f julia_19"
+        - name: julia
+          flags: "-f julia_110"
         - name: octave
         - name: postgres
         - name: python
