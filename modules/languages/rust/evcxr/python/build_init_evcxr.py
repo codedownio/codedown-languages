@@ -31,11 +31,11 @@ for pkg in metadata["packages"]:
 with open(out, "a") as f:
   for package in packages:
     package_name = package if isinstance(package, str) else package["name"]
-    settings = {} if isinstance(package, str) else package.get("settings", {})
+    features = {} if isinstance(package, str) else package.get("features", {})
     if package_name in name_to_dir:
       clauses = [f"""version = \"{name_to_version.get(package_name, "*")}\""""]
-      if "features" in settings:
-        clauses.append(f"""features = {json.dumps(settings["features"])}""")
+      if features:
+        clauses.append(f"""features = {json.dumps(features)}""")
 
       clauses_joined = ", ".join(clauses)
 

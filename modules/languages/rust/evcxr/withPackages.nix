@@ -30,8 +30,8 @@ let
 
   renderPackage = pn:
     if builtins.isString pn then ''${pn} = "*"''
-    else if builtins.isAttrs pn && lib.hasAttrByPath ["settings" "features"] pn
-      then ''${pn.name} = { version = "*", features = [${lib.concatStringsSep ", " (map (feat: ''"'' + feat + ''"'') pn.settings.features)}] }''
+    else if builtins.isAttrs pn && lib.hasAttrByPath ["features"] pn
+      then ''${pn.name} = { version = "*", features = [${lib.concatStringsSep ", " (map (feat: ''"'' + feat + ''"'') pn.features)}] }''
       else ''${pn.name} = { version = "*" }'';
 
   cargoToml = packages: writeTextFile {

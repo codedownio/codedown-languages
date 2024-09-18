@@ -23,7 +23,10 @@ let
     }
     else if (type.name == "submodule") then {
       tag = "submodule";
-      foo = "BAR";
+      keys = lib.mapAttrsRecursiveCond
+        (x: !(x ? _type))
+        (path: value: convertType target value.type)
+        (lib.removeAttrs (type.getSubOptions {}) ["_module"]);
     }
     else builtins.throw "Can't convert type for '${target}': ${toString type.name}"
   ;

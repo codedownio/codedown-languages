@@ -17,6 +17,7 @@ import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
+import TestLib.Util
 
 
 tests :: LanguageSpec
@@ -68,7 +69,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelPackages = [
       nameOnly "rand"
 
-      , NameAndSettings "serde" (Just (A.object [("features", A.Array (V.fromList ["derive"]))]))
+      , NameAndSettings "serde" (Just (aesonFromList [("features", A.Array (V.fromList ["derive"]))]))
       , nameOnly "serde_json"
       , nameOnly "serde_derive"
       ]

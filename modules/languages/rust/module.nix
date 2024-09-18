@@ -17,7 +17,7 @@ with lib;
               type = types.str;
               description = "Package name";
             };
-            settings.features = mkOption rec {
+            features = mkOption rec {
               type = types.listOf types.str;
               description = "Features to enable for the package";
             };

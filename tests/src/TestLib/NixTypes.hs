@@ -31,7 +31,7 @@ deriveJSON toSnakeBoth2 ''NixSrcSpec
 
 data NameAndSettings = NameAndSettings {
   nameAndSettingsName :: Text
-  , nameAndSettingsSettings :: Maybe Value
+  , nameAndSettingsSettings :: Maybe A.Object
   } deriving (Show, Eq, Ord)
 deriveJSON toSnake3 ''NameAndSettings
 

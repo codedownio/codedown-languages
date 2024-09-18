@@ -14,9 +14,9 @@ import qualified Data.Vector as V
 import TestLib.NixTypes
 
 #if MIN_VERSION_aeson(2,0,0)
-import qualified Data.Aeson.KeyMap          as HM
+import qualified Data.Aeson.KeyMap as HM
 #else
-import qualified Data.HashMap.Strict        as HM
+import qualified Data.HashMap.Strict as HM
 #endif
 
 
@@ -87,7 +87,7 @@ renderKernel (NixKernelSpec {..}) =
       xs -> [i|kernels.#{nixKernelName}.packages = [#{T.unwords $ fmap renderKernelPackage xs}];|]
 
     renderKernelPackage (NameAndSettings name Nothing) = quote name
-    renderKernelPackage (NameAndSettings name (Just settings)) = aesonToNix (A.object [("name", A.String name), ("settings", settings)])
+    renderKernelPackage (NameAndSettings name (Just settings)) = aesonToNix (A.object (("name", A.String name) : HM.toList settings))
       & parenQuote
 
     parenQuote x = "(" <> x <> ")"
