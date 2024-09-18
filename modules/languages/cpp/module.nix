@@ -53,7 +53,7 @@ with lib;
 
       attrs = [config.kernels.cpp.flavor] ++ config.kernels.cpp.attrs;
 
-      settingsSchema = nixosOptionsToSettingsSchema options.kernels.cpp;
+      settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.cpp;
     };
   };
 }

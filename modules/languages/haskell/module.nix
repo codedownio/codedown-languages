@@ -75,7 +75,7 @@ with lib;
         snapshot = getAttr config.kernels.haskell.ghcPackage compilers;
 
         inherit (config.kernels.haskell) packages attrs extensions settings;
-        settingsSchema = nixosOptionsToSettingsSchema options.kernels.haskell;
+        settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.haskell;
       };
   };
 }

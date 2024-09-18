@@ -67,7 +67,7 @@ with lib;
       julia = getAttr config.kernels.julia.juliaPackage config.pkgs;
 
       inherit (config.kernels.julia) packages attrs extensions settings;
-      settingsSchema = nixosOptionsToSettingsSchema options.kernels.julia;
+      settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.julia;
     };
   };
 }

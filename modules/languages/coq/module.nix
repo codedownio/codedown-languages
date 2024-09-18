@@ -42,7 +42,7 @@ with lib;
 
       inherit (config.kernels.coq) packages attrs extensions;
       settings = {};
-      settingsSchema = nixosOptionsToSettingsSchema options.kernels.coq;
+      settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.coq;
     };
   };
 }

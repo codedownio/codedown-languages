@@ -55,7 +55,7 @@ with lib;
       go = getAttr config.kernels.go.goPackage config.pkgs;
 
       inherit (config.kernels.go) packages attrs extensions settings;
-      settingsSchema = nixosOptionsToSettingsSchema options.kernels.go;
+      settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.go;
     };
   };
 }

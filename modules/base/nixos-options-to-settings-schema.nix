@@ -16,7 +16,7 @@ let
   in
     {
       target = v.name;
-      type = convertType (lib.attrByPath (lib.drop componentsToDrop v.loc) defaultItem options).type;
+      type = convertType v.name (lib.attrByPath (lib.drop componentsToDrop v.loc) defaultItem options).type;
       loc = v.loc;
     }
     // lib.optionalAttrs (lib.hasAttr "default" v) { defaultValue = convertDefaultValue v.default; }

@@ -32,7 +32,7 @@ with lib;
     builtKernels.clojure = config.pkgs.callPackage ./. {
       clojure = config.pkgs.clojure;
       inherit (config.kernels.clojure) attrs extensions settings;
-      settingsSchema = nixosOptionsToSettingsSchema options.kernels.clojure;
+      settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.clojure;
     };
   };
 }

@@ -126,7 +126,7 @@ in
           python3 = basePython;
 
           inherit (config.kernels.python3) packages attrs extensions settings;
-          settingsSchema = nixosOptionsToSettingsSchema options.kernels.python3;
+          settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.python3;
         };
     })
 
@@ -136,7 +136,7 @@ in
           python3 = lib.getAttr config.kernels.pypy3.python3Package config.pkgs;
 
           inherit (config.kernels.pypy3) packages attrs extensions settings;
-          settingsSchema = nixosOptionsToSettingsSchema options.kernels.pypy3;
+          settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.pypy3;
         };
     })
   ];

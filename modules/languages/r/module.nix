@@ -37,7 +37,7 @@ with lib;
     builtKernels.R = config.pkgs.callPackage ./. {
       R = config.pkgs.R;
       inherit (config.kernels.R) packages attrs extensions settings;
-      settingsSchema = nixosOptionsToSettingsSchema options.kernels.R;
+      settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.R;
     };
   };
 }

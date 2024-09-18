@@ -52,7 +52,7 @@ in
       ruby = getAttr config.kernels.ruby.rubyPackage pkgs;
 
       inherit (config.kernels.ruby) packages attrs extensions settings;
-      settingsSchema = nixosOptionsToSettingsSchema options.kernels.ruby;
+      settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.ruby;
     };
   };
 }
