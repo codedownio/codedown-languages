@@ -11,7 +11,18 @@ with lib;
       };
 
       packages = mkOption {
-        type = types.listOf (types.either types.str types.attrs);
+        type = types.listOf (types.either types.str (types.submodule {
+          options = {
+            name = mkOption rec {
+              type = types.str;
+              description = "Package name";
+            };
+            settings.features = mkOption rec {
+              type = types.listOf types.str;
+              description = "Features to enable for the package";
+            };
+          };
+        }));
         default = [];
       };
 
