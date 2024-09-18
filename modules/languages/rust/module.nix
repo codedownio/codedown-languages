@@ -55,7 +55,9 @@ with lib;
       rust = getAttr config.kernels.rust.rustPackage config.pkgs;
 
       inherit (config.kernels.rust) packages attrs extensions settings;
-      settingsSchema = nixosOptionsToSettingsSchema options.kernels.rust;
+      settingsSchema = nixosOptionsToSettingsSchema {
+        componentsToDrop = 2;
+      } options.kernels.rust;
     };
   };
 }

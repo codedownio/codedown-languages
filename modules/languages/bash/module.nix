@@ -32,7 +32,9 @@ with lib;
     builtKernels.bash = config.pkgs.callPackage ./. {
       bash = config.pkgs.bash;
       inherit (config.kernels.bash) attrs extensions settings;
-      settingsSchema = nixosOptionsToSettingsSchema options.kernels.bash;
+      settingsSchema = nixosOptionsToSettingsSchema {
+        componentsToDrop = 2;
+      } options.kernels.bash;
     };
   };
 }
