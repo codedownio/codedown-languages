@@ -21,6 +21,10 @@ let
       left = convertType target type.nestedTypes.left;
       right = convertType target type.nestedTypes.right;
     }
+    else if (type.name == "submodule") then {
+      tag = "submodule";
+      foo = "BAR";
+    }
     else builtins.throw "Can't convert type for '${target}': ${toString type.name}"
   ;
 
