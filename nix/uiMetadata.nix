@@ -38,27 +38,28 @@ rec {
     language_server_names = contents.languageServerNames;
   });
 
-  # This is duplicated from languages/common.nix, which we'd rather not import here
-  packageName = p: if lib.isString p then p else p.name;
+  mkKernelUiMetadata = let
+    # This is duplicated from languages/common.nix, which we'd rather not import here
+    packageName = p: if lib.isString p then p else p.name;
 
-  mkKernelPackageMetadata = kernel: p: {
-    name = packageName p;
-    meta = if lib.hasAttrByPath ["packageOptions" (packageName p)] kernel then chooseInterestingMeta (kernel.packageOptions.${packageName p}) else {};
-  } // (lib.optionalAttrs (lib.isAttrs p && p ? "settings") {
-    inherit (p) settings;
-  });
+    mkKernelPackageMetadata = kernel: p: {
+      name = packageName p;
+      meta = if lib.hasAttrByPath ["packageOptions" (packageName p)] kernel then chooseInterestingMeta (kernel.packageOptions.${packageName p}) else {};
+    } // (lib.optionalAttrs (lib.isAttrs p && p ? "settings") {
+      inherit (p) settings;
+    });
+  in
+    kernel: {
+      # Dry
+      channel = kernel.channel;
+      name = kernel.name;
+      settings = if kernel ? "settings" then kernel.settings else {};
 
-  mkKernelUiMetadata = kernel: {
-    # Dry
-    channel = kernel.channel;
-    name = kernel.name;
-    settings = if kernel ? "settings" then kernel.settings else {};
+      # Different for hydrated
+      packages = map (p: mkKernelPackageMetadata kernel p) kernel.args.packages;
 
-    # Different for hydrated
-    packages = map (p: mkKernelPackageMetadata kernel p) kernel.args.packages;
-
-    # Hydrated
-    modes = kernel.modes;
-    meta = chooseInterestingMeta kernel;
-  };
+      # Hydrated
+      modes = kernel.modes;
+      meta = chooseInterestingMeta kernel;
+    };
 }
