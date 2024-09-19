@@ -37,6 +37,29 @@ with lib;
         The set of packages that are symlinked into the environment.
       '';
     };
+
+    labeledPackages = lib.mkOption {
+      type = lib.types.listOf (types.submodule {
+        options = {
+          channel = mkOption rec {
+            type = types.str;
+            description = "Channel name";
+          };
+          attr = mkOption rec {
+            type = types.str;
+            description = "Attr name";
+          };
+          contents = mkOption rec {
+            type = types.package;
+            description = "Package";
+          };
+        };
+      });
+      default = [];
+      description = ''
+        Packages that are labeled with channels and attributes. Used to generate UI metadata.
+      '';
+    };
   };
 
   config = {

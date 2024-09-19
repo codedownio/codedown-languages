@@ -63,9 +63,7 @@ codedown.makeEnvironment {
   exporters.nbconvert-exporters.enable = true;
   exporters.nbconvert-exporters.texliveScheme = "scheme-full";
 
-  # otherPackages = [
-  #   { channel = "codedown"; attr = "spellchecker"; contents = codedown.spellchecker; }
-
-  #   { channel = "nixpkgs"; attr = "htop"; contents = pkgsStable.htop; }
-  # ];
+  labeledPackages = [
+    { channel = "nixpkgs"; attr = "htop"; contents = channels.nixpkgs.htop; }
+  ];
 }

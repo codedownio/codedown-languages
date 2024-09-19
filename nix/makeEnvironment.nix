@@ -53,6 +53,7 @@ symlinkJoin {
     ++ lib.optionals (builtins.length repls > 0) [(writeTextDir "lib/codedown/repls.yaml" (lib.generators.toYAML {} repls))]
     ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
     ++ evaluated.config.packages
+    ++ map (x: x.contents) evaluated.config.labeledPackages
   ;
 
   passthru = rec {
@@ -71,11 +72,11 @@ symlinkJoin {
 
         kernels = map uiMetadata.mkKernelUiMetadata (attrValues builtKernels);
 
-        other_packages = map (package: {
-          channel = "foo";
-          attr = "bar";
-          meta = if package ? "meta" then uiMetadata.chooseInterestingMeta package else {};
-        }) evaluated.config.packages;
+        other_packages = map (p: {
+          channel = p.channel;
+          attr = p.attr;
+          meta = if p.contents ? "meta" then uiMetadata.chooseInterestingMeta p.contents else {};
+        }) evaluated.config.labeledPackages;
       };
 
     ui_metadata_yaml = writeText "ui-metadata.yaml" (lib.generators.toYAML {} ui_metadata);
