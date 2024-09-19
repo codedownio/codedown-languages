@@ -4,42 +4,50 @@ with lib;
 
 {
   options = {
-    pkgs = lib.mkOption {
-      type = lib.types.attrs;
+    pkgs = mkOption {
+      type = types.attrs;
       default = pkgs;
     };
 
-    pkgsMaster = lib.mkOption {
-      type = lib.types.attrs;
+    pkgsMaster = mkOption {
+      type = types.attrs;
       default = pkgs;
     };
 
-    builtExporters = lib.mkOption {
+    builtExporters = mkOption {
       type = types.attrsOf types.package;
       default = {};
     };
 
-    builtKernels = lib.mkOption {
+    builtKernels = mkOption {
       type = types.attrsOf types.package;
       default = {};
     };
 
-    builtShells = lib.mkOption {
+    builtShells = mkOption {
       type = types.attrsOf types.package;
       default = {};
     };
 
-    packages = lib.mkOption {
-      type = lib.types.listOf lib.types.package;
+    packages = mkOption {
+      type = types.listOf types.package;
       default = [];
-      example = lib.literalExpression "[ pkgs.firefox pkgs.thunderbird ]";
+      example = literalExpression "[ pkgs.firefox pkgs.thunderbird ]";
       description = ''
         The set of packages that are symlinked into the environment.
       '';
     };
 
-    labeledPackages = lib.mkOption {
-      type = lib.types.listOf (types.submodule {
+    channels = mkOption {
+      type = types.attrs;
+      default = {};
+      description = ''
+        Channels, passed through to UI metadata.
+      '';
+    };
+
+    labeledPackages = mkOption {
+      type = types.listOf (types.submodule {
         options = {
           channel = mkOption rec {
             type = types.str;

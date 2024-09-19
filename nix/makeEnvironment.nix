@@ -65,10 +65,9 @@ symlinkJoin {
       uiMetadata = callPackage ./uiMetadata.nix {};
     in
       {
-        # channels = lib.mapAttrsToList (name: channel: channel // {
-        #   name = name;
-        # }) channels;
-        channels = [];
+        channels = lib.mapAttrsToList (name: channel: channel // {
+          name = name;
+        }) evaluated.config.channels;
 
         kernels = map uiMetadata.mkKernelUiMetadata (attrValues builtKernels);
 
