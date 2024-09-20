@@ -1,4 +1,5 @@
 { fetchFromGitHub
+, isCodeDown ? true # For introspection using builtins.functionArgs
 , ...
 }:
 
