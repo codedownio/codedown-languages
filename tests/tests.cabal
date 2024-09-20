@@ -110,7 +110,6 @@ executable tests
       Spec.Tests.Rust.Completion
       Spec.Tests.Rust.Diagnostics
       Spec.Tests.Rust.Hovers
-      Spec.Tests.SampleEnvironments
       Spec.Tests.Searchers
       Spec.Tests.Shells.Zsh
       Spec.Tests.Spellchecker
