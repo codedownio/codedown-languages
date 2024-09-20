@@ -27,16 +27,21 @@ let
   numVersionComponents = 5;
   componentPadLength = 3;
 
-  filteredPackages = with lib; filterAttrs (name: value: common.safeEval' false (
-    (!packageMustBeDerivation || isDerivation(value))
+  safeEval' = default: e: let
+    evaluated = builtins.tryEval e;
+  in
+    if evaluated.success then evaluated.value else default;
+
+  filteredPackages = with lib; filterAttrs (name: value: safeEval' false (
+    (!packageMustBeDerivation || isDerivation value)
     &&
-    (!packageMustHaveName || (lib.attrByPath ["meta" "name"] "" value != ""))
+    (!packageMustHaveName || ((value.meta.name or "") != ""))
   )) packages;
 
   json = writeText "packages-index-yaml.json" (lib.generators.toJSON {} (lib.mapAttrsToList (k: v: {
     attr = attrPrefix + k;
-    name = common.safeEval (lib.attrByPath ["meta" "name"] "" v);
-    version = common.safeEval (common.lexicographyVersionNumber' numVersionComponents componentPadLength (lib.attrByPath ["meta" "version"] "" v));
+    name = v.meta.name or "";
+    version = common.lexicographyVersionNumber' numVersionComponents componentPadLength (v.meta.version or "");
     meta = uiMetadata.chooseInterestingMeta v;
   }) filteredPackages));
 
@@ -61,7 +66,7 @@ rec {
   '';
 
   allIcons = let
-    uniquePaths = lib.mapAttrsToList (k: v: common.safeEval (lib.attrByPath ["meta" "icon"] null v)) filteredPackages;
+    uniquePaths = lib.mapAttrsToList (k: v: v.meta.icon or null) filteredPackages;
   in
     linkFarm "all-searcher-icons" (map (path: {
       name = builtins.hashString "md5" (toString path);

@@ -51,10 +51,6 @@ rec {
     inherit meta passthru;
   });
 
-  writeShellScriptBinWithMeta = meta: path: text: (writeTextDir path text).overrideAttrs (old: {
-    inherit meta;
-  });
-
   writeShellScriptBinWithAttrs = attrs: path: text: (writeShellScriptBin path text).overrideAttrs (old: attrs);
 
   searcher = packages: (callPackage ../tools/sqlite-indexer { inherit packages; }).searcher;
@@ -74,32 +70,6 @@ rec {
       padLeftZeros = s: (replicateStr (componentLength - stringLength s) "0") + s;
     in
       concatStrings withMaxComponents;
-
-  hasAttrSafe =  x: set: hasAttr x set && (let
-    evaluated = builtins.tryEval (getAttr x set);
-  in
-    if evaluated.success then true else false);
-
-  safeEval = safeEval' "";
-  safeEval' = default: e: let
-    evaluated = builtins.tryEval e;
-  in
-    if evaluated.success then evaluated.value else default;
-
-  isTrue = settings: name: hasAttr name settings && getAttr name settings == true;
-
-  focusSettings = prefix: settings: with lib; let
-    filtered = lib.filterAttrs (n: _: hasPrefix prefix n) settings;
-  in
-    listToAttrs (mapAttrsToList (n: v: {
-      name = removePrefix prefix n;
-      value = v;
-    }) filtered);
-
-  makeDefaultSettings = settingsSchema: listToAttrs (map (item: {
-    name = item.target;
-    value = item.defaultValue;
-  }) (filter (hasAttr "target") settingsSchema));
 
   packageName = p: if lib.isString p then p else p.name;
 }
