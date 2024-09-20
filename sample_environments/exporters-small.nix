@@ -4,5 +4,5 @@
 }:
 
 codedown.makeEnvironment {
-  exporters.nbconvert-exporters.enable = true;
+  exporters.nbconvert.enable = true;
 }

@@ -60,8 +60,8 @@ codedown.makeEnvironment {
   shells.fish.enable = true;
   shells.zsh.enable = true;
 
-  exporters.nbconvert-exporters.enable = true;
-  exporters.nbconvert-exporters.texliveScheme = "scheme-full";
+  exporters.nbconvert.enable = true;
+  exporters.nbconvert.texliveScheme = "scheme-full";
 
   labeledPackages = [
     { channel = "nixpkgs"; attr = "htop"; contents = channels.nixpkgs.htop; }

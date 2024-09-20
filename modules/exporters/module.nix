@@ -4,7 +4,7 @@ with lib;
 
 {
   options = {
-    exporters.nbconvert-exporters = {
+    exporters.nbconvert = {
       enable = mkOption {
         type = types.bool;
         default = false;
@@ -27,9 +27,9 @@ with lib;
     };
   };
 
-  config = mkIf config.exporters.nbconvert-exporters.enable {
-    builtExporters.nbconvert-exporters = config.pkgs.callPackage ./nbconvert.nix {
-      texliveScheme = config.pkgs.texlive.combined.${config.exporters.nbconvert-exporters.texliveScheme};
+  config = mkIf config.exporters.nbconvert.enable {
+    builtExporters.nbconvert = config.pkgs.callPackage ./nbconvert.nix {
+      texliveScheme = config.pkgs.texlive.combined.${config.exporters.nbconvert.texliveScheme};
     };
   };
 }
