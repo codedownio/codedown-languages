@@ -49,5 +49,5 @@ documentHighlightCodeRegular = [__i|foo = "hello"
 
 -- main :: IO ()
 -- main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $ do
---   introduceNixEnvironment [kernelSpec "haskell-ghc92"] [] "Haskell" $ do
+--   introduceNixEnvironment [kernelSpec "ghc92"] [] "Haskell" $ do
 --     documentHighlightTests

@@ -30,44 +30,47 @@ tests = do
 
   -- haskellCommonTests "haskell-ghc810"
   -- haskellCommonTests "haskell-ghc90"
-  haskellCommonTests "haskell-ghc92"
-  haskellCommonTests "haskell-ghc94"
-  haskellCommonTests "haskell-ghc96"
-  haskellCommonTests "haskell-ghc98"
+  haskellCommonTests "ghc92"
+  haskellCommonTests "ghc94"
+  haskellCommonTests "ghc96"
+  haskellCommonTests "ghc98"
 
+kernelName :: Text -> Text
+kernelName _ghcPackage = "haskell"
 
 haskellCommonTests :: Text -> LanguageSpec
-haskellCommonTests lang = do
-  describe [i|Haskell #{lang} with hlint output|] $ introduceNixEnvironment [kernelSpecWithHlintOutput lang] [] "Haskell" $ do
+haskellCommonTests ghcPackage = do
+  describe [i|Haskell #{ghcPackage} with hlint output|] $ introduceNixEnvironment [kernelSpecWithHlintOutput ghcPackage] [] "Haskell" $ do
     describe "Kernel" $ do
       -- With the setting turned on, we should get hlint output
-      itHasDisplayTexts lang etaExpandCode [Just (A.Array $ V.fromList [
-                                                     String "Line 7: Eta reduce\n"
-                                                     , String "Found:\n"
-                                                     , String "baz2 x = baz x\n"
-                                                     , String "Why not:\n"
-                                                     , String "baz2 = baz"
-                                                     ])]
+      itHasDisplayTexts (kernelName ghcPackage) etaExpandCode [
+        Just (A.Array $ V.fromList [
+                 String "Line 7: Eta reduce\n"
+                 , String "Found:\n"
+                 , String "baz2 x = baz x\n"
+                 , String "Why not:\n"
+                 , String "baz2 = baz"
+                 ])]
 
-  describe [i|Haskell #{lang}|] $ introduceNixEnvironment [kernelSpec lang] [] "Haskell" $ do
+  describe [i|Haskell #{ghcPackage}|] $ introduceNixEnvironment [kernelSpec ghcPackage] [] "Haskell" $ do
     introduceJupyterRunner $ do
-      testKernelSearchersNonempty lang
-      testHasExpectedFields lang
+      testKernelSearchersNonempty (kernelName ghcPackage)
+      testHasExpectedFields (kernelName ghcPackage)
 
       describe "Kernel" $ do
-        itHasDisplayDatas lang [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
+        itHasDisplayDatas (kernelName ghcPackage) [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
 
-        itHasDisplayDatas lang [__i|:info String|] [stringInfo]
+        itHasDisplayDatas (kernelName ghcPackage) [__i|:info String|] [stringInfo]
 
         -- We shouldn't get hlint output by default
-        itHasDisplayDatas lang etaExpandCode []
+        itHasDisplayDatas (kernelName ghcPackage) etaExpandCode []
 
     describe "LSP" $ do
       codeActionsTests
-      diagnosticsTests lang lsName
+      diagnosticsTests ghcPackage lsName
       documentHighlightTests
       hoverTests
-      statementsTests lang
+      statementsTests ghcPackage
       symbolsTests
 
 

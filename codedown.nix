@@ -1,99 +1,68 @@
 { pkgsStable
-, pkgsUnstable
 , pkgsMaster
 , requiredPackages ? []
 , system ? "x86_64-linux"
 }:
 
 let
-  common = pkgsStable.callPackage ./languages/common.nix {};
+  common = pkgsStable.callPackage ./modules/languages/common.nix {};
 
   callPackage = pkgsStable.callPackage;
-
-  # Languages
-  # First argument controls whether attributes get filtered to the valid ones.
-  # This can be expensive to evaluate for languages like Haskell where there are tons of
-  # Stackage snapshots and one nix file for each. So, we don't bother with that when evaluating
-  # the languages attrset normally--only when building the languagesSearcher.
-  languagesFn = filterToValid: pkgsStable.lib.zipAttrsWith (n: v: pkgsStable.lib.head v) [
-    (callPackage ./languages/bash {})
-    (callPackage ./languages/clojure {})
-    (callPackage ./languages/coq {})
-    (pkgsMaster.callPackage ./languages/cpp {})
-    (callPackage ./languages/go {})
-    (pkgsMaster.callPackage ./languages/haskell {})
-    (callPackage ./languages/julia {})
-    (callPackage ./languages/octave {})
-    (callPackage ./languages/postgres {})
-    (callPackage ./languages/python {
-      poetry2nix = import (pkgsStable.fetchFromGitHub {
-        owner = "nix-community";
-        repo = "poetry2nix";
-        rev = "78fc8882411c29c8eb5f162b09fcafe08b8b03a3";
-        sha256 = "1dfgm286c48ac6yrk16xz41d0rsg6bv08122ngy420b0z88la9nj";
-      }) {
-        pkgs = pkgsStable;
-      };
-    })
-    (callPackage ./languages/r {})
-    (pkgsMaster.callPackage ./languages/ruby {})
-    (pkgsMaster.callPackage ./languages/rust {})
-  ];
 
   lib = pkgsStable.lib;
 
 in
 
 rec {
-  spellchecker = pkgsUnstable.callPackage ./language_servers/markdown-spellcheck-lsp {};
-
-  languages = languagesFn false;
-
-  shells = {
-    zsh = callPackage ./shells/zsh {};
-    fish = callPackage ./shells/fish {};
-    bash = callPackage ./shells/bash {};
-  };
-
-  exporters = {
-    nbconvert-small = pkgsMaster.callPackage ./exporters/nbconvert.nix { texliveScheme = pkgsStable.texlive.combined.scheme-small; };
-    nbconvert-large = pkgsMaster.callPackage ./exporters/nbconvert.nix { texliveScheme = pkgsStable.texlive.combined.scheme-full; };
-  };
+  spellchecker = pkgsMaster.callPackage ./modules/language_servers/markdown-spellcheck-lsp {};
 
   testing = {
-    builds-forever = pkgsMaster.callPackage ./misc/builds-forever.nix {};
+    builds-forever = pkgsMaster.callPackage ./modules/testing/builds-forever.nix {};
   };
 
   # Exported so clients can build searchers for other package sets, like "codedown.searcher nixpkgs"
   searcher = common.searcher;
 
+  settingsSchemas = lib.mapAttrs (attr: value: value.meta.settingsSchema or []) languages;
+
+  evaluateConfig = callPackage ./nix/evaluate-config.nix {
+    inherit pkgsStable pkgsMaster;
+  };
+
+  everythingConfig = let
+    base = evaluateConfig {};
+    kernelNames = builtins.attrNames base.options.kernels;
+    shellNames = builtins.attrNames base.options.shells;
+    exporterNames = builtins.attrNames base.options.exporters;
+  in
+    builtins.foldl' lib.recursiveUpdate {} (
+      (map (n: { kernels.${n}.enable = true; }) kernelNames)
+      ++ (map (n: { shells.${n}.enable = true; }) shellNames)
+      ++ (map (n: { exporters.${n}.enable = true; }) exporterNames)
+    );
+
+  everythingEnv = evaluateConfig everythingConfig;
+
   codedownSearcher = common.searcher' {
     # Note that we deliberately don't include "testing" packages in the searcher
-    packages = languagesFn true
-      // (lib.mapAttrs' (n: v: lib.nameValuePair ("shells." + n) v) shells)
-      // (lib.mapAttrs' (n: v: lib.nameValuePair ("exporters." + n) v) exporters)
-      // { inherit spellchecker; };
+    packages = everythingEnv.config.builtKernels
+      // (lib.mapAttrs' (n: v: lib.nameValuePair ("shells." + n) v) everythingEnv.config.builtShells)
+      // (lib.mapAttrs' (n: v: lib.nameValuePair ("exporters." + n) v) everythingEnv.config.builtExporters)
+      // { "language-servers.spellchecker" = spellchecker; }
+    ;
   };
 
-  languagesIcons = common.searcherIcons' {
-    packages = languagesFn true;
-    packageMustBeDerivation = false;
+  languages = everythingEnv.config.builtKernels;
+
+  makeEnvironment = callPackage ./nix/makeEnvironment.nix {
+    inherit pkgsStable pkgsMaster;
   };
 
-  settingsSchemas = lib.mapAttrs (attr: value:
-    common.safeEval (lib.attrByPath ["meta" "settingsSchema"] [] value)
-  ) languages;
+  validateEnvironment = callPackage ./nix/validateEnvironment.nix {};
 
-  mkCodeDownEnvironment = callPackage ./codedown/mkCodeDownEnvironment.nix {
-    inherit requiredPackages languages;
-  };
-
-  makeEnvironment = callPackage ./codedown/makeEnvironment.nix {
-    inherit pkgsStable pkgsUnstable pkgsMaster;
-  };
-
-  validateCodeDownEnvironment = callPackage ./codedown/validateCodeDownEnvironment.nix {};
+  # Exposed for consumers to pin and use to gather metadata from other channels like Nixpkgs
+  inherit (callPackage ./nix/uiMetadata.nix {}) chooseInterestingMeta;
 
   # Exposed so it's easier to compute build dependencies in the presence of IFD
-  inherit pkgsStable pkgsUnstable requiredPackages;
+  inherit pkgsStable pkgsMaster requiredPackages;
 }

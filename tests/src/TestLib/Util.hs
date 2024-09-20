@@ -44,3 +44,11 @@ aesonFromList xs = HM.fromList [(A.fromText k, v) | (k, v) <- xs]
 aesonFromList :: (Eq k, Hashable k) => [(Text, Value)] -> HM.HashMap A.Key v
 aesonFromList = HM.fromList
 #endif
+
+#if MIN_VERSION_aeson(2,0,0)
+aesonToList :: HM.KeyMap Value -> [(Text, Value)]
+aesonToList m = [(A.toText k, v) | (k, v) <- HM.toList m]
+#else
+aesonToList :: (Eq k, Hashable k) => HM.HashMap A.Key v -> [(Text, Value)]
+aesonToList = HM.toList
+#endif

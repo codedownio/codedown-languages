@@ -40,7 +40,6 @@ dependencies:
 - monad-control
 - mtl
 - optparse-applicative
-- safe
 - sandwich
 - sandwich-contexts
 - string-interpolate
@@ -57,22 +56,15 @@ library:
   - conduit-aeson
   - data-default
   - directory
-  - ex-pool
   - monad-logger
-  - network
-  - postgresql-libpq
   - postgresql-simple
-  - process
-  - random
-  - retry
   - row-types
-  - safe
   - temporary
   - unliftio
   - unliftio-core
 
 executables:
-  tests-exe:
+  tests:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -83,6 +75,7 @@ executables:
     dependencies:
     - monad-logger
     - row-types
+    - safe
     - tests
     - unliftio
     - unliftio-core

@@ -6,6 +6,13 @@
 
 
 codedown.makeEnvironment {
+  ### Exporters ###
+
+  exporters.nbconvert.enable = true;
+  exporters.nbconvert.texliveScheme = "scheme-full";
+
+  ### Kernels ###
+
   kernels.bash.enable = true;
 
   kernels.clojure.enable = true;
@@ -56,16 +63,13 @@ codedown.makeEnvironment {
 
   kernels.coq.enable = true;
 
+  ### Language servers ###
+
+  language-servers.spellchecker.enable = true;
+
+  ### Shells ###
+
   shells.bash.enable = true;
   shells.fish.enable = true;
   shells.zsh.enable = true;
-
-  exporters.nbconvert-exporters.enable = true;
-  exporters.nbconvert-exporters.texliveScheme = "scheme-full";
-
-  # otherPackages = [
-  #   { channel = "codedown"; attr = "spellchecker"; contents = codedown.spellchecker; }
-
-  #   { channel = "nixpkgs"; attr = "htop"; contents = pkgsStable.htop; }
-  # ];
 }

@@ -8,7 +8,7 @@ import TestLib.TestSearchers
 
 tests :: TopSpec
 tests = describe "Searchers" $ do
-  it "searcher has some results" $ testSearcherHasNonemptyResults ".#codedownSearcher"
+  it "searcher has some results" $ testSearcherHasNonemptyResults ".#codedown.codedownSearcher"
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests

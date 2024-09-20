@@ -18,17 +18,16 @@ import Test.Sandwich.Contexts.Waits (waitUntil)
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
-import TestLib.NixTypes
 import UnliftIO.Directory
 
 
-otherPackages :: [ChannelAndAttr]
-otherPackages = [
-  channelAndAttr "codedown" "spellchecker"
+otherConfig :: [Text]
+otherConfig = [
+  "language-servers.spellchecker.enable = true;"
   ]
 
 tests :: TopSpec
-tests = describe "Spellchecker" $ introduceNixEnvironment [] otherPackages "Spellchecker env" $ introduceJustBubblewrap $ do
+tests = describe "Spellchecker" $ introduceNixEnvironment [] otherConfig "Spellchecker env" $ introduceJustBubblewrap $ do
   it "Gets diagnostics and a working code action" $ do
     withLspSession' id "spellchecker" "test.md" [i|\# This is mispelled|] [] $ \lspHomeDir -> do
       ident <- openDoc "test.md" "spellchecker"

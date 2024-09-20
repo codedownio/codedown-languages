@@ -30,10 +30,18 @@ in
         sample_environments
     );
 
+    all_settings_schemas = writeTextFile {
+      name = "all_settings_schemas.json";
+      text = builtins.toJSON (
+        lib.mapAttrs (n: v: lib.listToAttrs (map (x: lib.nameValuePair x.name x.meta.settings_schema) v.ui_metadata.kernels))
+          sample_environments
+      );
+    };
+
     printVersions = let
       versionsMap = with lib;
-        mapAttrs (lang: value: if (hasAttr "versions" value) then (value.versions) else {})
-          (filterAttrs (k: _: !(hasPrefix "override") k) languages);
+        mapAttrs (lang: value: if (hasAttr "versions" value) then value.versions else {})
+          (filterAttrs (k: _: !(hasPrefix "override") k) codedown.languages);
 
       file = writeTextFile {
         name = "versions.yaml";

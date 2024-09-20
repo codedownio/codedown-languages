@@ -16,6 +16,28 @@ jobs:
       if: "!contains(github.event.head_commit.message, 'noci')"
       run: ./.aliases/verify-default-nix
 
+  build-ui-metadata:
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build .#ui_metadata_farm
+      if: "!contains(github.event.head_commit.message, 'noci')"
+      run: |
+        nix build .#ui_metadata_farm
+
+  build-sample-environments:
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build .#sample_environments_farm
+      if: "!contains(github.event.head_commit.message, 'noci')"
+      run: |
+        nix build .#sample_environments_farm
+
   test:
     name: ${{matrix.suite.name}} (${{matrix.suite.flags}})
     runs-on: self-hosted
@@ -37,13 +59,15 @@ jobs:
         - name: haskell
           flags: "-f haskell-ghc98"
         - name: julia
+          flags: "-f julia_19"
+        - name: julia
+          flags: "-f julia_110"
         - name: octave
         - name: postgres
         - name: python
         - name: r
         - name: ruby
         - name: rust
-        - name: sample-environments
         - name: searchers
         - name: zsh
         - name: spellchecker
@@ -58,7 +82,7 @@ jobs:
       run: |
         cd tests
 
-        export NIX_PATH=nixpkgs=$(nix run .#nixpkgsUnstablePath)
+        export NIX_PATH=nixpkgs=$(nix run .#nixpkgsPath)
 
         export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
         echo "Got path: $PATH"
@@ -74,7 +98,7 @@ jobs:
         echo "Got TEST_ROOT: $TEST_ROOT"
         echo TEST_ROOT="$TEST_ROOT" >> $GITHUB_ENV
 
-        export NIX_PATH=nixpkgs=$(nix run .#nixpkgsUnstablePath)
+        export NIX_PATH=nixpkgs=$(nix run .#nixpkgsPath)
         export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
 
         stack run --nix --no-nix-pure -- \

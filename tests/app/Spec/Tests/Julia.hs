@@ -22,20 +22,21 @@ import TestLib.Types
 
 tests :: LanguageSpec
 tests = do
-  juliaTests "julia16"
-  -- juliaTests "julia18" -- EOL
-  juliaTests "julia19"
-  juliaTests "julia110"
+  juliaTests "julia_19"
+  juliaTests "julia_110"
+
+kernelName :: Text -> Text
+kernelName _juliaPackage = "julia"
 
 juliaTests :: Text -> LanguageSpec
-juliaTests lang = describe [i|Julia (#{lang})|] $ introduceNixEnvironment [kernelSpec lang] [] [i|Julia (#{lang})|] $ introduceJupyterRunner $ do
-  testKernelSearchersNonempty lang
-  testHasExpectedFields lang
+juliaTests juliaPackage = describe [i|Julia (#{juliaPackage})|] $ introduceNixEnvironment [kernelSpec juliaPackage] [] [i|Julia (#{juliaPackage})|] $ introduceJupyterRunner $ do
+  testKernelSearchersNonempty (kernelName juliaPackage)
+  testHasExpectedFields (kernelName juliaPackage)
 
-  testKernelStdout lang [i|println("hi")|] "hi\n"
+  testKernelStdout (kernelName juliaPackage) [i|println("hi")|] "hi\n"
 
   describe "LSP" $ do
-    diagnosticsTests lang lsName
+    diagnosticsTests (kernelName juliaPackage) lsName
 
     itHasHoverSatisfying lsName "test.jl" Nothing [__i|print("hi")|] (Position 0 2) $ \hover -> do
       let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents
@@ -60,10 +61,10 @@ lsName :: Text
 lsName = "LanguageServer"
 
 kernelSpec :: Text -> NixKernelSpec
-kernelSpec lang = NixKernelSpec {
-  nixKernelName = lang
+kernelSpec juliaPackage = NixKernelSpec {
+  nixKernelName = kernelName juliaPackage
   , nixKernelChannel = "codedown"
-  , nixKernelDisplayName = Just [i|Julia (#{lang})|]
+  , nixKernelDisplayName = Just [i|Julia (#{juliaPackage})|]
   , nixKernelPackages = [
       nameOnly "JSON3"
       , nameOnly "Plots"
@@ -75,6 +76,7 @@ kernelSpec lang = NixKernelSpec {
       "settings.lsp.LanguageServer.enable = true"
       , "settings.lsp.LanguageServer.debug = true"
       , "settings.lsp.LanguageServer.index = true"
+      , [i|juliaPackage = "#{juliaPackage}"|]
       ]
   }
 

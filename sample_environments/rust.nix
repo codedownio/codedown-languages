@@ -9,9 +9,7 @@ codedown.makeEnvironment {
     "rand"
     {
       name = "serde";
-      settings = {
-        features = ["derive"];
-      };
+      features = ["derive"];
     }
     "serde_json"
   ];

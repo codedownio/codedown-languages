@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -20,7 +20,6 @@ library
   exposed-modules:
       TestLib.Aeson
       TestLib.Contexts.PostgresqlData
-      TestLib.Contexts.PostgresqlDatabase
       TestLib.JupyterRunnerContext
       TestLib.JupyterTypes
       TestLib.LSP
@@ -60,7 +59,6 @@ library
     , containers
     , data-default
     , directory
-    , ex-pool
     , exceptions
     , filepath
     , lens
@@ -69,15 +67,9 @@ library
     , monad-control
     , monad-logger
     , mtl
-    , network
     , optparse-applicative
-    , postgresql-libpq
     , postgresql-simple
-    , process
-    , random
-    , retry
     , row-types
-    , safe
     , sandwich
     , sandwich-contexts
     , string-interpolate
@@ -88,7 +80,7 @@ library
     , vector
   default-language: Haskell2010
 
-executable tests-exe
+executable tests
   main-is: Main.hs
   other-modules:
       Spec.Tests
@@ -118,7 +110,6 @@ executable tests-exe
       Spec.Tests.Rust.Completion
       Spec.Tests.Rust.Diagnostics
       Spec.Tests.Rust.Hovers
-      Spec.Tests.SampleEnvironments
       Spec.Tests.Searchers
       Spec.Tests.Shells.Zsh
       Spec.Tests.Spellchecker
