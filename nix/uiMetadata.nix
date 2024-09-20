@@ -51,7 +51,6 @@ rec {
   in
     kernel: {
       # Dry
-      channel = kernel.channel;
       name = kernel.name;
       settings = if kernel ? "settings" then kernel.settings else {};
 
@@ -59,7 +58,6 @@ rec {
       packages = map (p: mkKernelPackageMetadata kernel p) kernel.args.packages;
 
       # Hydrated
-      modes = kernel.modes;
       meta = chooseInterestingMeta kernel;
     };
 }
