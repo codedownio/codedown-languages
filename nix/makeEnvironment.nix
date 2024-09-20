@@ -20,16 +20,17 @@ with lib;
 let
   evaluated = (callPackage ./evaluate-config.nix { inherit pkgsStable pkgsMaster; }) config;
 
+  builtExporters = evaluated.config.builtExporters;
   builtKernels = mapAttrs (_: kernel:
     kernel.overrideAttrs (old: {
       passthru = old.passthru // {
-        name = kernel.name;
+        name = "kernels." + kernel.name;
         # channel = kernel.channel;
         channel = "codedown";
       };
     })) evaluated.config.builtKernels;
+  builtLanguageServers = evaluated.config.builtLanguageServers;
   builtShells = evaluated.config.builtShells;
-  builtExporters = evaluated.config.builtExporters;
 
   repls = let
     shellToReplInfo = shell: {
@@ -44,12 +45,38 @@ let
 
   exporters = concatMap (exporter: exporter.meta.exporterInfos) (attrValues builtExporters);
 
+  uiMetadata = callPackage ./uiMetadata.nix {};
+
+  mkPackageUiMetadata = let
+    # This is duplicated from languages/common.nix, which we'd rather not import here
+    packageName = p: if lib.isString p then p else p.name;
+
+    mkSubPackageMetadata = pkg: p: {
+      name = packageName p;
+      meta = if lib.hasAttrByPath ["packageOptions" (packageName p)] pkg then uiMetadata.chooseInterestingMeta (pkg.packageOptions.${packageName p}) else {};
+    } // (lib.optionalAttrs (lib.isAttrs p && p ? "settings") {
+      inherit (p) settings;
+    });
+  in
+    pkg: {
+      # Dry
+      name = pkg.name;
+      settings = if pkg ? "settings" then pkg.settings else {};
+
+      # Different for hydrated
+      packages = map (p: mkSubPackageMetadata pkg p) (pkg.args.packages or []);
+
+      # Hydrated
+      meta = uiMetadata.chooseInterestingMeta pkg;
+    };
+
 in
 
 symlinkJoin {
   inherit name;
   paths =
     attrValues (evaluated.config.builtKernels)
+    ++ attrValues (evaluated.config.builtLanguageServers)
     ++ lib.optionals (builtins.length repls > 0) [(writeTextDir "lib/codedown/repls.yaml" (lib.generators.toYAML {} repls))]
     ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
     ++ evaluated.config.packages
@@ -61,22 +88,24 @@ symlinkJoin {
 
     inherit channels;
 
-    ui_metadata = let
-      uiMetadata = callPackage ./uiMetadata.nix {};
-    in
-      {
-        channels = lib.mapAttrsToList (name: channel: channel // {
-          name = name;
-        }) evaluated.config.channels;
+    ui_metadata = {
+      channels = lib.mapAttrsToList (name: channel: channel // {
+        name = name;
+      }) evaluated.config.channels;
 
-        kernels = map uiMetadata.mkKernelUiMetadata (attrValues builtKernels);
+      packages =
+        (mapAttrs' (n: v: nameValuePair "exporters.${n}" (mkPackageUiMetadata v)) builtExporters)
+        // (mapAttrs' (n: v: nameValuePair "kernels.${n}" (mkPackageUiMetadata v)) builtKernels)
+        // (mapAttrs' (n: v: nameValuePair "language-servers.${n}" (mkPackageUiMetadata v)) builtLanguageServers)
+        // (mapAttrs' (n: v: nameValuePair "shells.${n}" (mkPackageUiMetadata v)) builtShells)
+      ;
 
-        other_packages = map (p: {
-          channel = p.channel;
-          attr = p.attr;
-          meta = if p.contents ? "meta" then uiMetadata.chooseInterestingMeta p.contents else {};
-        }) evaluated.config.labeledPackages;
-      };
+      other_packages = map (p: {
+        channel = p.channel;
+        attr = p.attr;
+        meta = if p.contents ? "meta" then uiMetadata.chooseInterestingMeta p.contents else {};
+      }) evaluated.config.labeledPackages;
+    };
 
     ui_metadata_yaml = writeText "ui-metadata.yaml" (lib.generators.toYAML {} ui_metadata);
   };

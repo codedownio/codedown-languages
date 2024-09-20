@@ -14,8 +14,6 @@ with lib;
   };
 
   config = mkIf config.language-servers.spellchecker.enable {
-    packages = [
-      (config.pkgs.callPackage ./default.nix {})
-    ];
+    builtLanguageServers.spellchecker = config.pkgs.callPackage ./default.nix {};
   };
 }

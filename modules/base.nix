@@ -24,6 +24,11 @@ with lib;
       default = {};
     };
 
+    builtLanguageServers = mkOption {
+      type = types.attrsOf types.package;
+      default = {};
+    };
+
     builtShells = mkOption {
       type = types.attrsOf types.package;
       default = {};
