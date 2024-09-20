@@ -23,9 +23,7 @@ rec {
   # Exported so clients can build searchers for other package sets, like "codedown.searcher nixpkgs"
   searcher = common.searcher;
 
-  settingsSchemas = lib.mapAttrs (attr: value:
-    common.safeEval (lib.attrByPath ["meta" "settingsSchema"] [] value)
-  ) languages;
+  settingsSchemas = lib.mapAttrs (attr: value: value.meta.settingsSchema or []) languages;
 
   evaluateConfig = callPackage ./nix/evaluate-config.nix {
     inherit pkgsStable pkgsMaster;
@@ -61,6 +59,9 @@ rec {
   };
 
   validateEnvironment = callPackage ./nix/validateEnvironment.nix {};
+
+  # Exposed for consumers to pin and use to gather metadata from other channels like Nixpkgs
+  inherit (callPackage ./nix/uiMetadata.nix {}) chooseInterestingMeta;
 
   # Exposed so it's easier to compute build dependencies in the presence of IFD
   inherit pkgsStable pkgsMaster requiredPackages;
