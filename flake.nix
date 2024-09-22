@@ -22,7 +22,7 @@
             # inherit codedown;
 
             # Tests use flake to do packageSearch builds
-            inherit (codedown) languages;
+            inherit (codedown) kernels;
 
             # For .envrc
             nixpkgsPath = pkgsStable.writeShellScriptBin "nixpkgsPath.sh" "echo -n ${pkgsStable.path}";

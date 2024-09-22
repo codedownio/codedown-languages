@@ -29,20 +29,20 @@ testKernelSearchersBuild :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => Text -> SpecFree context m ()
 testKernelSearchersBuild kernel = it [i|#{kernel}: package searchers build|] $ do
-  testBuild [i|.\#languages."#{kernel}".packageSearch|]
+  testBuild [i|.\#kernels."#{kernel}".packageSearch|]
 
 testHasExpectedFields :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => Text -> SpecFree context m ()
 testHasExpectedFields kernel = it [i|#{kernel}: has expected fields|] $ do
-  testEval [i|.\#languages."#{kernel}".settingsSchema|]
-  testEval [i|.\#languages."#{kernel}".modes|]
-  testEval [i|.\#languages."#{kernel}".settings|]
-  testEval [i|.\#languages."#{kernel}".args|]
-  testEval [i|.\#languages."#{kernel}".meta|]
+  testEval [i|.\#kernels."#{kernel}".settingsSchema|]
+  testEval [i|.\#kernels."#{kernel}".modes|]
+  testEval [i|.\#kernels."#{kernel}".settings|]
+  testEval [i|.\#kernels."#{kernel}".args|]
+  testEval [i|.\#kernels."#{kernel}".meta|]
 
   -- Used to view all versions in codedown-languages
-  testEval [i|.\#languages."#{kernel}".versions|]
+  testEval [i|.\#kernels."#{kernel}".versions|]
 
 -- Testing for nonempty results
 
@@ -56,7 +56,7 @@ testKernelSearchersNonempty kernel = describe [i|#{kernel}: package and LSP sear
 testPackageSearchNonempty :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => Text -> ExampleT context m ()
-testPackageSearchNonempty kernel = testSearcherHasNonemptyResults [i|.\#languages."#{kernel}".packageSearch|]
+testPackageSearchNonempty kernel = testSearcherHasNonemptyResults [i|.\#kernels."#{kernel}".packageSearch|]
 
 testSearcherHasNonemptyResults :: (MonadUnliftIO m, MonadThrow m, MonadLogger m, MonadFail m) => String -> m ()
 testSearcherHasNonemptyResults expr = searcherResults expr >>= \case

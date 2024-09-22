@@ -23,7 +23,7 @@ rec {
   # Exported so clients can build searchers for other package sets, like "codedown.searcher nixpkgs"
   searcher = common.searcher;
 
-  settingsSchemas = lib.mapAttrs (attr: value: value.meta.settingsSchema or []) languages;
+  settingsSchemas = lib.mapAttrs (attr: value: value.meta.settingsSchema or []) kernels;
 
   evaluateConfig = callPackage ./nix/evaluate-config.nix {
     inherit pkgsStable pkgsMaster;
@@ -52,7 +52,7 @@ rec {
     ;
   };
 
-  languages = everythingEnv.config.builtKernels;
+  kernels = everythingEnv.config.builtKernels;
 
   makeEnvironment = callPackage ./nix/makeEnvironment.nix {
     inherit pkgsStable pkgsMaster;
