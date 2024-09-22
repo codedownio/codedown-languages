@@ -21,6 +21,9 @@ let
   languageServers = lib.optionals settings.lsp.bash-language-server.enable
     [(callPackage ./language_server_bash { inherit kernelName; })];
 
+  packageOptions = {};
+  packageSearch = common.searcher packageOptions;
+
 in
 
 symlinkJoin {
@@ -44,14 +47,14 @@ symlinkJoin {
       version = bash.version;
       icon = ./bash-logo-128x128.png;
       inherit settingsSchema;
+      hasPackages = packageOptions != {};
     };
     versions = {
       bash = bash.version;
       bash-language-server = nodePackages.bash-language-server.version;
       bash_kernel = python3.pkgs.bash_kernel.version;
     };
-    packageOptions = {};
-    packageSearch = common.searcher {};
+    inherit packageOptions packageSearch;
     inherit settingsSchema settings;
     modes = {
       inherit attrs extensions;

@@ -66,6 +66,7 @@ symlinkJoin {
       version = octave.version;
       icon = ./octave-logo-64x64.png;
       inherit settingsSchema;
+      hasPackages = packageOptions != {};
     };
     versions = {
       octave = octave.version;

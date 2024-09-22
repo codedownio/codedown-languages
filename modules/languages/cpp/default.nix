@@ -65,6 +65,7 @@ symlinkJoin {
       version = clang.version;
       icon = getAttr flavor icons;
       inherit settingsSchema;
+      hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch;
     versions = {

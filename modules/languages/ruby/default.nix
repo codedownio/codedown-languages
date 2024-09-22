@@ -52,6 +52,7 @@ symlinkJoin {
       version = ruby.version;
       icon = ./iruby-64x64.png;
       inherit settingsSchema;
+      hasPackages = packageOptions != {};
     };
     args = {
       inherit attrs extensions settings packages;

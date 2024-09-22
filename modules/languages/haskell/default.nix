@@ -84,6 +84,7 @@ symlinkJoin {
       description = "An advanced, purely functional programming language (GHC ${version})";
       inherit version displayName settingsSchema;
       icon = ./haskell-logo-64x64.png;
+      hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch;
     versions = {

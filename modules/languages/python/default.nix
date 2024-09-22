@@ -72,6 +72,7 @@ symlinkJoin {
       inherit displayName settingsSchema;
       version = python3.version;
       icon = ./python-logo-64x64.png;
+      hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch;
     versions = {

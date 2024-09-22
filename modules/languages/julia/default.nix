@@ -50,8 +50,7 @@ let
   displayName = "Julia";
   kernelName = "julia";
 
-  packageOptions = {};
-  packageSearch = common.searcher' {
+  packageOptions = {
     packages = lib.listToAttrs (map (x: {
       name = x;
       value = {
@@ -63,6 +62,7 @@ let
     }) (import ./julia-modules/package-names.nix));
     packageMustBeDerivation = false;
   };
+  packageSearch = common.searcher' packageOptions;
 
   juliaToUse = juliaWithPackages (
     ["IJulia"]
@@ -102,6 +102,7 @@ symlinkJoin {
       inherit displayName settingsSchema;
       version = julia.version;
       icon = ./julia-logo-64x64.png;
+      hasPackages = packageOptions != {};
     };
     args = {
       inherit attrs extensions settings packages;

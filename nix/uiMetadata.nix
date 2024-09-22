@@ -28,6 +28,8 @@ rec {
     download_page = contents.meta.downloadPage;
   }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "displayName"] contents) {
     display_name = contents.meta.displayName;
+  }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "hasPackages"] contents) {
+    has_packages = contents.meta.hasPackages;
   }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "lessCommon"] contents) {
     less_common = contents.meta.lessCommon;
   }) // (lib.optionalAttrs (contents ? "settingsSchema") {

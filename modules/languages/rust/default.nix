@@ -84,6 +84,7 @@ symlinkJoin {
       inherit displayName;
       icon = ./rust-logo-64x64.png;
       inherit settingsSchema;
+      hasPackages = packageOptions != {};
     };
     args = {
       inherit attrs extensions settings packages;

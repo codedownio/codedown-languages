@@ -53,6 +53,7 @@ symlinkJoin {
       version = clojure.version;
       icon = ./clojure-logo-64x64.png;
       inherit settingsSchema;
+      hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch;
     versions = {

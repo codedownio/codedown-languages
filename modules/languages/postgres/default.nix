@@ -46,6 +46,7 @@ symlinkJoin {
       icon = ./postgres-logo-64x64.png;
       inherit version;
       inherit settingsSchema;
+      hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch;
     versions = {

@@ -66,6 +66,7 @@ symlinkJoin {
       displayName = "R";
       version = R.version;
       icon = ./r-logo-64x64.png;
+      hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch versions;
     inherit settingsSchema settings;

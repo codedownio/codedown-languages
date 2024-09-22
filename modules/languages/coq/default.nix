@@ -47,6 +47,7 @@ symlinkJoin {
       inherit displayName settingsSchema;
       version = coq.version;
       icon = coq_jupyter.sizedLogo "64";
+      hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch;
     versions = {

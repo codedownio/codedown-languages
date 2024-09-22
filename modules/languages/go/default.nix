@@ -49,6 +49,7 @@ symlinkJoin {
       version = go.version;
       icon = ./go-logo-64x64.png;
       inherit settingsSchema;
+      hasPackages = packageOptions != {};
     };
     args = {
       inherit packages attrs extensions settings;
