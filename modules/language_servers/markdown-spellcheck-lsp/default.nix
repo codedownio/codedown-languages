@@ -60,8 +60,11 @@ let
       --add-flags ${indexJs}
   '';
 
+  version = "1.1.0";
+
   meta = hunspell.meta // {
     icon = ./pen-alt.png;
+    displayName = "Spellchecker ${version}";
     category = "Language servers";
   };
 
@@ -69,7 +72,7 @@ in
 
 (common.writeTextDirWithMeta meta "lib/codedown/language-servers/codedown-spellchecker.yaml" (lib.generators.toYAML {} [{
   name = "spellchecker";
-  version = "1.1.0";
+  inherit version;
   extensions = ["md" "ipynb"];
   attrs = ["markdown"];
   type = "stream";
