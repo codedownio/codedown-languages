@@ -5,8 +5,10 @@ with lib;
 let
   mkOptions = packageOption: {
     enable = mkOption {
+      description = "Enable Python 3 kernel";
       type = types.bool;
       default = false;
+      visible = false;
     };
 
     packages = mkOption {

@@ -21,6 +21,7 @@ let
     }
     // lib.optionalAttrs (lib.hasAttr "default" v) { defaultValue = convertDefaultValue v.default; }
     // lib.optionalAttrs (lib.hasAttr "description" v && builtins.typeOf v.description == "string") { inherit (v) description; }
+    // lib.optionalAttrs (lib.hasAttr "visible" v && v.visible == false) { hidden = true; }
   ;
 
   evalString = str: builtins.scopedImport {} (builtins.toFile "expr.nix" str);
