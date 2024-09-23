@@ -20,7 +20,7 @@
 }:
 
 let
-  common = callPackage ../../languages/common.nix {};
+  common = callPackage ../../kernels/common.nix {};
 
   uiMetadata = callPackage ../../../nix/uiMetadata.nix {};
 

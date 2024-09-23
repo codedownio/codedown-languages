@@ -48,7 +48,7 @@ let
   uiMetadata = callPackage ./uiMetadata.nix {};
 
   mkPackageUiMetadata = let
-    # This is duplicated from languages/common.nix, which we'd rather not import here
+    # This is duplicated from kernels/common.nix, which we'd rather not import here
     packageName = p: if lib.isString p then p else p.name;
 
     mkSubPackageMetadata = pkg: p: {

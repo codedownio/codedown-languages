@@ -5,7 +5,7 @@
 }:
 
 let
-  common = pkgsStable.callPackage ./modules/languages/common.nix {};
+  common = pkgsStable.callPackage ./modules/kernels/common.nix {};
 
   callPackage = pkgsStable.callPackage;
 

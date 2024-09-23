@@ -26,7 +26,7 @@ import TestLib.Types
 
 tests :: LanguageSpec
 tests = do
-  -- See languages/haskell/default.nix for details on what's available
+  -- See kernels/haskell/default.nix for details on what's available
 
   -- haskellCommonTests "haskell-ghc810"
   -- haskellCommonTests "haskell-ghc90"

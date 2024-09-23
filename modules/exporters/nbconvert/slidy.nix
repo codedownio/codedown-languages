@@ -7,7 +7,7 @@
 
 
 let
-  common = callPackage ../../languages/common.nix {};
+  common = callPackage ../../kernels/common.nix {};
 
 in
 

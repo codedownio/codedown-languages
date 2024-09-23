@@ -12,7 +12,7 @@ let
     ];
   });
 
-  common = callPackage ../languages/common.nix {};
+  common = callPackage ../kernels/common.nix {};
 
   makeNbconvertExporter = name: displayName: extension: to: common.writeShellScriptBinWithAttrs {
     inherit name extension;

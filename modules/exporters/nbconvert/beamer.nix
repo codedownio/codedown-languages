@@ -6,7 +6,7 @@
 
 
 let
-  common = callPackage ../../languages/common.nix {};
+  common = callPackage ../../kernels/common.nix {};
 
   customLatexHeader = writeTextFile {
     name = "latex_header.tex";

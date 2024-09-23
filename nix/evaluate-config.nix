@@ -14,19 +14,19 @@ lib.evalModules {
 
     ../modules/exporters/module.nix
 
-    ../modules/languages/bash/module.nix
-    ../modules/languages/clojure/module.nix
-    ../modules/languages/coq/module.nix
-    ../modules/languages/cpp/module.nix
-    ../modules/languages/go/module.nix
-    ../modules/languages/haskell/module.nix
-    ../modules/languages/julia/module.nix
-    ../modules/languages/octave/module.nix
-    ../modules/languages/postgres/module.nix
-    ../modules/languages/python/module.nix
-    ../modules/languages/r/module.nix
-    ../modules/languages/ruby/module.nix
-    ../modules/languages/rust/module.nix
+    ../modules/kernels/bash/module.nix
+    ../modules/kernels/clojure/module.nix
+    ../modules/kernels/coq/module.nix
+    ../modules/kernels/cpp/module.nix
+    ../modules/kernels/go/module.nix
+    ../modules/kernels/haskell/module.nix
+    ../modules/kernels/julia/module.nix
+    ../modules/kernels/octave/module.nix
+    ../modules/kernels/postgres/module.nix
+    ../modules/kernels/python/module.nix
+    ../modules/kernels/r/module.nix
+    ../modules/kernels/ruby/module.nix
+    ../modules/kernels/rust/module.nix
 
     ../modules/language_servers/markdown-spellcheck-lsp/module.nix
 
