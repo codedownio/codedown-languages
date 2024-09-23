@@ -6,8 +6,10 @@ with lib;
   options = {
     kernels.octave = {
       enable = mkOption {
+        description = "Enable Octave kernel";
         type = types.bool;
         default = false;
+        visible = false;
       };
 
       packages = mkOption {

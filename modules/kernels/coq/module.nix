@@ -6,8 +6,10 @@ with lib;
   options = {
     kernels.coq = {
       enable = mkOption {
+        description = "Enable Coq kernel";
         type = types.bool;
         default = false;
+        visible = false;
       };
 
       packages = mkOption {

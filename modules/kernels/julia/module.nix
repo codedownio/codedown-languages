@@ -6,8 +6,10 @@ with lib;
   options = {
     kernels.julia = {
       enable = mkOption {
+        description = "Enable Haskell kernel";
         type = types.bool;
         default = false;
+        visible = false;
       };
 
       packages = mkOption {

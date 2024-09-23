@@ -6,8 +6,10 @@ with lib;
   options = {
     kernels.R = {
       enable = mkOption {
+        description = "Enable R kernel";
         type = types.bool;
         default = false;
+        visible = false;
       };
 
       packages = mkOption {

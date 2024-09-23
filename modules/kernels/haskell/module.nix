@@ -6,8 +6,10 @@ with lib;
   options = {
     kernels.haskell = {
       enable = mkOption {
+        description = "Enable Haskell kernel";
         type = types.bool;
         default = false;
+        visible = false;
       };
 
       packages = mkOption {

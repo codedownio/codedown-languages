@@ -6,8 +6,10 @@ with lib;
   options = {
     kernels.rust = {
       enable = mkOption {
+        description = "Enable Rust kernel";
         type = types.bool;
         default = false;
+        visible = false;
       };
 
       packages = mkOption {

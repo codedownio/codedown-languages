@@ -6,8 +6,10 @@ with lib;
   options = {
     kernels.cpp = {
       enable = mkOption {
+        description = "Enable C++ kernel";
         type = types.bool;
         default = false;
+        visible = false;
       };
 
       packages = mkOption {

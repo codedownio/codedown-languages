@@ -6,8 +6,10 @@ with lib;
   options = {
     kernels.bash = {
       enable = mkOption {
+        description = "Enable Bash kernel";
         type = types.bool;
         default = false;
+        visible = false;
       };
 
       attrs = mkOption {

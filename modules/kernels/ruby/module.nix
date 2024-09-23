@@ -11,8 +11,10 @@ in
   options = {
     kernels.ruby = {
       enable = mkOption {
+        description = "Enable Ruby kernel";
         type = types.bool;
         default = false;
+        visible = false;
       };
 
       packages = mkOption {

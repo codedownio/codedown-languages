@@ -6,8 +6,10 @@ with lib;
   options = {
     kernels.go = {
       enable = mkOption {
+        description = "Enable Go kernel";
         type = types.bool;
         default = false;
+        visible = false;
       };
 
       packages = mkOption {

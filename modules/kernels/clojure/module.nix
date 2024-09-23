@@ -6,8 +6,10 @@ with lib;
   options = {
     kernels.clojure = {
       enable = mkOption {
+        description = "Enable Clojure kernel";
         type = types.bool;
         default = false;
+        visible = false;
       };
 
       attrs = mkOption {
