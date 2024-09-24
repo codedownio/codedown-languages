@@ -14,7 +14,7 @@ let
     }
     else if (type.name == "enum") then {
       type = "enum";
-      values = map (x: { name = x; title = x; }) type.functor.payload;
+      values = type.functor.payload;
     }
     else if (type.name == "either") then {
       type = "either";
