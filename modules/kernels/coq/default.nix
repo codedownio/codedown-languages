@@ -6,12 +6,11 @@
 
 , coqPackages
 
-, packages
-, attrs
-, extensions
 , settings
 , settingsSchema
 }:
+
+with { inherit (settings) packages attrs extensions; };
 
 let
   common = callPackage ../common.nix {};

@@ -22,7 +22,7 @@ with lib;
         default = ["sh" "bash"];
       };
 
-      settings.lsp.bash-language-server.enable = mkOption {
+      lsp.bash-language-server.enable = mkOption {
         type = types.bool;
         default = true;
         description = "Enable Bash language server";
@@ -33,7 +33,7 @@ with lib;
   config = mkIf config.kernels.bash.enable {
     builtKernels.bash = config.pkgs.callPackage ./. {
       bash = config.pkgs.bash;
-      inherit (config.kernels.bash) attrs extensions settings;
+      settings = config.kernels.bash;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.bash;
     };
   };

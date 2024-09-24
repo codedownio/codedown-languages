@@ -7,11 +7,12 @@
 , writeTextDir
 
 , bash
-, attrs
-, extensions
+
 , settings
 , settingsSchema
 }:
+
+with { inherit (settings) attrs extensions; };
 
 let
   kernelName = "bash";

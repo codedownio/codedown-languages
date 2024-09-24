@@ -39,27 +39,26 @@ with lib;
         default = ["jl"];
       };
 
-      settings = {
-        precompile = mkOption {
-          description = "Precompile Julia environment for faster imports. In some cases, precompilation can make the build fail, so turning this off can help.";
-          type = types.bool;
-          default = true;
-        };
-        lsp.LanguageServer.enable = mkOption {
-          description = "Enable LanguageServer language server";
-          type = types.bool;
-          default = true;
-        };
-        lsp.LanguageServer.index = mkOption {
-          description = "LanguageServer: auto-index packages when building environment";
-          type = types.bool;
-          default = true;
-        };
-        lsp.LanguageServer.debug = mkOption {
-          description = "LanguageServer: log debug messages to stderr";
-          type = types.bool;
-          default = false;
-        };
+      precompile = mkOption {
+        description = "Precompile Julia environment for faster imports. In some cases, precompilation can make the build fail, so turning this off can help.";
+        type = types.bool;
+        default = true;
+      };
+
+      lsp.LanguageServer.enable = mkOption {
+        description = "Enable LanguageServer language server";
+        type = types.bool;
+        default = true;
+      };
+      lsp.LanguageServer.index = mkOption {
+        description = "LanguageServer: auto-index packages when building environment";
+        type = types.bool;
+        default = true;
+      };
+      lsp.LanguageServer.debug = mkOption {
+        description = "LanguageServer: log debug messages to stderr";
+        type = types.bool;
+        default = false;
       };
     };
   };
@@ -68,7 +67,7 @@ with lib;
     builtKernels.julia = config.pkgs.callPackage ./. {
       julia = getAttr config.kernels.julia.juliaPackage config.pkgs;
 
-      inherit (config.kernels.julia) packages attrs extensions settings;
+      settings = config.kernels.julia;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.julia;
     };
   };

@@ -22,17 +22,17 @@ codedown.makeEnvironment {
 
   kernels.julia.enable = true;
   kernels.julia.packages = ["JSON3" "Plots"];
-  kernels.julia.settings.lsp.LanguageServer.enable = true;
-  kernels.julia.settings.lsp.LanguageServer.index = true;
-  kernels.julia.settings.lsp.LanguageServer.debug = false;
+  kernels.julia.lsp.LanguageServer.enable = true;
+  kernels.julia.lsp.LanguageServer.index = true;
+  kernels.julia.lsp.LanguageServer.debug = false;
 
   kernels.haskell.enable = true;
   kernels.haskell.packages = ["aeson"];
-  kernels.haskell.settings.lsp.haskell-language-server.debug = true;
+  kernels.haskell.lsp.haskell-language-server.debug = true;
 
   kernels.octave.enable = true;
   kernels.octave.packages = ["arduino"];
-  kernels.octave.settings.extraJupyterConfig = ''
+  kernels.octave.extraJupyterConfig = ''
     c.OctaveKernel.plot_settings = dict(format='svg')
   '';
 
@@ -41,16 +41,16 @@ codedown.makeEnvironment {
 
   kernels.python3.enable = true;
   kernels.python3.packages = ["matplotlib" "scipy" "rope"];
-  kernels.python3.settings.permitUserSite = false;
-  kernels.python3.settings.lsp.jedi.enable = true;
-  kernels.python3.settings.lsp.pyright.enable = true;
-  kernels.python3.settings.lsp.pylint.enable = true;
-  kernels.python3.settings.lsp.flake8.enable = true;
-  kernels.python3.settings.lsp.pycodestyle.enable = true;
-  kernels.python3.settings.lsp.python-lsp-server.enable = true;
+  kernels.python3.permitUserSite = false;
+  kernels.python3.lsp.jedi.enable = true;
+  kernels.python3.lsp.pyright.enable = true;
+  kernels.python3.lsp.pylint.enable = true;
+  kernels.python3.lsp.flake8.enable = true;
+  kernels.python3.lsp.pycodestyle.enable = true;
+  kernels.python3.lsp.python-lsp-server.enable = true;
 
   # kernels.pypy3.enable = true;
-  # kernels.pypy3.settings.permitUserSite = false;
+  # kernels.pypy3.permitUserSite = false;
 
   kernels.ruby.enable = true;
 

@@ -27,7 +27,7 @@ with lib;
         default = ["m"];
       };
 
-      settings.extraJupyterConfig = mkOption {
+      extraJupyterConfig = mkOption {
         type = types.str;
         default = "";
         description = "Extra Jupyter configuration.";
@@ -38,7 +38,7 @@ with lib;
   config = mkIf config.kernels.octave.enable {
     builtKernels.octave = config.pkgs.callPackage ./. {
       octave = config.pkgs.octave;
-      inherit (config.kernels.octave) packages attrs extensions settings;
+      settings = config.kernels.octave;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.octave;
     };
   };

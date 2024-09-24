@@ -32,27 +32,26 @@ with lib;
         default = ["hs"];
       };
 
-      settings = {
-        lsp.haskell-language-server.enable = mkOption {
-          description = "Enable haskell-language-server";
-          type = types.bool;
-          default = true;
-        };
-        lsp.haskell-language-server.debug = mkOption {
-          description = "Haskell-language-server: enable debug output";
-          type = types.bool;
-          default = false;
-        };
-        lsp.haskell-language-server.super-debug = mkOption {
-          description = "Haskell-language-server: enable verbose debug output";
-          type = types.bool;
-          default = false;
-        };
-        enableHlintOutput = mkOption {
-          description = "Enable hlint warnings in Jupyter kernel output. Normally you don't want this because it is provided by haskell-language-server.";
-          type = types.bool;
-          default = false;
-        };
+      lsp.haskell-language-server.enable = mkOption {
+        description = "Enable haskell-language-server";
+        type = types.bool;
+        default = true;
+      };
+      lsp.haskell-language-server.debug = mkOption {
+        description = "Haskell-language-server: enable debug output";
+        type = types.bool;
+        default = false;
+      };
+      lsp.haskell-language-server.super-debug = mkOption {
+        description = "Haskell-language-server: enable verbose debug output";
+        type = types.bool;
+        default = false;
+      };
+
+      enableHlintOutput = mkOption {
+        description = "Enable hlint warnings in Jupyter kernel output. Normally you don't want this because it is provided by haskell-language-server.";
+        type = types.bool;
+        default = false;
       };
     };
   };
@@ -76,7 +75,7 @@ with lib;
         compilerName = config.kernels.haskell.ghcPackage;
         snapshot = getAttr config.kernels.haskell.ghcPackage compilers;
 
-        inherit (config.kernels.haskell) packages attrs extensions settings;
+        settings = config.kernels.haskell;
         settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.haskell;
       };
   };

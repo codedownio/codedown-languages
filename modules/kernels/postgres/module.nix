@@ -24,14 +24,12 @@ with lib;
         type = types.listOf types.str;
         default = ["sql"];
       };
-
-      settings = {};
     };
   };
 
   config = mkIf config.kernels.postgres.enable {
     builtKernels.postgres = config.pkgs.callPackage ./. {
-      inherit (config.kernels.postgres) packages attrs extensions settings;
+      settings = config.kernels.postgres;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.postgres;
     };
   };

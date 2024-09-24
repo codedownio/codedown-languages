@@ -29,58 +29,57 @@ let
       default = ["py"];
     };
 
-    settings = {
-      lsp.jedi.enable = mkOption {
-        description = "Enable Jedi language server";
-        type = types.bool;
-        default = true;
-      };
-      lsp.pyright.enable = mkOption {
-        description = "Enable Pyright language server";
-        type = types.bool;
-        default = false;
-      };
-      lsp.pylint.enable = mkOption {
-        description = "Enable Pylint language server";
-        type = types.bool;
-        default = false;
-      };
-      lsp.flake8.enable = mkOption {
-        description = "Enable Flake8 language server";
-        type = types.bool;
-        default = false;
-      };
-      lsp.pycodestyle.enable = mkOption {
-        description = "Enable pycodestyle language server";
-        type = types.bool;
-        default = false;
-      };
-      lsp.microsoft.enable = mkOption {
-        description = "Enable Microsoft Python language server";
-        type = types.bool;
-        default = false;
-      };
-      lsp.python-lsp-server.enable = mkOption {
-        description = "Enable python-lsp-server language server";
-        type = types.bool;
-        default = false;
-      };
-      lsp.python-language-server.enable = mkOption {
-        description = "Enable python-language-server language server";
-        type = types.bool;
-        default = false;
-      };
-      permitUserSite = mkOption {
-        example = "Permit user site-packages";
-        description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
-        type = types.bool;
-        default = false;
-      };
-      enableVariableInspector = mkOption {
-        description = "Enable the variable inspector";
-        type = types.bool;
-        default = true;
-      };
+    lsp.jedi.enable = mkOption {
+      description = "Enable Jedi language server";
+      type = types.bool;
+      default = true;
+    };
+    lsp.pyright.enable = mkOption {
+      description = "Enable Pyright language server";
+      type = types.bool;
+      default = false;
+    };
+    lsp.pylint.enable = mkOption {
+      description = "Enable Pylint language server";
+      type = types.bool;
+      default = false;
+    };
+    lsp.flake8.enable = mkOption {
+      description = "Enable Flake8 language server";
+      type = types.bool;
+      default = false;
+    };
+    lsp.pycodestyle.enable = mkOption {
+      description = "Enable pycodestyle language server";
+      type = types.bool;
+      default = false;
+    };
+    lsp.microsoft.enable = mkOption {
+      description = "Enable Microsoft Python language server";
+      type = types.bool;
+      default = false;
+    };
+    lsp.python-lsp-server.enable = mkOption {
+      description = "Enable python-lsp-server language server";
+      type = types.bool;
+      default = false;
+    };
+    lsp.python-language-server.enable = mkOption {
+      description = "Enable python-language-server language server";
+      type = types.bool;
+      default = false;
+    };
+
+    permitUserSite = mkOption {
+      example = "Permit user site-packages";
+      description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
+      type = types.bool;
+      default = false;
+    };
+    enableVariableInspector = mkOption {
+      description = "Enable the variable inspector";
+      type = types.bool;
+      default = true;
     };
   };
 
@@ -131,7 +130,7 @@ in
         config.pkgs.callPackage ./. {
           python3 = basePython;
 
-          inherit (config.kernels.python3) packages attrs extensions settings;
+          settings = config.kernels.python3;
           settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.python3;
         };
     })
@@ -141,7 +140,7 @@ in
         config.pkgs.callPackage ./. {
           python3 = lib.getAttr config.kernels.pypy3.python3Package config.pkgs;
 
-          inherit (config.kernels.pypy3) packages attrs extensions settings;
+          settings = config.kernels.pypy3;
           settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.pypy3;
         };
     })

@@ -22,7 +22,7 @@ with lib;
         default = ["clj"];
       };
 
-      settings.lsp.clojure-lsp.enable = mkOption {
+      lsp.clojure-lsp.enable = mkOption {
         type = types.bool;
         default = true;
         description = "Enable clojure-lsp language server";
@@ -33,7 +33,7 @@ with lib;
   config = mkIf config.kernels.clojure.enable {
     builtKernels.clojure = config.pkgs.callPackage ./. {
       clojure = config.pkgs.clojure;
-      inherit (config.kernels.clojure) attrs extensions settings;
+      settings = config.kernels.clojure;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.clojure;
     };
   };

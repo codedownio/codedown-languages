@@ -36,18 +36,16 @@ with lib;
         default = ["go"];
       };
 
-      settings = {
-        lsp.gopls.enable = mkOption {
-          type = types.bool;
-          description = "Enable gopls language server";
-          default = true;
-        };
+      lsp.gopls.enable = mkOption {
+        type = types.bool;
+        description = "Enable gopls language server";
+        default = true;
+      };
 
-        go.gocache = mkOption {
-          type = types.str;
-          description = "Value of GOCACHE environment variable";
-          default = "/home/.gocache";
-        };
+      go.gocache = mkOption {
+        type = types.str;
+        description = "Value of GOCACHE environment variable";
+        default = "/home/.gocache";
       };
     };
   };
@@ -56,7 +54,7 @@ with lib;
     builtKernels.go = config.pkgs.callPackage ./. {
       go = getAttr config.kernels.go.goPackage config.pkgs;
 
-      inherit (config.kernels.go) packages attrs extensions settings;
+      settings = config.kernels.go;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.go;
     };
   };

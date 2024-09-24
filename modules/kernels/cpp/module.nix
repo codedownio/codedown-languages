@@ -44,17 +44,12 @@ with lib;
         type = types.listOf types.str;
         default = ["cpp" "hpp" "cxx" "hxx" "c" "h"];
       };
-
-      settings = {};
     };
   };
 
   config = mkIf config.kernels.cpp.enable {
     builtKernels.cpp = config.pkgs.callPackage ./. {
-      inherit (config.kernels.cpp) flavor packages extensions settings;
-
-      attrs = [config.kernels.cpp.flavor] ++ config.kernels.cpp.attrs;
-
+      settings = config.kernels.cpp;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.cpp;
     };
   };

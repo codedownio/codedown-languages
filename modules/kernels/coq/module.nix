@@ -42,8 +42,7 @@ with lib;
     builtKernels.coq = config.pkgs.callPackage ./. {
       coqPackages = getAttr config.kernels.coq.coqPackages config.pkgs;
 
-      inherit (config.kernels.coq) packages attrs extensions;
-      settings = {};
+      settings = config.kernels.coq;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.coq;
     };
   };

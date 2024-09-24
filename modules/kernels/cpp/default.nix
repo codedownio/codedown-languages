@@ -7,17 +7,17 @@
 , llvmPackages_13
 , xeus-cling
 
-, flavor
-, packages
-, attrs
-, extensions
 , settings
 , settingsSchema
 }:
 
+with { inherit (settings) packages extensions flavor; };
+
 with lib;
 
 let
+  attrs = [flavor] ++ settings.attrs;
+
   common = callPackage ../common.nix {};
 
   displayName = "C++";

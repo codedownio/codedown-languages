@@ -10,13 +10,15 @@ codedown.makeEnvironment {
     "scipy"
     "rope"
   ];
-  kernels.python3.settings = {
-    permitUserSite = false;
-    lsp.jedi.enable = true;
-    lsp.pyright.enable = true;
-    lsp.pylint.enable = true;
-    lsp.flake8.enable = true;
-    lsp.pycodestyle.enable = true;
-    lsp.python-lsp-server.enable = true;
+
+  kernels.python3.permitUserSite = false;
+
+  kernels.python3.lsp = {
+    jedi.enable = true;
+    pyright.enable = true;
+    pylint.enable = true;
+    flake8.enable = true;
+    pycodestyle.enable = true;
+    python-lsp-server.enable = true;
   };
 }

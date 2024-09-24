@@ -41,7 +41,7 @@ in
         default = ["rb"];
       };
 
-      settings.lsp.solargraph.enable = mkOption {
+      lsp.solargraph.enable = mkOption {
         type = types.bool;
         default = true;
         description = "Enable Solargraph language server";
@@ -53,7 +53,7 @@ in
     builtKernels.ruby = pkgs.callPackage ./. {
       ruby = getAttr config.kernels.ruby.rubyPackage pkgs;
 
-      inherit (config.kernels.ruby) packages attrs extensions settings;
+      settings = config.kernels.ruby;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.ruby;
     };
   };

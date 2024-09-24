@@ -6,12 +6,11 @@
 , writeTextDir
 , symlinkJoin
 
-, bash
-, attrs
-, extensions
 , settings
 , settingsSchema
 }:
+
+with { inherit (settings) attrs extensions; };
 
 let
   common = callPackage ../common.nix {};

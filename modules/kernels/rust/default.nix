@@ -9,12 +9,11 @@
 
 , rust
 
-, packages
-, attrs
-, extensions
 , settings
 , settingsSchema
 }:
+
+with { inherit (settings) packages attrs extensions; };
 
 with lib;
 

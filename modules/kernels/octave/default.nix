@@ -8,13 +8,13 @@
 , symlinkJoin
 , writeTextDir
 
-, packages
-, attrs
-, extensions
 , octave
+
 , settings
 , settingsSchema
 }:
+
+with { inherit (settings) packages attrs extensions; };
 
 with lib;
 

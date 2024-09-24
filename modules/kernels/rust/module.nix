@@ -47,18 +47,16 @@ with lib;
         default = ["rs" "rlib"];
       };
 
-      settings = {
-        lsp.rust-analyzer.enable = mkOption {
-          type = types.bool;
-          description = "Rust-analyzer: enable";
-          default = true;
-        };
+      lsp.rust-analyzer.enable = mkOption {
+        type = types.bool;
+        description = "Rust-analyzer: enable";
+        default = true;
+      };
 
-        lsp.rust-analyzer.debug = mkOption {
-          type = types.bool;
-          description = "Rust-analyzer: debug output";
-          default = false;
-        };
+      lsp.rust-analyzer.debug = mkOption {
+        type = types.bool;
+        description = "Rust-analyzer: debug output";
+        default = false;
       };
     };
   };
@@ -67,7 +65,7 @@ with lib;
     builtKernels.rust = config.pkgs.callPackage ./. {
       rust = getAttr config.kernels.rust.rustPackage config.pkgs;
 
-      inherit (config.kernels.rust) packages attrs extensions settings;
+      settings = config.kernels.rust;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.rust;
     };
   };

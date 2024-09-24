@@ -6,17 +6,14 @@
 , symlinkJoin
 , makeWrapper
 
-, ltsOnly ? true
-
 , compilerName
 , snapshot
 
-, packages
-, attrs
-, extensions
 , settings
 , settingsSchema
 }:
+
+with { inherit (settings) packages attrs extensions; };
 
 with lib;
 
