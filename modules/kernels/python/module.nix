@@ -87,6 +87,7 @@ in
 {
   options = {
     kernels.python3 = mkOptions (mkOption {
+      description = "Python 3 version";
       type = types.enum (
         ["python3"]
         ++ (builtins.filter (n: builtins.match "^python3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
@@ -95,6 +96,7 @@ in
     });
 
     kernels.pypy3 = mkOptions (mkOption {
+      description = "PyPy 3 version";
       type = types.enum (
         ["pypy3"]
         ++ (builtins.filter (n: builtins.match "^pypy3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
