@@ -20,14 +20,14 @@ kernelSpec ghcPackage = NixKernelSpec {
   , nixKernelIcon = Nothing
   , nixKernelExtraConfig = Just [
       [i|ghcPackage = "#{ghcPackage}"|]
-      , "settings.lsp.haskell-language-server.debug = true"
-      -- , "settings.lsp.haskell-language-server.super-debug = true"
+      , "lsp.haskell-language-server.debug = true"
+      -- , "lsp.haskell-language-server.super-debug = true"
       ]
   }
 
 kernelSpecWithHlintOutput :: Text -> NixKernelSpec
 kernelSpecWithHlintOutput ghcPackage = (kernelSpec ghcPackage) {
   nixKernelExtraConfig = Just [
-      "settings.enableHlintOutput = true"
+      "enableHlintOutput = true"
       ]
   }

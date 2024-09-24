@@ -76,7 +76,7 @@ kernelSpec = NixKernelSpec {
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelExtraConfig = Just [
-      "settings.lsp.rust-analyzer.debug = true"
+      "lsp.rust-analyzer.debug = true"
       ]
   }
 

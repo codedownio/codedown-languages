@@ -63,7 +63,7 @@ kernelSpec rubyPackage = NixKernelSpec {
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelExtraConfig = Just [
-      "settings.lsp.solargraph.enable = true"
+      "lsp.solargraph.enable = true"
       , [i|rubyPackage = "#{rubyPackage}"|]
       ]
   }

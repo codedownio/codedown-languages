@@ -73,9 +73,9 @@ kernelSpec juliaPackage = NixKernelSpec {
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelExtraConfig = Just [
-      "settings.lsp.LanguageServer.enable = true"
-      , "settings.lsp.LanguageServer.debug = true"
-      , "settings.lsp.LanguageServer.index = true"
+      "lsp.LanguageServer.enable = true"
+      , "lsp.LanguageServer.debug = true"
+      , "lsp.LanguageServer.index = true"
       , [i|juliaPackage = "#{juliaPackage}"|]
       ]
   }
