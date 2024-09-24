@@ -2,27 +2,27 @@
 
 let
   convertType = target: type:
-    if (type.name == "str") then "string"
-    else if (type.name == "anything") then "any"
-    else if (type.name == "bool") then "boolean"
+    if (type.name == "str") then { type = "string"; }
+    else if (type.name == "anything") then { type = "any"; }
+    else if (type.name == "bool") then { type = "boolean"; }
     else if (type.name == "attrs") then {
-      tag = "attrs";
+      type = "attrs";
     }
     else if (type.name == "listOf") then {
-      tag = "list";
-      value = convertType target type.nestedTypes.elemType;
+      type = "list";
+      listType = convertType target type.nestedTypes.elemType;
     }
     else if (type.name == "enum") then {
-      tag = "enum";
+      type = "enum";
       values = type.functor.payload;
     }
     else if (type.name == "either") then {
-      tag = "either";
+      type = "either";
       left = convertType target type.nestedTypes.left;
       right = convertType target type.nestedTypes.right;
     }
     else if (type.name == "submodule") then {
-      tag = "submodule";
+      type = "submodule";
       keys = lib.mapAttrsRecursiveCond
         (x: !(x ? _type))
         (path: value: convertType target value.type)

@@ -13,12 +13,13 @@ let
 
   convert = v: let
     defaultItem = { type = { name = "unknown"; }; };
+    loc = lib.drop componentsToDrop v.loc;
   in
     {
       target = v.name;
-      type = convertType v.name (lib.attrByPath (lib.drop componentsToDrop v.loc) defaultItem options).type;
-      loc = v.loc;
+      inherit loc;
     }
+    // convertType v.name (lib.attrByPath loc defaultItem options).type
     // lib.optionalAttrs (lib.hasAttr "default" v) { defaultValue = convertDefaultValue v.default; }
     // lib.optionalAttrs (lib.hasAttr "description" v && builtins.typeOf v.description == "string") { inherit (v) description; }
     // lib.optionalAttrs (lib.hasAttr "visible" v && v.visible == false) { hidden = true; }
