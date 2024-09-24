@@ -5,6 +5,7 @@ with lib;
 let
   mkOptions = packageOption: {
     enable = mkOption {
+      example = "Enable Python 3 kernel";
       description = "Enable Python 3 kernel";
       type = types.bool;
       default = false;
@@ -70,7 +71,8 @@ let
         default = false;
       };
       permitUserSite = mkOption {
-        description = "Permit user site-packages by skipping setting the PYTHONNOUSERSITE variable";
+        example = "Permit user site-packages";
+        description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
         type = types.bool;
         default = false;
       };
