@@ -30,7 +30,7 @@ let
     };
 
     lsp.jedi.enable = mkOption {
-      description = "Enable Jedi language server";
+      example = "Enable Jedi language server";
       type = types.bool;
       default = true;
     };
