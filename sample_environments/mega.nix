@@ -41,16 +41,16 @@ codedown.makeEnvironment {
 
   kernels.python3.enable = true;
   kernels.python3.packages = ["matplotlib" "scipy" "rope"];
-  kernels.python3.permitUserSite = false;
   kernels.python3.lsp.jedi.enable = true;
   kernels.python3.lsp.pyright.enable = true;
   kernels.python3.lsp.pylint.enable = true;
   kernels.python3.lsp.flake8.enable = true;
   kernels.python3.lsp.pycodestyle.enable = true;
   kernels.python3.lsp.python-lsp-server.enable = true;
+  kernels.python3.misc.permitUserSite = false;
 
   # kernels.pypy3.enable = true;
-  # kernels.pypy3.permitUserSite = false;
+  # kernels.pypy3.misc.permitUserSite = false;
 
   kernels.ruby.enable = true;
 

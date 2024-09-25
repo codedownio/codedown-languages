@@ -19,12 +19,15 @@ let
 
     python3Package = packageOption;
 
-    attrs = mkOption {
+    interface.attrs = mkOption {
+      example = "Notebook attributes";
+      description = "Notebook cells that have these attributes will match this kernel, allowing it to run the code.";
       type = types.listOf types.str;
       default = ["python"];
     };
-
-    extensions = mkOption {
+    interface.extensions = mkOption {
+      example = "File extensions";
+      description = "Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell.";
       type = types.listOf types.str;
       default = ["py"];
     };
@@ -70,14 +73,15 @@ let
       default = false;
     };
 
-    permitUserSite = mkOption {
+    misc.permitUserSite = mkOption {
       example = "Permit user site-packages";
       description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
       type = types.bool;
       default = false;
     };
-    enableVariableInspector = mkOption {
-      description = "Enable the variable inspector";
+    misc.enableVariableInspector = mkOption {
+      example = "Enable the variable inspector";
+      description = "This will show a summary of the currently defined variables in the UI.";
       type = types.bool;
       default = true;
     };

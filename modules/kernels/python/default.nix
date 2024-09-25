@@ -13,7 +13,8 @@
 , settingsSchema
 }:
 
-with { inherit (settings) packages attrs extensions; };
+with { inherit (settings) packages; };
+with { inherit (settings.interface) attrs extensions; };
 
 let
   common = callPackage ../common.nix {};
@@ -56,7 +57,7 @@ symlinkJoin {
     (callPackage ./kernel.nix {
       python = pythonToUse;
       inherit displayName kernelName attrs extensions;
-      enableVariableInspector = settings.enableVariableInspector;
+      enableVariableInspector = settings.misc.enableVariableInspector;
     })
 
     pythonToUse

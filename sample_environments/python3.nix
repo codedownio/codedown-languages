@@ -11,8 +11,6 @@ codedown.makeEnvironment {
     "rope"
   ];
 
-  kernels.python3.permitUserSite = false;
-
   kernels.python3.lsp = {
     jedi.enable = true;
     pyright.enable = true;
@@ -21,4 +19,6 @@ codedown.makeEnvironment {
     pycodestyle.enable = true;
     python-lsp-server.enable = true;
   };
+
+  kernels.python3.misc.permitUserSite = false;
 }
