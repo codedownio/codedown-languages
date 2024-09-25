@@ -31,6 +31,7 @@ let
         channel = "codedown";
 
         settings = removeNonDefaultSettings kernel.settingsSchema kernel.settings;
+        settingsSchema = mapAttrs (_: v: removeAttrs v ["loc"]) kernel.settingsSchema;
       };
     })) evaluated.config.builtKernels;
   builtLanguageServers = evaluated.config.builtLanguageServers;

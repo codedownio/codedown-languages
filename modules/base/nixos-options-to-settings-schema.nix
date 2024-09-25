@@ -1,4 +1,4 @@
-{ config, lib, ... }@args:
+{ lib, ... }@args:
 
 {
   componentsToDrop ? 0
@@ -14,16 +14,15 @@ let
   convert = v: let
     defaultItem = { type = { name = "unknown"; }; };
     loc = lib.drop componentsToDrop v.loc;
+
+    value = { inherit loc; }
+      // convertType v.name (lib.attrByPath loc defaultItem options).type
+      // lib.optionalAttrs (lib.hasAttr "default" v) { defaultValue = convertDefaultValue v.default; }
+      // (let example = (lib.attrByPath loc null options).example or null; in lib.optionalAttrs (builtins.typeOf example == "string") { title = example; })
+      // lib.optionalAttrs (lib.hasAttr "description" v && builtins.typeOf v.description == "string") { inherit (v) description; }
+      // lib.optionalAttrs (lib.hasAttr "visible" v && v.visible == false) { hidden = true; };
   in
-    {
-      target = loc;
-    }
-    // convertType v.name (lib.attrByPath loc defaultItem options).type
-    // lib.optionalAttrs (lib.hasAttr "default" v) { defaultValue = convertDefaultValue v.default; }
-    // (let example = (lib.attrByPath loc null options).example or null; in lib.optionalAttrs (builtins.typeOf example == "string") { title = example; })
-    // lib.optionalAttrs (lib.hasAttr "description" v && builtins.typeOf v.description == "string") { inherit (v) description; }
-    // lib.optionalAttrs (lib.hasAttr "visible" v && v.visible == false) { hidden = true; }
-  ;
+    { name = lib.concatStringsSep "." loc; inherit value; };
 
   evalString = str: builtins.scopedImport {} (builtins.toFile "expr.nix" str);
 
@@ -33,4 +32,4 @@ let
 
 in
 
-map convert flattened
+lib.listToAttrs (map convert flattened)
