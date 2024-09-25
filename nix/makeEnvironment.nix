@@ -19,14 +19,18 @@ with lib;
 
 let
   evaluated = (callPackage ./evaluate-config.nix { inherit pkgsStable pkgsMaster; }) config;
+  removeNonDefaultSettings = callPackage ./remove-non-default-settings.nix {};
 
   builtExporters = evaluated.config.builtExporters;
   builtKernels = mapAttrs (_: kernel:
     kernel.overrideAttrs (old: {
       passthru = old.passthru // {
         name = "kernels." + kernel.name;
+
         # channel = kernel.channel;
         channel = "codedown";
+
+        settings = removeNonDefaultSettings kernel.settingsSchema kernel.settings;
       };
     })) evaluated.config.builtKernels;
   builtLanguageServers = evaluated.config.builtLanguageServers;

@@ -28,7 +28,7 @@ let
   evalString = str: builtins.scopedImport {} (builtins.toFile "expr.nix" str);
 
   convertDefaultValue = value:
-    if value._type == "literalExpression" then builtins.toJSON (evalString value.text)
+    if value._type == "literalExpression" then evalString value.text
     else builtins.throw "Can't handle this default value: ${toString value}.";
 
 in
