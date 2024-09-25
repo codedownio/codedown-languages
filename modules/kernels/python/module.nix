@@ -92,20 +92,20 @@ in
 {
   options = {
     kernels.python3 = mkOptions (mkOption {
-      description = "Python 3 version";
-      type = types.enum (
+      example = "Python 3 version";
+      type = types.enum (lib.unique (
         ["python3"]
         ++ (builtins.filter (n: builtins.match "^python3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
-      );
+      ));
       default = "python3";
     });
 
     kernels.pypy3 = mkOptions (mkOption {
-      description = "PyPy 3 version";
-      type = types.enum (
+      example = "PyPy 3 version";
+      type = types.enum (lib.unique (
         ["pypy3"]
         ++ (builtins.filter (n: builtins.match "^pypy3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
-      );
+      ));
       default = "pypy3";
     });
   };
