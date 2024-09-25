@@ -26,8 +26,6 @@ let
   displayName = "Haskell";
   kernelName = "haskell";
 
-  settingsSchema = callPackage ./settings_schema.nix { inherit version; };
-
   packageOptions = snapshot;
 
   # Grab the meta from the library component
