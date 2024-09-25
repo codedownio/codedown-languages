@@ -16,8 +16,7 @@ let
     loc = lib.drop componentsToDrop v.loc;
   in
     {
-      target = v.name;
-      inherit loc;
+      target = loc;
     }
     // convertType v.name (lib.attrByPath loc defaultItem options).type
     // lib.optionalAttrs (lib.hasAttr "default" v) { defaultValue = convertDefaultValue v.default; }
