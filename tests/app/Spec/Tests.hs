@@ -27,6 +27,7 @@ tests :: forall context. (
 tests =
   introduceJupyterRunner $
   introduceJustBubblewrap $
+  introduceBootstrapNixpkgs $
     introduce' (defaultNodeOptions { nodeOptionsCreateFolder = False }) "Introduce parallel semaphore" parallelSemaphore getQSem (const $ return ()) $
       $(getSpecFromFolder $ defaultGetSpecFromFolderOptions {
            getSpecCombiner = 'describeParallel

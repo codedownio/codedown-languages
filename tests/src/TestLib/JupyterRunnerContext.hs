@@ -44,6 +44,15 @@ introduceJupyterRunner = introduceWith [i|Jupyter runner|] jupyterRunner $ \acti
   createProcessWithLogging cp >>= waitForProcess >>= (`shouldBe` ExitSuccess)
   void $ action runnerPath
 
+introduceBootstrapNixpkgs :: (
+  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  ) => SpecFree (LabelValue "bootstrapNixpkgs" FilePath :> context) m () -> SpecFree context m ()
+introduceBootstrapNixpkgs = introduceWith [i|Jupyter runner|] bootstrapNixpkgs $ \action -> do
+  rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
+
+  out <- readCreateProcessWithLogging ((proc "nix" ["run", ".#nixpkgsPath"]) { cwd = Just rootDir }) ""
+  void $ action (T.unpack $ T.strip $ T.pack out)
+
 -- | TODO: pipe through a command-line argument to control whether bwrap is used?
 introduceJustBubblewrap :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
@@ -319,5 +328,6 @@ notebookWithCode kernel code = A.object [
 jupyterMain :: LanguageSpec -> IO ()
 jupyterMain tests = runSandwichWithCommandLineArgs' Sandwich.defaultOptions specialOptions $
   introduceJupyterRunner $
-  introduceJustBubblewrap
+  introduceJustBubblewrap $
+  introduceBootstrapNixpkgs
   tests

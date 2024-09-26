@@ -1,4 +1,4 @@
-{ fetchFromGitHub
+{ fetchFromGitHub ? (import <nixpkgs> {}).fetchFromGitHub
 , isCodeDown ? true # For introspection using builtins.functionArgs
 , ...
 }:

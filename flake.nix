@@ -15,14 +15,16 @@
 
         codedown = import ./codedown.nix { inherit pkgsStable pkgsMaster; };
 
+        sampleOutputs = pkgsStable.callPackage ./nix/sample-outputs.nix { inherit codedown pkgsStable; };
+
       in
         rec {
-          packages = {
+          packages = rec {
             # For nix repl debugging
             # inherit codedown;
 
             # Tests use flake to do packageSearch builds
-            inherit (codedown) kernels codedownSearcher;
+            inherit (codedown) codedownSearcher;
 
             # For .envrc
             nixpkgsPath = pkgsStable.writeShellScriptBin "nixpkgsPath.sh" "echo -n ${pkgsStable.path}";
@@ -31,12 +33,21 @@
 
             notebook = with pkgsStable; python3.pkgs.toPythonModule (
               python3.pkgs.notebook.overridePythonAttrs (oldAttrs: {
-                makeWrapperArgs = ["--set JUPYTER_PATH ${sample_environments.mega}/lib/codedown"];
+                makeWrapperArgs = ["--set JUPYTER_PATH ${sampleOutputs.sample_environments.mega}/lib/codedown"];
               })
             );
           }
-          // (pkgsStable.callPackage ./nix/sample-outputs.nix { inherit codedown pkgsStable; }).inner
+          // sampleOutputs.inner
           ;
+
+          checks = {
+            customScript = pkgsStable.writeShellScript "test-script" ''
+              #!/bin/sh
+              echo "Running custom test..."
+              # Add your test logic here
+              exit 0
+            '';
+          };
         }
     );
 }

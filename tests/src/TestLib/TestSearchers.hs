@@ -5,18 +5,18 @@ module TestLib.TestSearchers where
 import Conduit as C
 import Control.Monad.Catch (MonadMask)
 import Control.Monad.Logger
+import Control.Monad.Reader
 import Control.Monad.Trans.Control (MonadBaseControl)
 import qualified Data.Aeson as A
-import qualified Data.ByteString.Lazy.Char8 as BL8
 import Data.Conduit.Aeson as C
 import qualified Data.List as L
 import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Text.IO as T
-import qualified Data.Vector as V
 import System.FilePath
 import Test.Sandwich
 import TestLib.TestBuilding
+import TestLib.Types
 import TestLib.Util
 import UnliftIO.Directory
 import UnliftIO.IO
@@ -26,53 +26,67 @@ import UnliftIO.Process
 -- Testing for successful build
 
 testKernelSearchersBuild :: (
-  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  , HasBaseContext context, HasBootstrapNixpkgs context
   ) => Text -> SpecFree context m ()
 testKernelSearchersBuild kernel = it [i|#{kernel}: package searchers build|] $ do
-  testBuild [i|.\#kernels."#{kernel}".packageSearch|]
+  testBuild [i|kernels."#{kernel}".packageSearch|]
 
 testHasExpectedFields :: (
-  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  , HasBaseContext context, HasBootstrapNixpkgs context
   ) => Text -> SpecFree context m ()
 testHasExpectedFields kernel = it [i|#{kernel}: has expected fields|] $ do
-  testEval [i|.\#kernels."#{kernel}".settingsSchema|]
-  testEval [i|.\#kernels."#{kernel}".modes|]
-  testEval [i|.\#kernels."#{kernel}".settings|]
-  testEval [i|.\#kernels."#{kernel}".args|]
-  testEval [i|.\#kernels."#{kernel}".meta|]
+  testEval [i|kernels."#{kernel}".settingsSchema|]
+  testEval [i|kernels."#{kernel}".modes|]
+  testEval [i|kernels."#{kernel}".settings|]
+  testEval [i|kernels."#{kernel}".args|]
+  testEval [i|kernels."#{kernel}".meta|]
 
   -- Used to view all versions in codedown-languages
-  testEval [i|.\#kernels."#{kernel}".versions|]
+  testEval [i|kernels."#{kernel}".versions|]
 
 -- Testing for nonempty results
 
 -- | A stronger version of testKernelSearchersBuild
 testKernelSearchersNonempty :: (
-  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  , HasBaseContext context, HasBootstrapNixpkgs context
   ) => Text -> SpecFree context m ()
 testKernelSearchersNonempty kernel = describe [i|#{kernel}: package and LSP searchers build and have results|] $ do
   it "package searcher" $ testPackageSearchNonempty kernel
 
 testPackageSearchNonempty :: (
-  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  , HasBaseContext context, HasBootstrapNixpkgs context
   ) => Text -> ExampleT context m ()
-testPackageSearchNonempty kernel = testSearcherHasNonemptyResults [i|.\#kernels."#{kernel}".packageSearch|]
+testPackageSearchNonempty kernel = testSearcherHasNonemptyResults [i|kernels."#{kernel}".packageSearch|]
 
-testSearcherHasNonemptyResults :: (MonadUnliftIO m, MonadThrow m, MonadLogger m, MonadFail m) => String -> m ()
+testSearcherHasNonemptyResults :: (
+  MonadUnliftIO m, MonadThrow m, MonadLogger m, MonadFail m, MonadReader context m
+  , HasBaseContext context, HasBootstrapNixpkgs context
+  ) => String -> m ()
 testSearcherHasNonemptyResults expr = searcherResults expr >>= \case
   xs | not (L.null xs) -> return ()
   x -> expectationFailure [i|Expected searcher to output an array with >=1 elem, but got #{x}|]
 
-searcherResults :: (MonadUnliftIO m, MonadThrow m, MonadLogger m, MonadFail m) => String -> m [A.Object]
+searcherResults :: (
+  MonadUnliftIO m, MonadThrow m, MonadLogger m, MonadFail m, MonadReader context m
+  , HasBaseContext context, HasBootstrapNixpkgs context
+  ) => String -> m [A.Object]
 searcherResults expr = do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
-  built <- ((A.eitherDecode . BL8.pack) <$> readCreateProcessWithLogging ((proc "nix" ["build", expr, "--no-link", "--json"]) { cwd = Just rootDir, std_err = CreatePipe }) "") >>= \case
-    Left err -> expectationFailure [i|Failed to decode JSON: #{err}|]
-    Right (A.Array ((V.! 0) -> (A.Object (aesonLookup "outputs" -> Just (A.Object (aesonLookup "out" -> Just (A.String x))))))) -> pure x
-    Right x -> expectationFailure [i|Unexpected JSON: #{x}|]
+  env <- getEnvWithNixPath
+  let cp = (proc "nix-build" [".", "-A", expr, "--no-out-link"]) {
+        cwd = Just rootDir
+        , std_err = CreatePipe
+        , env = Just env
+        }
+  built <- (T.unpack . T.strip . T.pack) <$> (readCreateProcessWithLogging cp "")
+  info [i|Got built searcher: #{built}|]
 
-  let cp = (proc (T.unpack built </> "bin" </> "searcher") []) {
+  let cp' = (proc (built </> "bin" </> "searcher") []) {
         cwd = Just rootDir
         , std_in = CreatePipe
         , std_out = CreatePipe
@@ -81,7 +95,7 @@ searcherResults expr = do
         , close_fds = True
         }
 
-  withCreateProcess cp $ \(Just hin) (Just hout) (Just _herr) _p -> do
+  withCreateProcess cp' $ \(Just hin) (Just hout) (Just _herr) _p -> do
     liftIO $ T.hPutStrLn hin "50"
     liftIO $ T.hPutStrLn hin "0"
     liftIO $ T.hPutStrLn hin ""

@@ -73,7 +73,6 @@ executables:
     - -with-rtsopts=-N
     build-tools: sandwich:sandwich-discover
     dependencies:
-    - monad-logger
     - row-types
     - safe
     - tests

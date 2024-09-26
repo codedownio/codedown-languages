@@ -16,6 +16,16 @@ jobs:
       if: "!contains(github.event.head_commit.message, 'noci')"
       run: ./.aliases/verify-default-nix
 
+  nix-flake-check:
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: nix flake check
+      if: "!contains(github.event.head_commit.message, 'noci')"
+      run: nix flake check
+
   build-ui-metadata:
     runs-on: self-hosted
 

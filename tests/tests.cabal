@@ -143,7 +143,6 @@ executable tests
     , lsp-test
     , lsp-types
     , monad-control
-    , monad-logger
     , mtl
     , optparse-applicative
     , row-types

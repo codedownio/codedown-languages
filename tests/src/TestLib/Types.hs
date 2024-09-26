@@ -65,12 +65,19 @@ maybeBubblewrap :: Label "maybeBubblewrap" (Maybe FilePath)
 maybeBubblewrap = Label
 type HasMaybeBubblewrap context = HasLabel context "maybeBubblewrap" (Maybe FilePath)
 
+bootstrapNixpkgs :: Label "bootstrapNixpkgs" FilePath
+bootstrapNixpkgs = Label
+type HasBootstrapNixpkgs context = HasLabel context "bootstrapNixpkgs" FilePath
+
 -- * Spec types
 
 type SomeLanguageSpec context = (
   HasBaseContext context
   , HasJupyterRunner context
   , HasMaybeBubblewrap context
+  , HasBootstrapNixpkgs context
   )
 
 type LanguageSpec = forall context. SomeLanguageSpec context => SpecFree context IO ()
+
+type SimpleSpec = forall context. (HasBaseContext context, HasBootstrapNixpkgs context) => SpecFree context IO ()

@@ -3,12 +3,16 @@
 module Spec.Tests.Searchers (tests) where
 
 import Test.Sandwich as Sandwich
+import TestLib.JupyterRunnerContext
 import TestLib.TestSearchers
+import TestLib.Types
 
 
-tests :: TopSpec
+tests :: SimpleSpec
 tests = describe "Searchers" $ do
   it "searcher has some results" $ testSearcherHasNonemptyResults ".#codedownSearcher"
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
+  introduceBootstrapNixpkgs $
+  tests
