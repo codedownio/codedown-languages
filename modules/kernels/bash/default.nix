@@ -12,7 +12,7 @@
 , settingsSchema
 }:
 
-with { inherit (settings) attrs extensions; };
+with { inherit (settings.interface) attrs extensions; };
 
 let
   kernelName = "bash";

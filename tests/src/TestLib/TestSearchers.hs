@@ -3,6 +3,7 @@
 module TestLib.TestSearchers where
 
 import Conduit as C
+import Control.Monad
 import Control.Monad.Catch (MonadMask)
 import Control.Monad.Logger
 import Control.Monad.Reader
@@ -17,8 +18,6 @@ import System.FilePath
 import Test.Sandwich
 import TestLib.TestBuilding
 import TestLib.Types
-import TestLib.Util
-import UnliftIO.Directory
 import UnliftIO.IO
 import UnliftIO.Process
 
@@ -30,7 +29,7 @@ testKernelSearchersBuild :: (
   , HasBaseContext context, HasBootstrapNixpkgs context
   ) => Text -> SpecFree context m ()
 testKernelSearchersBuild kernel = it [i|#{kernel}: package searchers build|] $ do
-  testBuild [i|kernels."#{kernel}".packageSearch|]
+  void $ testBuild [i|kernels."#{kernel}".packageSearch|]
 
 testHasExpectedFields :: (
   MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
@@ -75,20 +74,11 @@ searcherResults :: (
   , HasBaseContext context, HasBootstrapNixpkgs context
   ) => String -> m [A.Object]
 searcherResults expr = do
-  rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
-
-  env <- getEnvWithNixPath
-  let cp = (proc "nix-build" [".", "-A", expr, "--no-out-link"]) {
-        cwd = Just rootDir
-        , std_err = CreatePipe
-        , env = Just env
-        }
-  built <- (T.unpack . T.strip . T.pack) <$> (readCreateProcessWithLogging cp "")
+  built <- testBuild expr
   info [i|Got built searcher: #{built}|]
 
   let cp' = (proc (built </> "bin" </> "searcher") []) {
-        cwd = Just rootDir
-        , std_in = CreatePipe
+        std_in = CreatePipe
         , std_out = CreatePipe
         , std_err = CreatePipe
         , create_group = True

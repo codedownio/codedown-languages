@@ -8,6 +8,13 @@ config:
 lib.evalModules {
   specialArgs = {
     nixosOptionsToSettingsSchema = pkgsStable.callPackage ../modules/base/nixos-options-to-settings-schema.nix {};
+    boilerplate = {
+      attrsTitle = "Notebook attributes";
+      attrsDescription = "Notebook cells that have these attributes will match this kernel, allowing it to run the code.";
+
+      extensionsTitle = "File extensions";
+      extensionsDescription = "Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell.";
+    };
   };
   modules = [
     ../modules/base.nix

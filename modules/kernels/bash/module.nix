@@ -1,4 +1,4 @@
-{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, ... }:
+{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, boilerplate, ... }:
 
 with lib;
 
@@ -12,12 +12,15 @@ with lib;
         visible = false;
       };
 
-      attrs = mkOption {
+      interface.attrs = mkOption {
+        example = boilerplate.attrsTitle;
+        description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["bash"];
       };
-
-      extensions = mkOption {
+      interface.extensions = mkOption {
+        example = boilerplate.extensionsTitle;
+        description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["sh" "bash"];
       };

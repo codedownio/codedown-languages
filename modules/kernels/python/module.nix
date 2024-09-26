@@ -1,4 +1,4 @@
-{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, ... }:
+{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, boilerplate, ... }:
 
 with lib;
 
@@ -20,14 +20,14 @@ let
     python3Package = packageOption;
 
     interface.attrs = mkOption {
-      example = "Notebook attributes";
-      description = "Notebook cells that have these attributes will match this kernel, allowing it to run the code.";
+      example = boilerplate.attrsTitle;
+      description = boilerplate.attrsDescription;
       type = types.listOf types.str;
       default = ["python"];
     };
     interface.extensions = mkOption {
-      example = "File extensions";
-      description = "Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell.";
+      example = boilerplate.extensionsTitle;
+      description = boilerplate.extensionsDescription;
       type = types.listOf types.str;
       default = ["py"];
     };
