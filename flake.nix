@@ -25,6 +25,7 @@
 
             # Tests use flake to do packageSearch builds
             inherit (codedown) codedownSearcher;
+            allSettingsSchemas = pkgsStable.callPackage ./nix/all-settings-schemas.nix { inherit (sampleOutputs) sample_environments; };
 
             # For .envrc
             nixpkgsPath = pkgsStable.writeShellScriptBin "nixpkgsPath.sh" "echo -n ${pkgsStable.path}";
@@ -39,15 +40,6 @@
           }
           // sampleOutputs.inner
           ;
-
-          checks = {
-            customScript = pkgsStable.writeShellScript "test-script" ''
-              #!/bin/sh
-              echo "Running custom test..."
-              # Add your test logic here
-              exit 0
-            '';
-          };
         }
     );
 }

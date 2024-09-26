@@ -32,28 +32,6 @@ in
         sample_environments
     );
 
-    # TODO: add test that all settings schemas are valid in certain ways:
-    # - they all have a title
-    all_settings_schemas = let
-      gatherSchemas = prefix: pkg:
-        (if !(lib.hasAttrByPath ["meta" "settings_schema"] pkg) then []
-         else [{ name = prefix + pkg.name; value = pkg.meta.settings_schema; }])
-        ++ builtins.concatLists (map (gatherSchemas (prefix + pkg.name + ".")) (pkg.packages or []))
-      ;
-
-      gatherSchemasFromEnvironment = prefix: env:
-        builtins.concatLists (lib.mapAttrsToList (n: v: gatherSchemas prefix v) env.ui_metadata.packages);
-
-    in
-      writeTextFile {
-        name = "all_settings_schemas.json";
-        text = builtins.toJSON (
-          lib.listToAttrs (
-            builtins.concatLists (lib.mapAttrsToList (n: v: gatherSchemasFromEnvironment (n + ".") v) sample_environments)
-          )
-        );
-      };
-
     printVersions = let
       versionsMap = with lib;
         mapAttrs (lang: value: if (hasAttr "versions" value) then value.versions else {})
