@@ -2,6 +2,7 @@
 
 module Spec.Tests.SettingsSchemas (tests) where
 
+import Control.Monad
 import Control.Monad.IO.Class
 import Data.Aeson as A
 import qualified Data.Map as M
@@ -30,6 +31,8 @@ tests = describe "Settings schemas" $ do
     itemsLackingField byPackage "defaultValue" `shouldBe` []
 
     info [i|Num lacking title: #{Prelude.length (itemsLackingField byPackage "title")}|]
+    info [i|Full list:|]
+    forM_ (itemsLackingField byPackage "title") info
     itemsLackingField byPackage "title" `shouldBe` []
 
 itemsLackingField :: AllSettingsSchemas -> Text -> [Text]
