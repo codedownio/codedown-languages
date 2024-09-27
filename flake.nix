@@ -24,7 +24,7 @@
             # inherit codedown;
 
             # Tests use flake to do packageSearch builds
-            inherit (codedown) searcher;
+            inherit (codedown) codedownSearcher;
             allSettingsSchemas = pkgsStable.callPackage ./nix/all-settings-schemas.nix { inherit (sampleOutputs) sample_environments; };
 
             # For .envrc
