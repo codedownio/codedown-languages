@@ -69,7 +69,7 @@ let
       settings = if pkg ? "settings" then pkg.settings else {};
 
       # Different for hydrated
-      packages = map (p: mkSubPackageMetadata pkg p) (pkg.args.packages or []);
+      packages = map (p: mkSubPackageMetadata pkg p) (pkg.settings.packages or []);
 
       # Hydrated
       meta = uiMetadata.chooseInterestingMeta pkg;
