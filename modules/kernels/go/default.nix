@@ -51,9 +51,6 @@ symlinkJoin {
       inherit settingsSchema;
       hasPackages = packageOptions != {};
     };
-    args = {
-      inherit packages attrs extensions settings;
-    };
     inherit packageOptions packageSearch;
     versions = {
       go = go.version;

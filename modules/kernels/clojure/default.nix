@@ -60,10 +60,6 @@ symlinkJoin {
       clojure-lsp = clojure-lsp.version;
     };
     inherit settingsSchema settings;
-    args = {
-      inherit attrs extensions settings;
-      packages = [];
-    };
     repls = repls clojure;
     modes = {
       inherit attrs extensions;

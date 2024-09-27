@@ -54,10 +54,6 @@ symlinkJoin {
       coq = coq.version;
     };
     inherit settings settingsSchema;
-    args = {
-      inherit attrs extensions settings;
-      packages = [];
-    };
     repls = {};
     modes = {
       inherit attrs extensions;

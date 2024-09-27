@@ -104,9 +104,6 @@ symlinkJoin {
       icon = ./julia-logo-64x64.png;
       hasPackages = packageOptions != {};
     };
-    args = {
-      inherit attrs extensions settings packages;
-    };
     inherit packageOptions packageSearch;
     versions = {
       julia = julia.version;

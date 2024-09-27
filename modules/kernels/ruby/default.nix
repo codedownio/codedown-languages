@@ -54,9 +54,6 @@ symlinkJoin {
       inherit settingsSchema;
       hasPackages = packageOptions != {};
     };
-    args = {
-      inherit attrs extensions settings packages;
-    };
     versions = {
       ruby = builtins.toString ruby.version;
       solargraph = packageOptions.solargraph.version;

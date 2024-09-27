@@ -86,7 +86,6 @@ symlinkJoin {
     // lib.optionalAttrs (hasPythonLspServer python3) { python-lsp-server = python3.pkgs.python-lsp-server.version; }
     ;
     inherit settingsSchema settings;
-    args = { inherit attrs extensions settings packages; };
     repls = {
       ipython = {
         display_name = "IPython " + pythonToUse.pkgs.ipython.version;

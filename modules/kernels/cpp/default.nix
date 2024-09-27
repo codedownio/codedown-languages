@@ -76,9 +76,6 @@ symlinkJoin {
       std = flavor;
     };
     inherit settings settingsSchema;
-    args = {
-      inherit attrs extensions settings packages;
-    };
     repls = {
       cling = {
         display_name = "Cling " + clingToUse.unwrapped.version;

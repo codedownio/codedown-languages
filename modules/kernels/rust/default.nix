@@ -86,9 +86,6 @@ symlinkJoin {
       inherit settingsSchema;
       hasPackages = packageOptions != {};
     };
-    args = {
-      inherit attrs extensions settings packages;
-    };
     inherit packageOptions packageSearch;
     versions = {
       cargo = rustPackages.cargo.version;

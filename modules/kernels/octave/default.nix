@@ -57,10 +57,6 @@ symlinkJoin {
     octaveToUse
   ];
   passthru = {
-    args = {
-      inherit attrs extensions settings;
-      packages = [];
-    };
     meta = octave.meta // {
       baseName = "octave";
       displayName = "Octave " + octave.version;

@@ -59,9 +59,6 @@ symlinkJoin {
   ;
 
   passthru = {
-    args = {
-      inherit attrs extensions settings packages;
-    };
     meta = R.meta // {
       baseName = "R";
       displayName = "R";

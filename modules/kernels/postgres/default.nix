@@ -35,9 +35,6 @@ symlinkJoin {
   ;
 
   passthru = {
-    args = {
-      inherit attrs extensions settings packages;
-    };
     meta = {
       name = "postgres";
       baseName = "postgres";
