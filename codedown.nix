@@ -43,7 +43,7 @@ rec {
 
   everythingEnv = evaluateConfig everythingConfig;
 
-  codedownSearcher = common.searcher' {
+  searcher = common.searcher' {
     # Note that we deliberately don't include "testing" packages in the searcher
     packages = everythingEnv.config.builtKernels
       // (lib.mapAttrs' (n: v: lib.nameValuePair ("shells." + n) v) everythingEnv.config.builtShells)
