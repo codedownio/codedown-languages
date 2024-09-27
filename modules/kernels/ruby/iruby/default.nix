@@ -18,8 +18,8 @@ let
   irubySrc = fetchFromGitHub {
     owner = "SciRuby";
     repo = "iruby";
-    rev = "146ada216685d3eb9b35fe9c5e2b6c3f2cf707f9";
-    sha256 = "0fc8slrfapvajnfnw76x31g5s5p9vxhbl85smfh8p39nqkh0cs6g";
+    rev = "fe16c1b6de2463d5c5552dd64b0645bf930b5834";
+    hash = "sha256-ukS1s419xggzu/wNJkk/0GOtTHLssizDZrgEMETpfeM=";
   };
 
   iruby = (bundlerApp.override { inherit ruby; }) {
@@ -28,6 +28,10 @@ let
     exes = [ "iruby" ];
 
     # buildInputs = [ zeromq libtool ];
+
+    passthru = {
+      version = "v0.8.0";
+    };
 
     meta = with lib; {
       description = "Ruby kernel for Jupyter";

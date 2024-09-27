@@ -32,13 +32,15 @@ let
     ++ lib.optionals settings.lsp.solargraph.enable [(callPackage ./solargraph.nix { rubyPackages = packageOptions; inherit kernelName; })]
   ;
 
+  iruby = (callPackage ./iruby { inherit ruby; }).iruby;
+
 in
 
 symlinkJoin {
   name = "ruby";
   paths = [
     (callPackage ./kernel.nix {
-      iruby = (callPackage ./iruby { inherit ruby; }).iruby;
+      inherit iruby;
       inherit attrs extensions version;
     })
     ruby
@@ -57,6 +59,7 @@ symlinkJoin {
     versions = {
       ruby = builtins.toString ruby.version;
       solargraph = packageOptions.solargraph.version;
+      iruby = iruby.version;
     };
     inherit packageOptions packageSearch;
     inherit settingsSchema settings;
