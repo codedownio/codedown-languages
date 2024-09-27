@@ -6,18 +6,20 @@ with lib;
   options = {
     kernels.julia = {
       enable = mkOption {
-        description = "Enable Haskell kernel";
+        example = "Enable Haskell kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
+        example = "List of packages";
         type = types.listOf (types.either types.str types.attrs);
         default = [];
       };
 
       juliaPackage = mkOption {
+        example = "Julia version";
         type = types.enum (
           ["julia"]
           ++ (builtins.filter (n:
@@ -43,23 +45,24 @@ with lib;
       };
 
       precompile = mkOption {
-        description = "Precompile Julia environment for faster imports. In some cases, precompilation can make the build fail, so turning this off can help.";
+        example = "Precompile Julia environment for faster imports";
+        description = "In some cases, precompilation can make the build fail, so turning this off can help.";
         type = types.bool;
         default = true;
       };
 
       lsp.LanguageServer.enable = mkOption {
-        description = "Enable LanguageServer language server";
+        example = "Enable LanguageServer language server";
         type = types.bool;
         default = true;
       };
       lsp.LanguageServer.index = mkOption {
-        description = "LanguageServer: auto-index packages when building environment";
+        example = "Auto-index packages when building environment";
         type = types.bool;
         default = true;
       };
       lsp.LanguageServer.debug = mkOption {
-        description = "LanguageServer: log debug messages to stderr";
+        example = "Log debug messages to stderr";
         type = types.bool;
         default = false;
       };

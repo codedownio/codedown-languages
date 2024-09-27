@@ -6,7 +6,7 @@ with lib;
   options = {
     kernels.bash = {
       enable = mkOption {
-        description = "Enable Bash kernel";
+        example = "Enable Bash kernel";
         type = types.bool;
         default = false;
         visible = false;
@@ -26,9 +26,9 @@ with lib;
       };
 
       lsp.bash-language-server.enable = mkOption {
+        example = "Enable Bash language server";
         type = types.bool;
         default = true;
-        description = "Enable Bash language server";
       };
     };
   };

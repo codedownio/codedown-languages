@@ -6,13 +6,14 @@ with lib;
   options = {
     kernels.R = {
       enable = mkOption {
-        description = "Enable R kernel";
+        example = "Enable R kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
+        example = "List of packages";
         type = types.listOf (types.either types.str types.attrs);
         default = [];
       };
@@ -31,9 +32,9 @@ with lib;
       };
 
       lsp.languageserver.enable = mkOption {
+        example = "Enable languageserver";
         type = types.bool;
         default = true;
-        description = "Enable languageserver";
       };
     };
   };

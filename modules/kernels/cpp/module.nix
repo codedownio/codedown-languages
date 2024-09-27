@@ -6,18 +6,20 @@ with lib;
   options = {
     kernels.cpp = {
       enable = mkOption {
-        description = "Enable C++ kernel";
+        example = "Enable C++ kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
+        example = "List of packages";
         type = types.listOf (types.either types.str types.attrs);
         default = [];
       };
 
       flavor = mkOption {
+        example = "C++ flavor";
         type = types.enum [
           "c++11"
           "c++14"

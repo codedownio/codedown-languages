@@ -13,15 +13,16 @@ with lib;
       };
 
       packages = mkOption {
+        example = "List of packages";
         type = types.listOf (types.either types.str (types.submodule {
           options = {
             name = mkOption rec {
-              type = types.str;
               description = "Package name";
+              type = types.str;
             };
             features = mkOption rec {
+              example = "Features to enable for the package";
               type = types.listOf types.str;
-              description = "Features to enable for the package";
             };
           };
         }));
@@ -29,6 +30,7 @@ with lib;
       };
 
       rustPackage = mkOption {
+        example = "Rust version";
         type = types.enum (
           ["rust"]
           ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "rust_") name == "rust_")
@@ -51,14 +53,13 @@ with lib;
       };
 
       lsp.rust-analyzer.enable = mkOption {
+        example = "Rust-analyzer: enable";
         type = types.bool;
-        description = "Rust-analyzer: enable";
         default = true;
       };
-
       lsp.rust-analyzer.debug = mkOption {
+        example = "Rust-analyzer: debug output";
         type = types.bool;
-        description = "Rust-analyzer: debug output";
         default = false;
       };
     };

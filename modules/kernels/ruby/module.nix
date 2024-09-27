@@ -11,18 +11,20 @@ in
   options = {
     kernels.ruby = {
       enable = mkOption {
-        description = "Enable Ruby kernel";
+        example = "Enable Ruby kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
+        example = "List of packages";
         type = types.listOf (types.either types.str types.attrs);
         default = [];
       };
 
       rubyPackage = mkOption {
+        example = "Ruby version";
         type = types.enum (
           ["ruby"]
           ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "ruby_") name == "ruby_")

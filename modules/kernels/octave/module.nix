@@ -6,13 +6,14 @@ with lib;
   options = {
     kernels.octave = {
       enable = mkOption {
-        description = "Enable Octave kernel";
+        example = "Enable Octave kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
+        example = "List of packages";
         type = types.listOf (types.either types.str types.attrs);
         default = [];
       };
@@ -31,9 +32,9 @@ with lib;
       };
 
       extraJupyterConfig = mkOption {
+        example = "Extra Jupyter configuration";
         type = types.str;
         default = "";
-        description = "Extra Jupyter configuration.";
       };
     };
   };

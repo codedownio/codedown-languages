@@ -6,13 +6,13 @@ let
   mkOptions = packageOption: {
     enable = mkOption {
       example = "Enable Python 3 kernel";
-      description = "Enable Python 3 kernel";
       type = types.bool;
       default = false;
       visible = false;
     };
 
     packages = mkOption {
+      example = "List of packages";
       type = types.listOf (types.either types.str types.attrs);
       default = [];
     };
@@ -38,37 +38,37 @@ let
       default = true;
     };
     lsp.pyright.enable = mkOption {
-      description = "Enable Pyright language server";
+      example = "Enable Pyright language server";
       type = types.bool;
       default = false;
     };
     lsp.pylint.enable = mkOption {
-      description = "Enable Pylint language server";
+      example = "Enable Pylint language server";
       type = types.bool;
       default = false;
     };
     lsp.flake8.enable = mkOption {
-      description = "Enable Flake8 language server";
+      example = "Enable Flake8 language server";
       type = types.bool;
       default = false;
     };
     lsp.pycodestyle.enable = mkOption {
-      description = "Enable pycodestyle language server";
+      example = "Enable pycodestyle language server";
       type = types.bool;
       default = false;
     };
     lsp.microsoft.enable = mkOption {
-      description = "Enable Microsoft Python language server";
+      example = "Enable Microsoft Python language server";
       type = types.bool;
       default = false;
     };
     lsp.python-lsp-server.enable = mkOption {
-      description = "Enable python-lsp-server language server";
+      example = "Enable python-lsp-server language server";
       type = types.bool;
       default = false;
     };
     lsp.python-language-server.enable = mkOption {
-      description = "Enable python-language-server language server";
+      example = "Enable python-language-server language server";
       type = types.bool;
       default = false;
     };

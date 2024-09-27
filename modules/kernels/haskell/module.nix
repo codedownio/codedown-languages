@@ -6,17 +6,19 @@ with lib;
   options = {
     kernels.haskell = {
       enable = mkOption {
-        description = "Enable Haskell kernel";
+        example = "Enable Haskell kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
+        example = "List of packages";
         type = types.listOf (types.either types.str types.attrs);
         default = [];
       };
       ghcPackage = mkOption {
+        example = "GHC version";
         type = types.enum ["ghc92" "ghc94" "ghc96" "ghc98"];
         default = "ghc92";
       };
@@ -35,23 +37,23 @@ with lib;
       };
 
       lsp.haskell-language-server.enable = mkOption {
-        description = "Enable haskell-language-server";
+        example = "Enable haskell-language-server";
         type = types.bool;
         default = true;
       };
       lsp.haskell-language-server.debug = mkOption {
-        description = "Haskell-language-server: enable debug output";
+        example = "Haskell-language-server: enable debug output";
         type = types.bool;
         default = false;
       };
       lsp.haskell-language-server.super-debug = mkOption {
-        description = "Haskell-language-server: enable verbose debug output";
+        example = "Haskell-language-server: enable verbose debug output";
         type = types.bool;
         default = false;
       };
 
       enableHlintOutput = mkOption {
-        description = "Enable hlint warnings in Jupyter kernel output. Normally you don't want this because it is provided by haskell-language-server.";
+        example = "Enable hlint warnings in Jupyter kernel output. Normally you don't want this because it is provided by haskell-language-server.";
         type = types.bool;
         default = false;
       };

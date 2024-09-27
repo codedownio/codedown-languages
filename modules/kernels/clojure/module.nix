@@ -6,7 +6,7 @@ with lib;
   options = {
     kernels.clojure = {
       enable = mkOption {
-        description = "Enable Clojure kernel";
+        example = "Enable Clojure kernel";
         type = types.bool;
         default = false;
         visible = false;
@@ -26,9 +26,9 @@ with lib;
       };
 
       lsp.clojure-lsp.enable = mkOption {
+        example = "Enable clojure-lsp language server";
         type = types.bool;
         default = true;
-        description = "Enable clojure-lsp language server";
       };
     };
   };

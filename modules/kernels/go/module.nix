@@ -6,18 +6,20 @@ with lib;
   options = {
     kernels.go = {
       enable = mkOption {
-        description = "Enable Go kernel";
+        example = "Enable Go kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
+        example = "List of packages";
         type = types.listOf (types.either types.str types.attrs);
         default = [];
       };
 
       goPackage = mkOption {
+        example = "Go version";
         type = types.enum (
           ["go"]
           ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "go_") name == "go_")
@@ -40,14 +42,14 @@ with lib;
       };
 
       lsp.gopls.enable = mkOption {
+        example = "Enable gopls language server";
         type = types.bool;
-        description = "Enable gopls language server";
         default = true;
       };
 
       go.gocache = mkOption {
+        example = "Value of GOCACHE environment variable";
         type = types.str;
-        description = "Value of GOCACHE environment variable";
         default = "/home/.gocache";
       };
     };

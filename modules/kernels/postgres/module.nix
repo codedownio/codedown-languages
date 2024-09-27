@@ -6,11 +6,13 @@ with lib;
   options = {
     kernels.postgres = {
       enable = mkOption {
+        example = "Enable PostgreSQL kernel";
         type = types.bool;
         default = false;
       };
 
       packages = mkOption {
+        example = "List of packages";
         type = types.listOf (types.either types.str types.attrs);
         default = [];
       };
