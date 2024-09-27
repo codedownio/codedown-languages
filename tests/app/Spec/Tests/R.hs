@@ -23,15 +23,12 @@ kernelSpec = NixKernelSpec {
   }
 
 tests :: LanguageSpec
-tests = describe "R" $ introduceNixEnvironment [kernelSpec] [] "R" $ introduceJupyterRunner $
-  -- TODO: remove the need for introduceNothingBubblewrap
-  -- https://github.com/codedownio/codedown-languages/issues/63
-  introduceNothingBubblewrap $ do
-    testKernelSearchersNonempty "R"
-    testHasExpectedFields "R"
+tests = describe "R" $ introduceNixEnvironment [kernelSpec] [] "R" $ introduceJupyterRunner $ do
+  testKernelSearchersNonempty "R"
+  testHasExpectedFields "R"
 
-    testKernelStdout "R" [__i|cat("hi")|] "hi"
-    testKernelStdout "R" [__i|print("hi")|] [i|[1] "hi"\n|]
+  testKernelStdout "R" [__i|cat("hi")|] "hi"
+  testKernelStdout "R" [__i|print("hi")|] [i|[1] "hi"\n|]
 
 
 main :: IO ()

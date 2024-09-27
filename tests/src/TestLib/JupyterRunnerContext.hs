@@ -11,7 +11,7 @@ import Control.Monad.Logger
 import Control.Monad.Reader
 import Control.Monad.Trans.Control (MonadBaseControl)
 import qualified Data.Aeson as A
-import Data.ByteString.Lazy.Char8 as BL
+import Data.ByteString.Lazy.Char8 as BL8
 import qualified Data.List as L
 import Data.Map (Map)
 import qualified Data.Map as M
@@ -27,8 +27,6 @@ import TestLib.Types
 import TestLib.Util
 import UnliftIO.Directory
 import UnliftIO.Process
-
--- import qualified Data.ByteString.Lazy.Char8 as BL8
 
 
 introduceJupyterRunner :: (
@@ -221,7 +219,7 @@ runKernelCode kernel code cb = do
         Just _ -> (innerRunDir </>)
         Nothing -> (outerRunDir </>)
 
-  liftIO $ BL.writeFile (relativeToOuterRunDir notebook) (A.encode (notebookWithCode kernel code))
+  liftIO $ BL8.writeFile (relativeToOuterRunDir notebook) (A.encode (notebookWithCode kernel code))
 
   let papermillArgs = [
         "notebook.ipynb", "out.ipynb"
@@ -235,25 +233,27 @@ runKernelCode kernel code cb = do
 
   cp <- case maybeBwrap of
     Just bwrap -> do
+      -- Provide some core utils on the PATH. For example, the R kernel needs this:
       -- https://github.com/codedownio/codedown-languages/issues/63
-      -- binPathsJson <- readCreateProcessWithLogging (
-      --   proc "nix" ["build"
-      --              , "--impure"
-      --              , "--expr", [i|with import <nixpkgs> {}; symlinkJoin { name = "base-paths"; paths = [which coreutils]; }|]
-      --              , "--json"
-      --              ]) ""
-      -- binPaths <- case parseNixBuildJson <$> (A.eitherDecode (BL8.pack binPathsJson)) of
-      --   Left err -> expectationFailure [i|Failed to parse bin paths: #{err}. JSON: #{binPathsJson}|]
-      --   Right Nothing -> expectationFailure [i|Didn't find Nix output in: #{binPathsJson}|]
-      --   Right (Just output) -> pure $ T.unpack output
-      -- info [i|PATH: #{binPaths </> "bin"}|]
+      binDirJson <- readCreateProcessWithLogging (
+        proc "nix" ["build"
+                   , "--impure"
+                   , "--expr", [i|with import <nixpkgs> {}; pkgsStatic.busybox|]
+                   , "--json"
+                   , "--no-link"
+                   ]) ""
+      binDir <- case parseNixBuildJson <$> (A.eitherDecode (BL8.pack binDirJson)) of
+        Left err -> expectationFailure [i|Failed to parse bin paths: #{err}. JSON: #{binDirJson}|]
+        Right Nothing -> expectationFailure [i|Didn't find Nix output in: #{binDirJson}|]
+        Right (Just output) -> pure ((T.unpack output) </> "bin")
+      info [i|PATH: #{binDir </> "bin"}|]
 
       -- Get the full closure of the Nix environment and jupyter runner
       fullClosure <- (Prelude.filter (/= "") . T.splitOn "\n" . T.pack) <$> readCreateProcessWithLogging (
         proc "nix" (["path-info", "-r"
                     , jr
                     , nixEnv
-                    -- , binPaths
+                    , binDir
                     ])
         ) ""
 
@@ -265,7 +265,8 @@ runKernelCode kernel code cb = do
                       , "--setenv", "JUPYTER_PATH", jupyterPath
                       , "--chdir", innerRunDir
 
-                      -- , "--setenv", "PATH", binPaths </> "bin"
+                      , "--ro-bind", binDir, "/bin"
+                      , "--setenv", "PATH", "/bin"
 
                       , "--proc", "/proc"
                       , "--dev", "/dev"
