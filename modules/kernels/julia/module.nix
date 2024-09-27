@@ -1,4 +1,4 @@
-{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, ... }:
+{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, boilerplate, ... }:
 
 with lib;
 
@@ -29,12 +29,15 @@ with lib;
         default = "julia";
       };
 
-      attrs = mkOption {
+      interface.attrs = mkOption {
+        example = boilerplate.attrsTitle;
+        description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["julia"];
       };
-
-      extensions = mkOption {
+      interface.extensions = mkOption {
+        example = boilerplate.extensionsTitle;
+        description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["jl"];
       };

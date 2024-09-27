@@ -1,4 +1,4 @@
-{ config, options, lib, nixosOptionsToSettingsSchema, ... }:
+{ config, options, lib, nixosOptionsToSettingsSchema, boilerplate, ... }:
 
 with lib;
 
@@ -31,20 +31,23 @@ in
         default = "ruby";
       };
 
-      attrs = mkOption {
+      interface.attrs = mkOption {
+        example = boilerplate.attrsTitle;
+        description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["ruby"];
       };
-
-      extensions = mkOption {
+      interface.extensions = mkOption {
+        example = boilerplate.extensionsTitle;
+        description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["rb"];
       };
 
       lsp.solargraph.enable = mkOption {
+        example = "Enable Solargraph language server";
         type = types.bool;
         default = true;
-        description = "Enable Solargraph language server";
       };
     };
   };

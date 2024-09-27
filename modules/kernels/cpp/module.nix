@@ -1,4 +1,4 @@
-{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, ... }:
+{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, boilerplate, ... }:
 
 with lib;
 
@@ -35,12 +35,15 @@ with lib;
         default = "c++20";
       };
 
-      attrs = mkOption {
+      interface.attrs = mkOption {
+        example = boilerplate.attrsTitle;
+        description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["cpp"];
       };
-
-      extensions = mkOption {
+      interface.extensions = mkOption {
+        example = boilerplate.extensionsTitle;
+        description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["cpp" "hpp" "cxx" "hxx" "c" "h"];
       };

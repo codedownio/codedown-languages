@@ -10,7 +10,8 @@
 , settingsSchema
 }:
 
-with { inherit (settings) packages attrs extensions; };
+with { inherit (settings) packages; };
+with { inherit (settings.interface) attrs extensions; };
 
 with lib;
 

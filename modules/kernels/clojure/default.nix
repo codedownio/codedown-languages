@@ -10,7 +10,7 @@
 , settingsSchema
 }:
 
-with { inherit (settings) attrs extensions; };
+with { inherit (settings.interface) attrs extensions; };
 
 let
   common = callPackage ../common.nix {};

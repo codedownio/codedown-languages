@@ -1,4 +1,4 @@
-{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, ... }:
+{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, boilerplate, ... }:
 
 with lib;
 
@@ -6,18 +6,19 @@ with lib;
   options = {
     kernels.coq = {
       enable = mkOption {
-        description = "Enable Coq kernel";
+        example = "Enable Coq kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
+        example = "List of Coq packages to use";
         type = types.listOf (types.either types.str types.attrs);
         default = [];
       };
-
       coqPackages = mkOption {
+        example = "Coq packages set";
         type = types.enum (
           ["coqPackages"]
           ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "coqPackages_") name == "coqPackages_")
@@ -26,12 +27,15 @@ with lib;
         default = "coqPackages";
       };
 
-      attrs = mkOption {
+      interface.attrs = mkOption {
+        example = boilerplate.attrsTitle;
+        description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["coq"];
       };
-
-      extensions = mkOption {
+      interface.extensions = mkOption {
+        example = boilerplate.extensionsTitle;
+        description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["v"];
       };
