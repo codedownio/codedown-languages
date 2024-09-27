@@ -10,7 +10,7 @@ import TestLib.Types
 
 tests :: SimpleSpec
 tests = describe "Searchers" $ do
-  it "searcher has some results" $ testSearcherHasNonemptyResults "codedownSearcher"
+  it "searcher has some results" $ testSearcherHasNonemptyResults "packageSearch"
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
