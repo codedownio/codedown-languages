@@ -11,12 +11,13 @@
 , settingsSchema
 }:
 
-with { inherit (settings) packages extensions flavor; };
+with { inherit (settings) packages flavor; };
+with { inherit (settings.interface) extensions; };
 
 with lib;
 
 let
-  attrs = [flavor] ++ settings.attrs;
+  attrs = [flavor] ++ settings.interface.attrs;
 
   common = callPackage ../common.nix {};
 
