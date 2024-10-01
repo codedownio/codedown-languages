@@ -13,7 +13,7 @@ let
 
     packages = mkOption {
       example = "List of packages";
-      type = types.listOf (types.either types.str types.attrs);
+      type = types.listOf types.str;
       default = [];
     };
 

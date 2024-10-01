@@ -14,7 +14,7 @@ with lib;
 
       packages = mkOption {
         example = "List of Coq packages to use";
-        type = types.listOf (types.either types.str types.attrs);
+        type = types.listOf types.str;
         default = [];
       };
       coqPackages = mkOption {
