@@ -23,7 +23,7 @@ let
       example = boilerplate.attrsTitle;
       description = boilerplate.attrsDescription;
       type = types.listOf types.str;
-      default = ["python"];
+      default = ["python3" "python"];
     };
     interface.extensions = mkOption {
       example = boilerplate.extensionsTitle;
