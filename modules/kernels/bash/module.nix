@@ -35,6 +35,12 @@ in
         type = types.bool;
         default = true;
       };
+
+      test-setting.enable = mkOption {
+        example = "A dummy setting for testing metadata";
+        type = types.bool;
+        default = true;
+      };
     };
   };
 
