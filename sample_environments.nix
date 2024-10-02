@@ -19,6 +19,7 @@ args: {
   mega = import ./sample_environments/mega.nix args;
   octave = import ./sample_environments/octave.nix args;
   postgres = import ./sample_environments/postgres.nix args;
+  pypy3 = import ./sample_environments/pypy3.nix args;
   python3 = import ./sample_environments/python3.nix args;
   r = import ./sample_environments/r.nix args;
   ruby = import ./sample_environments/ruby.nix args;

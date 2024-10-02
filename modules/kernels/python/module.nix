@@ -132,6 +132,8 @@ in
           else lib.getAttr x config.pkgs;
       in
         config.pkgs.callPackage ./. {
+          name = "Python";
+
           python3 = basePython;
 
           settings = config.kernels.python3;
@@ -142,6 +144,8 @@ in
     (mkIf config.kernels.pypy3.enable {
       builtKernels.pypy3 =
         config.pkgs.callPackage ./. {
+          name = "PyPy";
+
           python3 = lib.getAttr config.kernels.pypy3.python3Package config.pkgs;
 
           settings = config.kernels.pypy3;

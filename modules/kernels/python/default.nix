@@ -9,6 +9,8 @@
 
 , python3
 
+, name
+
 , settings
 , settingsSchema
 }:
@@ -22,7 +24,7 @@ let
   hasPythonLspServer = python: (lib.hasAttr "python-lsp-server" python.pkgs) && (lib.versionAtLeast python.pythonVersion "3.7");
   hasPythonLanguageServer = python: lib.hasAttr "python-language-server" python.pkgs;
 
-  displayName = "Python " +  python3.version;
+  displayName = name + " " +  python3.version;
   kernelName = "python3";
 
   packageOptions = python3.pkgs;
