@@ -20,6 +20,8 @@ with lib;
   };
 
   config = mkIf config.shells.zsh.enable {
-    packages = [ (config.pkgs.callPackage ./. {}) ];
+    packages = {
+      "shells.zsh" = config.pkgs.callPackage ./. {};
+    };
   };
 }

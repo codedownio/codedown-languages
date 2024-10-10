@@ -14,6 +14,8 @@ with lib;
   };
 
   config = mkIf config.shells.fish.enable {
-    packages = [(config.pkgs.callPackage ./. {})];
+    packages = {
+      "shells.fish" = config.pkgs.callPackage ./. {};
+    };
   };
 }

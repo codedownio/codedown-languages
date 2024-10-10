@@ -14,6 +14,8 @@ with lib;
   };
 
   config = mkIf config.shells.bash.enable {
-    packages = [ (config.pkgs.callPackage ./. {}) ];
+    packages = {
+      "shells.bash" = config.pkgs.callPackage ./. {};
+    };
   };
 }

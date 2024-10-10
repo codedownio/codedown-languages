@@ -27,9 +27,6 @@ let
       passthru = old.passthru // {
         name = "kernels." + kernel.name;
 
-        # channel = kernel.channel;
-        channel = "codedown";
-
         settings = removeNonDefaultSettings kernel.settingsSchema kernel.settings;
         settingsSchema = mapAttrs (_: v: removeAttrs v ["loc"]) kernel.settingsSchema;
       };
@@ -68,35 +65,22 @@ in
 symlinkJoin {
   inherit name;
   paths =
-    attrValues (evaluated.config.builtKernels)
-    ++ attrValues (evaluated.config.builtLanguageServers)
+    attrValues evaluated.config.builtKernels
+    ++ attrValues evaluated.config.builtLanguageServers
     ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
-    ++ evaluated.config.packages
-    ++ map (x: x.contents) evaluated.config.labeledPackages
+    ++ attrValues evaluated.config.packages
   ;
 
   passthru = rec {
     inherit evaluated;
 
-    inherit channels;
-
     ui_metadata = {
-      channels = lib.mapAttrsToList (name: channel: channel // {
-        name = name;
-      }) evaluated.config.channels;
-
       packages =
         (mapAttrs' (n: v: nameValuePair "exporters.${n}" (mkPackageUiMetadata v)) builtExporters)
         // (mapAttrs' (n: v: nameValuePair "kernels.${n}" (mkPackageUiMetadata v)) builtKernels)
         // (mapAttrs' (n: v: nameValuePair "language-servers.${n}" (mkPackageUiMetadata v)) builtLanguageServers)
-        // (listToAttrs (map (pkg: nameValuePair pkg.name (mkPackageUiMetadata pkg)) evaluated.config.packages))
+        // (mapAttrs' (n: v: nameValuePair n (mkPackageUiMetadata v)) evaluated.config.packages)
       ;
-
-      other_packages = map (p: {
-        channel = p.channel;
-        attr = p.attr;
-        meta = if p.contents ? "meta" then uiMetadata.chooseInterestingMeta p.contents else {};
-      }) evaluated.config.labeledPackages;
     };
 
     ui_metadata_yaml = writeText "ui-metadata.yaml" (lib.generators.toYAML {} ui_metadata);
