@@ -43,6 +43,6 @@ stdenv.mkDerivation {
     displayName = "ZSH " + zsh.version;
     attr = "zsh";
     # From https://simpleicons.org/?q=zsh
-    icon = ./zsh.png;
+    icon = ./zsh.svg;
   };
 }
