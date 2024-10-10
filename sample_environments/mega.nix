@@ -1,6 +1,4 @@
 { codedown
-, pkgsStable
-, channels ? {}
 , ...
 }:
 
