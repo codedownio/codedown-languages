@@ -9,7 +9,11 @@ options:
 let
   convertType = import ./convert-type.nix args;
 
-  flattened = lib.optionAttrSetToDocList options;
+  evalString = str: builtins.scopedImport {} (builtins.toFile "expr.nix" str);
+
+  convertDefaultValue = value:
+    if value._type == "literalExpression" then evalString value.text
+    else builtins.throw "Can't handle this default value: ${toString value}.";
 
   convert = v: let
     defaultItem = { type = { name = "unknown"; }; };
@@ -24,12 +28,6 @@ let
   in
     { name = lib.concatStringsSep "." loc; inherit value; };
 
-  evalString = str: builtins.scopedImport {} (builtins.toFile "expr.nix" str);
-
-  convertDefaultValue = value:
-    if value._type == "literalExpression" then evalString value.text
-    else builtins.throw "Can't handle this default value: ${toString value}.";
-
 in
 
-lib.listToAttrs (map convert flattened)
+lib.listToAttrs (map convert (lib.optionAttrSetToDocList options))
