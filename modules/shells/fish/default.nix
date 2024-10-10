@@ -1,20 +1,32 @@
-{ callPackage
-, runCommand
-, makeWrapper
+{ makeWrapper
 , stdenv
 , fish
 }:
 
-let
-  common = callPackage ../common.nix {};
-  baseDerivation = callPackage ./fish.nix {};
+stdenv.mkDerivation {
+  pname = fish.pname;
+  version = fish.version;
 
-in
+  dontUnpack = true;
 
-common.wrapShell {
-  executableName = "fish";
-  inherit baseDerivation;
-  displayName = "Fish " + baseDerivation.version;
-  attr = "fish";
-  icon = ./icon-64x64.png;
+  buildInputs = [makeWrapper];
+
+  buildPhase = ''
+    mkdir -p $out
+    cd $out
+
+    # Colorful welcome message
+    # cat ${./color.sh} >> .zshrc
+
+    makeWrapper ${fish}/bin/fish $out/bin/fish \
+      --set __fish_sysconf_dir $out/lib/codedown/shells/fish_conf
+  '';
+
+  dontInstall = true;
+
+  meta = fish.meta // {
+    icon = ./icon-64x64.png;
+    displayName = "Fish " + fish.version;
+    attr = "fish";
+  };
 }

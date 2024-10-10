@@ -4,6 +4,7 @@ module TestLib.NixTypes where
 
 import Data.Aeson as A
 import Data.Aeson.TH
+import Data.Map
 import Data.Text
 import TestLib.Aeson
 
@@ -66,3 +67,56 @@ data NixEnvironment = NixEnvironment {
   , nixEnvironmentOtherConfig :: [Text]
   } deriving (Show, Eq, Ord)
 deriveJSON toSnake2 ''NixEnvironment
+
+data ModeInfo = ModeInfo {
+  modeInfoAttrs :: [Text]
+  , modeInfoCodeMirrorMode :: Maybe Text
+  , modeInfoCodeMirrorMimeType :: Maybe Text
+  , modeInfoExtensions :: [Text]
+  } deriving (Show, Eq, Ord)
+deriveJSON toSnake2 ''ModeInfo
+
+data NixMeta = NixMeta {
+  nixMetaName :: Maybe Text
+  , nixMetaDescription :: Maybe Text
+  , nixMetaDisplayName :: Maybe Text
+  , nixMetaIcon :: Maybe Text
+  , nixMetaCategory :: Maybe Text
+  , nixMetaVersion :: Maybe Text
+
+  , nixMetaHomepage :: Maybe Text
+  , nixMetaDownloadPage :: Maybe Text
+  , nixMetaChangelog :: Maybe Text
+
+  , nixMetaAvailable :: Maybe Bool
+  , nixMetaBroken :: Maybe Bool
+  , nixMetaUnfree :: Maybe Bool
+  , nixMetaUnsupported :: Maybe Bool
+  , nixMetaInsecure :: Maybe Bool
+  , nixMetaHasPackages :: Maybe Bool
+  , nixMetaLessCommon :: Maybe Bool
+  , nixMetaMainProgram :: Maybe FilePath
+  , nixMetaOutputs :: Maybe [Text]
+
+  , nixMetaMaintainers :: Maybe A.Array
+
+  , nixMetaSpdxId :: Maybe String
+
+  , nixMetaSettingsSchema :: Maybe A.Object
+  , nixMetaModes :: Maybe ModeInfo
+  , nixMetaLanguageServerNames :: Maybe [Text]
+  } deriving (Show, Eq, Ord)
+deriveJSON toSnake2 ''NixMeta
+
+data NixPackage = NixPackage {
+  nixPackageName :: Text
+  , nixPackageSettings :: Maybe (Map Text A.Value)
+  , nixPackageMeta :: NixMeta
+  , nixPackagePackages :: Maybe [NixPackage]
+  }
+deriveJSON toSnake2 ''NixPackage
+
+data NixHydrationResult = NixHydrationResult {
+  nixHydrationResultPackages :: Map Text NixPackage
+  }
+deriveJSON toSnake3 ''NixHydrationResult

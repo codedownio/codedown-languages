@@ -32,6 +32,10 @@ rec {
     has_packages = contents.meta.hasPackages;
   }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "lessCommon"] contents) {
     less_common = contents.meta.lessCommon;
+  }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "mainProgram"] contents) {
+    main_program = contents.meta.mainProgram;
+  }) // (lib.optionalAttrs (lib.hasAttrByPath ["outputs"] contents && contents.outputs != ["out"]) {
+    outputs = contents.outputs;
   }) // (lib.optionalAttrs (contents ? "settingsSchema") {
     settings_schema = contents.settingsSchema;
   }) // (lib.optionalAttrs (contents ? "modes") {

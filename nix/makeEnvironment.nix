@@ -35,18 +35,6 @@ let
       };
     })) evaluated.config.builtKernels;
   builtLanguageServers = evaluated.config.builtLanguageServers;
-  builtShells = evaluated.config.builtShells;
-
-  repls = let
-    shellToReplInfo = shell: {
-      name = shell.name;
-      display_name = shell.meta.displayName;
-      inherit (shell.meta) attr args icon;
-    };
-  in
-    map shellToReplInfo (attrValues builtShells)
-    ++ concatMap (kernel: lib.mapAttrsToList (name: value: value // { inherit name; }) (kernel.repls or {})) (attrValues builtKernels)
-  ;
 
   exporters = concatMap (exporter: exporter.meta.exporterInfos) (attrValues builtExporters);
 
@@ -82,7 +70,6 @@ symlinkJoin {
   paths =
     attrValues (evaluated.config.builtKernels)
     ++ attrValues (evaluated.config.builtLanguageServers)
-    ++ lib.optionals (builtins.length repls > 0) [(writeTextDir "lib/codedown/repls.yaml" (lib.generators.toYAML {} repls))]
     ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
     ++ evaluated.config.packages
     ++ map (x: x.contents) evaluated.config.labeledPackages
@@ -102,7 +89,7 @@ symlinkJoin {
         (mapAttrs' (n: v: nameValuePair "exporters.${n}" (mkPackageUiMetadata v)) builtExporters)
         // (mapAttrs' (n: v: nameValuePair "kernels.${n}" (mkPackageUiMetadata v)) builtKernels)
         // (mapAttrs' (n: v: nameValuePair "language-servers.${n}" (mkPackageUiMetadata v)) builtLanguageServers)
-        // (mapAttrs' (n: v: nameValuePair "shells.${n}" (mkPackageUiMetadata v)) builtShells)
+        // (listToAttrs (map (pkg: nameValuePair pkg.name (mkPackageUiMetadata pkg)) evaluated.config.packages))
       ;
 
       other_packages = map (p: {

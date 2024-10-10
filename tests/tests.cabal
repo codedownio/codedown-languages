@@ -29,6 +29,7 @@ library
       TestLib.TestBuilding
       TestLib.TestConfigs
       TestLib.TestSearchers
+      TestLib.TH
       TestLib.Types
       TestLib.Util
   other-modules:
@@ -73,6 +74,7 @@ library
     , sandwich
     , sandwich-contexts
     , string-interpolate
+    , template-haskell
     , temporary
     , text
     , unliftio
@@ -110,6 +112,7 @@ executable tests
       Spec.Tests.Rust.Completion
       Spec.Tests.Rust.Diagnostics
       Spec.Tests.Rust.Hovers
+      Spec.Tests.SampleEnvironments
       Spec.Tests.Searchers
       Spec.Tests.SettingsSchemas
       Spec.Tests.Shells.Zsh
@@ -144,6 +147,7 @@ executable tests
     , lsp-test
     , lsp-types
     , monad-control
+    , monad-logger
     , mtl
     , optparse-applicative
     , row-types
@@ -156,4 +160,5 @@ executable tests
     , unliftio
     , unliftio-core
     , vector
+    , yaml
   default-language: Haskell2010

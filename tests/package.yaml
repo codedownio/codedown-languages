@@ -59,6 +59,7 @@ library:
   - monad-logger
   - postgresql-simple
   - row-types
+  - template-haskell
   - temporary
   - unliftio
   - unliftio-core
@@ -73,8 +74,10 @@ executables:
     - -with-rtsopts=-N
     build-tools: sandwich:sandwich-discover
     dependencies:
+    - monad-logger
     - row-types
     - safe
     - tests
     - unliftio
     - unliftio-core
+    - yaml

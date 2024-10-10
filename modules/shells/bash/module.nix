@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 with lib;
 
@@ -14,13 +14,6 @@ with lib;
   };
 
   config = mkIf config.shells.bash.enable {
-    builtShells.bash = config.pkgs.bashInteractive.overrideAttrs (old: {
-      meta = old.meta // {
-        icon = ../default_icon_64x64.png;
-        displayName = "Bash " + config.pkgs.bashInteractive.version;
-        attr = "bash";
-        args = ["${config.pkgs.bashInteractive}/bin/bash"];
-      };
-    });
+    packages = [ (config.pkgs.callPackage ./. {}) ];
   };
 }

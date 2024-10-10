@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 with lib;
 
@@ -20,16 +20,6 @@ with lib;
   };
 
   config = mkIf config.shells.zsh.enable {
-    builtShells.zsh = let
-      baseDerivation = config.pkgs.callPackage ./zsh-with-theme {};
-    in
-      baseDerivation.overrideAttrs (old: {
-        meta = old.meta // {
-          icon = ../default_icon_64x64.png;
-          displayName = "ZSH " + baseDerivation.version;
-          attr = "zsh";
-          args = ["${baseDerivation}/bin/zsh-with-theme"];
-        };
-      });
+    packages = [ (config.pkgs.callPackage ./. {}) ];
   };
 }

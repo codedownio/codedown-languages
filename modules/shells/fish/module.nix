@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 with lib;
 
@@ -14,16 +14,6 @@ with lib;
   };
 
   config = mkIf config.shells.fish.enable {
-    builtShells.fish = let
-      baseDerivation = config.pkgs.callPackage ./fish.nix {};
-    in
-      baseDerivation.overrideAttrs (old: {
-        meta = old.meta // {
-          icon = ./icon-64x64.png;
-          displayName = "Fish " + baseDerivation.version;
-          attr = "fish";
-          args = ["${baseDerivation}/bin/fish"];
-        };
-      });
+    packages = [(config.pkgs.callPackage ./. {})];
   };
 }
