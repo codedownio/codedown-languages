@@ -46,8 +46,8 @@ rec {
   packageSearch = common.searcher' {
     # Note that we deliberately don't include "testing" packages in the searcher
     packages = everythingEnv.config.builtKernels
-      // (lib.mapAttrs' (n: v: lib.nameValuePair ("shells." + n) v) everythingEnv.config.builtShells)
       // (lib.mapAttrs' (n: v: lib.nameValuePair ("exporters." + n) v) everythingEnv.config.builtExporters)
+      // (lib.mapAttrs' (n: v: lib.nameValuePair n v) everythingEnv.config.packages)
       // { "language-servers.spellchecker" = spellchecker; }
     ;
   };
