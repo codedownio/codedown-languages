@@ -3,7 +3,7 @@
 contents:
 
 let
-  hasNontrivialOutputs = (contents.outputs or ["out"]) != ["out"];
+  hasNontrivialOutputs = (contents.outputs or null) != null;
 
 in
 
@@ -48,9 +48,9 @@ in
         type = "list";
         listType = {
           type = "enum";
-          values = (contents.outputs or ["out"]);
+          values = (contents.outputs or []);
         };
-        defaultValue = ["out"];
+        defaultValue = if lib.hasAttr "outputName" contents then [contents.outputName] else [];
       };
     };
 }) // (lib.optionalAttrs (contents ? "modes") {
