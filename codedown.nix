@@ -61,7 +61,7 @@ rec {
   validateEnvironment = callPackage ./nix/validateEnvironment.nix {};
 
   # Exposed for consumers to pin and use to gather metadata from other channels like Nixpkgs
-  chooseInterestingMeta = callPackage ./nix/choose-interesting-meta.nix {};
+  chooseMeta = callPackage ./nix/choose-meta.nix {};
 
   # Exposed so it's easier to compute build dependencies in the presence of IFD
   inherit pkgsStable pkgsMaster requiredPackages;

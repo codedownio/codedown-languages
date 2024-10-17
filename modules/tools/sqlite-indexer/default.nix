@@ -22,7 +22,7 @@
 let
   common = callPackage ../../kernels/common.nix {};
 
-  chooseInterestingMeta = callPackage ../../../nix/choose-interesting-meta.nix {};
+  chooseMeta = callPackage ../../../nix/choose-meta.nix {};
 
   numVersionComponents = 5;
   componentPadLength = 3;
@@ -42,7 +42,7 @@ let
     attr = attrPrefix + k;
     name = v.meta.name or "";
     version = common.lexicographyVersionNumber' numVersionComponents componentPadLength (v.meta.version or "");
-    meta = chooseInterestingMeta v;
+    meta = chooseMeta v;
   }) filteredPackages));
 
 in
