@@ -18,10 +18,12 @@
         sampleOutputs = pkgsStable.callPackage ./nix/sample-outputs.nix { inherit codedown pkgsStable; };
 
       in
-        rec {
-          packages = rec {
+        {
+          packages = {
             # For nix repl debugging
             # inherit codedown;
+
+            searcher = codedown.searcher pkgsStable;
 
             # Tests use flake to do packageSearch builds
             inherit (codedown) packageSearch;

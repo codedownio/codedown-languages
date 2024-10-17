@@ -35,7 +35,7 @@ let
 
   exporters = concatMap (exporter: exporter.meta.exporterInfos) (attrValues builtExporters);
 
-  uiMetadata = callPackage ./uiMetadata.nix {};
+  chooseInterestingMeta = callPackage ./choose-interesting-meta.nix {};
 
   mkPackageUiMetadata = let
     # This is duplicated from kernels/common.nix, which we'd rather not import here
@@ -43,7 +43,7 @@ let
 
     mkSubPackageMetadata = pkg: p: {
       name = packageName p;
-      meta = if lib.hasAttrByPath ["packageOptions" (packageName p)] pkg then uiMetadata.chooseInterestingMeta (pkg.packageOptions.${packageName p}) else {};
+      meta = if lib.hasAttrByPath ["packageOptions" (packageName p)] pkg then chooseInterestingMeta (pkg.packageOptions.${packageName p}) else {};
     } // (lib.optionalAttrs (lib.isAttrs p && p ? "settings") {
       inherit (p) settings;
     });
@@ -57,7 +57,7 @@ let
       packages = map (p: mkSubPackageMetadata pkg p) (pkg.settings.packages or []);
 
       # Hydrated
-      meta = uiMetadata.chooseInterestingMeta pkg;
+      meta = chooseInterestingMeta pkg;
     };
 
 in
