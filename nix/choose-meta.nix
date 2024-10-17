@@ -2,6 +2,11 @@
 
 contents:
 
+let
+  hasNontrivialOutputs = (contents.outputs or ["out"]) != ["out"];
+
+in
+
 (lib.optionalAttrs (contents ? "version") {
   version = contents.version;
 }) // (lib.optionalAttrs (contents ? "meta") (
@@ -33,8 +38,21 @@ contents:
   has_packages = contents.meta.hasPackages;
 }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "lessCommon"] contents) {
   less_common = contents.meta.lessCommon;
-}) // (lib.optionalAttrs (contents ? "settingsSchema") {
-  settings_schema = contents.settingsSchema;
+}) // (lib.optionalAttrs ((contents ? "settingsSchema") || hasNontrivialOutputs) {
+  settings_schema =
+    (contents.settingsSchema or {})
+    // lib.optionalAttrs hasNontrivialOutputs {
+      outputs = {
+        title = "Outputs";
+        description = "Package outputs to include.";
+        type = "list";
+        listType = {
+          type = "enum";
+          values = (contents.outputs or ["out"]);
+        };
+        defaultValue = ["out"];
+      };
+    };
 }) // (lib.optionalAttrs (contents ? "modes") {
   inherit (contents) modes;
 }) // (lib.optionalAttrs (contents ? "languageServerNames") {
