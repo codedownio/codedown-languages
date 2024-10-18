@@ -3,7 +3,13 @@
 contents:
 
 let
-  hasNontrivialOutputs = (contents.outputs or null) != null;
+  # Test if the derivation has a single output
+  hasSimpleOutputs =
+    lib.hasAttr "outputName" contents
+    && lib.hasAttr "outputs" contents
+    && [contents.outputName] == contents.outputs;
+
+  includeOutputsOption = !hasSimpleOutputs && ((contents.outputs or null) != null);
 
 in
 
@@ -38,10 +44,10 @@ in
   has_packages = contents.meta.hasPackages;
 }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "lessCommon"] contents) {
   less_common = contents.meta.lessCommon;
-}) // (lib.optionalAttrs ((contents ? "settingsSchema") || hasNontrivialOutputs) {
+}) // (lib.optionalAttrs ((contents ? "settingsSchema") || includeOutputsOption) {
   settings_schema =
     (contents.settingsSchema or {})
-    // lib.optionalAttrs hasNontrivialOutputs {
+    // lib.optionalAttrs includeOutputsOption {
       outputs = {
         title = "Outputs";
         description = "Package outputs to include.";
