@@ -44,6 +44,8 @@ in
   has_packages = contents.meta.hasPackages;
 }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "lessCommon"] contents) {
   less_common = contents.meta.lessCommon;
+}) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "mainProgram"] contents) {
+  main_program = contents.meta.mainProgram;
 }) // (lib.optionalAttrs ((contents ? "settingsSchema") || includeOutputsOption) {
   settings_schema =
     (contents.settingsSchema or {})
