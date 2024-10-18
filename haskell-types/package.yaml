@@ -1,0 +1,71 @@
+name:                haskell-types
+version:             0.1.0.0
+github:              "codedown/codedown-languages"
+license:             BSD-3-Clause
+author:              "Tom McLaughlin"
+maintainer:          "tom@codedown.io"
+copyright:           "2024 CodeDown"
+
+extra-source-files:
+- README.md
+- CHANGELOG.md
+
+default-extensions:
+- FlexibleContexts
+- FlexibleInstances
+- LambdaCase
+- MultiParamTypeClasses
+- MultiWayIf
+- NamedFieldPuns
+- NumericUnderscores
+- OverloadedStrings
+- QuasiQuotes
+- RecordWildCards
+- ScopedTypeVariables
+- TupleSections
+- ViewPatterns
+
+dependencies:
+- base >= 4.7 && < 5
+
+ghc-options:
+- -Wall
+- -Wcompat
+- -Widentities
+- -Wincomplete-record-updates
+- -Wincomplete-uni-patterns
+- -Wmissing-export-lists
+- -Wmissing-home-modules
+- -Wpartial-fields
+- -Wredundant-constraints
+
+library:
+  source-dirs: src
+  dependencies:
+  - aeson
+  - aeson-typescript
+  - flat
+  - template-haskell
+  - text
+
+executables:
+  haskell-types-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - haskell-types
+
+tests:
+  haskell-types-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - haskell-types

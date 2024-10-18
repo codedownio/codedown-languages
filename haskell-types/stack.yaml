@@ -1,0 +1,11 @@
+
+snapshot:
+  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/35.yaml
+
+nix:
+  pure: false
+  path:
+  - "nixpkgs=/home/tom/tools/nixpkgs"
+
+packages:
+- .
