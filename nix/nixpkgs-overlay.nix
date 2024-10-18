@@ -1,4 +1,5 @@
-{ symlinkJoin
+{ lib
+, symlinkJoin
 
 , chooseMeta
 
@@ -12,7 +13,7 @@ self: super: {
       paths = let
         getOutputs = pkg:
           let
-            outputs = (fakeModule.${pkg}.settings.outputs or null);
+            outputs = (fakeModule.${pkg}.outputs or null);
           in
             if outputs != null
             then (map (x: self.${pkg}.${x}) outputs)
@@ -26,7 +27,11 @@ self: super: {
             name = n;
             meta = chooseMeta (self.${n} or {});
             packages = [];
-            settings = v.settings or {};
+            settings =
+              {}
+              // lib.optionalAttrs (lib.hasAttr "outputs" v) {
+                inherit (v) outputs;
+              };
           }) fakeModule;
         };
       };
