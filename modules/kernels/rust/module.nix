@@ -1,4 +1,4 @@
-{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, boilerplate, ... }:
+{ config, options, lib, nixosOptionsToSettingsSchema, boilerplate, ... }:
 
 with lib;
 

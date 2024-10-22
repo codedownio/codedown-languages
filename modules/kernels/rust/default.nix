@@ -1,7 +1,6 @@
 { lib
 , pkgs
 , callPackage
-, writeTextDir
 , symlinkJoin
 
 , darwin

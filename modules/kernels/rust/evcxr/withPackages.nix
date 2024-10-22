@@ -81,7 +81,7 @@ let
 
 in
 
-rec {
+{
   inherit cratesIndex;
 
   inherit allPackageNames;
