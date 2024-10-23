@@ -42,12 +42,13 @@ let
 
     mkSubPackageMetadata = pkg: p:
       let
+        meta = chooseMeta (pkg.packageOptions.${packageName p} or {});
         settings = if lib.isAttrs p
                    then removeNonDefaultSettings (meta.settings_schema or {}) (lib.removeAttrs p ["name"])
                    else {};
       in {
         name = packageName p;
-        meta = chooseMeta (pkg.packageOptions.${packageName p} or {});
+        inherit meta;
       } // lib.optionalAttrs (builtins.length (builtins.attrNames settings) > 0) {
         inherit settings;
       };
