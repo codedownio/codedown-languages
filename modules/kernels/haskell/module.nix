@@ -1,4 +1,4 @@
-{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, boilerplate, ... }:
+{ config, options, lib, nixosOptionsToSettingsSchema, boilerplate, ... }:
 
 with lib;
 
@@ -16,7 +16,9 @@ with lib;
         example = "List of packages";
         type = types.listOf types.str;
         default = [];
+        visible = false;
       };
+
       ghcPackage = mkOption {
         example = "GHC version";
         type = types.enum ["ghc92" "ghc94" "ghc96" "ghc98"];

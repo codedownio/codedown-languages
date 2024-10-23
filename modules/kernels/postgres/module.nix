@@ -1,4 +1,4 @@
-{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, boilerplate, ... }:
+{ config, options, lib, nixosOptionsToSettingsSchema, boilerplate, ... }:
 
 with lib;
 
@@ -15,6 +15,7 @@ with lib;
         example = "List of packages";
         type = types.listOf types.str;
         default = [];
+        visible = false;
       };
 
       interface.attrs = mkOption {

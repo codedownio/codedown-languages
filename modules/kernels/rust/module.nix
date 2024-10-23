@@ -16,11 +16,11 @@ with lib;
         example = "List of packages";
         type = types.listOf (types.either types.str (types.submodule {
           options = {
-            name = mkOption rec {
+            name = mkOption {
               description = "Package name";
               type = types.str;
             };
-            features = mkOption rec {
+            features = mkOption {
               example = "Features to enable for the package";
               type = types.listOf types.str;
             };

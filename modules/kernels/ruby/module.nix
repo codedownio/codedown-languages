@@ -21,6 +21,7 @@ in
         example = "List of packages";
         type = types.listOf types.str;
         default = [];
+        visible = false;
       };
 
       rubyPackage = mkOption {

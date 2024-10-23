@@ -5,7 +5,10 @@
 codedown.makeEnvironment {
   kernels.python3.enable = true;
   kernels.python3.packages = [
-    "matplotlib"
+    {
+      name = "matplotlib";
+      outputs = ["out" "dist"];
+    }
     "scipy"
     "rope"
   ];

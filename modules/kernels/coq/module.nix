@@ -1,4 +1,4 @@
-{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, boilerplate, ... }:
+{ config, options, lib, nixosOptionsToSettingsSchema, boilerplate, ... }:
 
 with lib;
 
@@ -16,7 +16,9 @@ with lib;
         example = "List of Coq packages to use";
         type = types.listOf types.str;
         default = [];
+        visible = false;
       };
+
       coqPackages = mkOption {
         example = "Coq packages set";
         type = types.enum (

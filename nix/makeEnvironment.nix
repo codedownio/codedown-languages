@@ -43,15 +43,19 @@ let
 
     mkSubPackageMetadata = pkg: p: {
       name = packageName p;
-      meta = if lib.hasAttrByPath ["packageOptions" (packageName p)] pkg then chooseMeta (pkg.packageOptions.${packageName p}) else {};
-    } // (lib.optionalAttrs (lib.isAttrs p && p ? "settings") {
-      inherit (p) settings;
-    });
+      meta = let
+        meta = chooseMeta (pkg.packageOptions.${packageName p} or {});
+        settings = if lib.isAttrs p then lib.removeAttrs p ["name"] else {};
+      in
+        meta // (lib.optionalAttrs (builtins.length (builtins.attrNames settings) != 0) {
+          inherit settings;
+        });
+    };
   in
     pkg: {
       # Dry
       name = pkg.name;
-      settings = pkg.settings or {};
+      settings = lib.removeAttrs (pkg.settings or {}) ["packages"];
 
       # Different for hydrated
       packages = map (p: mkSubPackageMetadata pkg p) (pkg.settings.packages or []);
