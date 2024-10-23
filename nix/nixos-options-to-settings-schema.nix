@@ -7,15 +7,14 @@
 options:
 
 let
-  convertType = import ./convert-type.nix args;
-
-  evalString = str: builtins.scopedImport {} (builtins.toFile "expr.nix" str);
-
-  convertDefaultValue = value:
-    if value._type == "literalExpression" then evalString value.text
-    else builtins.throw "Can't handle this default value: ${toString value}.";
-
   convert = v: let
+    convertType = import ./convert-type.nix args;
+    evalString = str: builtins.scopedImport {} (builtins.toFile "expr.nix" str);
+
+    convertDefaultValue = value:
+      if value._type == "literalExpression" then evalString value.text
+      else builtins.throw "Can't handle this default value: ${toString value}.";
+
     defaultItem = { type = { name = "unknown"; }; };
     loc = lib.drop componentsToDrop v.loc;
 
