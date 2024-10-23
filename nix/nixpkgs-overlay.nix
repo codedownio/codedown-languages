@@ -92,7 +92,7 @@ self: super: {
                   packages = [];
                   settings = removeNonDefaultSettings settings_schema evaluated.config.${n};
                 }
-            ) config;
+            ) (lib.filterAttrs (k: _: !(hasPrefix "_") k) config);
           };
         };
       };
