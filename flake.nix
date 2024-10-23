@@ -24,13 +24,14 @@
             # inherit codedown;
 
             # For testing out the nixpkgs overlay
-            # environmentUsingNixpkgsOverlay = (import nixpkgs {
+            # environmentUsingNixpkgsOverlay = ((import nixpkgs {
             #   inherit system;
             #   overlays = [(pkgsStable.callPackage ./nix/nixpkgs-overlay.nix {})];
             # }).makeEnvironment {
             #   su.enable = true;
             #   # su.outputs = ["out" "baz"];
-            # };
+            #   # _module.check = false;
+            # });
 
             searcher = codedown.searcher pkgsStable;
 
