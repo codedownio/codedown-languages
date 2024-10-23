@@ -23,6 +23,15 @@
             # For nix repl debugging
             # inherit codedown;
 
+            # For testing out the nixpkgs overlay
+            # environmentUsingNixpkgsOverlay = (import nixpkgs {
+            #   inherit system;
+            #   overlays = [(pkgsStable.callPackage ./nix/nixpkgs-overlay.nix {})];
+            # }).makeEnvironment {
+            #   su.enable = true;
+            #   # su.outputs = ["out" "baz"];
+            # };
+
             searcher = codedown.searcher pkgsStable;
 
             # Tests use flake to do packageSearch builds

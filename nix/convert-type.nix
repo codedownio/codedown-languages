@@ -28,6 +28,9 @@ let
         (path: value: convertType target value.type)
         (lib.removeAttrs (type.getSubOptions {}) ["_module"]);
     }
+    # else if (type.name == "unknown") then {
+    #   type = "unknown";
+    # }
     else builtins.throw "Can't convert type for '${target}': ${toString type.name}"
   ;
 
