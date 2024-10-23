@@ -5,6 +5,8 @@
 , name ? "nixpkgs-environment"
 }:
 
+with lib;
+
 let
   chooseMeta = callPackage ./choose-meta.nix {};
   removeNonDefaultSettings = callPackage ./remove-non-default-settings.nix {};
@@ -12,29 +14,29 @@ let
 
   # Test if the derivation has a single output
   hasSimpleOutputs = contents:
-    lib.hasAttr "outputName" contents
-    && lib.hasAttr "outputs" contents
+    hasAttr "outputName" contents
+    && hasAttr "outputs" contents
     && [contents.outputName] == contents.outputs;
 
   # Test if we should include an outputs option
   includeOutputsOption = contents: !(hasSimpleOutputs contents) && ((contents.outputs or null) != null);
 
-  evaluate = self: packageNames: config: lib.evalModules {
+  evaluate = self: packageNames: config: evalModules {
     modules = [{
-      options = (lib.listToAttrs (map (name: {
+      options = (listToAttrs (map (name: {
         inherit name;
         value = {
-          enable = lib.mkOption {
+          enable = mkOption {
             example = "Enable package ${name}";
-            type = lib.types.bool;
+            type = types.bool;
             default = true;
             visible = false;
           };
-        } // lib.optionalAttrs (lib.hasAttr name self && includeOutputsOption self.${name}) {
-          outputs = lib.mkOption {
+        } // optionalAttrs (hasAttr name self && includeOutputsOption self.${name}) {
+          outputs = mkOption {
             example = "Outputs";
             description = "Package outputs to include";
-            type = lib.types.listOf (lib.types.enum self.${name}.outputs);
+            type = types.listOf (types.enum self.${name}.outputs);
             default = [self.${name}.outputName];
           };
         };
@@ -43,8 +45,8 @@ let
 
     ({ config, options, ... }: {
       options = {
-        paths = lib.mkOption {
-          type = lib.types.listOf lib.types.package;
+        paths = mkOption {
+          type = types.listOf types.package;
           default = [];
           visible = false;
         };
@@ -60,7 +62,7 @@ let
               then (map (x: self.${pkg}.${x}) outputs)
               else [self.${pkg}];
         in
-          lib.concatMap getOutputs packageNames;
+          concatMap getOutputs packageNames;
       };
     })
 
@@ -81,8 +83,8 @@ self: super: {
 
         passthru = {
           ui_metadata = {
-            packages = self.lib.mapAttrs (n: v: let
-              settings_schema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } (lib.removeAttrs evaluated.options.${n} ["_module"]);
+            packages = mapAttrs (n: v: let
+              settings_schema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } (removeAttrs evaluated.options.${n} ["_module"]);
               in
                 {
                   name = n;
@@ -92,7 +94,7 @@ self: super: {
                   packages = [];
                   settings = removeNonDefaultSettings settings_schema evaluated.config.${n};
                 }
-            ) (lib.filterAttrs (k: _: !(hasPrefix "_") k) config);
+            ) (filterAttrs (k: _: !(hasPrefix "_") k) config);
           };
         };
       };
