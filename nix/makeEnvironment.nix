@@ -51,7 +51,7 @@ let
     pkg: {
       # Dry
       name = pkg.name;
-      settings = if pkg ? "settings" then pkg.settings else {};
+      settings = pkg.settings or {};
 
       # Different for hydrated
       packages = map (p: mkSubPackageMetadata pkg p) (pkg.settings.packages or []);
