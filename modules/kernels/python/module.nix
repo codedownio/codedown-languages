@@ -3,6 +3,19 @@
 with lib;
 
 let
+  subPackage = types.submodule {
+    options = {
+      name = mkOption {
+        description = "Package name";
+        type = types.str;
+      };
+      outputs = mkOption {
+        example = "Package outputs to include";
+        type = types.listOf types.str;
+      };
+    };
+  };
+
   mkOptions = packageOption: {
     enable = mkOption {
       example = "Enable Python 3 kernel";
@@ -13,18 +26,7 @@ let
 
     packages = mkOption {
       example = "List of packages";
-      type = types.listOf (types.either types.str (types.submodule {
-        options = {
-          name = mkOption {
-            description = "Package name";
-            type = types.str;
-          };
-          outputs = mkOption {
-            example = "Package outputs to include";
-            type = types.listOf types.str;
-          };
-        };
-      }));
+      type = types.listOf (types.either types.str subPackage);
       default = [];
       visible = false;
     };

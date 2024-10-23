@@ -18,6 +18,7 @@ config:
 with lib;
 
 let
+  chooseMeta = callPackage ./choose-meta.nix {};
   evaluated = (callPackage ./evaluate-config.nix { inherit pkgsStable pkgsMaster; }) config;
   removeNonDefaultSettings = callPackage ./remove-non-default-settings.nix {};
 
@@ -35,22 +36,21 @@ let
 
   exporters = concatMap (exporter: exporter.meta.exporterInfos) (attrValues builtExporters);
 
-  chooseMeta = callPackage ./choose-meta.nix {};
-
   mkPackageUiMetadata = let
     # This is duplicated from kernels/common.nix, which we'd rather not import here
     packageName = p: if lib.isString p then p else p.name;
 
-    mkSubPackageMetadata = pkg: p: {
-      name = packageName p;
-      meta = let
+    mkSubPackageMetadata = pkg: p:
+      let
+        settings = if lib.isAttrs p
+                   then removeNonDefaultSettings (meta.settings_schema or {}) (lib.removeAttrs p ["name"])
+                   else {};
+      in {
+        name = packageName p;
         meta = chooseMeta (pkg.packageOptions.${packageName p} or {});
-        settings = if lib.isAttrs p then lib.removeAttrs p ["name"] else {};
-      in
-        meta // (lib.optionalAttrs (builtins.length (builtins.attrNames settings) != 0) {
-          inherit settings;
-        });
-    };
+      } // lib.optionalAttrs (builtins.length (builtins.attrNames settings) > 0) {
+        inherit settings;
+      };
   in
     pkg: {
       # Dry

@@ -2,6 +2,23 @@
 
 with lib;
 
+let
+  subPackage = {
+    features = mkOption {
+      example = "Features to enable for the package";
+      type = types.listOf types.str;
+      default = [];
+    };
+  };
+
+  subPackageEvaluated = lib.evalModules {
+    modules = [
+      { options = { inherit subPackage; }; }
+    ];
+  };
+
+in
+
 {
   options = {
     kernels.rust = {
@@ -15,14 +32,11 @@ with lib;
       packages = mkOption {
         example = "List of packages";
         type = types.listOf (types.either types.str (types.submodule {
-          options = {
+          options = subPackage // {
             name = mkOption {
               description = "Package name";
               type = types.str;
-            };
-            features = mkOption {
-              example = "Features to enable for the package";
-              type = types.listOf types.str;
+              visible = false;
             };
           };
         }));
@@ -71,6 +85,7 @@ with lib;
 
       settings = config.kernels.rust;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.rust;
+      subPackageSettingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } subPackageEvaluated.options.subPackage;
     };
   };
 }

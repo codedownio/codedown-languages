@@ -7,8 +7,6 @@ settings:
 with lib;
 
 let
-  evalString = str: builtins.scopedImport {} (builtins.toFile "expr.nix" str);
-
   getSettingsRow = schemaItem: value:
     if value != schemaItem.value.defaultValue
     then { name = schemaItem.name; inherit value; }

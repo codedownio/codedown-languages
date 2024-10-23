@@ -7,7 +7,7 @@ config:
 
 lib.evalModules {
   specialArgs = {
-    nixosOptionsToSettingsSchema = pkgsStable.callPackage ../modules/base/nixos-options-to-settings-schema.nix {};
+    nixosOptionsToSettingsSchema = pkgsStable.callPackage ./nixos-options-to-settings-schema.nix {};
     boilerplate = {
       attrsTitle = "Notebook attributes";
       attrsDescription = "Notebook cells that have these attributes will match this kernel, allowing it to run the code.";

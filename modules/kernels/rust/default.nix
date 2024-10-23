@@ -10,6 +10,7 @@
 
 , settings
 , settingsSchema
+, subPackageSettingsSchema
 }:
 
 with { inherit (settings) packages; };
@@ -20,14 +21,14 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
+  rustPackages = rust.packages.stable;
+
   evcxr = ((callPackage ./evcxr {
     inherit (darwin.apple_sdk.frameworks) CoreServices Security;
   }).override {
     rustPlatform = rustPackages.rustPlatform;
     cargo = rustPackages.cargo;
   }).withPackages packages;
-
-  kernelName = "rust";
 
   languageServers =
     []
@@ -38,11 +39,8 @@ let
     })]
   ;
 
-  allPackageNames = import ./all_package_names.nix;
-
-  rustPackages = rust.packages.stable;
-
   displayName = "Rust";
+  kernelName = "rust";
 
   packageOptions = listToAttrs (map (x: {
     name = x;
@@ -50,8 +48,9 @@ let
       meta = {
         name = x;
       };
+      settingsSchema = subPackageSettingsSchema;
     };
-  }) allPackageNames);
+  }) (import ./all_package_names.nix));
 
   packageSearch = common.searcher' {
     packageMustBeDerivation = false;

@@ -2,17 +2,6 @@
 
 contents:
 
-let
-  # Test if the derivation has a single output
-  hasSimpleOutputs =
-    lib.hasAttr "outputName" contents
-    && lib.hasAttr "outputs" contents
-    && [contents.outputName] == contents.outputs;
-
-  includeOutputsOption = !hasSimpleOutputs && ((contents.outputs or null) != null);
-
-in
-
 (lib.optionalAttrs (contents ? "version") {
   version = contents.version;
 }) // (lib.optionalAttrs (contents ? "meta") (
@@ -46,21 +35,8 @@ in
   less_common = contents.meta.lessCommon;
 }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "mainProgram"] contents) {
   main_program = contents.meta.mainProgram;
-}) // (lib.optionalAttrs ((contents ? "settingsSchema") || includeOutputsOption) {
-  settings_schema =
-    (contents.settingsSchema or {})
-    // lib.optionalAttrs includeOutputsOption {
-      outputs = {
-        title = "Outputs";
-        description = "Package outputs to include.";
-        type = "list";
-        listType = {
-          type = "enum";
-          values = (contents.outputs or []);
-        };
-        defaultValue = if lib.hasAttr "outputName" contents then [contents.outputName] else [];
-      };
-    };
+}) // (lib.optionalAttrs (contents ? "settingsSchema") {
+  settings_schema = contents.settingsSchema;
 }) // (lib.optionalAttrs (contents ? "modes") {
   inherit (contents) modes;
 }) // (lib.optionalAttrs (contents ? "languageServerNames") {

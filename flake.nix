@@ -19,7 +19,7 @@
 
       in
         {
-          packages = rec {
+          packages = {
             # For nix repl debugging
             # inherit codedown;
 

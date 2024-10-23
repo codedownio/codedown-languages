@@ -64,7 +64,7 @@ rec {
   # Exposed for consumers to pin and use to gather metadata from other channels like Nixpkgs
   chooseMeta = callPackage ./nix/choose-meta.nix {};
 
-  nixpkgsOverlay = callPackage ./nix/nixpkgs-overlay.nix { inherit chooseMeta; };
+  nixpkgsOverlay = callPackage ./nix/nixpkgs-overlay.nix {};
 
   # Exposed so it's easier to compute build dependencies in the presence of IFD
   inherit pkgsStable pkgsMaster requiredPackages;
