@@ -5,7 +5,7 @@
 
   outputs = { self, nixpkgs, flake-utils }@inputs:
     # flake-utils.lib.eachDefaultSystem (system:
-    flake-utils.lib.eachSystem ["x86_64-linux"] (system:
+    flake-utils.lib.eachSystem ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"] (system:
       let
         pkgs = import nixpkgs { inherit system; };
         tests = pkgs.haskell.packages.ghc965.callPackage ./tests.nix {};
