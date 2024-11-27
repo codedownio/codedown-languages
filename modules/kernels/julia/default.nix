@@ -2,9 +2,6 @@
 , python3
 , callPackage
 , fetchFromGitHub
-, writeTextDir
-, stdenv
-, runCommand
 , symlinkJoin
 
 , julia
