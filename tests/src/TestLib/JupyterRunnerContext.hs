@@ -1,4 +1,5 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE RankNTypes #-}
 
@@ -56,9 +57,13 @@ introduceJustBubblewrap :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => SpecFree (LabelValue "maybeBubblewrap" (Maybe FilePath) :> context) m () -> SpecFree context m ()
 introduceJustBubblewrap = introduceWith [i|bwrap|] maybeBubblewrap $ \action -> do
+#ifdef darwin_HOST_OS
+  void $ action Nothing
+#else
   liftIO (findExecutable "bwrap") >>= \case
     Nothing -> expectationFailure [i|The tests currently require bubblewrap to be present.|]
     Just path -> void $ action (Just path)
+#endif
 
 introduceNothingBubblewrap :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
