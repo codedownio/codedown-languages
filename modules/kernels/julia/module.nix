@@ -72,7 +72,13 @@ with lib;
 
   config = mkIf config.kernels.julia.enable {
     builtKernels.julia = config.pkgs.callPackage ./. {
-      julia = getAttr config.kernels.julia.juliaPackage config.pkgs;
+      julia = let
+        juliaPackage = config.kernels.julia.juliaPackage;
+        requestedJulia = getAttr juliaPackage config.pkgs;
+        in
+          if requestedJulia.meta.unsupported
+          then (if builtins.hasAttr (juliaPackage + "-bin") config.pkgs then config.pkgs.${juliaPackage + "-bin"} else throw "${juliaPackage} is not supported on this system and fallback ${juliaPackage}-bin was not found.")
+          else requestedJulia;
 
       settings = config.kernels.julia;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.julia;
