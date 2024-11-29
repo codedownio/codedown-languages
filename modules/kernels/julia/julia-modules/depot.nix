@@ -33,9 +33,9 @@ let
 in
 
 runCommand "julia-depot" {
-    nativeBuildInputs = [curl git julia (python3.withPackages (ps: with ps; [pyyaml]))] ++ extraLibs;
-    inherit precompile registry;
-  } ''
+  nativeBuildInputs = [curl git julia (python3.withPackages (ps: with ps; [pyyaml]))] ++ extraLibs;
+  inherit precompile registry;
+} (''
   export HOME=$(pwd)
 
   echo "Building Julia depot and project with the following inputs"
@@ -58,11 +58,9 @@ runCommand "julia-depot" {
 
   # Only precompile if configured to below
   export JULIA_PKG_PRECOMPILE_AUTO=0
-
-  '' ++ lib.optionalString (juliaCpuTarget != null) ''
-    export JULIA_CPU_TARGET="${juliaCpuTarget}"
-
-  '' ++ ''
+'' + lib.optionalString (juliaCpuTarget != null) ''
+  export JULIA_CPU_TARGET="${juliaCpuTarget}"
+'' + ''
   # Prevent a warning where Julia tries to download package server info
   export JULIA_PKG_SERVER=""
 
@@ -111,4 +109,4 @@ runCommand "julia-depot" {
     # Remove the registry to save space
     Pkg.Registry.rm("General")
   '
-''
+'')
