@@ -6,15 +6,31 @@
 , git
 , julia
 , python3
+, stdenv
 
 , closureYaml
 , extraLibs
+, juliaCpuTarget
 , overridesToml
-, packageNames
 , packageImplications
+, packageNames
 , precompile
 , registry
 }:
+
+let
+  # On darwin, we don't want to specify JULIA_SSL_CA_ROOTS_PATH. If we do (using a -bin julia derivation, which is the
+  # only kind darwin currently supports), you get an error like this:
+  #
+  # GitError(Code:ERROR, Class:SSL, Your Julia is built with a SSL/TLS engine that libgit2 doesn't know how to configure
+  # to use a file or directory of certificate authority roots, but your environment specifies one via the SSL_CERT_FILE
+  # variable. If you believe your system's root certificates are safe to use, you can `export JULIA_SSL_CA_ROOTS_PATH=""`
+  # in your environment to use those instead.)
+  setJuliaSslCaRootsPath = if stdenv.targetPlatform.isDarwin
+    then ''export JULIA_SSL_CA_ROOTS_PATH=""''
+    else ''export JULIA_SSL_CA_ROOTS_PATH="${cacert}/etc/ssl/certs/ca-bundle.crt"'';
+
+in
 
 runCommand "julia-depot" {
     nativeBuildInputs = [curl git julia (python3.withPackages (ps: with ps; [pyyaml]))] ++ extraLibs;
@@ -38,11 +54,15 @@ runCommand "julia-depot" {
   # export JULIA_DEBUG=Pkg
   # export JULIA_DEBUG=loading
 
-  export JULIA_SSL_CA_ROOTS_PATH="${cacert}/etc/ssl/certs/ca-bundle.crt"
+  ${setJuliaSslCaRootsPath}
 
   # Only precompile if configured to below
   export JULIA_PKG_PRECOMPILE_AUTO=0
 
+  '' ++ lib.optionalString (juliaCpuTarget != null) ''
+    export JULIA_CPU_TARGET="${juliaCpuTarget}"
+
+  '' ++ ''
   # Prevent a warning where Julia tries to download package server info
   export JULIA_PKG_SERVER=""
 

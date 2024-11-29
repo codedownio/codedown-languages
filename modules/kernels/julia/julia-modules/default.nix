@@ -28,6 +28,10 @@
 , makeWrapperArgs ? ""
 , packageOverrides ? {}
 , makeTransitiveDependenciesImportable ? false # Used to support symbol indexing
+
+# If precompilation is present, we want to set a specific CPU target, in case this package
+# ends up being stored in a Nix cache.
+, juliaCpuTarget ? (if precompile then "haswell" else null)
 }:
 
 packageNames:
@@ -57,6 +61,9 @@ let
       --set PYTHON ${pythonToUse}/bin/python $makeWrapperArgs \
       --set JULIA_CONDAPKG_OFFLINE yes \
       --set JULIA_CONDAPKG_BACKEND Null \
+  '' ++ lib.optionalString (juliaCpuTarget != null) ''
+      --set JULIA_CPU_TARGET ${juliaCpuTarget} \
+  '' ++ ''
       --set JULIA_PYTHONCALL_EXE "@PyCall"
   '';
 
@@ -136,11 +143,16 @@ let
       "${juliaWrapped}/bin/julia" \
       "${if lib.versionAtLeast julia.version "1.7" then ./extract_artifacts.jl else ./extract_artifacts_16.jl}" \
       '${lib.generators.toJSON {} (import ./extra-libs.nix)}' \
+      '${lib.generators.toJSON {} (stdenv.hostPlatform.isDarwin)}' \
       "$out"
   '';
 
   # Import the artifacts Nix to build Overrides.toml (IFD)
-  artifacts = import artifactsNix { inherit lib fetchurl pkgs glibc stdenv; };
+  artifacts = import artifactsNix ({
+    inherit lib fetchurl pkgs stdenv;
+  } // lib.optionalAttrs (!stdenv.targetPlatform.isDarwin) {
+    inherit glibc;
+  });
   overridesJson = writeTextFile {
     name = "Overrides.json";
     text = lib.generators.toJSON {} artifacts;
@@ -154,7 +166,7 @@ let
   # Build a Julia project and depot. The project contains Project.toml/Manifest.toml, while the
   # depot contains package build products (including the precompiled libraries, if precompile=true)
   projectAndDepot = callPackage ./depot.nix {
-    inherit closureYaml extraLibs overridesToml packageImplications precompile;
+    inherit closureYaml extraLibs juliaCpuTarget overridesToml packageImplications precompile;
     julia = juliaWrapped;
     registry = minimalRegistry;
     packageNames = if makeTransitiveDependenciesImportable
