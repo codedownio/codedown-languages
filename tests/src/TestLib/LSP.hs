@@ -11,7 +11,7 @@ import Control.Lens hiding (List)
 import Control.Monad
 import Control.Monad.Catch as C (MonadCatch, MonadMask, MonadThrow)
 import Control.Monad.IO.Unlift
-import Control.Monad.Logger
+import Control.Monad.Logger (MonadLoggerIO)
 import Control.Monad.Trans (lift)
 import Control.Monad.Trans.Control (MonadBaseControl)
 import Data.Aeson as A
@@ -118,7 +118,10 @@ testDiagnostics'' :: (
 testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb = it label $ do
   withLspSession' id name filename codeToTest extraFiles $ \_homeDir -> do
     _ <- openDoc filename (fromMaybe name maybeLanguageId)
-    waitUntil 300.0 (waitForDiagnostics >>= lift . cb)
+    waitUntil 300.0 $ do
+      diags <- waitForDiagnostics
+      withException (lift $ cb diags) $ \(e :: SomeException) ->
+        logError [i|Exception in testDiagnostics'': #{e}|]
 
 itHasHoverSatisfying :: (
   LspContext ctx m
