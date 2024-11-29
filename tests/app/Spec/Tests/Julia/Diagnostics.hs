@@ -13,7 +13,7 @@ import TestLib.LSP
 
 
 diagnosticsTests :: (LspContext context m) => Text -> Text -> SpecFree context m ()
-diagnosticsTests lang lsName = describe "Diagnostics" $ do
+diagnosticsTests juliaPackage lsName = describe "Diagnostics" $ do
   testDiagnostics'' "flags a simple missing reference" lsName "test.jl" (Just "julia") [i|printlnzzzz("HI")|] [] $ \diagnostics -> do
     assertDiagnosticRanges' diagnostics [(Range (Position 0 0) (Position 0 11), Nothing, "Missing reference: printlnzzzz")]
 
@@ -31,10 +31,11 @@ diagnosticsTests lang lsName = describe "Diagnostics" $ do
          find_zero(f, (8, 9), Bisection())
          printlnzzzz("HI")
          |] [] $ \diagnostics' -> do
-    let diagnostics = case lang of
-          "julia110" -> Prelude.filter (\d -> not (matchesMethodCallError (d ^. message))) diagnostics'
+    let diagnostics = case juliaPackage of
+          "julia_110" -> Prelude.filter (\d -> not (matchesMethodCallError (d ^. message))) diagnostics'
           _ -> diagnostics'
-    info [i|lsName: #{lsName}|]
+    info [i|juliaPackage: #{juliaPackage}|]
+    info [i|diagnostics': #{diagnostics'}|]
     info [i|diagnostics: #{diagnostics}|]
     assertDiagnosticRanges' diagnostics [(Range (Position 3 0) (Position 3 11), Nothing, "Missing reference: printlnzzzz")]
 
@@ -48,8 +49,8 @@ diagnosticsTests lang lsName = describe "Diagnostics" $ do
          plot!(xx, y)
          printlnzzzz("HI")
          |] [] $ \diagnostics' -> do
-    let diagnostics = case lang of
-          "julia110" -> Prelude.filter (\d -> not (matchesMethodCallError (d ^. message))) diagnostics'
+    let diagnostics = case juliaPackage of
+          "julia_110" -> Prelude.filter (\d -> not (matchesMethodCallError (d ^. message))) diagnostics'
           _ -> diagnostics'
     assertDiagnosticRanges' diagnostics [(Range (Position 5 0) (Position 5 11), Nothing, "Missing reference: printlnzzzz")]
 

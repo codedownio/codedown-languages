@@ -36,7 +36,7 @@ juliaTests juliaPackage = describe [i|Julia (#{juliaPackage})|] $ introduceNixEn
   testKernelStdout (kernelName juliaPackage) [i|println("hi")|] "hi\n"
 
   describe "LSP" $ do
-    diagnosticsTests (kernelName juliaPackage) lsName
+    diagnosticsTests juliaPackage lsName
 
     itHasHoverSatisfying lsName "test.jl" Nothing [__i|print("hi")|] (Position 0 2) $ \hover -> do
       let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents
