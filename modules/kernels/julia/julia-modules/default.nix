@@ -29,9 +29,7 @@
 , packageOverrides ? {}
 , makeTransitiveDependenciesImportable ? false # Used to support symbol indexing
 
-# If precompilation is present, we want to set a specific CPU target, in case this package
-# ends up being stored in a Nix cache.
-, juliaCpuTarget ? (if precompile then "haswell" else null)
+, juliaCpuTarget ? null
 }:
 
 packageNames:
