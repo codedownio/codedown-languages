@@ -33,6 +33,7 @@ diagnosticsTests juliaPackage lsName = describe "Diagnostics" $ do
          |] [] $ \diagnostics' -> do
     let diagnostics = case juliaPackage of
           "julia_110" -> Prelude.filter (\d -> not (matchesMethodCallError (d ^. message))) diagnostics'
+          "julia_110-bin" -> Prelude.filter (\d -> not (matchesMethodCallError (d ^. message))) diagnostics'
           _ -> diagnostics'
     info [i|juliaPackage: #{juliaPackage}|]
     info [i|diagnostics': #{diagnostics'}|]
@@ -51,6 +52,7 @@ diagnosticsTests juliaPackage lsName = describe "Diagnostics" $ do
          |] [] $ \diagnostics' -> do
     let diagnostics = case juliaPackage of
           "julia_110" -> Prelude.filter (\d -> not (matchesMethodCallError (d ^. message))) diagnostics'
+          "julia_110-bin" -> Prelude.filter (\d -> not (matchesMethodCallError (d ^. message))) diagnostics'
           _ -> diagnostics'
     assertDiagnosticRanges' diagnostics [(Range (Position 5 0) (Position 5 11), Nothing, "Missing reference: printlnzzzz")]
 
