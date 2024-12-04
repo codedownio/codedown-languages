@@ -18,6 +18,7 @@ import TestLib.NixTypes
 import TestLib.Types
 import TestLib.Util
 import UnliftIO.Directory
+import UnliftIO.Exception
 import UnliftIO.IO
 import UnliftIO.Process
 import UnliftIO.Temporary
@@ -34,7 +35,7 @@ introduceNixEnvironment :: (
 introduceNixEnvironment kernels otherConfig label = introduceWith [i|#{label} Nix|] nixEnvironment $ \action -> do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
-  metadata :: A.Object <- withFile "/dev/null" WriteMode $ \devNullHandle -> do
+  metadata :: A.Object <- bracket (openFile "/dev/null" WriteMode) hClose $ \devNullHandle -> do
     let cp = (proc "nix" ["flake", "metadata", "--json"]) {
           cwd = Just rootDir
           , std_err = UseHandle devNullHandle
