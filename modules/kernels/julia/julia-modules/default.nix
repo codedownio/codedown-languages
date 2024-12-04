@@ -39,9 +39,7 @@ packageNames:
 let
   util = callPackage ./util.nix {};
 
-in
 
-let
   # Some Julia packages require access to Python. Provide a Nixpkgs version so it
   # doesn't try to install its own.
   pythonToUse = let
@@ -54,7 +52,7 @@ let
   juliaWrapped = let
     cpuTargetFlag = lib.optionalString (juliaCpuTarget != null) "--set JULIA_CPU_TARGET ${juliaCpuTarget}";
   in
-    runCommand "julia-${julia.version}-wrapped" { buildInputs = [makeWrapper]; inherit makeWrapperArgs; } ''
+    runCommand "julia-${julia.version}-wrapped" { nativeBuildInputs = [makeWrapper]; inherit makeWrapperArgs; } ''
       mkdir -p $out/bin
       makeWrapper ${julia}/bin/julia $out/bin/julia ${cpuTargetFlag} \
         --suffix LD_LIBRARY_PATH : "${lib.makeLibraryPath extraLibs}" \
@@ -177,24 +175,25 @@ let
 in
 
 runCommand "julia-${julia.version}-env" {
-  buildInputs = [makeWrapper];
+  nativeBuildInputs = [makeWrapper];
 
-  inherit julia;
-  inherit juliaWrapped;
-  version = julia.version;
-  meta = julia.meta;
+  passthru = {
+    inherit julia;
+    inherit juliaWrapped;
+    inherit (julia) pname version meta;
 
-  # Expose the steps we used along the way in case the user wants to use them, for example to build
-  # expressions and build them separately to avoid IFD.
-  inherit dependencies;
-  inherit closureYaml;
-  inherit dependencyUuidToInfoYaml;
-  inherit dependencyUuidToRepoYaml;
-  inherit minimalRegistry;
-  inherit artifactsNix;
-  inherit overridesJson;
-  inherit overridesToml;
-  inherit projectAndDepot;
+    # Expose the steps we used along the way in case the user wants to use them, for example to build
+    # expressions and build them separately to avoid IFD.
+    inherit dependencies;
+    inherit closureYaml;
+    inherit dependencyUuidToInfoYaml;
+    inherit dependencyUuidToRepoYaml;
+    inherit minimalRegistry;
+    inherit artifactsNix;
+    inherit overridesJson;
+    inherit overridesToml;
+    inherit projectAndDepot;
+  };
 } (''
   mkdir -p $out/bin
   makeWrapper ${juliaWrapped}/bin/julia $out/bin/julia \
