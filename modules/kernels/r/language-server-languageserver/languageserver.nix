@@ -1,26 +1,38 @@
-{ stdenv
-, fetchFromGitHub
+{ fetchFromGitHub
+, gettext
+, lib
+, stdenv
 
 , rPackages
 , rWrapper
 }:
 
 let
-  # languageserver_dependencies = with pkgs; [callr jsonlite lintr R6 repr stringr styler desc collections];
-  languageserver_dependencies = [];
+  languageServerDeps = with rPackages; [
+    R6
+    callr
+    collections
+    desc
+    fs
+    jsonlite
+    lintr
+    repr
+    roxygen2
+    stringi
+    styler
+    xml2
+    xmlparsedata
+  ];
 
-  languageServerDeps = with rPackages; [callr collections desc fs jsonlite lintr R6 repr roxygen2 stringi styler xml2 xmlparsedata];
-
-  buildR = rWrapper.override { packages = languageServerDeps; };
+  buildR = rWrapper.override {
+    packages = languageServerDeps;
+  };
 
 in
 
 stdenv.mkDerivation {
   name = "r-custom-languageserver";
   version = "0.3.16";
-
-  inherit languageserver_dependencies;
-  inherit languageServerDeps;
 
   src = fetchFromGitHub {
     owner = "REditorSupport";
@@ -35,7 +47,11 @@ stdenv.mkDerivation {
     runHook postConfigure
   '';
 
-  buildInputs = [buildR];
+  buildInputs = [
+    buildR
+  ] ++ lib.optionals stdenv.isDarwin [
+    gettext
+  ];
 
   buildPhase = ''
     runHook preBuild
@@ -58,5 +74,9 @@ stdenv.mkDerivation {
   meta = {
     description = "An implementation of the Language Server Protocol for R";
     homepage = "https://github.com/REditorSupport/languageserver";
+  };
+
+  passthru = {
+    inherit languageServerDeps;
   };
 }
