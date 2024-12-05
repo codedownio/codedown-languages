@@ -1,9 +1,6 @@
 { lib
-, pkgs
 , callPackage
 , clojure
-, stdenv
-, writeTextDir
 , symlinkJoin
 
 , settings
