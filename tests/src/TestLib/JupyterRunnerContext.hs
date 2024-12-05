@@ -49,7 +49,7 @@ introduceBootstrapNixpkgs :: (
 introduceBootstrapNixpkgs = introduceWith [i|Jupyter runner|] bootstrapNixpkgs $ \action -> do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
-  out <- readCreateProcessWithLogging ((proc "nix" ["run", ".#nixpkgsPath"]) { cwd = Just rootDir }) ""
+  out <- readCreateProcessWithLogging ((proc "nix" ["run", ".#nixpkgsPath"]) { cwd = Just (rootDir </> "tests") }) ""
   void $ action (T.unpack $ T.strip $ T.pack out)
 
 -- | TODO: pipe through a command-line argument to control whether bwrap is used?

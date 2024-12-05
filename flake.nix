@@ -6,7 +6,7 @@
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs, nixpkgs-master, flake-utils }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-master, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         overlays = [];
@@ -19,6 +19,12 @@
 
       in
         {
+          devShells = {
+            default = pkgsStable.mkShell {
+              NIX_PATH = "nixpkgs=${pkgsStable.path}";
+            };
+          };
+
           packages = {
             # For nix repl debugging
             # inherit codedown;
@@ -38,9 +44,6 @@
             # Tests use flake to do packageSearch builds
             inherit (codedown) packageSearch;
             allSettingsSchemas = pkgsStable.callPackage ./nix/all-settings-schemas.nix { inherit (sampleOutputs) sample_environments; };
-
-            # For .envrc
-            nixpkgsPath = pkgsStable.writeShellScriptBin "nixpkgsPath.sh" "echo -n ${pkgsStable.path}";
 
             jupyter-runner = pkgsMaster.callPackage ./nix/jupyter-runner.nix {};
 
