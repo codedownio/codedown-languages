@@ -14,6 +14,7 @@ import qualified Data.List as L
 import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Text.IO as T
+import GHC.Stack
 import System.FilePath
 import Test.Sandwich
 import TestLib.TestBuilding
