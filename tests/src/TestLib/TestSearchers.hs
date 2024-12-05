@@ -14,6 +14,7 @@ import qualified Data.List as L
 import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Text.IO as T
+import GHC.Stack
 import System.FilePath
 import Test.Sandwich
 import TestLib.TestBuilding
@@ -25,14 +26,14 @@ import UnliftIO.Process
 -- Testing for successful build
 
 testKernelSearchersBuild :: (
-  MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  HasCallStack, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   , HasBaseContext context, HasBootstrapNixpkgs context
   ) => Text -> SpecFree context m ()
 testKernelSearchersBuild kernel = it [i|#{kernel}: package searchers build|] $ do
   void $ testBuild [i|kernels."#{kernel}".packageSearch|]
 
 testHasExpectedFields :: (
-  MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  HasCallStack, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   , HasBaseContext context, HasBootstrapNixpkgs context
   ) => Text -> SpecFree context m ()
 testHasExpectedFields kernel = it [i|#{kernel}: has expected fields|] $ do
