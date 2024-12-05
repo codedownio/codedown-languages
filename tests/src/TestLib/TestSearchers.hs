@@ -25,14 +25,14 @@ import UnliftIO.Process
 -- Testing for successful build
 
 testKernelSearchersBuild :: (
-  MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  HasCallStack, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   , HasBaseContext context, HasBootstrapNixpkgs context
   ) => Text -> SpecFree context m ()
 testKernelSearchersBuild kernel = it [i|#{kernel}: package searchers build|] $ do
   void $ testBuild [i|kernels."#{kernel}".packageSearch|]
 
 testHasExpectedFields :: (
-  MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  HasCallStack, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   , HasBaseContext context, HasBootstrapNixpkgs context
   ) => Text -> SpecFree context m ()
 testHasExpectedFields kernel = it [i|#{kernel}: has expected fields|] $ do
