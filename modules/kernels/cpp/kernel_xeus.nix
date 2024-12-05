@@ -1,10 +1,5 @@
 { lib
 , callPackage
-, fetchurl
-, llvmPackages_9
-, python3Packages
-
-, blas
 
 , cling
 , xeus-cling
@@ -41,14 +36,8 @@ common.makeJupyterKernel (
         "-f" "{connection_file}"
       ];
       language = kernelName;
-      logo32 = fetchurl {
-        url = https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/32px-ISO_C%2B%2B_Logo.svg.png;
-        hash = "sha256-cr0TB8/j2mkcFhfCkz9F7ZANOuTlWA2OcWtDcXyOjHw=";
-      };
-      logo64 = fetchurl {
-        url = https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/64px-ISO_C%2B%2B_Logo.svg.png;
-        hash = "sha256-nZtJ4bR7GmQttvqEJC9KejOxphrjjxT36L9yOIITFLk=";
-      };
+      logo32 = "${xeus-cling}/share/jupyter/kernels/xcpp17/logo-32x32.png";
+      logo64 = "${xeus-cling}/share/jupyter/kernels/xcpp17/logo-64x64.png";
       metadata = {
         codedown = {
           inherit attrs extensions;
