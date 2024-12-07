@@ -42,6 +42,7 @@ let
   juliaWithPackages = (callPackage ./julia-modules {}).override {
     inherit packageOverrides julia;
     inherit (settings) precompile;
+    juliaCpuTarget = "generic";
   };
 
   displayName = "Julia";
