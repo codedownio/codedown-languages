@@ -5,3 +5,5 @@ tmp/
 nixexprs.tar.bz2
 result
 gcroots
+
+.direnv
