@@ -23,8 +23,9 @@ import TestLib.Types
 tests :: LanguageSpec
 tests = do
   juliaTests "julia_19"
-  juliaTests "julia_110"
   juliaTests "julia_19-bin"
+
+  juliaTests "julia_110"
   juliaTests "julia_110-bin"
 
 kernelName :: Text -> Text
