@@ -3,6 +3,7 @@
 , fetchzip
 , lib
 , stdenv
+, system
 
 , ghc
 , snapshot
@@ -23,33 +24,57 @@ let
         cp "$binary" $out/bin/haskell-notebook-language-server
       '';
     };
-    mkUrl = ghc: "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-${ghc}-x86_64-linux.tar.gz";
+    mkUrl = ghc: system: "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-${ghc}-${system}.tar.gz";
   in
     {
       # HASHES_START
-      "ghc810" = prebuilt "ghc810" (fetchzip {
-        url = mkUrl "ghc810";
-        sha256 = "sha256-MZkn7CsQUfOqz0Zs4j5Kz3fBnTvDVKnL5WDjjSfuZLQ=";
+      "ghc92-x86_64-linux" = prebuilt "ghc92-x86_64-linux" (fetchzip {
+        url = mkUrl "ghc92" "x86_64-linux";
+        sha256 = "sha256-V2DBheM1Cnj1pGFy/O2Iw9q3/KZ4/bviz/SO+TaPW7U=";
       });
-      "ghc90" = prebuilt "ghc90" (fetchzip {
-        url = mkUrl "ghc90";
-        sha256 = "sha256-YPUKNpdMtTuPthjWO/rbX880XqyvyaD++9Iy1j0L6gg=";
+      "ghc94-x86_64-linux" = prebuilt "ghc94-x86_64-linux" (fetchzip {
+        url = mkUrl "ghc94" "x86_64-linux";
+        sha256 = "sha256-TK450kbql86TcxGb7CVmUqyJelzHm2XrgE9AZzE4bgc=";
       });
-      "ghc92" = prebuilt "ghc92" (fetchzip {
-        url = mkUrl "ghc92";
-        sha256 = "sha256-A8jGJ+0uE0Y4plAWsuexANZvvEF6IqqjWEeIR14EcAE=";
+      "ghc96-x86_64-linux" = prebuilt "ghc96-x86_64-linux" (fetchzip {
+        url = mkUrl "ghc96" "x86_64-linux";
+        sha256 = "sha256-UgyGWSCmDi7qIXpRc7b6FMYbnFhfxgKGepaPfiGsT88=";
       });
-      "ghc94" = prebuilt "ghc94" (fetchzip {
-        url = mkUrl "ghc94";
-        sha256 = "sha256-mVjZoPy/v6UbcbGgh5DH3N7F8ZdzL1EwmC8sqT6fPbA=";
+      "ghc98-x86_64-linux" = prebuilt "ghc98-x86_64-linux" (fetchzip {
+        url = mkUrl "ghc98" "x86_64-linux";
+        sha256 = "sha256-j+9EP3UUHppolxDoH0LQGZ2O0UNJ/ijJk65S8rVscF4=";
       });
-      "ghc96" = prebuilt "ghc96" (fetchzip {
-        url = mkUrl "ghc96";
-        sha256 = "sha256-WJRfnCQHWjjqZk54Awws881m7Zozw5L4irIukdE+z/M=";
+      "ghc92-x86_64-darwin" = prebuilt "ghc92-x86_64-darwin" (fetchzip {
+        url = mkUrl "ghc92" "x86_64-darwin";
+        sha256 = "sha256-GUG58ln5u9Fiqdvt++lXDR4HveQOtSHH6EdRB6+a7Gk=";
       });
-      "ghc98" = prebuilt "ghc98" (fetchzip {
-        url = mkUrl "ghc98";
-        sha256 = "sha256-gkxQG6xcitPP9s0Fdz2aA8qYIoyGVl6Wp+lBIuxZz7k=";
+      "ghc94-x86_64-darwin" = prebuilt "ghc94-x86_64-darwin" (fetchzip {
+        url = mkUrl "ghc94" "x86_64-darwin";
+        sha256 = "sha256-hxMNYSBfcJkE+6hU45wZaRBcXjjylhuJ6SVVi5vCSyY=";
+      });
+      "ghc96-x86_64-darwin" = prebuilt "ghc96-x86_64-darwin" (fetchzip {
+        url = mkUrl "ghc96" "x86_64-darwin";
+        sha256 = "sha256-eCK1JohWfe2NdUXmL8SlaZhQWsyI1e2L7YuzozgATO4=";
+      });
+      "ghc98-x86_64-darwin" = prebuilt "ghc98-x86_64-darwin" (fetchzip {
+        url = mkUrl "ghc98" "x86_64-darwin";
+        sha256 = "sha256-qXhtQQb1tVNJABqTpyLUTho1zAJ9F6BCaMUJ8osVdkY=";
+      });
+      "ghc92-aarch64-darwin" = prebuilt "ghc92-aarch64-darwin" (fetchzip {
+        url = mkUrl "ghc92" "aarch64-darwin";
+        sha256 = "sha256-3wvFTtwQez4OlHzTIL0Fo1Dk30llXKilYHunv2feLjk=";
+      });
+      "ghc94-aarch64-darwin" = prebuilt "ghc94-aarch64-darwin" (fetchzip {
+        url = mkUrl "ghc94" "aarch64-darwin";
+        sha256 = "sha256-ngWA7/MNrHuVpe0gnBdJOZYHJ3pDBvu0THAslKy5XBM=";
+      });
+      "ghc96-aarch64-darwin" = prebuilt "ghc96-aarch64-darwin" (fetchzip {
+        url = mkUrl "ghc96" "aarch64-darwin";
+        sha256 = "sha256-rbaczumfoC9bOeu4VU1b6yG50tdnnL+7LYw4GCXLgdY=";
+      });
+      "ghc98-aarch64-darwin" = prebuilt "ghc98-aarch64-darwin" (fetchzip {
+        url = mkUrl "ghc98" "aarch64-darwin";
+        sha256 = "sha256-7vM7WKqAoBp8WsZUQ/+SmfBbwHtU3B85V4S/9spJZzc=";
       });
       # HASHES_END
     };
@@ -67,7 +92,7 @@ let
   #   };
   # versions = localFlakeVersions;
 
-  desiredVersion = "ghc" + (builtins.replaceStrings ["."] [""] (lib.versions.majorMinor ghc.version));
+  desiredVersion = "ghc" + (builtins.replaceStrings ["."] [""] (lib.versions.majorMinor ghc.version)) + "-" + system;
 
 in
 
