@@ -9,6 +9,12 @@
         tests = pkgs.haskell.packages.ghc965.callPackage ./tests.nix {};
       in
         rec {
+          devShells = {
+            default = pkgs.mkShell {
+              NIX_PATH = "nixpkgs=${pkgs.path}";
+            };
+          };
+
           packages = {
             inherit tests;
             inherit (pkgs) cabal2nix;
