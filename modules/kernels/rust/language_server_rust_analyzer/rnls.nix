@@ -1,6 +1,6 @@
 { fetchzip
 , stdenv
-, haskell
+, system
 }:
 
 # Build from source method. Blows up the closure!
@@ -23,13 +23,25 @@ stdenv.mkDerivation {
   pname = "rust-notebook-language-server";
   version = "0.2.2.0";
 
-  src = fetchzip {
-    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.2.0/rust-notebook-language-server-0.2.2.0-x86_64-linux.tar.gz";
-    sha256 = "sha256-W1gM48Rc4xhNcpdKmTQH0qZR3Y+r/AKEjXdI8oq+ZjA=";
-  };
+  src = {
+    # HASHES_START
+    "x86_64-linux" = fetchzip {
+      url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.3.0/rust-notebook-language-server-0.2.3.0-x86_64-linux.tar.gz";
+      sha256 = "";
+    };
+    "x86_64-darwin" = fetchzip {
+      url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.3.0/rust-notebook-language-server-0.2.3.0-x86_64-darwin.tar.gz";
+      sha256 = "";
+    };
+    "aarch64-darwin" = fetchzip {
+      url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.3.0/rust-notebook-language-server-0.2.3.0-aarch64-darwin.tar.gz";
+      sha256 = "";
+    };
+    # HASHES_END
+  }.${system};
 
   installPhase = ''
     mkdir -p $out/bin
-    cp rust-notebook-language-server-0.2.2.0-x86_64-linux $out/bin/rust-notebook-language-server
+    cp rust-notebook-language-server-0.2.2.0-${system} $out/bin/rust-notebook-language-server
   '';
 }
