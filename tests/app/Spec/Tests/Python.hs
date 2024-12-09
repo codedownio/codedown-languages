@@ -31,7 +31,7 @@ tests' kernelName = describe [i|Python (#{kernelName})|] $ introduceNixEnvironme
 
   testKernelStdout kernelName [i|print("hi")|] "hi\n"
   testKernelStdout kernelName [i|print(42)|] "42\n"
-  testKernelStdout' kernelName [i|import tensorflow|] Nothing
+  testKernelStdout' kernelName [i|import scipy|] Nothing
 
   testDiagnostics "python-lsp-server" "test.py" Nothing [i|\n\n\nfoo = 42|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
@@ -71,7 +71,7 @@ kernelSpec kernelName = NixKernelSpec {
   nixKernelName = kernelName
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Python"
-  , nixKernelPackages = [nameOnly "tensorflow"]
+  , nixKernelPackages = [nameOnly "scipy"]
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelExtraConfig = Just [
