@@ -18,30 +18,34 @@
 #   myers-diff = ghc.callPackage ./myers-diff.nix {};
 # }
 
+let
+  version = import ./rnls-version.nix;
+in
+
 # Fetch a static binary, only ~5MB
 stdenv.mkDerivation {
   pname = "rust-notebook-language-server";
-  version = "0.2.2.0";
+  inherit version;
 
   src = {
     # HASHES_START
     "x86_64-linux" = fetchzip {
       url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.3.0/rust-notebook-language-server-0.2.3.0-x86_64-linux.tar.gz";
-      sha256 = "";
+      hash = "sha256-IaNP7VEmuYc6B3axhHN8/hfJPKKUtq1klgrjlZZqEVU=";
     };
     "x86_64-darwin" = fetchzip {
       url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.3.0/rust-notebook-language-server-0.2.3.0-x86_64-darwin.tar.gz";
-      sha256 = "";
+      hash = "sha256-fNIzPC5vaYtizFxBYCvyCGlDWozi5oAARBio3bGztBk=";
     };
     "aarch64-darwin" = fetchzip {
       url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.3.0/rust-notebook-language-server-0.2.3.0-aarch64-darwin.tar.gz";
-      sha256 = "";
+      hash = "sha256-KJrH2lmc7nFCTC4zxAJa9ntZW2kobZDUfcI4/yLYbqY=";
     };
     # HASHES_END
   }.${system};
 
   installPhase = ''
     mkdir -p $out/bin
-    cp rust-notebook-language-server-0.2.2.0-${system} $out/bin/rust-notebook-language-server
+    cp rust-notebook-language-server-${version}-${system} $out/bin/rust-notebook-language-server
   '';
 }

@@ -12,10 +12,10 @@ NEW_HASHES=$(
 
     echo >&2 "$URL -> $HASH"
 
-    echo "      \"$system\" = fetchzip {"
-    echo "        url = \"$URL\";"
-    echo "        hash = \"$HASH\";"
-    echo "      });"
+    echo "    \"$system\" = fetchzip {"
+    echo "      url = \"$URL\";"
+    echo "      hash = \"$HASH\";"
+    echo "    };"
   done
 )
 
