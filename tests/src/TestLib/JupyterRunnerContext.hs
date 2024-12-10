@@ -13,6 +13,7 @@ import Control.Monad.Reader
 import Control.Monad.Trans.Control (MonadBaseControl)
 import qualified Data.Aeson as A
 import Data.ByteString.Lazy.Char8 as BL8
+import Data.Function
 import qualified Data.List as L
 import Data.Map (Map)
 import qualified Data.Map as M
@@ -92,19 +93,19 @@ type JupyterRunnerMonad m = (
 testKernelStdout :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> Text -> SpecFree context m ()
-testKernelStdout kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $
+testKernelStdout kernel code desired = it [i|#{kernel} -- #{summarizeCode code} -> #{summarizeCode desired}|] $
   testKernelStdout'' kernel code (`shouldBe` Just desired)
 
 testKernelStdout' :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> Maybe Text -> SpecFree context m ()
-testKernelStdout' kernel code desired = it [i|#{kernel}: #{code} -> #{desired}|] $
+testKernelStdout' kernel code desired = it [i|#{kernel} -- #{summarizeCode code} -> #{summarizeCode <$> desired}|] $
   testKernelStdout'' kernel code (`shouldBe` desired)
 
 testKernelStdoutCallback :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> (Maybe Text -> ExampleT context m ()) -> SpecFree context m ()
-testKernelStdoutCallback kernel code cb = it [i|#{kernel}: #{code}|] $
+testKernelStdoutCallback kernel code cb = it [i|#{kernel} -- #{summarizeCode code}|] $
   testKernelStdout'' kernel code cb
 
 testKernelStdout'' :: (
@@ -119,13 +120,13 @@ testKernelStdout'' kernel code cb = do
 itHasDisplayDatas :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
-itHasDisplayDatas kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $
+itHasDisplayDatas kernel code desired = it [i|#{kernel} -- #{summarizeCode code} -> #{desired}|] $
   displayDatasShouldBe kernel code desired
 
 itHasDisplayTexts :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> [Maybe A.Value] -> SpecFree context m ()
-itHasDisplayTexts kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $
+itHasDisplayTexts kernel code desired = it [i|#{kernel} -- #{summarizeCode code} -> #{desired}|] $
   displayTextsShouldBe kernel code desired
 
 displayDatasShouldBe :: (
@@ -150,13 +151,13 @@ displayDatasShouldSatisfy kernel code cb = notebookShouldSatisfy kernel code $ \
 itHasExecuteDatas :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
-itHasExecuteDatas kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $
+itHasExecuteDatas kernel code desired = it [i|#{kernel} -- #{summarizeCode code} -> #{desired}|] $
   executeDatasShouldBe kernel code desired
 
 itHasExecuteTexts :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> [Maybe A.Value] -> SpecFree context m ()
-itHasExecuteTexts kernel code desired = it [i|#{kernel}: #{show code} -> #{desired}|] $
+itHasExecuteTexts kernel code desired = it [i|#{kernel} -- #{summarizeCode code} -> #{desired}|] $
   executeTextsShouldBe kernel code desired
 
 executeDatasShouldBe :: (
@@ -175,6 +176,24 @@ executeResultsShouldSatisfy :: (
 executeResultsShouldSatisfy kernel code cb = notebookShouldSatisfy kernel code $ \(JupyterNotebook {..}) -> do
   let outputs = mconcat [codeOutputs | CodeCell {..} <- notebookCells]
   cb ([executeResultData | ExecuteResultOutput {..} <- outputs])
+
+summarizeCode :: Text -> Text
+summarizeCode code = code
+  & truncateCode
+  & replaceBadCharacters
+  where
+    maxLen = 15
+
+    truncateCode :: Text -> Text
+    truncateCode t
+      | T.length t <= maxLen = t
+      | otherwise = T.take maxLen t <> "..."
+
+    -- Colons will cause an error like this on macOS:
+    -- error: failed to join paths from `$DYLD_FALLBACK_LIBRARY_PATH` together
+    -- path segment contains separator `:`
+    replaceBadCharacters t = t &
+      T.replace ":" "_"
 
 -- * Core notebook helper
 
