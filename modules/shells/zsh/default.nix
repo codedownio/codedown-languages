@@ -9,6 +9,10 @@
 let
   extraPaths = lib.optionals (!stdenv.targetPlatform.isDarwin) [glibc.bin];
 
+  pathPrefixArg = if extraPaths == []
+                  then ""
+                  else "--prefix PATH : ${lib.makeBinPath extraPaths}";
+
 in
 
 stdenv.mkDerivation {
@@ -36,8 +40,7 @@ stdenv.mkDerivation {
     # Source the user's .zshrc if present
     echo "[ -f ~/.zshrc ] && source ~/.zshrc" >> .zshrc
 
-    makeWrapper ${zsh}/bin/zsh $out/bin/zsh-with-theme \
-      --prefix PATH : ${lib.makeBinPath extraPaths}
+    makeWrapper ${zsh}/bin/zsh $out/bin/zsh-with-theme ${pathPrefixArg} \
       --set ZDOTDIR $out
   '';
 
