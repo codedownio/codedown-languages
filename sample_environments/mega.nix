@@ -29,7 +29,7 @@ codedown.makeEnvironment {
   kernels.haskell.lsp.haskell-language-server.debug = true;
 
   kernels.octave.enable = true;
-  kernels.octave.packages = ["arduino"];
+  kernels.octave.packages = ["doctest"];
   kernels.octave.extraJupyterConfig = ''
     c.OctaveKernel.plot_settings = dict(format='svg')
   '';
