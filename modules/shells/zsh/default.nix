@@ -1,12 +1,15 @@
-{ callPackage
-, glibc
+{ glibc
 , lib
 , makeWrapper
 , oh-my-zsh
-, runCommand
 , stdenv
 , zsh
 }:
+
+let
+  extraPaths = lib.optionals (!stdenv.targetPlatform.isDarwin) [glibc.bin];
+
+in
 
 stdenv.mkDerivation {
   pname = "zsh";
@@ -34,7 +37,7 @@ stdenv.mkDerivation {
     echo "[ -f ~/.zshrc ] && source ~/.zshrc" >> .zshrc
 
     makeWrapper ${zsh}/bin/zsh $out/bin/zsh-with-theme \
-      --prefix PATH : ${lib.makeBinPath [glibc.bin]} \
+      --prefix PATH : ${lib.makeBinPath extraPaths}
       --set ZDOTDIR $out
   '';
 
