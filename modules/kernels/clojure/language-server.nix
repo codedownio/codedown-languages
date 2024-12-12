@@ -17,7 +17,7 @@ let
 
 in
 
-common.writeTextDirWithMetaAndPassthru clojure-lsp.meta passthru "lib/codedown/language-servers/clojre-${kernelName}-clojure-lsp.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMetaAndPassthru clojure-lsp.meta passthru "lib/codedown/language-servers/clojure-${kernelName}-clojure-lsp.yaml" (lib.generators.toYAML {} [{
   name = languageServerName;
   version = clojure-lsp.version;
   display_name = "Clojure LSP";
