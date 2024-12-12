@@ -1,6 +1,7 @@
 { lib
 , callPackage
 , clojure
+, clojure-lsp
 , symlinkJoin
 
 , settings
@@ -21,15 +22,14 @@ let
     };
   };
 
-  clojure-lsp = callPackage ./clojure-lsp.nix {};
-
   packageOptions = {};
   packageSearch = common.searcher packageOptions;
 
   kernelName = "clojure";
 
   languageServers = []
-    ++ lib.optionals settings.lsp.clojure-lsp.enable [(callPackage ./language-server.nix { inherit clojure-lsp kernelName; })];
+    ++ lib.optionals settings.lsp.clojure-lsp.enable [(callPackage ./language-server.nix { inherit kernelName; })]
+  ;
 
 in
 
