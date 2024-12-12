@@ -1,17 +1,17 @@
-{ stdenv, makeWrapper, man, posix_man_pages }:
+{ stdenv, makeWrapper, man, man-pages-posix }:
 
 stdenv.mkDerivation {
   name = "man-with-pages";
 
   unpackPhase = "true";
 
-  buildInputs = [makeWrapper man posix_man_pages]; # man-pages
-  propagatedBuildInputs = [makeWrapper man posix_man_pages]; # man-pages
+  buildInputs = [makeWrapper man man-pages-posix]; # man-pages
+  propagatedBuildInputs = [makeWrapper man man-pages-posix]; # man-pages
 
   buildPhase = ''
-      mkdir -p $out/bin
-      makeWrapper ${man}/bin/man $out/bin/man --set MANPATH "${posix_man_pages}/share/man"
-    '';
+    mkdir -p $out/bin
+    makeWrapper ${man}/bin/man $out/bin/man --set MANPATH "${man-pages-posix}/share/man"
+  '';
 
   installPhase = "true";
 }
