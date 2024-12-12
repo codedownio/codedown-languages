@@ -107,11 +107,11 @@
 
       warp_3_3_29 = null;
 
-      ghc-syntax-highlighter = self.ghc-syntax-highlighter_0_0_11_0.overrideScope (self: super: {
-        ghc-lib-parser = self.ghc-lib-parser_9_8_2_20240223;
-      });
+      # ghc-syntax-highlighter = self.ghc-syntax-highlighter_0_0_12_0.overrideScope (self: super: {
+      #   ghc-lib-parser = self.ghc-lib-parser_9_8_2_20240223;
+      # });
 
-      ghc-lib = self.ghc-lib_9_8_2_20240223;
+      # ghc-lib = self.ghc-lib_9_8_2_20240223;
 
       # ghc-lib-parser = self.ghc-lib-parser_9_8_2_20240223;
     };
