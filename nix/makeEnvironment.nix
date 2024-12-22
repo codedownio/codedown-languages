@@ -2,6 +2,7 @@
 , lib
 , fetchgit
 , fetchFromGitHub
+, runCommand
 , symlinkJoin
 , system
 , writeTextDir
@@ -65,6 +66,16 @@ let
       meta = chooseMeta pkg;
     };
 
+  linkBinaries = newBin: inputs: runCommand "${name}-${newBin}" {} ''
+    mkdir -p "$out/${newBin}"
+
+    for input in ${builtins.toString inputs}; do
+      find "$input/bin" -type f -executable | while read -r executable; do
+        ln -s "$executable" "$out/${newBin}/$(basename "$executable")"
+      done
+    done
+  '';
+
 in
 
 symlinkJoin {
@@ -74,6 +85,7 @@ symlinkJoin {
     ++ attrValues evaluated.config.builtLanguageServers
     ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
     ++ attrValues evaluated.config.packages
+    ++ lib.mapAttrsToList linkBinaries evaluated.config.extraBinDirs
   ;
 
   passthru = rec {

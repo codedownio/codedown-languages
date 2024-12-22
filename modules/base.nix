@@ -33,6 +33,11 @@ with lib;
       type = types.attrsOf types.package;
       default = {};
     };
+
+    extraBinDirs = mkOption {
+      type = types.attrsOf (types.listOf types.package);
+      default = {};
+    };
   };
 
   config = {
