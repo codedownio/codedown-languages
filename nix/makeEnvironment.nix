@@ -86,6 +86,7 @@ symlinkJoin {
     ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
     ++ attrValues evaluated.config.packages
     ++ lib.mapAttrsToList linkBinaries evaluated.config.extraBinDirs
+    ++ [(writeTextDir "lib/codedown/.env" (lib.generators.toKeyValue {} evaluated.config.environment.variables))]
   ;
 
   passthru = rec {

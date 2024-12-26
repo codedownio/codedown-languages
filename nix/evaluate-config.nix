@@ -19,6 +19,8 @@ lib.evalModules {
   modules = [
     ../modules/base.nix
 
+    ../modules/environment/module.nix
+
     ../modules/exporters/module.nix
 
     ../modules/kernels/bash/module.nix
