@@ -1,7 +1,7 @@
 { callPackage
-, symlinkJoin
 , pandoc
 , python3
+, symlinkJoin
 , texliveScheme
 }:
 

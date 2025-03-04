@@ -2,7 +2,6 @@
 , pandoc
 , nbconvert
 , texliveToUse
-, writeTextFile
 }:
 
 
