@@ -6,11 +6,7 @@
 }:
 
 let
-  nbconvert = python3.pkgs.nbconvert.overrideAttrs (oldAttrs: {
-    patches = oldAttrs.patches ++ [
-      ./fix-asciidoc.patch
-    ];
-  });
+  nbconvert = python3.pkgs.nbconvert;
 
   common = callPackage ../kernels/common.nix {};
 
