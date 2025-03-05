@@ -1,10 +1,30 @@
 { fetchFromGitHub
+, lib
 , libsodium
 , runCommand
 , haskell
 
 , ihaskell-source
 }:
+
+
+let
+  "ghc-syntax-highlighter_0_0_11_0" = haskell.packages.ghc98.callPackage
+    ({ mkDerivation, base, ghc-lib-parser, hspec, hspec-discover, text
+     }:
+       mkDerivation {
+         pname = "ghc-syntax-highlighter";
+         version = "0.0.11.0";
+         sha256 = "sha256-umeX9DNHPNQ3D66C3WPKZyo4NKOl7XyHz61V1QyHW3g=";
+         enableSeparateDataOutput = true;
+         libraryHaskellDepends = [ base ghc-lib-parser text ];
+         testHaskellDepends = [ base hspec text ];
+         testToolDepends = [ hspec-discover ];
+         description = "Syntax highlighter for Haskell using the lexer of GHC";
+         license = lib.licenses.bsd3;
+         hydraPlatforms = lib.platforms.none;
+       }) {};
+in
 
 {
   # ghc810 = haskell.packages.ghc810.override {
@@ -107,13 +127,9 @@
 
       warp_3_3_29 = null;
 
-      # ghc-syntax-highlighter = self.ghc-syntax-highlighter_0_0_12_0.overrideScope (self: super: {
-      #   ghc-lib-parser = self.ghc-lib-parser_9_8_2_20240223;
-      # });
-
-      # ghc-lib = self.ghc-lib_9_8_2_20240223;
-
-      # ghc-lib-parser = self.ghc-lib-parser_9_8_2_20240223;
+      ghc-syntax-highlighter = ghc-syntax-highlighter_0_0_11_0.overrideScope (self: super: {
+        ghc-lib-parser = self.ghc-lib-parser_9_8_3_20241022;
+      });
     };
   };
 }

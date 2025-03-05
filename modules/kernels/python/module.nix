@@ -108,8 +108,18 @@ in
     kernels.python3 = mkOptions (mkOption {
       example = "Python 3 version";
       type = types.enum (lib.unique (
-        ["python3"]
-        ++ (builtins.filter (n: builtins.match "^python3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
+        [
+          "python3"
+
+          "python310"
+          "python311"
+          "python312"
+
+          # These fail to build
+          # "python313"
+          # "python314"
+        ]
+        # ++ (builtins.filter (n: builtins.match "^python3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
       ));
       default = "python3";
     });
@@ -117,8 +127,10 @@ in
     kernels.pypy3 = mkOptions (mkOption {
       example = "PyPy 3 version";
       type = types.enum (lib.unique (
-        ["pypy3"]
-        ++ (builtins.filter (n: builtins.match "^pypy3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
+        [
+          "pypy3"
+        ]
+        # ++ (builtins.filter (n: builtins.match "^pypy3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
       ));
       default = "pypy3";
     });
@@ -130,20 +142,20 @@ in
         # Pythons that don't work with the ipykernel, ipywidgets, etc. of the Nixpkgs Python package set,
         # so we have a special package checked in under ./envs
         specialEnvPythons = {
-          "python38" = config.pkgs.python38;
-          "python39" = config.pkgs.python39;
-          "python312" = config.pkgs.python312;
+          # "python38" = config.pkgs.python38;
+          # "python39" = config.pkgs.python39;
+          # "python312" = config.pkgs.python312;
         };
 
         x = config.kernels.python3.python3Package;
 
-        basePython =
-          if lib.hasAttr x specialEnvPythons then (config.pkgs.poetry2nix.mkPoetryEnv {
-            projectDir = ./envs/${x};
-            python = specialEnvPythons.${x};
-            overrides = import ./envs/${x}/poetry-overrides.nix { inherit (config.pkgs) poetry2nix; };
-          }).overrideAttrs (_: { version = specialEnvPythons.${x}.version; })
-          else lib.getAttr x config.pkgs;
+        basePython = lib.getAttr x config.pkgs;
+          # if lib.hasAttr x specialEnvPythons then (config.pkgs.poetry2nix.mkPoetryEnv {
+          #   projectDir = ./envs/${x};
+          #   python = specialEnvPythons.${x};
+          #   overrides = import ./envs/${x}/poetry-overrides.nix { inherit (config.pkgs) poetry2nix; };
+          # }).overrideAttrs (_: { version = specialEnvPythons.${x}.version; })
+          # else lib.getAttr x config.pkgs;
       in
         config.pkgs.callPackage ./. {
           name = "Python";

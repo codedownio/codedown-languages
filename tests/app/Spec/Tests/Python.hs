@@ -17,21 +17,22 @@ import TestLib.Types
 
 tests :: LanguageSpec
 tests = describe "Python" $ parallel $ do
-  tests' "python3"
+  tests' ("python3", "python3")
+  tests' ("python3", "python310")
+  tests' ("python3", "python311")
+  tests' ("python3", "python312")
+  -- TODO: get python313, python314 working
 
-  -- tests' "python2"
-  -- tests' "pypy2"
-  -- tests' "pypy3"
+  -- tests' ("pypy3", "pypy3")
 
+tests' :: (Text, Text) -> LanguageSpec
+tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelName pythonPackage] [] [i|Python (#{pythonPackage})|] $ introduceJupyterRunner $ do
+  testKernelSearchersNonempty "python3"
+  testHasExpectedFields "python3"
 
-tests' :: Text -> LanguageSpec
-tests' kernelName = describe [i|Python (#{kernelName})|] $ introduceNixEnvironment [kernelSpec kernelName] [] "Python 3" $ introduceJupyterRunner $ do
-  testKernelSearchersNonempty kernelName
-  testHasExpectedFields kernelName
-
-  testKernelStdout kernelName [i|print("hi")|] "hi\n"
-  testKernelStdout kernelName [i|print(42)|] "42\n"
-  testKernelStdout' kernelName [i|import scipy|] Nothing
+  testKernelStdout "python3" [i|print("hi")|] "hi\n"
+  testKernelStdout "python3" [i|print(42)|] "42\n"
+  testKernelStdout' "python3" [i|import scipy|] Nothing
 
   testDiagnostics "python-lsp-server" "test.py" Nothing [i|\n\n\nfoo = 42|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
@@ -49,8 +50,8 @@ tests' kernelName = describe [i|Python (#{kernelName})|] $ introduceNixEnvironme
                                                    f("asdf", 42)
                                                   |] $ \diagnostics -> do
     assertDiagnosticRanges' diagnostics [
-      (Range (Position 3 2) (Position 3 8), Just (InR "reportArgumentType"), "Argument of type \"Literal['asdf']\" cannot be assigned to parameter \"x\" of type \"int\" in function \"f\"\n\160\160\"Literal['asdf']\" is incompatible with \"int\"")
-      , (Range (Position 3 10) (Position 3 12), Just (InR "reportArgumentType"), "Argument of type \"Literal[42]\" cannot be assigned to parameter \"y\" of type \"str\" in function \"f\"\n\160\160\"Literal[42]\" is incompatible with \"str\"")
+      (Range (Position 3 2) (Position 3 8), Just (InR "reportArgumentType"), "Argument of type \"Literal['asdf']\" cannot be assigned to parameter \"x\" of type \"int\" in function \"f\"\n\160\160\"Literal['asdf']\" is not assignable to \"int\"")
+      , (Range (Position 3 10) (Position 3 12), Just (InR "reportArgumentType"), "Argument of type \"Literal[42]\" cannot be assigned to parameter \"y\" of type \"str\" in function \"f\"\n\160\160\"Literal[42]\" is not assignable to \"str\"")
 
       , (Range (Position 1 6) (Position 1 7), Nothing, "\"x\" is not accessed")
       , (Range (Position 1 14) (Position 1 15), Nothing, "\"y\" is not accessed")
@@ -66,8 +67,8 @@ tests' kernelName = describe [i|Python (#{kernelName})|] $ introduceNixEnvironme
     assertDiagnosticRanges diagnostics []
 
 
-kernelSpec :: Text -> NixKernelSpec
-kernelSpec kernelName = NixKernelSpec {
+kernelSpec :: Text -> Text -> NixKernelSpec
+kernelSpec kernelName pythonPackage = NixKernelSpec {
   nixKernelName = kernelName
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Python"
@@ -75,7 +76,9 @@ kernelSpec kernelName = NixKernelSpec {
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelExtraConfig = Just [
-      "lsp.jedi.enable = true"
+      [i|python3Package = "#{pythonPackage}"|]
+
+      , "lsp.jedi.enable = true"
       , "lsp.python-lsp-server.enable = true"
       , "lsp.pylint.enable = true"
       , "lsp.pyright.enable = true"

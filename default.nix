@@ -9,15 +9,15 @@ let
   pkgsStable = import (fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
-    rev = "de429c2a20520e0f81a1fd9d2677686a68cae739"; # nixpkgs-rev
-    hash = "sha256-D2YTs7K33zAzoQdAcVzePgDn6bdIEexGgHluoB07+Yw="; # nixpkgs-sha256
+    rev = "6af28b834daca767a7ef99f8a7defa957d0ade6f"; # nixpkgs-rev
+    hash = "sha256-W4YZ3fvWZiFYYyd900kh8P8wU6DHSiwaH0j4+fai1Sk="; # nixpkgs-sha256
   }) { inherit overlays; };
 
   pkgsMaster = import (fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
-    rev = "05bbf675397d5366259409139039af8077d695ce"; # nixpkgs-master-rev
-    hash = "sha256-IE7PZn9bSjxI4/MugjAEx49oPoxu0uKXdfC+X7HcRuQ="; # nixpkgs-master-sha256
+    rev = "25068c534b2c34bbff27c71af515177ad0cce061"; # nixpkgs-master-rev
+    hash = "sha256-UOxazsKzbMALQlr5UWJ/4YKBzCsneXfdE/MkZZH9dFg="; # nixpkgs-master-sha256
   }) { inherit overlays; };
 
 in

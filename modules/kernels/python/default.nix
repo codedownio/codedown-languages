@@ -1,11 +1,7 @@
 { callPackage
 , lib
-, pkgs
-, poetry2nix
-, python-language-server
 , pyright
 , symlinkJoin
-, stdenv
 
 , python3
 

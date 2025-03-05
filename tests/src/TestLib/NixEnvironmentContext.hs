@@ -32,7 +32,7 @@ introduceNixEnvironment :: (
   -> Text
   -> SpecFree (LabelValue "nixEnvironment" FilePath :> context) m ()
   -> SpecFree context m ()
-introduceNixEnvironment kernels otherConfig label = introduceWith [i|#{label} Nix|] nixEnvironment $ \action -> do
+introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeOptions {nodeOptionsVisibilityThreshold = 50}) [i|#{label}|] nixEnvironment $ \action -> do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
   metadata :: A.Object <- bracket (openFile "/dev/null" WriteMode) hClose $ \devNullHandle -> do
