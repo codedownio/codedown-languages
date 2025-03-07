@@ -1,5 +1,5 @@
 
-resolver: lts-22.27
+resolver: lts-22.43
 
 nix:
   pure: false
@@ -21,11 +21,8 @@ extra-deps:
   - lsp-test
   - lsp-types
 
-- git: https://github.com/codedownio/sandwich.git
-  commit: 567ac0f24acddd4951db8707b0b3137372931a88
-  subdirs:
-  - sandwich
-  - sandwich-contexts
+- sandwich-0.3.0.3
+- sandwich-contexts-0.3.0.1
 
 # Needed by newer sandwich
 - vty-windows-0.2.0.0
