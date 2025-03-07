@@ -7,10 +7,6 @@ import Data.String.Interpolate
 import qualified Data.Text as T
 import qualified Data.Vector as V
 import Safe
-import Spec.Tests.Rust.Changes
-import Spec.Tests.Rust.Completion
-import Spec.Tests.Rust.Diagnostics
-import Spec.Tests.Rust.Hovers
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
@@ -18,6 +14,11 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 import TestLib.Util
+
+import qualified Spec.Tests.Rust.Changes as Changes
+import qualified Spec.Tests.Rust.Completion as Completion
+import qualified Spec.Tests.Rust.Diagnostics as Diagnostics
+import qualified Spec.Tests.Rust.Hovers as Hovers
 
 
 tests :: LanguageSpec
@@ -48,10 +49,10 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ do
       Nothing -> expectationFailure [i|Kernel produced no output.|]
 
   describe "LSP" $ do
-    changesTests
-    completionTests
-    diagnosticsTests
-    hoverTests
+    Changes.tests
+    Completion.tests
+    Diagnostics.tests
+    Hovers.tests
 
 -- We need a sleep to make this test reliable. It seems the kernel has a problem where
 -- it can exit before flushing stdout?

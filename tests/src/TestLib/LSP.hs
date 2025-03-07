@@ -36,7 +36,7 @@ import Language.LSP.Test
 import System.FilePath
 import System.IO.Temp (createTempDirectory)
 import Test.Sandwich as Sandwich
-import Test.Sandwich.Contexts.Waits (waitUntil)
+import Test.Sandwich.Waits (waitUntil)
 import TestLib.Aeson
 import TestLib.Types
 import UnliftIO.Directory

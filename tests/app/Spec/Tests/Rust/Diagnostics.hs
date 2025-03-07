@@ -1,5 +1,5 @@
 
-module Spec.Tests.Rust.Diagnostics where
+module Spec.Tests.Rust.Diagnostics (tests) where
 
 import Control.Lens
 import Data.Function
@@ -11,8 +11,8 @@ import Test.Sandwich as Sandwich
 import TestLib.LSP
 
 
-diagnosticsTests :: (LspContext context m) => SpecFree context m ()
-diagnosticsTests = describe "Diagnostics" $ do
+tests :: (LspContext context m) => SpecFree context m ()
+tests = describe "Diagnostics" $ do
   testDiagnostics "rust-analyzer" "main.ipynb" Nothing [__i|printlnz!("Hello world");
                                                            |] $ \diagnostics -> do
     assertDiagnosticRanges' diagnostics [

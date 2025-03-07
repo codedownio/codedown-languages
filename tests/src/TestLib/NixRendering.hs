@@ -3,7 +3,9 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Replace case with maybe" #-}
 
-module TestLib.NixRendering where
+module TestLib.NixRendering (
+  renderNixEnvironment
+  ) where
 
 import Data.Aeson as A
 import Data.Function
@@ -48,8 +50,6 @@ in
 }
 |]
 
--- #{T.intercalate "\n" [indentTo 4 $ renderOtherPackage x | x <- nixEnvironmentOtherPackages]}
-
 renderChannel :: NixSrcSpec -> Text
 renderChannel nixSrcSpec = [i|#{nixSrcName nixSrcSpec} = (#{renderNixSrcSpec nixSrcSpec});|]
 
@@ -72,9 +72,6 @@ renderNixSrcSpec (NixSrcFetchFromGithub {..}) =
         rev = "#{nixSrcRev}";
         sha256 = "#{nixSrcSha256}";
       }|]
-
-renderOtherPackage :: ChannelAndAttr -> Text
-renderOtherPackage (ChannelAndAttr {..}) = [i|{ channel = "#{channelAndAttrChannel}"; attr = "#{channelAndAttrAttr}"; contents = importedChannels.#{channelAndAttrChannel}.#{channelAndAttrAttr};  }|]
 
 renderKernel :: NixKernelSpec -> Text
 renderKernel (NixKernelSpec {..}) =

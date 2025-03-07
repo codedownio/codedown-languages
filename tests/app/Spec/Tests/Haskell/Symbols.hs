@@ -1,5 +1,5 @@
 
-module Spec.Tests.Haskell.Symbols where
+module Spec.Tests.Haskell.Symbols (tests) where
 
 import Control.Lens ((^.))
 import Language.LSP.Protocol.Lens hiding (actions)
@@ -11,8 +11,8 @@ import TestLib.LSP
 import UnliftIO.Timeout
 
 
-symbolsTests :: (LspContext context m) => SpecFree context m ()
-symbolsTests = describe "Symbols" $ do
+tests :: (LspContext context m) => SpecFree context m ()
+tests = describe "Symbols" $ do
   it "symbols" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
     ident <- openDoc filename "haskell"
     Just (Right documentSymbols) <- timeout 300_000_000 $ getDocumentSymbols ident

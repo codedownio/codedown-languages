@@ -1,5 +1,5 @@
 
-module Spec.Tests.Haskell.Statements where
+module Spec.Tests.Haskell.Statements (tests) where
 
 import Control.Monad
 import Data.String.Interpolate
@@ -7,14 +7,14 @@ import Data.Text as T
 import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
 import Spec.Tests.Haskell.Common
-import Spec.Tests.Haskell.DocumentHighlight
+import Spec.Tests.Haskell.DocumentHighlight (documentHighlightResults)
 import Test.Sandwich as Sandwich
 import TestLib.LSP
 import UnliftIO.Timeout
 
 
-statementsTests :: (LspContext context m) => Text -> SpecFree context m ()
-statementsTests ghcPackage = describe "Statements" $ do
+tests :: (LspContext context m) => Text -> SpecFree context m ()
+tests ghcPackage = describe "Statements" $ do
   describe "Single-line" $ do
     it "doesn't choke" $ doNotebookSession lsName statementsCode $ \filename -> do
       ident <- openDoc filename "haskell"

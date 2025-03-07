@@ -2,7 +2,12 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE CPP #-}
 
-module Spec.Tests.Haskell.Diagnostics where
+module Spec.Tests.Haskell.Diagnostics (
+  tests
+  , main
+
+  , etaExpandCode
+  ) where
 
 import Control.Lens ((^.))
 import Control.Monad
@@ -18,8 +23,8 @@ import TestLib.LSP
 import TestLib.NixEnvironmentContext
 
 
-diagnosticsTests :: (LspContext context m) => Text -> Text -> SpecFree context m ()
-diagnosticsTests ghcPackage lsName = describe "Diagnostics" $ do
+tests :: (LspContext context m) => Text -> Text -> SpecFree context m ()
+tests ghcPackage lsName = describe "Diagnostics" $ do
   describe "Foo.hs" $ do
     testDiagnosticsLabel "Out of scope variable" lsName "Foo.hs" Nothing [__i|module Foo where
                                                                               foo = bar
@@ -79,6 +84,6 @@ main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
   introduceNixEnvironment [kernelSpec ghcPackage] [] "Haskell" $
     introduceJustBubblewrap $
-      diagnosticsTests ghcPackage HaskellCommon.lsName
+      tests ghcPackage HaskellCommon.lsName
   where
     ghcPackage = "ghc92"

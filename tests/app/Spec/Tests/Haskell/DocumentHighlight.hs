@@ -1,6 +1,6 @@
 
 module Spec.Tests.Haskell.DocumentHighlight (
-  documentHighlightTests
+  tests
 
   , documentHighlightCode
   , documentHighlightResults
@@ -15,8 +15,8 @@ import Test.Sandwich as Sandwich
 import TestLib.LSP
 
 
-documentHighlightTests :: (LspContext context m) => SpecFree context m ()
-documentHighlightTests = describe "Document highlight" $ do
+tests :: (LspContext context m) => SpecFree context m ()
+tests = describe "Document highlight" $ do
   it "foo (.ipynb)" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
     ident <- openDoc filename "haskell"
     getHighlights ident (Position 0 1) >>= (`shouldBe` documentHighlightResults)
@@ -50,4 +50,4 @@ documentHighlightCodeRegular = [__i|foo = "hello"
 -- main :: IO ()
 -- main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $ do
 --   introduceNixEnvironment [kernelSpec "ghc92"] [] "Haskell" $ do
---     documentHighlightTests
+--     tests

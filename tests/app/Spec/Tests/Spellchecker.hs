@@ -14,7 +14,7 @@ import Language.LSP.Test hiding (message)
 import Safe
 import System.FilePath
 import Test.Sandwich as Sandwich
-import Test.Sandwich.Contexts.Waits (waitUntil)
+import Test.Sandwich.Waits (waitUntil)
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext

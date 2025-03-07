@@ -10,7 +10,6 @@ import Data.Text as T
 import Language.LSP.Protocol.Lens hiding (diagnostics, hover, text)
 import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
-import Spec.Tests.Julia.Diagnostics
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -18,6 +17,8 @@ import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
+
+import qualified Spec.Tests.Julia.Diagnostics as Diagnostics
 
 
 tests :: LanguageSpec
@@ -39,7 +40,7 @@ juliaTests juliaPackage = describe [i|Julia (#{juliaPackage})|] $ introduceNixEn
   testKernelStdout (kernelName juliaPackage) [i|println("hi")|] "hi\n"
 
   describe "LSP" $ do
-    diagnosticsTests juliaPackage lsName
+    Diagnostics.tests juliaPackage lsName
 
     itHasHoverSatisfying lsName "test.jl" Nothing [__i|print("hi")|] (Position 0 2) $ \hover -> do
       let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents

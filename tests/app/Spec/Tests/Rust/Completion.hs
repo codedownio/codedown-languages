@@ -1,5 +1,5 @@
 
-module Spec.Tests.Rust.Completion where
+module Spec.Tests.Rust.Completion (tests) where
 
 import Control.Lens
 import Control.Monad
@@ -9,12 +9,12 @@ import Language.LSP.Protocol.Types
 import Language.LSP.Test
 import Safe
 import Test.Sandwich as Sandwich
-import Test.Sandwich.Contexts.Waits (waitUntil)
+import Test.Sandwich.Waits (waitUntil)
 import TestLib.LSP
 
 
-completionTests :: (LspContext context m) => SpecFree context m ()
-completionTests = describe "Completions" $ do
+tests :: (LspContext context m) => SpecFree context m ()
+tests = describe "Completions" $ do
   forM_ ["main.ipynb", "test.rs"] $ \doc -> do
     it [i|(#{doc}) Completes printl to println!|] $ doSession' doc "rust-analyzer" [i|printl|] $ \filename -> do
       ident <- openDoc filename "haskell"

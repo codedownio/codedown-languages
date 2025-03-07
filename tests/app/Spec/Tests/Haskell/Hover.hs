@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 
-module Spec.Tests.Haskell.Hover where
+module Spec.Tests.Haskell.Hover (tests) where
 
 import Control.Lens ((^.))
 import Data.String.Interpolate
@@ -13,8 +13,8 @@ import Test.Sandwich as Sandwich
 import TestLib.LSP
 
 
-hoverTests :: (LspContext context m) => SpecFree context m ()
-hoverTests = describe "Hover" $ do
+tests :: (LspContext context m) => SpecFree context m ()
+tests = describe "Hover" $ do
   it "hovers foo" $ doNotebookSession lsName hoverCode $ \filename -> do
     ident <- openDoc filename "haskell"
     hover <- getHoverOrException ident (Position 0 1)

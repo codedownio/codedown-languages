@@ -1,5 +1,5 @@
 
-module Spec.Tests.Haskell.CodeActions where
+module Spec.Tests.Haskell.CodeActions (tests) where
 
 import Control.Lens
 import Data.String.Interpolate
@@ -13,8 +13,8 @@ import TestLib.LSP
 import UnliftIO.Timeout
 
 
-codeActionsTests :: (LspContext context m) => SpecFree context m ()
-codeActionsTests = describe "Code actions" $ do
+tests :: (LspContext context m) => SpecFree context m ()
+tests = describe "Code actions" $ do
   it "gets no code actions for putStrLn" $ doNotebookSession lsName codeActionsCode $ \filename -> do
     ident <- openDoc filename "haskell"
     actions <- timeout 60_000_000 $ getCodeActions ident (Range (Position 1 0) (Position 1 8))
