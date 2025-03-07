@@ -43,7 +43,7 @@ let
 
 in
 
-(import channels.codedown { inherit fetchFromGitHub; }).makeEnvironment {
+(import channels.codedown {}).makeEnvironment {
 #{T.intercalate "\n\n" [renderKernel x | x <- nixEnvironmentKernels]}
 
 #{T.intercalate "\n" [t | t <- nixEnvironmentOtherConfig]}
