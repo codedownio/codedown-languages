@@ -81,26 +81,27 @@ in
 symlinkJoin {
   inherit name;
   paths =
-    attrValues evaluated.config.builtKernels
-    ++ attrValues evaluated.config.builtLanguageServers
-    ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
-    ++ attrValues evaluated.config.packages
-    ++ lib.mapAttrsToList linkBinaries evaluated.config.extraBinDirs
-    ++ [(writeTextDir "lib/codedown/.env" (lib.generators.toKeyValue {} evaluated.config.environment.variables))]
+    []
+    # ++ attrValues evaluated.config.builtKernels
+    # ++ attrValues evaluated.config.builtLanguageServers
+    # ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
+    # ++ attrValues evaluated.config.packages
+    # ++ lib.mapAttrsToList linkBinaries evaluated.config.extraBinDirs
+    # ++ [(writeTextDir "lib/codedown/.env" (lib.generators.toKeyValue {} evaluated.config.environment.variables))]
   ;
 
-  passthru = rec {
-    inherit evaluated;
+  # passthru = rec {
+  #   inherit evaluated;
 
-    ui_metadata = {
-      packages =
-        (mapAttrs' (n: v: nameValuePair "exporters.${n}" (mkPackageUiMetadata v)) builtExporters)
-        // (mapAttrs' (n: v: nameValuePair "kernels.${n}" (mkPackageUiMetadata v)) builtKernels)
-        // (mapAttrs' (n: v: nameValuePair "language-servers.${n}" (mkPackageUiMetadata v)) builtLanguageServers)
-        // (mapAttrs' (n: v: nameValuePair n (mkPackageUiMetadata v)) evaluated.config.packages)
-      ;
-    };
+  #   ui_metadata = {
+  #     packages =
+  #       (mapAttrs' (n: v: nameValuePair "exporters.${n}" (mkPackageUiMetadata v)) builtExporters)
+  #       // (mapAttrs' (n: v: nameValuePair "kernels.${n}" (mkPackageUiMetadata v)) builtKernels)
+  #       // (mapAttrs' (n: v: nameValuePair "language-servers.${n}" (mkPackageUiMetadata v)) builtLanguageServers)
+  #       // (mapAttrs' (n: v: nameValuePair n (mkPackageUiMetadata v)) evaluated.config.packages)
+  #     ;
+  #   };
 
-    ui_metadata_yaml = writeText "ui-metadata.yaml" (lib.generators.toYAML {} ui_metadata);
-  };
+  #   ui_metadata_yaml = writeText "ui-metadata.yaml" (lib.generators.toYAML {} ui_metadata);
+  # };
 }
