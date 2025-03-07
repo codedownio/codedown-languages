@@ -5,13 +5,22 @@
   outputs = { self, flake-utils, nixpkgs }:
     flake-utils.lib.eachSystem ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"] (system:
       let
+        ghcVersion = "ghc984";
+
         pkgs = import nixpkgs { inherit system; };
-        tests = pkgs.haskell.packages.ghc965.callPackage ./tests.nix {};
+        tests = pkgs.haskell.packages.${ghcVersion}.callPackage ./tests.nix {};
       in
         rec {
           devShells = {
             default = pkgs.mkShell {
               NIX_PATH = "nixpkgs=${pkgs.path}";
+
+              buildInputs = with pkgs; [
+                gmp
+                ncurses
+                postgresql
+                zlib
+              ];
             };
           };
 
