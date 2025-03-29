@@ -1,5 +1,4 @@
 { callPackage
-, fetchFromGitHub
 , lib
 , makeWrapper
 , runCommand
@@ -7,37 +6,33 @@
 
 , hunspell
 , hunspellDicts
-, hunspellWithDicts
+# , hunspellWithDicts
 
-, node2nix
-, nodePackages
 , nodehun
 , nodejs-slim
 
-, python3
 , unixtools
 }:
-
-with lib.lists;
 
 let
   common = callPackage ../../kernels/common.nix {};
 
   nodejs = nodejs-slim;
 
-  nodeHeaders = runCommand "node-${nodejs.version}-headers.tar.gz" { buildInputs = []; } ''
-    dir="node-v${nodejs.version}"
-    mkdir "$dir"
-    cp -r ${nodejs}/include "$dir"
-    tar -czvf $out "$dir"
-  '';
+  # nodeHeaders = runCommand "node-${nodejs.version}-headers.tar.gz" { buildInputs = []; } ''
+  #   dir="node-v${nodejs.version}"
+  #   mkdir "$dir"
+  #   cp -r ${nodejs}/include "$dir"
+  #   tar -czvf $out "$dir"
+  # '';
 
   indexJs = stdenv.mkDerivation {
     name = "markdown-spellcheck-lsp-index.js";
 
-    src = fetchTarball {
-      url = https://github.com/codedownio/markdown-spellcheck-lsp/releases/download/v0.6.1/markdown-spellcheck-lsp.tar.gz;
-      sha256 = "sha256:1w7g3v01ziv98xanibfqb0xwkbl918mdrq4y0ryga8h7kfvifmc4";
+    src = builtins.fetchTree {
+      type = "tarball";
+      url = "https://github.com/codedownio/markdown-spellcheck-lsp/releases/download/v0.6.1/markdown-spellcheck-lsp.tar.gz";
+      narHash = "sha256-hFUXt5sHIvV8Bp7g3CoKia7JO1jYrWhVR2nHH8Ae7/A=";
     };
 
     buildPhase = "true";

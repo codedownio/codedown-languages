@@ -14,14 +14,14 @@ data NixSrcSpec = NixSrcFetchGit {
   , nixSrcUrl :: Text
   , nixSrcRev :: Text
   , nixSrcBranchName :: Maybe Text
-  , nixSrcSha256 :: Text
+  , nixSrcHash :: Text
   }
   | NixSrcFetchFromGithub {
       nixSrcName :: Text
       , nixSrcOwner :: Text
       , nixSrcRepo :: Text
       , nixSrcRev :: Text
-      , nixSrcSha256 :: Text
+      , nixSrcHash :: Text
       }
   | NixSrcPath {
       nixSrcName :: Text

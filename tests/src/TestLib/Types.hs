@@ -48,7 +48,7 @@ lockedToNixSrcSpec name (LockedGithub {..}) = NixSrcFetchFromGithub {
   , nixSrcOwner = lockedOwner
   , nixSrcRepo = lockedRepo
   , nixSrcRev = lockedRev
-  , nixSrcSha256 = lockedNarHash
+  , nixSrcHash = lockedNarHash
   }
 
 -- * Labels

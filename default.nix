@@ -12,7 +12,7 @@ let
     narHash = "sha256-W4YZ3fvWZiFYYyd900kh8P8wU6DHSiwaH0j4+fai1Sk="; # nixpkgs-hash
   }) { inherit overlays; };
 
-  pkgsMaster = import (builtins.fetchTarball {
+  pkgsMaster = import (builtins.fetchTree {
     type = "github";
     owner = "NixOS";
     repo = "nixpkgs";
