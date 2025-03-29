@@ -8,13 +8,13 @@ cd "$SCRIPTDIR/.."
 
 output=$(nix flake metadata --json)
 
-# escape_for_sed() {
-#     local string="$1"
-#     string="${string//\//\\/}"
-#     string="${string//\-/\\\-}"
-#     string="${string//\+/\\\+}"
-#     echo "$string"
-# }
+escape_for_sed() {
+    local string="$1"
+    string="${string//\//\\/}"
+    string="${string//\-/\\\-}"
+    string="${string//\+/\\\+}"
+    echo "$string"
+}
 
 for input in nixpkgs nixpkgs-master; do
     echo "Processing input: $input"
@@ -25,10 +25,9 @@ for input in nixpkgs nixpkgs-master; do
     sed -i "s|archive/.*.tar.gz\"; # ${input}-rev|archive/$rev.tar.gz\"; # ${input}-rev|g" ./default.nix
 
     # Update hash
-    hash=$(nix-prefetch-url --unpack "https://github.com/NixOS/nixpkgs/archive/${rev}.tar.gz")
-    # echo "Got ${input} original hash: $hash"
-    # hash=$(escape_for_sed "$hash")
+    hash=$(echo "$output" | jq -r ".locks.nodes[\"${input}\"].locked.narHash")
+    echo "Got ${input} original hash: $hash"
+    hash=$(escape_for_sed "$hash")
     echo "Got ${input} hash: $hash"
-
-    sed -i "s/sha256 = \".*\"; # ${input}-sha256/sha256 = \"$hash\"; # ${input}-sha256/g" ./default.nix
+    sed -i "s/narHash = \".*\"; # ${input}-hash/narHash = \"$hash\"; # ${input}-hash/g" ./default.nix
 done
