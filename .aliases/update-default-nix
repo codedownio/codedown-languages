@@ -29,5 +29,5 @@ for input in nixpkgs nixpkgs-master; do
     echo "Got ${input} original hash: $hash"
     hash=$(escape_for_sed "$hash")
     echo "Got ${input} hash: $hash"
-    sed -i "s/narHash = \".*\"; # ${input}-hash/narHash = \"$hash\"; # ${input}-hash/g" ./default.nix
+    sed -i "s/ash = \".*\"; # ${input}-hash/ash = \"$hash\"; # ${input}-hash/g" ./default.nix
 done

@@ -7,8 +7,10 @@ import Control.Monad.IO.Unlift
 import Control.Monad.Trans.Control (MonadBaseControl)
 import qualified Data.Aeson as A
 import Data.ByteString.Lazy.Char8 as BL
+import qualified Data.List as L
 import Data.String.Interpolate
 import Data.Text as T
+import qualified Data.Text.IO as T
 import qualified System.Directory as SD
 import System.Exit
 import System.FilePath
@@ -51,7 +53,7 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
 
   let nixEnv = NixEnvironment {
         nixEnvironmentChannels = [
-            NixSrcPath "codedown" (T.pack rootDir)
+            NixSrcPath "codedown" [i|builtins.fetchTree { type = "path"; path = "#{rootDir}"; }|]
             , lockedToNixSrcSpec "nixpkgs" nixpkgsLocked
             ]
         , nixEnvironmentKernels = kernels
@@ -60,13 +62,21 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
 
   let rendered = renderNixEnvironment "<nixpkgs>" nixEnv
   debug [i|nixEnv: #{nixEnv}|]
-  debug [i|Rendered: #{rendered}|]
+
+  Just dir <- getCurrentFolder
+  liftIO $ T.writeFile (dir </> "expr.nix") rendered
 
   built <- withSystemTempDirectory "test-nix-build" $ \((</> "link") -> linkPath) -> do
-    createProcessWithLogging (proc "nix-build" ["--quiet", "--no-out-link"
-                                               , "-E", T.unpack rendered
-                                               , "-o", linkPath
-                                               ])
+    let args = ["build"
+               , "--quiet"
+               , "--no-link"
+               , "--impure"
+               -- , "--include", rootDir
+               , "--expr", T.unpack rendered
+               , "-o", linkPath
+               ]
+    info [i|nix #{L.unwords args}|]
+    createProcessWithLogging (proc "nix" args)
       >>= waitForProcess >>= (`shouldBe` ExitSuccess)
     liftIO $ SD.getSymbolicLinkTarget linkPath
 
