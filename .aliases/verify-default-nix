@@ -11,14 +11,14 @@ cd "$SCRIPTDIR/.."
 FLAKE_NIXPKGS_REV=$(nix flake metadata --json | jq -r .locks.nodes.nixpkgs.locked.rev)
 FLAKE_NIXPKGS_MASTER_REV=$(nix flake metadata --json | jq -r '.locks.nodes["nixpkgs-master"].locked.rev')
 
-echo "FLAKE_NIXPKGS_REV: $FLAKE_NIXPKGS_REV"
-echo "FLAKE_NIXPKGS_MASTER_REV: $FLAKE_NIXPKGS_MASTER_REV"
+echo "FLAKE_NIXPKGS_REV: '$FLAKE_NIXPKGS_REV'"
+echo "FLAKE_NIXPKGS_MASTER_REV: '$FLAKE_NIXPKGS_MASTER_REV'"
 
 DEFAULT_NIXPKGS_REV=$(cat default.nix | grep nixpkgs-rev | cut -d'"' -f2)
 DEFAULT_NIXPKGS_MASTER_REV=$(cat default.nix | grep nixpkgs-master-rev | cut -d'"' -f2)
 
-echo "DEFAULT_NIXPKGS_REV: $DEFAULT_NIXPKGS_REV"
-echo "DEFAULT_NIXPKGS_MASTER_REV: $DEFAULT_NIXPKGS_MASTER_REV"
+echo "DEFAULT_NIXPKGS_REV: '$DEFAULT_NIXPKGS_REV'"
+echo "DEFAULT_NIXPKGS_MASTER_REV: '$DEFAULT_NIXPKGS_MASTER_REV'"
 
 
 if [ "$FLAKE_NIXPKGS_REV" != "$DEFAULT_NIXPKGS_REV" ]; then

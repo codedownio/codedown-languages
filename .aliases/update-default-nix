@@ -22,8 +22,7 @@ for input in nixpkgs nixpkgs-master; do
     # Update rev
     rev=$(echo "$output" | jq -r ".locks.nodes[\"${input}\"].locked.rev")
     echo "Got ${input} rev: $rev"
-    sed -i "s|archive/.*.tar.gz\"; # ${input}-rev|archive/$rev.tar.gz\"; # ${input}-rev|g" ./default.nix
-    sed -i "s/rev = \".*\"; # ${input}-rev/rev = \"$rev\"; # ${input}-rev/g" ./default.nix
+    sed -i "s/Rev = \".*\"; # ${input}-rev/Rev = \"$rev\"; # ${input}-rev/g" ./default.nix
 
     # Update narHash (fetchFromGitHub)
     hash=$(echo "$output" | jq -r ".locks.nodes[\"${input}\"].locked.narHash")
