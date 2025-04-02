@@ -23,11 +23,17 @@ for input in nixpkgs nixpkgs-master; do
     rev=$(echo "$output" | jq -r ".locks.nodes[\"${input}\"].locked.rev")
     echo "Got ${input} rev: $rev"
     sed -i "s|archive/.*.tar.gz\"; # ${input}-rev|archive/$rev.tar.gz\"; # ${input}-rev|g" ./default.nix
+    sed -i "s/rev = \".*\"; # ${input}-rev/rev = \"$rev\"; # ${input}-rev/g" ./default.nix
 
-    # Update hash
+    # Update narHash (fetchFromGitHub)
     hash=$(echo "$output" | jq -r ".locks.nodes[\"${input}\"].locked.narHash")
-    echo "Got ${input} original hash: $hash"
+    echo "Got ${input} original narHash: $hash"
     hash=$(escape_for_sed "$hash")
+    echo "Got ${input} narHash: $hash"
+    sed -i "s/hash = \".*\"; # ${input}-hash/hash = \"$hash\"; # ${input}-hash/g" ./default.nix
+
+    # Update hash (builtins.fetchTarball)
+    hash=$(nix-prefetch-url --unpack "https://github.com/NixOS/nixpkgs/archive/${rev}.tar.gz")
     echo "Got ${input} hash: $hash"
-    sed -i "s/ash = \".*\"; # ${input}-hash/ash = \"$hash\"; # ${input}-hash/g" ./default.nix
+    sed -i "s/sha256 = \".*\"; # ${input}-sha256/sha256 = \"$hash\"; # ${input}-sha256/g" ./default.nix
 done
