@@ -2,6 +2,8 @@
 , callPackage
 , symlinkJoin
 
+, searcher
+
 , name ? "nixpkgs-environment"
 }:
 
@@ -73,6 +75,8 @@ let
 in
 
 self: super: {
+  packageSearch = searcher self;
+
   makeEnvironment = config:
     let
       evaluated = evaluate self (builtins.attrNames config) config;
