@@ -1,4 +1,6 @@
-{ pkgsStable
+{ pkgsStableSrc
+, pkgsStable
+, pkgsMasterSrc
 , pkgsMaster
 , requiredPackages ? []
 , system ? "x86_64-linux"
@@ -67,5 +69,5 @@ rec {
   nixpkgsOverlay = callPackage ./nix/nixpkgs-overlay.nix { inherit searcher; };
 
   # Exposed so it's easier to compute build dependencies in the presence of IFD
-  inherit pkgsStable pkgsMaster requiredPackages;
+  inherit pkgsStableSrc pkgsStable pkgsMasterSrc pkgsMaster requiredPackages;
 }

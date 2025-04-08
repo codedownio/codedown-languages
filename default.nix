@@ -17,7 +17,8 @@ let
     url = ''https://github.com/NixOS/nixpkgs/archive/${stableRev}.tar.gz'';
     sha256 = "0afmlbvgky283wd2qjn7l19k1zzh454x6z97cdc22rnnzgfik1jv"; # nixpkgs-sha256
   };
-  pkgsStable = import (if fetchFromGitHub != null then stableFetchFromGitHub else stableBuiltins) ({
+  pkgsStableSrc = if fetchFromGitHub != null then stableFetchFromGitHub else stableBuiltins;
+  pkgsStable = import pkgsStableSrc ({
     inherit overlays;
   } // (if system == null then {} else { inherit system; }));
 
@@ -32,10 +33,16 @@ let
     url = ''https://github.com/NixOS/nixpkgs/archive/${masterRev}.tar.gz'';
     sha256 = "0n3lzn8na97k2gfpfy975g6830p1gxi53yas885w0v5kqb75mv2h"; # nixpkgs-master-sha256
   };
-  pkgsMaster = import (if fetchFromGitHub != null then masterFetchFromGitHub else masterBuiltins) ({
+  pkgsMasterSrc = if fetchFromGitHub != null then masterFetchFromGitHub else masterBuiltins;
+  pkgsMaster = import pkgsMasterSrc ({
     inherit overlays;
   } // (if system == null then {} else { inherit system; }));
 
 in
 
-pkgsStable.callPackage ./codedown.nix { inherit pkgsStable pkgsMaster; }
+pkgsStable.callPackage ./codedown.nix {
+  inherit
+    pkgsStableSrc pkgsStable
+    pkgsMasterSrc pkgsMaster
+  ;
+}
