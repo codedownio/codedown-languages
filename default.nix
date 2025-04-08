@@ -1,7 +1,7 @@
 { isCodeDown ? true # For introspection using builtins.functionArgs
 , overlays ? []
 , system ? null
-, fetchFromGitHub
+, fetchFromGitHub ? null
 , ...
 }:
 
@@ -13,7 +13,11 @@ let
     rev = stableRev;
     hash = "sha256-W4YZ3fvWZiFYYyd900kh8P8wU6DHSiwaH0j4+fai1Sk="; # nixpkgs-hash
   };
-  pkgsStable = import stableFetchFromGitHub ({
+  stableBuiltins = builtins.fetchTarball {
+    url = ''https://github.com/NixOS/nixpkgs/archive/${stableRev}.tar.gz'';
+    sha256 = "0afmlbvgky283wd2qjn7l19k1zzh454x6z97cdc22rnnzgfik1jv"; # nixpkgs-sha256
+  };
+  pkgsStable = import (if fetchFromGitHub != null then stableFetchFromGitHub else stableBuiltins) ({
     inherit overlays;
   } // (if system == null then {} else { inherit system; }));
 
@@ -24,7 +28,11 @@ let
     rev = masterRev;
     hash = "sha256-UOxazsKzbMALQlr5UWJ/4YKBzCsneXfdE/MkZZH9dFg="; # nixpkgs-master-hash
   };
-  pkgsMaster = import masterFetchFromGitHub ({
+  masterBuiltins = builtins.fetchTarball {
+    url = ''https://github.com/NixOS/nixpkgs/archive/${masterRev}.tar.gz'';
+    sha256 = "0n3lzn8na97k2gfpfy975g6830p1gxi53yas885w0v5kqb75mv2h"; # nixpkgs-master-sha256
+  };
+  pkgsMaster = import (if fetchFromGitHub != null then masterFetchFromGitHub else masterBuiltins) ({
     inherit overlays;
   } // (if system == null then {} else { inherit system; }));
 
