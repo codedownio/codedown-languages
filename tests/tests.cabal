@@ -79,6 +79,7 @@ library
     , text
     , unliftio
     , unliftio-core
+    , uri-encode
     , vector
   default-language: Haskell2010
 
@@ -159,6 +160,7 @@ executable tests
     , text
     , unliftio
     , unliftio-core
+    , uri-encode
     , vector
     , yaml
   default-language: Haskell2010
