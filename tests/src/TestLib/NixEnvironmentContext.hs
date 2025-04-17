@@ -72,6 +72,7 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
                , "--no-link"
                , "--impure"
                -- , "--include", rootDir
+               , "--option", "restrict-eval", "true"
                , "--expr", T.unpack rendered
                , "-o", linkPath
                ]
