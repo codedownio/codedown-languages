@@ -1,4 +1,5 @@
 { callPackage
+, fetchurl
 , lib
 , makeWrapper
 , runCommand
@@ -29,10 +30,9 @@ let
   indexJs = stdenv.mkDerivation {
     name = "markdown-spellcheck-lsp-index.js";
 
-    src = builtins.fetchTree {
-      type = "tarball";
+    src = fetchurl {
       url = "https://github.com/codedownio/markdown-spellcheck-lsp/releases/download/v0.6.1/markdown-spellcheck-lsp.tar.gz";
-      narHash = "sha256-hFUXt5sHIvV8Bp7g3CoKia7JO1jYrWhVR2nHH8Ae7/A=";
+      hash = "sha256-CSxfCEb/R/a8YuGOcF2hA3Ra/HWya+E04AsOwHajU+E=";
     };
 
     buildPhase = "true";
