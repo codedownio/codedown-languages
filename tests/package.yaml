@@ -44,6 +44,7 @@ dependencies:
 - sandwich-contexts
 - string-interpolate
 - text
+- uri-encode
 - vector
 
 # - hashable # Only needed for aeson < 2

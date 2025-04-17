@@ -11,6 +11,7 @@ import qualified Data.List as L
 import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Text.IO as T
+import qualified Network.URI.Encode as URI
 import qualified System.Directory as SD
 import System.Exit
 import System.FilePath
@@ -51,20 +52,26 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
     Nothing -> expectationFailure [i|Couldn't find nixpkgs lock info|]
     Just locked -> return locked
 
+  let nixpkgsSrcSpec = lockedToNixSrcSpec "nixpkgs" nixpkgsLocked
+
   let nixEnv = NixEnvironment {
         nixEnvironmentChannels = [
             NixSrcPath "codedown" [i|builtins.fetchTree { type = "path"; path = "#{rootDir}"; }|]
-            , lockedToNixSrcSpec "nixpkgs" nixpkgsLocked
+            , nixpkgsSrcSpec
             ]
         , nixEnvironmentKernels = kernels
         , nixEnvironmentOtherConfig = otherConfig
         }
 
-  let rendered = renderNixEnvironment "<nixpkgs>" nixEnv
+  let rendered = renderNixEnvironment (renderNixSrcSpecBuiltins nixpkgsSrcSpec) nixEnv
   debug [i|nixEnv: #{nixEnv}|]
 
   Just dir <- getCurrentFolder
   liftIO $ T.writeFile (dir </> "expr.nix") rendered
+
+  let NixSrcFetchFromGithub {..} = nixpkgsSrcSpec
+  -- github:NixOS/nixpkgs/6af28b834daca767a7ef99f8a7defa957d0ade6f?narHash=sha256-W4YZ3fvWZiFYYyd900kh8P8wU6DHSiwaH0j4%2Bfai1Sk%3D
+  let nixpkgsUri = [i|github:#{nixSrcOwner}/#{nixSrcRepo}/#{nixSrcRev}?narHash=#{URI.encodeText nixSrcHash}|]
 
   built <- withSystemTempDirectory "test-nix-build" $ \((</> "link") -> linkPath) -> do
     let args = ["build"
@@ -72,6 +79,8 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
                , "--no-link"
                , "--impure"
                -- , "--include", rootDir
+               , "--option", "restrict-eval", "true"
+               , "--option", "allowed-uris", L.unwords ["path:" <> rootDir, nixpkgsUri]
                , "--expr", T.unpack rendered
                , "-o", linkPath
                ]

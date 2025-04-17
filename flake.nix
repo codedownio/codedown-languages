@@ -13,7 +13,13 @@
         pkgsStable = import nixpkgs { inherit system overlays; };
         pkgsMaster = import nixpkgs-master { inherit system overlays; };
 
-        codedown = import ./codedown.nix { inherit pkgsStable pkgsMaster; };
+        codedown = import ./codedown.nix {
+          pkgsStableSrc = nixpkgs;
+          inherit pkgsStable;
+
+          pkgsMasterSrc = nixpkgs-master;
+          inherit pkgsMaster;
+        };
 
         sampleOutputs = pkgsStable.callPackage ./nix/sample-outputs.nix { inherit codedown pkgsStable; };
 
