@@ -1,15 +1,6 @@
 
 resolver: lts-22.43
 
-nix:
-  pure: false
-  packages:
-  - nix
-  - openssh
-  - pkg-config
-  - postgresql
-  - zlib
-
 packages:
 - .
 

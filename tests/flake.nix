@@ -3,7 +3,7 @@
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.11";
 
   outputs = { self, flake-utils, nixpkgs }:
-    flake-utils.lib.eachSystem ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"] (system:
+    flake-utils.lib.eachSystem ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"] (system:
       let
         pkgs = import nixpkgs { inherit system; };
         tests = pkgs.haskell.packages.ghc965.callPackage ./tests.nix {};
@@ -11,6 +11,14 @@
         rec {
           devShells = {
             default = pkgs.mkShell {
+              buildInputs = with pkgs; [
+                openssh
+                pkg-config
+                postgresql
+                postgresql.dev
+                zlib
+              ];
+
               NIX_PATH = "nixpkgs=${pkgs.path}";
             };
           };
@@ -29,8 +37,6 @@
           };
 
           defaultPackage = packages.tests;
-
-          devShell = tests.env;
 
           stack = pkgs.stack;
         }
