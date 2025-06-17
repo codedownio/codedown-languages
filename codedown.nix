@@ -20,6 +20,7 @@ rec {
 
   testing = {
     builds-forever = pkgsMaster.callPackage ./modules/testing/builds-forever.nix {};
+    builder-uid = pkgsMaster.callPackage ./modules/testing/builder-uid.nix {};
   };
 
   # Exported so clients can build searchers for other package sets, like "codedown.searcher nixpkgs"

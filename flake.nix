@@ -23,6 +23,16 @@
 
         sampleOutputs = pkgsStable.callPackage ./nix/sample-outputs.nix { inherit codedown pkgsStable; };
 
+        linkFarmWithPassthru = name: attrs: pkgsStable.runCommand name {
+          passthru = attrs;
+        } ''
+          mkdir -p $out
+          ${pkgsStable.lib.concatStringsSep "\n" (pkgsStable.lib.mapAttrsToList (n: v: ''
+            mkdir -p $out/$(dirname "${n}")
+            ln -s ${v} $out/${n}
+          '') attrs)}
+        '';
+
       in
         {
           devShells = {
@@ -46,6 +56,8 @@
             # });
 
             searcher = codedown.searcher pkgsStable;
+
+            testing = linkFarmWithPassthru "codedown-languages-testing" codedown.testing;
 
             # Tests use flake to do packageSearch builds
             inherit (codedown) packageSearch;
