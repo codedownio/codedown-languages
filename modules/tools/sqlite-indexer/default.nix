@@ -36,6 +36,8 @@ let
     (!packageMustBeDerivation || isDerivation value)
     &&
     (!packageMustHaveName || ((value.meta.name or "") != ""))
+    &&
+    ((lib.generators.toJSON {} (chooseMeta value)) != "") # Test never fails, is just used to catch exceptions
   )) packages;
 
   json = writeText "packages-index-yaml.json" (lib.generators.toJSON {} (lib.mapAttrsToList (k: v: {

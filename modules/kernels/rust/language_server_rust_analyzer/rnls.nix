@@ -18,34 +18,32 @@
 #   myers-diff = ghc.callPackage ./myers-diff.nix {};
 # }
 
-let
-  version = import ./rnls-version.nix;
-in
-
 # Fetch a static binary, only ~5MB
-stdenv.mkDerivation {
-  pname = "rust-notebook-language-server";
-  inherit version;
-
-  src = {
-    # HASHES_START
-    "x86_64-linux" = fetchzip {
-      url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.3.0/rust-notebook-language-server-0.2.3.0-x86_64-linux.tar.gz";
-      hash = "sha256-IaNP7VEmuYc6B3axhHN8/hfJPKKUtq1klgrjlZZqEVU=";
-    };
-    "x86_64-darwin" = fetchzip {
-      url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.3.0/rust-notebook-language-server-0.2.3.0-x86_64-darwin.tar.gz";
-      hash = "sha256-fNIzPC5vaYtizFxBYCvyCGlDWozi5oAARBio3bGztBk=";
-    };
-    "aarch64-darwin" = fetchzip {
-      url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.3.0/rust-notebook-language-server-0.2.3.0-aarch64-darwin.tar.gz";
-      hash = "sha256-KJrH2lmc7nFCTC4zxAJa9ntZW2kobZDUfcI4/yLYbqY=";
-    };
-    # HASHES_END
-  }.${system};
-
-  installPhase = ''
-    mkdir -p $out/bin
-    cp rust-notebook-language-server-${version}-${system} $out/bin/rust-notebook-language-server
-  '';
-}
+{
+  # HASHES_START
+  "aarch64-linux" = fetchzip {
+    name = "rust-notebook-language-server-0.2.4.0";
+    stripRoot = false;
+    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.4.0/rust-notebook-language-server-0.2.4.0-aarch64-linux.tar.gz";
+    hash = "sha256-LAcJUSyw/TWMF2HPY0Fy3GVF9KiRJ63dSpKwnKU4hwI=";
+  };
+  "x86_64-linux" = fetchzip {
+    name = "rust-notebook-language-server-0.2.4.0";
+    stripRoot = false;
+    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.4.0/rust-notebook-language-server-0.2.4.0-x86_64-linux.tar.gz";
+    hash = "sha256-rmCbhWJuFTn1CD0FiwJ34JhQmMl7+l1fTWQMtfdhYW8=";
+  };
+  "x86_64-darwin" = fetchzip {
+    name = "rust-notebook-language-server-0.2.4.0";
+    stripRoot = false;
+    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.4.0/rust-notebook-language-server-0.2.4.0-x86_64-darwin.tar.gz";
+    hash = "sha256-eNTITQO0X1Am+wWjmtmcgBfsyfJkW2XCpL3XQpku0y0=";
+  };
+  "aarch64-darwin" = fetchzip {
+    name = "rust-notebook-language-server-0.2.4.0";
+    stripRoot = false;
+    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.4.0/rust-notebook-language-server-0.2.4.0-aarch64-darwin.tar.gz";
+    hash = "sha256-2RL6LnOt2STn2TS9RDyRh5tRWL1DSKKeWYt3Kx9uFqc=";
+  };
+  # HASHES_END
+}.${system}
