@@ -43,6 +43,9 @@ lib.evalModules {
     ../modules/shells/fish/module.nix
     ../modules/shells/zsh/module.nix
 
+    ../modules/testing/builds-forever/module.nix
+    ../modules/testing/builder-uid/module.nix
+
     {
       config = {
         pkgs = pkgsStable;
