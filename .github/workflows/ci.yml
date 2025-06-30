@@ -50,10 +50,13 @@ jobs:
 
   test:
     name: ${{matrix.suite.name}} (${{matrix.suite.flags}})
-    runs-on: self-hosted
+    runs-on: ${{ matrix.runs-on || fromJSON('["self-hosted", "Linux"]') }}
     strategy:
       fail-fast: false
       matrix:
+        runs-on:
+        # - [self-hosted, macOS]
+        - [self-hosted, Linux]
         suite:
         - name: bash
         - name: clojure
