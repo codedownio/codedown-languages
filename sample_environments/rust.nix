@@ -3,6 +3,8 @@
 }:
 
 codedown.makeEnvironment {
+  name = "rust";
+
   kernels.rust.enable = true;
   kernels.rust.packages = [
     "rand"

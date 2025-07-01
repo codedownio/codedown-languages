@@ -3,6 +3,8 @@
 }:
 
 codedown.makeEnvironment {
+  name = "python3";
+
   kernels.python3.enable = true;
   kernels.python3.packages = [
     {
