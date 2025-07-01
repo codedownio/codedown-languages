@@ -4,6 +4,8 @@
 }:
 
 codedown.makeEnvironment {
+  name = "bash";
+
   kernels.bash.enable = true;
 
   extraBinDirs = {
