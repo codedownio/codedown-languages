@@ -19,8 +19,8 @@ rec {
   spellchecker = pkgsMaster.callPackage ./modules/language_servers/markdown-spellcheck-lsp {};
 
   testing = {
-    builds-forever = pkgsMaster.callPackage ./modules/testing/builds-forever.nix {};
-    builder-uid = pkgsMaster.callPackage ./modules/testing/builder-uid.nix {};
+    builds-forever = pkgsMaster.callPackage ./modules/testing/builds-forever/default.nix {};
+    builder-uid = pkgsMaster.callPackage ./modules/testing/builder-uid/default.nix {};
   };
 
   # Exported so clients can build searchers for other package sets, like "codedown.searcher nixpkgs"
