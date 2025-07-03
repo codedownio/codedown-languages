@@ -10,8 +10,6 @@
 
 , pkgsStable
 , pkgsMaster
-
-, name ? "codedown-environment"
 }:
 
 config:
@@ -66,7 +64,7 @@ let
       meta = chooseMeta pkg;
     };
 
-  linkBinaries = newBin: inputs: runCommand "${name}-${newBin}" {} ''
+  linkBinaries = newBin: inputs: runCommand "codedown-environment-${newBin}" {} ''
     mkdir -p "$out/${newBin}"
 
     for input in ${builtins.toString inputs}; do
@@ -79,7 +77,8 @@ let
 in
 
 symlinkJoin {
-  inherit name;
+  name = evaluated.config.name;
+
   paths =
     attrValues evaluated.config.builtKernels
     ++ attrValues evaluated.config.builtLanguageServers

@@ -4,6 +4,8 @@
 
 
 codedown.makeEnvironment {
+  name = "mega";
+
   ### Exporters ###
 
   exporters.nbconvert.enable = true;

@@ -4,6 +4,11 @@ with lib;
 
 {
   options = {
+    name = mkOption {
+      type = types.str;
+      default = "codedown-environment";
+    };
+
     pkgs = mkOption {
       type = types.attrs;
       default = pkgs;

@@ -3,6 +3,8 @@
 }:
 
 codedown.makeEnvironment {
+  name = "python311";
+
   kernels.python3.python3Package = "python311";
 
   kernels.python3.enable = true;
