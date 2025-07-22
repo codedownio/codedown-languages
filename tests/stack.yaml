@@ -4,6 +4,9 @@ resolver: lts-22.43
 packages:
 - .
 
+nix:
+  pure: false
+
 extra-deps:
 - git: https://github.com/codedownio/lsp.git
   commit: 673ff007ce08aed7cf3cf8a5050b4066948afa91
