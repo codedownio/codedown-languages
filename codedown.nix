@@ -69,13 +69,13 @@ rec {
 
   nixpkgsOverlay = callPackage ./nix/nixpkgs-overlay.nix { inherit searcher; };
 
-  importChannel = bootstrap: name: value:
+  importChannel = maybeBootstrap: name: value:
     let
       imported = import value;
       overlays = [nixpkgsOverlay];
     in
       # Import codedown-languages
-      if (builtins.isFunction imported && builtins.hasAttr "isCodeDown" (builtins.functionArgs imported)) then imported { inherit system; inherit (bootstrap) fetchFromGitHub; }
+      if (builtins.isFunction imported && builtins.hasAttr "isCodeDown" (builtins.functionArgs imported)) then imported ({ inherit system; } // lib.optionalAttrs (maybeBootstrap != null) { inherit (maybeBootstrap) fetchFromGitHub; })
       # Import Nixpkgs
       else if (builtins.isFunction imported && builtins.hasAttr "overlays" (builtins.functionArgs imported)) then imported { inherit overlays system; }
       # Generic import
