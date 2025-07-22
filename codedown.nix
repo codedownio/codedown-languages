@@ -69,6 +69,20 @@ rec {
 
   nixpkgsOverlay = callPackage ./nix/nixpkgs-overlay.nix { inherit searcher; };
 
+  importChannel = bootstrap: name: value:
+    let
+      imported = import value;
+      overlays = [nixpkgsOverlay];
+    in
+      # Import codedown-languages
+      if (builtins.isFunction imported && builtins.hasAttr "isCodeDown" (builtins.functionArgs imported)) then imported { inherit system; inherit (bootstrap) fetchFromGitHub; }
+      # Import Nixpkgs
+      else if (builtins.isFunction imported && builtins.hasAttr "overlays" (builtins.functionArgs imported)) then imported { inherit overlays system; }
+      # Generic import
+      else if (builtins.isFunction imported) then imported { inherit system; }
+      else imported
+  ;
+
   # Exposed so it's easier to compute build dependencies in the presence of IFD
   inherit pkgsStableSrc pkgsStable pkgsMasterSrc pkgsMaster requiredPackages;
 }
