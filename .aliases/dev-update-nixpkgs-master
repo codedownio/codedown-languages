@@ -1,0 +1,11 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p nix gnused
+
+set -e
+
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPTDIR/.."
+
+nix flake update nixpkgs-master
+
+dev-update-default-nix
