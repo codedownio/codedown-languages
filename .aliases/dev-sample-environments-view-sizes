@@ -1,0 +1,13 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p yq-go
+
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPTDIR/.."
+
+set -e
+
+OUTPUT=$(nix build .#sample_environments_farm --no-link --json | jq -r '.[0].outputs.out')
+
+echo "Built sample environments farm: $OUTPUT"
+
+nix-tree "$OUTPUT"
