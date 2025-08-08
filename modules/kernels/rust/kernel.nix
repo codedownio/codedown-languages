@@ -31,6 +31,7 @@ common.makeJupyterKernel (
       inherit language;
       logo32 = ./rust-logo-32x32.png;
       logo64 = ./rust-logo-64x64.png;
+      kernelSvg = ./rust-logo.svg;
       metadata = {
         codedown = {
           inherit attrs extensions;
