@@ -21,7 +21,8 @@ tests = describe "Python" $ parallel $ do
   tests' ("python3", "python310")
   tests' ("python3", "python311")
   tests' ("python3", "python312")
-  -- TODO: get python313, python314 working
+  tests' ("python3", "python313")
+  tests' ("python3", "python314")
 
   -- tests' ("pypy3", "pypy3")
 

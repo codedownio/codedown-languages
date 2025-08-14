@@ -1,4 +1,4 @@
-{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, boilerplate, ... }:
+{ config, options, lib, nixosOptionsToSettingsSchema, boilerplate, ... }:
 
 with lib;
 
@@ -114,10 +114,8 @@ in
           "python310"
           "python311"
           "python312"
-
-          # These fail to build
-          # "python313"
-          # "python314"
+          "python313"
+          "python314"
         ]
         # ++ (builtins.filter (n: builtins.match "^python3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
       ));
