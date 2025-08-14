@@ -70,6 +70,7 @@ symlinkJoin {
       inherit displayName settingsSchema;
       version = python3.version;
       icon = ./python-logo-64x64.png;
+      iconSvg = ./python.svg;
       hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch;
@@ -90,6 +91,7 @@ symlinkJoin {
         attr = "ipython";
         args = ["${pythonToUse}/bin/ipython"];
         icon = ./python-logo-64x64.png;
+        iconSvg = ./python.svg;
       };
     };
     modes = {

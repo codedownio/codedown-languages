@@ -48,6 +48,7 @@ symlinkJoin {
       displayName = "Clojure";
       version = clojure.version;
       icon = ./clojure-logo-64x64.png;
+      iconSvg = ./clojure.svg;
       inherit settingsSchema;
       hasPackages = packageOptions != {};
     };

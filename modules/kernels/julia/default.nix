@@ -100,6 +100,7 @@ symlinkJoin {
       inherit displayName settingsSchema;
       version = julia.version;
       icon = ./julia-logo-64x64.png;
+      iconSvg = ./julia.svg;
       hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch;

@@ -41,6 +41,7 @@ symlinkJoin {
       displayName = "PostgreSQL";
       description = "A simple Jupyter kernel for PostgreSQL";
       icon = ./postgres-logo-64x64.png;
+      iconSvg = ./postgresql.svg;
       inherit version;
       inherit settingsSchema;
       hasPackages = packageOptions != {};

@@ -43,6 +43,7 @@ symlinkJoin {
       displayName = "Bash " + bash.version;
       version = bash.version;
       icon = ./bash-logo-128x128.png;
+      iconSvg = ./gnubash.svg;
       inherit settingsSchema;
       hasPackages = packageOptions != {};
     };

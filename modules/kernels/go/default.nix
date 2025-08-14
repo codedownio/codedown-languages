@@ -48,6 +48,7 @@ symlinkJoin {
       displayName = "Go";
       version = go.version;
       icon = ./go-logo-64x64.png;
+      iconSvg = ./go.svg;
       inherit settingsSchema;
       hasPackages = packageOptions != {};
     };
