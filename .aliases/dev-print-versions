@@ -1,0 +1,9 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p yq-go
+
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPTDIR/.."
+
+set -e
+
+nix run .#printVersions
