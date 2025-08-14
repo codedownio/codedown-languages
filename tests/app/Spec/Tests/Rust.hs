@@ -39,7 +39,7 @@ tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ do
 
                                  let point = Point { x: 1, y: 2 };
 
-                                 let serialized = serde_json::to_string(&point).unwrap();
+                                 let serialized: String = serde_json::to_string(&point).unwrap();
                                  println!("serialized = {}", serialized);
                                  |] [i|serialized = {"x":1,"y":2}\n|]
     testKernelStdoutCallback "rust" randCode $ \case
