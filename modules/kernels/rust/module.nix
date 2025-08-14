@@ -17,6 +17,8 @@ let
     ];
   };
 
+  pkgsToUse = config.pkgsMaster;
+
 in
 
 {
@@ -48,7 +50,7 @@ in
         type = types.enum (
           ["rust"]
           ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "rust_") name == "rust_")
-                              (builtins.attrNames config.pkgs))
+                              (builtins.attrNames pkgsToUse))
         );
         default = "rust";
       };
@@ -80,8 +82,8 @@ in
   };
 
   config = mkIf config.kernels.rust.enable {
-    builtKernels.rust = config.pkgs.callPackage ./. {
-      rust = getAttr config.kernels.rust.rustPackage config.pkgs;
+    builtKernels.rust = pkgsToUse.callPackage ./. {
+      rust = getAttr config.kernels.rust.rustPackage pkgsToUse;
 
       settings = config.kernels.rust;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.rust;
