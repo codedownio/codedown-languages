@@ -70,8 +70,7 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
   liftIO $ T.writeFile (dir </> "expr.nix") rendered
 
   let NixSrcFetchFromGithub {..} = nixpkgsSrcSpec
-  -- github:NixOS/nixpkgs/6af28b834daca767a7ef99f8a7defa957d0ade6f?narHash=sha256-W4YZ3fvWZiFYYyd900kh8P8wU6DHSiwaH0j4%2Bfai1Sk%3D
-  let nixpkgsUri = [i|github:#{nixSrcOwner}/#{nixSrcRepo}/#{nixSrcRev}?narHash=#{URI.encodeText nixSrcHash}|]
+  let nixpkgsUri = [i|github:#{nixSrcOwner}/#{nixSrcRepo}/#{nixSrcRev}?narHash=#{URI.encodeTextWith customIsAllowed nixSrcHash}|]
 
   built <- withSystemTempDirectory "test-nix-build" $ \((</> "link") -> linkPath) -> do
     let args = ["build"
@@ -100,3 +99,15 @@ parseNixpkgsSource (aesonLookup "locks" ->
                                     ))
                    ) = Just x
 parseNixpkgsSource _ =  Nothing
+
+-- '/' should get URL-encoded to %2F, but we saw Nix not doing this??
+--
+-- Here's what I found in the Nix code:
+-- const static std::string allowedInQuery = ":@/?";
+-- const static std::string allowedInPath = ":@/";
+--
+-- The SRI hash can contain +, /, and = apparently (plus numbers and upper/lowercase letters)
+-- So the only thing we need to allow here is '/'.
+customIsAllowed :: Char -> Bool
+customIsAllowed '/' = True
+customIsAllowed x = URI.isAllowed x
