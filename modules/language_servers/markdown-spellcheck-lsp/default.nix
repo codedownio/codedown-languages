@@ -45,13 +45,20 @@ let
     dontFixup = true;
   };
 
+  nodehunToUse = nodehun.overrideAttrs (oldAttrs: {
+    postInstall = oldAttrs.postInstall + ''
+      # Remove dangling symlinks
+      rm -rf $out/lib/node_modules/nodehun/node_modules/.bin
+    '';
+  });
+
   contents = runCommand "markdown-spellcheck-lsp-wrapped" {
     buildInputs = [makeWrapper];
     propagatedBuildInputs = [unixtools.col];
   } ''
     mkdir -p $out/bin
     makeWrapper ${nodejs}/bin/node $out/bin/markdown-spellcheck-lsp \
-      --set NODE_PATH ${nodehun}/lib/node_modules \
+      --set NODE_PATH ${nodehunToUse}/lib/node_modules \
       --add-flags ${indexJs}
   '';
 
