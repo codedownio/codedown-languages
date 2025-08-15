@@ -6,16 +6,16 @@
 }:
 
 let
-  stableRev = "6af28b834daca767a7ef99f8a7defa957d0ade6f"; # nixpkgs-rev
+  stableRev = "3634657dc244b3e4868a9b37b7243ea33aa786ec"; # nixpkgs-rev
   stableFetchFromGitHub = fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
     rev = stableRev;
-    hash = "sha256-W4YZ3fvWZiFYYyd900kh8P8wU6DHSiwaH0j4+fai1Sk="; # nixpkgs-hash
+    hash = "sha256-B+oXXmNRTOajmEpzYJDrpZmYRFIBWA/fKCgY5CXCc5M="; # nixpkgs-hash
   };
   stableBuiltins = builtins.fetchTarball {
     url = ''https://github.com/NixOS/nixpkgs/archive/${stableRev}.tar.gz'';
-    sha256 = "0afmlbvgky283wd2qjn7l19k1zzh454x6z97cdc22rnnzgfik1jv"; # nixpkgs-sha256
+    sha256 = "14vkq8jy861853ghyn01a929i6d5xf860wsak2iyck2icdg1gsh7"; # nixpkgs-sha256
   };
   pkgsStableSrc = if fetchFromGitHub != null then stableFetchFromGitHub else stableBuiltins;
   pkgsStable = import pkgsStableSrc ({
