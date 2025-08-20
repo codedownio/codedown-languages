@@ -1,0 +1,9 @@
+[project]
+name = "python314"
+version = "0.1.0"
+readme = "README.md"
+requires-python = "==3.14"
+dependencies = [
+    "ipykernel>=6.30.1",
+    "ipywidgets>=8.1.7",
+]
