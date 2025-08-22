@@ -2,6 +2,8 @@
 
 module Spec.Tests.Haskell.Common where
 
+import Data.Function
+import Data.Maybe
 import Data.String.Interpolate
 import Data.Text as T
 import TestLib.NixTypes
@@ -26,8 +28,11 @@ kernelSpec ghcPackage = NixKernelSpec {
   }
 
 kernelSpecWithHlintOutput :: Text -> NixKernelSpec
-kernelSpecWithHlintOutput ghcPackage = (kernelSpec ghcPackage) {
-  nixKernelExtraConfig = Just [
-      "enableHlintOutput = true"
-      ]
+kernelSpecWithHlintOutput ghcPackage = baseKernelSpec {
+  nixKernelExtraConfig = nixKernelExtraConfig baseKernelSpec
+                       & fromMaybe []
+                       & ("enableHlintOutput = true" :)
+                       & Just
   }
+  where
+    baseKernelSpec = kernelSpec ghcPackage

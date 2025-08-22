@@ -21,8 +21,8 @@ with lib;
 
       ghcPackage = mkOption {
         example = "GHC version";
-        type = types.enum ["ghc92" "ghc94" "ghc96" "ghc98"];
-        default = "ghc98";
+        type = types.enum ["ghc94" "ghc96" "ghc98" "ghc910"];
+        default = "ghc910";
       };
 
       interface.attrs = mkOption {
