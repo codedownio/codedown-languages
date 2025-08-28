@@ -21,7 +21,7 @@ with lib;
 
       ghcPackage = mkOption {
         example = "GHC version";
-        type = types.enum ["ghc94" "ghc96" "ghc98" "ghc910"];
+        type = types.enum ["ghc94" "ghc96" "ghc98" "ghc910" "ghc912"];
         default = "ghc910";
       };
 
@@ -70,8 +70,8 @@ with lib;
         ihaskell-source = pkgs.fetchFromGitHub {
           owner = "codedownio";
           repo = "IHaskell";
-          rev = "72e663bcc1af12fc136d19941cf21efdf7341379";
-          sha256 = "WSXrx+/iAiGa8qIJc7Wt6VxL9adw5KFt6FfaiOH/mjg=";
+          rev = "0cd3dc2a930581eaee4560175486b9ceb5945632";
+          sha256 = "sha256-2SeTakYt/DPQ7S+uHVOVbL/xAcil7g5OGPIx+ZSKYCA=";
         };
       };
 

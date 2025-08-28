@@ -7,7 +7,7 @@ echo "Got version: $VERSION"
 
 NEW_HASHES=$(
   for system in x86_64-linux x86_64-darwin aarch64-darwin; do
-    for ghc in ghc92 ghc94 ghc96 ghc98; do
+    for ghc in ghc92 ghc94 ghc96 ghc98 ghc910 ghc912; do
       URL="https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${VERSION}/haskell-notebook-language-server-${VERSION}-${ghc}-${system}.tar.gz"
       HASH=$(nix-prefetch fetchzip --url "$URL" 2>/dev/null)
 

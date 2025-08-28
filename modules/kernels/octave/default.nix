@@ -1,12 +1,8 @@
 { lib
-, pkgs
 
 , callPackage
-, jupyter-kernel
 , python3
-, runCommand
 , symlinkJoin
-, writeTextDir
 
 , octave
 
@@ -34,10 +30,6 @@ let
                          let chosenPackages = map (x: lib.getAttr x octaveComplete.pkgs) packages; in
                          if chosenPackages == [] then octaveComplete else octaveComplete.withPackages (ps: chosenPackages)
                        else octaveComplete;
-
-  chosenPackages = if lib.hasAttr "pkgs" octave
-                   then octave.pkgs
-                   else [];
 
   # Wrapper derivation that only has "octave" and "octave-cli" binaries,
   # perfect for including in binaries and passing to the kernel

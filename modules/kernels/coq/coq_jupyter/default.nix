@@ -39,7 +39,7 @@ rec {
     dontInstall = true;
 
     buildPhase = ''
-      convert ./ide/coqide/coq.png -resize ${size}x${size} $out
+      convert ./ide/rocqide/coq.png -resize ${size}x${size} $out
     '';
   };
 

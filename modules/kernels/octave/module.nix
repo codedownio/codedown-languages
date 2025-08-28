@@ -2,6 +2,11 @@
 
 with lib;
 
+let
+  pkgsToUse = config.pkgsMaster;
+
+in
+
 {
   options = {
     kernels.octave = {
@@ -41,8 +46,8 @@ with lib;
   };
 
   config = mkIf config.kernels.octave.enable {
-    builtKernels.octave = config.pkgs.callPackage ./. {
-      octave = config.pkgs.octave;
+    builtKernels.octave = pkgsToUse.callPackage ./. {
+      octave = pkgsToUse.octave;
       settings = config.kernels.octave;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.octave;
     };

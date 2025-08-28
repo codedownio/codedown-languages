@@ -10,6 +10,7 @@ args: {
   exporters-full = import ./sample_environments/exporters-full.nix args;
   exporters-small = import ./sample_environments/exporters-small.nix args;
   ghc910 = import ./sample_environments/ghc910.nix args;
+  ghc912 = import ./sample_environments/ghc912.nix args;
   ghc94 = import ./sample_environments/ghc94.nix args;
   ghc96 = import ./sample_environments/ghc96.nix args;
   ghc98 = import ./sample_environments/ghc98.nix args;
