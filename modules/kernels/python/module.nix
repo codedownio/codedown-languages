@@ -111,11 +111,11 @@ in
         [
           "python3"
 
-          "python310"
+          # "python310"
           "python311"
           "python312"
           "python313"
-          "python314"
+          # "python314"
         ]
         # ++ (builtins.filter (n: builtins.match "^python3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
       ));
