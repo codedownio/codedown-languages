@@ -31,7 +31,7 @@ in
           ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "coqPackages_") name == "coqPackages_")
                               (builtins.attrNames pkgsToUse))
         );
-        default = "coqPackages";
+        default = "coqPackages_8_20";
       };
 
       interface.attrs = mkOption {

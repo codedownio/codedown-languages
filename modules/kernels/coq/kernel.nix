@@ -1,9 +1,8 @@
-{ stdenv
-, pkgs
-, callPackage
+{ callPackage
+, lib
+
 , coq
-, coq-kernel
-, python312
+, coq_jupyter
 
 , displayName
 , enableVariableInspector
@@ -13,12 +12,8 @@
 , extensions
 }:
 
-with pkgs.lib;
-
 let
   common = callPackage ../common.nix {};
-
-  # coq_jupyter = callPackage ./coq_jupyter {};
 
   # variableInspector = {
   #   initial_code_path = ./variable_inspector.py;
@@ -29,13 +24,13 @@ let
 in
 
 common.makeJupyterKernel (
-  listToAttrs [{
-    name = head attrs;
+  lib.listToAttrs [{
+    name = lib.head attrs;
     value = {
       displayName = displayName;
-      language = head attrs;
+      language = lib.head attrs;
       argv = [
-        "${(coq-kernel.override { python3 = python312; }).launcher}/bin/coq-kernel"
+        "${coq_jupyter.launcher}/bin/coq-kernel"
         "-f"
         "{connection_file}"
       ];
@@ -52,7 +47,7 @@ common.makeJupyterKernel (
         };
       };
       env = {
-        COQPATH = concatStringsSep ":" (map (x: "${x}/lib/coq/${coq.coq-version}/user-contrib/") chosenPackages);
+        COQPATH = lib.concatStringsSep ":" (map (x: "${x}/lib/coq/${coq.coq-version}/user-contrib/") chosenPackages);
       };
     };
   }]

@@ -1,10 +1,12 @@
 {-# LANGUAGE OverloadedLists #-}
+{-# LANGUAGE RankNTypes #-}
 {-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 
 module Spec.Tests.Coq (tests) where
 
 import Data.Aeson
 import Data.String.Interpolate
+import Data.Text (Text)
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
@@ -13,19 +15,29 @@ import TestLib.TestSearchers
 import TestLib.Types
 
 
-kernelSpec :: NixKernelSpec
-kernelSpec = NixKernelSpec {
+kernelSpec :: Text -> NixKernelSpec
+kernelSpec coqPackages = NixKernelSpec {
   nixKernelName = "coq"
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Coq"
   , nixKernelPackages = [nameOnly "bignums"]
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelExtraConfig = Nothing
+  , nixKernelExtraConfig = Just [
+      [i|coqPackages = "#{coqPackages}"|]
+      ]
   }
 
 tests :: LanguageSpec
-tests = describe "Coq" $ introduceNixEnvironment [kernelSpec] [] "Coq" $ introduceJupyterRunner $ do
+tests = do
+  tests' "coqPackages_8_20" -- Current default
+
+  -- TODO: https://github.com/codedownio/codedown-languages/issues/75
+  -- tests' "coqPackages" -- This is 9.0 on master
+
+
+tests' :: Text -> LanguageSpec
+tests' coqPackages = describe [i|Coq (#{coqPackages})|] $ introduceNixEnvironment [kernelSpec coqPackages] [] "Coq" $ introduceJupyterRunner $ do
   testKernelSearchersBuild "coq"
   testHasExpectedFields "coq"
 

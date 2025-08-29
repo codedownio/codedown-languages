@@ -1,53 +1,53 @@
 { callPackage
 , coq
-, coq-kernel
 , imagemagick
+, lib
 , makeWrapper
 , python3
 , runCommand
 , stdenv
 }:
 
-# To test (in root nixpkgs dir):
-# $(nix-build -E 'with import ./. {}; jupyter.override { definitions = { coq = coq-kernel.definition; }; }')/bin/jupyter-notebook
+let
+  kernel = callPackage ./kernel.nix { inherit python3; };
 
-# let
-#   kernel = callPackage ./kernel.nix {};
-
-# in
+in
 
 rec {
-  # launcher = runCommand "coq-kernel-launcher" {
-  #   inherit coq;
-  #   python = python3.withPackages (ps: [ ps.traitlets ps.jupyter_core ps.ipykernel kernel ]);
-  #   buildInputs = [ makeWrapper ];
-  # } ''
-  #   mkdir -p $out/bin
+  launcher = runCommand "coq-kernel-launcher" {
+    inherit coq;
+    python = python3.withPackages (ps: [ ps.traitlets ps.jupyter_core ps.ipykernel kernel ]);
+    buildInputs = [ makeWrapper ];
+  } ''
+    mkdir -p $out/bin
 
-  #   makeWrapper $python/bin/python $out/bin/coq-kernel \
-  #     --add-flags "-m coq_jupyter" \
-  #     --suffix PATH : $coq/bin
-  # '';
+    makeWrapper $python/bin/python $out/bin/coq-kernel \
+      --add-flags "-m coq_jupyter" \
+      --suffix PATH : $coq/bin
+  '';
 
-  sizedLogo = size: stdenv.mkDerivation {
-    name = "coq-${coq.version}-logo-${size}x${size}.png";
+  sizedLogo = size: let
+    imageDir = if lib.versionAtLeast coq.version "9.0" then "rocqide" else "coqide";
+  in
+    stdenv.mkDerivation {
+      name = "coq-${coq.version}-logo-${size}x${size}.png";
 
-    src = coq.src;
+      src = coq.src;
 
-    buildInputs = [ imagemagick ];
+      buildInputs = [ imagemagick ];
 
-    dontConfigure = true;
-    dontInstall = true;
+      dontConfigure = true;
+      dontInstall = true;
 
-    buildPhase = ''
-      convert ./ide/rocqide/coq.png -resize ${size}x${size} $out
+      buildPhase = ''
+      convert ./ide/${imageDir}/coq.png -resize ${size}x${size} $out
     '';
-  };
+    };
 
   definition = {
     displayName = "Coq " + coq.version;
     argv = [
-      "${coq-kernel.launcher}/bin/coq-kernel"
+      "${launcher}/bin/coq-kernel"
       "-f"
       "{connection_file}"
     ];

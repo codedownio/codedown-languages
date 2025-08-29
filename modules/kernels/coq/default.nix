@@ -1,8 +1,6 @@
-{ pkgs
-, lib
-, callPackage
+{ callPackage
+, python312
 , symlinkJoin
-, stdenv
 
 , coqPackages
 
@@ -16,11 +14,14 @@ with { inherit (settings.interface) attrs extensions; };
 let
   common = callPackage ../common.nix {};
 
-  coq_jupyter = callPackage ./coq_jupyter {};
-
   coq = coqPackages.coq;
 
-  displayName = "Coq";
+  displayName = "Coq " + coq.version;
+
+  coq_jupyter = callPackage ./coq_jupyter {
+    python3 = python312;
+    inherit coq;
+  };
 
   packageOptions = coqPackages;
   packageSearch = common.searcher packageOptions;
@@ -35,6 +36,7 @@ symlinkJoin {
       inherit coq displayName attrs extensions;
       enableVariableInspector = settings.enableVariableInspector;
       chosenPackages = map (x: builtins.getAttr x packageOptions) packages;
+      inherit coq_jupyter;
     })
 
     coq
