@@ -1,32 +1,33 @@
-{ stdenv
-, callPackage
-, runCommand
-, makeWrapper
+{ callPackage
 , coq
+, coq-kernel
 , imagemagick
+, makeWrapper
 , python3
+, runCommand
+, stdenv
 }:
 
 # To test (in root nixpkgs dir):
 # $(nix-build -E 'with import ./. {}; jupyter.override { definitions = { coq = coq-kernel.definition; }; }')/bin/jupyter-notebook
 
-let
-  kernel = callPackage ./kernel.nix {};
+# let
+#   kernel = callPackage ./kernel.nix {};
 
-in
+# in
 
 rec {
-  launcher = runCommand "coq-kernel-launcher" {
-    inherit coq;
-    python = python3.withPackages (ps: [ ps.traitlets ps.jupyter_core ps.ipykernel kernel ]);
-    buildInputs = [ makeWrapper ];
-  } ''
-    mkdir -p $out/bin
+  # launcher = runCommand "coq-kernel-launcher" {
+  #   inherit coq;
+  #   python = python3.withPackages (ps: [ ps.traitlets ps.jupyter_core ps.ipykernel kernel ]);
+  #   buildInputs = [ makeWrapper ];
+  # } ''
+  #   mkdir -p $out/bin
 
-    makeWrapper $python/bin/python $out/bin/coq-kernel \
-      --add-flags "-m coq_jupyter" \
-      --suffix PATH : $coq/bin
-  '';
+  #   makeWrapper $python/bin/python $out/bin/coq-kernel \
+  #     --add-flags "-m coq_jupyter" \
+  #     --suffix PATH : $coq/bin
+  # '';
 
   sizedLogo = size: stdenv.mkDerivation {
     name = "coq-${coq.version}-logo-${size}x${size}.png";
@@ -46,7 +47,7 @@ rec {
   definition = {
     displayName = "Coq " + coq.version;
     argv = [
-      "${launcher}/bin/coq-kernel"
+      "${coq-kernel.launcher}/bin/coq-kernel"
       "-f"
       "{connection_file}"
     ];

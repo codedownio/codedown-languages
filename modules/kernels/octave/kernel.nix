@@ -46,6 +46,7 @@ common.makeJupyterKernel {
     argv = [
       "${finalLauncher}/bin/octave-kernel"
       "-f"
+      "{connection_file}"
     ];
     language = "octave";
     logo32 = ./octave-logo-32x32.png;

@@ -29,13 +29,14 @@ tests :: LanguageSpec
 tests = do
   -- See kernels/haskell/default.nix for details on what's available
 
-  -- haskellCommonTests "haskell-ghc810"
-  -- haskellCommonTests "haskell-ghc90"
+  -- haskellCommonTests "ghc810"
+  -- haskellCommonTests "ghc90"
   -- haskellCommonTests "ghc92"
-  haskellCommonTests "ghc94"
+  -- haskellCommonTests "ghc94"
   haskellCommonTests "ghc96"
   haskellCommonTests "ghc98"
   haskellCommonTests "ghc910"
+  haskellCommonTests "ghc912"
 
 kernelName :: Text -> Text
 kernelName _ghcPackage = "haskell"

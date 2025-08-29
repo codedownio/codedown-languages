@@ -2,6 +2,8 @@
 , pkgs
 , callPackage
 , coq
+, coq-kernel
+, python312
 
 , displayName
 , enableVariableInspector
@@ -16,7 +18,7 @@ with pkgs.lib;
 let
   common = callPackage ../common.nix {};
 
-  coq_jupyter = callPackage ./coq_jupyter {};
+  # coq_jupyter = callPackage ./coq_jupyter {};
 
   # variableInspector = {
   #   initial_code_path = ./variable_inspector.py;
@@ -33,7 +35,7 @@ common.makeJupyterKernel (
       displayName = displayName;
       language = head attrs;
       argv = [
-        "${coq_jupyter.launcher}/bin/coq-kernel"
+        "${(coq-kernel.override { python3 = python312; }).launcher}/bin/coq-kernel"
         "-f"
         "{connection_file}"
       ];

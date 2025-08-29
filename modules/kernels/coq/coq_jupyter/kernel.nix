@@ -1,12 +1,13 @@
-{ lib
+{ coq
+, lib
 , fetchFromGitHub
 , python3
-, coq
 }:
 
 python3.pkgs.buildPythonPackage rec {
   pname = "coq_jupyter";
   version = "1.6.0";
+  format = "setuptools";
 
   src = fetchFromGitHub {
     owner = "EugeneLoy";

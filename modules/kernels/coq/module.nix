@@ -2,6 +2,11 @@
 
 with lib;
 
+let
+  pkgsToUse = config.pkgsMaster;
+
+in
+
 {
   options = {
     kernels.coq = {
@@ -24,7 +29,7 @@ with lib;
         type = types.enum (
           ["coqPackages"]
           ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "coqPackages_") name == "coqPackages_")
-                              (builtins.attrNames config.pkgs))
+                              (builtins.attrNames pkgsToUse))
         );
         default = "coqPackages";
       };
@@ -45,8 +50,8 @@ with lib;
   };
 
   config = mkIf config.kernels.coq.enable {
-    builtKernels.coq = config.pkgs.callPackage ./. {
-      coqPackages = getAttr config.kernels.coq.coqPackages config.pkgs;
+    builtKernels.coq = pkgsToUse.callPackage ./. {
+      coqPackages = getAttr config.kernels.coq.coqPackages pkgsToUse;
 
       settings = config.kernels.coq;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.coq;
