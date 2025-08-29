@@ -40,7 +40,10 @@ in
       extraJupyterConfig = mkOption {
         example = "Extra Jupyter configuration";
         type = types.str;
-        default = "";
+        default = ''
+          # use Qt as the default backend for plots
+          # c.OctaveKernel.plot_settings = dict(backend='qt')
+        '';
       };
     };
   };
