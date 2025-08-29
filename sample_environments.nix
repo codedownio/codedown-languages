@@ -21,11 +21,9 @@ args: {
   octave = import ./sample_environments/octave.nix args;
   postgres = import ./sample_environments/postgres.nix args;
   pypy3 = import ./sample_environments/pypy3.nix args;
-  python310 = import ./sample_environments/python310.nix args;
   python311 = import ./sample_environments/python311.nix args;
   python312 = import ./sample_environments/python312.nix args;
   python313 = import ./sample_environments/python313.nix args;
-  python314 = import ./sample_environments/python314.nix args;
   python3 = import ./sample_environments/python3.nix args;
   r = import ./sample_environments/r.nix args;
   ruby = import ./sample_environments/ruby.nix args;
