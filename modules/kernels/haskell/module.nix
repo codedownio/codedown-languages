@@ -2,6 +2,11 @@
 
 with lib;
 
+let
+  pkgsToUse = config.pkgs;
+
+in
+
 {
   options = {
     kernels.haskell = {
@@ -64,10 +69,8 @@ with lib;
 
   config = mkIf config.kernels.haskell.enable {
     builtKernels.haskell = let
-      pkgs = config.pkgs;
-
-      compilers = pkgs.callPackage ./compilers.nix {
-        ihaskell-source = pkgs.fetchFromGitHub {
+      compilers = pkgsToUse.callPackage ./compilers.nix {
+        ihaskell-source = pkgsToUse.fetchFromGitHub {
           owner = "codedownio";
           repo = "IHaskell";
           rev = "0cd3dc2a930581eaee4560175486b9ceb5945632";
@@ -75,11 +78,17 @@ with lib;
         };
       };
 
+      compilerName = config.kernels.haskell.ghcPackage;
+
+      compilerNameToUse =
+        if compilerName == "ghc910" then "ghc9102"
+        else compilerName;
+
     in
 
-      pkgs.callPackage ./. {
-        compilerName = config.kernels.haskell.ghcPackage;
-        snapshot = getAttr config.kernels.haskell.ghcPackage compilers;
+      pkgsToUse.callPackage ./. {
+        compilerName = compilerNameToUse;
+        snapshot = compilers.${compilerNameToUse};
 
         settings = config.kernels.haskell;
         settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.haskell;
