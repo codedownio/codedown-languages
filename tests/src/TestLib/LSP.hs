@@ -42,6 +42,7 @@ import TestLib.Types
 import UnliftIO.Directory
 import UnliftIO.Exception
 import UnliftIO.IO
+import UnliftIO.IORef
 import UnliftIO.Process
 
 
@@ -118,10 +119,15 @@ testDiagnostics'' :: (
 testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb = it label $ do
   withLspSession' id name filename codeToTest extraFiles $ \_homeDir -> do
     _ <- openDoc filename (fromMaybe name maybeLanguageId)
-    waitUntil 300.0 $ do
+
+    lastSeenDiagsVar <- newIORef mempty
+
+    waitUntil 60.0 $ do
       diags <- waitForDiagnostics
-      withException (lift $ cb diags) $ \(e :: SomeException) ->
-        logError [i|Exception in testDiagnostics'': #{e}|]
+      writeIORef lastSeenDiagsVar diags
+      withException (lift $ cb diags) $ \(e :: SomeException) -> do
+        lastSeenDiags <- readIORef lastSeenDiagsVar
+        logError [i|Exception in testDiagnostics'': #{e}.\n\nLast seen diagnostics: #{A.encode lastSeenDiags}|]
 
 itHasHoverSatisfying :: (
   LspContext ctx m
@@ -227,16 +233,36 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
   handleFn $ runSessionWithConfigCustomProcess modifyCp sessionConfig cp caps homeDir (session homeDir)
 
 assertDiagnosticRanges :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
-assertDiagnosticRanges diagnostics desired = (getDiagnosticRanges diagnostics) `shouldBe` desired
+assertDiagnosticRanges diagnostics desired = if
+  | found == desired -> return ()
+  | otherwise ->
+      expectationFailure [__i|Got wrong diagnostics!
 
-getDiagnosticRanges :: [Diagnostic] -> [(Range, Maybe (Int32 |? Text))]
-getDiagnosticRanges = fmap (\x -> (x ^. range, x ^. code))
+                              Expected: #{A.encode desired}
+
+                              Found: #{A.encode found}
+                             |]
+  where
+    found = getDiagnosticRanges diagnostics
+
+    getDiagnosticRanges :: [Diagnostic] -> [(Range, Maybe (Int32 |? Text))]
+    getDiagnosticRanges = fmap (\x -> (x ^. range, x ^. code))
 
 assertDiagnosticRanges' :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)] -> m ()
-assertDiagnosticRanges' diagnostics desired = (getDiagnosticRanges' diagnostics) `shouldBe` desired
+assertDiagnosticRanges' diagnostics desired = if
+  | found == desired -> return ()
+  | otherwise ->
+      expectationFailure [__i|Got wrong diagnostics!
 
-getDiagnosticRanges' :: [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)]
-getDiagnosticRanges' = fmap (\x -> (x ^. range, x ^. code, x ^. LSP.message))
+                              Expected: #{A.encode desired}
+
+                              Found: #{A.encode found}
+                             |]
+  where
+    found = getDiagnosticRanges' diagnostics
+
+    getDiagnosticRanges' :: [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)]
+    getDiagnosticRanges' = fmap (\x -> (x ^. range, x ^. code, x ^. LSP.message))
 
 -- hoverShouldSatisfy :: MonadThrow m => Position -> (Maybe Hover -> ExampleT ctx m ()) -> ExampleT ctx m ()
 -- hoverShouldSatisfy pos pred = getHover (TextDocumentIdentifier (Uri undefined)) pos >>= pred
