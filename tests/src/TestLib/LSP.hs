@@ -18,6 +18,7 @@ import Data.Aeson as A
 import Data.Aeson.TH as A
 import qualified Data.ByteString as B
 import Data.Default
+import Data.Function
 import qualified Data.List as L
 import Data.Map (Map)
 import qualified Data.Map as M
@@ -39,11 +40,13 @@ import Test.Sandwich as Sandwich
 import Test.Sandwich.Waits (waitUntil)
 import TestLib.Aeson
 import TestLib.Types
+import UnliftIO.Async
 import UnliftIO.Directory
 import UnliftIO.Exception
 import UnliftIO.IO
 import UnliftIO.IORef
 import UnliftIO.Process
+import UnliftIO.STM
 
 
 data LanguageServerType = LanguageServerTypeTcp
@@ -107,6 +110,30 @@ testDiagnostics' :: (
   LspContext ctx m
   ) => Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics' name filename maybeLanguageId codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest} (diagnostics)|] name filename maybeLanguageId codeToTest
+
+testDiagnosticsLabelDesired :: (
+  LspContext ctx m
+  ) => String -> Text -> FilePath -> Maybe Text -> Text -> ([Diagnostic] -> Bool) -> SpecFree ctx m ()
+testDiagnosticsLabelDesired label name filename maybeLanguageId codeToTest cb = it label $
+  withLspSession' id name filename codeToTest [] $ \_homeDir -> do
+    _ <- openDoc filename (fromMaybe name maybeLanguageId)
+
+    lastSeenDiagsVar <- newTVarIO mempty
+
+    let watchDiagnostics = forever $ do
+          diags <- waitForDiagnostics
+          atomically $ writeTVar lastSeenDiagsVar diags
+
+    withAsync watchDiagnostics $ \_ -> do
+      waitUntil 60.0 $ do
+        flip fix [] $ \loop lastValue ->
+          if | cb lastValue -> return ()
+             | otherwise -> do
+                 newDiags <- atomically $ do
+                   x <- readTVar lastSeenDiagsVar
+                   when (x == lastValue) retrySTM
+                   return x
+                 loop newDiags
 
 testDiagnosticsLabel :: (
   LspContext ctx m
@@ -245,8 +272,8 @@ assertDiagnosticRanges diagnostics desired = if
   where
     found = getDiagnosticRanges diagnostics
 
-    getDiagnosticRanges :: [Diagnostic] -> [(Range, Maybe (Int32 |? Text))]
-    getDiagnosticRanges = fmap (\x -> (x ^. range, x ^. code))
+getDiagnosticRanges :: [Diagnostic] -> [(Range, Maybe (Int32 |? Text))]
+getDiagnosticRanges = fmap (\x -> (x ^. range, x ^. code))
 
 assertDiagnosticRanges' :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)] -> m ()
 assertDiagnosticRanges' diagnostics desired = if
