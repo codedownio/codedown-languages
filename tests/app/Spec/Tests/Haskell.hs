@@ -63,13 +63,13 @@ haskellCommonTests ghcPackage = do
       describe "Kernel" $ do
         itHasDisplayDatas (kernelName ghcPackage) [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
 
-        itHasDisplayDatas (kernelName ghcPackage) [__i|:info String|] [stringInfo]
+        itHasDisplayDatas (kernelName ghcPackage) [__i|:info String|] [stringInfo ghcPackage]
 
         -- We shouldn't get hlint output by default
         itHasDisplayDatas (kernelName ghcPackage) Diagnostics.etaExpandCode []
 
     describe "LSP" $ do
-      CodeActions.tests
+      CodeActions.tests ghcPackage
       Diagnostics.tests ghcPackage lsName
       DocumentHighlight.tests
       Hover.tests

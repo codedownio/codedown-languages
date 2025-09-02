@@ -69,26 +69,25 @@ in
 
   config = mkIf config.kernels.haskell.enable {
     builtKernels.haskell = let
-      compilers = pkgsToUse.callPackage ./compilers.nix {
-        ihaskell-source = pkgsToUse.fetchFromGitHub {
-          owner = "codedownio";
-          repo = "IHaskell";
-          rev = "0cd3dc2a930581eaee4560175486b9ceb5945632";
-          sha256 = "sha256-2SeTakYt/DPQ7S+uHVOVbL/xAcil7g5OGPIx+ZSKYCA=";
-        };
+      ihaskell-source = pkgsToUse.fetchFromGitHub {
+        owner = "codedownio";
+        repo = "IHaskell";
+        rev = "0cd3dc2a930581eaee4560175486b9ceb5945632";
+        sha256 = "sha256-2SeTakYt/DPQ7S+uHVOVbL/xAcil7g5OGPIx+ZSKYCA=";
       };
 
-      compilerName = config.kernels.haskell.ghcPackage;
+      compilers =
+        config.pkgs.callPackage ./compilers-stable.nix { inherit ihaskell-source; }
+        // config.pkgsMaster.callPackage ./compilers-unstable.nix { inherit ihaskell-source; }
+      ;
 
-      compilerNameToUse =
-        if compilerName == "ghc910" then "ghc9102"
-        else compilerName;
+      compilerName = config.kernels.haskell.ghcPackage;
 
     in
 
       pkgsToUse.callPackage ./. {
-        compilerName = compilerNameToUse;
-        snapshot = compilers.${compilerNameToUse};
+        inherit compilerName;
+        snapshot = compilers.${compilerName};
 
         settings = config.kernels.haskell;
         settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.haskell;
