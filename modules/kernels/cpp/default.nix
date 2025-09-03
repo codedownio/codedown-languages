@@ -1,10 +1,8 @@
 { lib
 , callPackage
-, writeTextDir
 , symlinkJoin
 , cling
 , clang
-, llvmPackages_13
 , xeus-cling
 
 , settings
@@ -22,14 +20,6 @@ let
   common = callPackage ../common.nix {};
 
   displayName = "C++";
-
-  # Fix for https://github.com/NixOS/nixpkgs/issues/306782
-  clingToUse = cling.override {
-    llvmPackages_13 = llvmPackages_13.override { enableSharedLibraries = false; };
-  };
-  xeusClingToUse = xeus-cling.override {
-    cling = clingToUse;
-  };
 
   icons = {
     # cpp98 = ./cpp11-logo-64x64.png; # TODO
@@ -49,8 +39,6 @@ symlinkJoin {
   name = "cpp";
   paths = [
     (callPackage ./kernel_xeus.nix {
-      cling = clingToUse;
-      xeus-cling = xeusClingToUse;
       inherit attrs displayName extensions;
       std = flavor;
       kernelName = "cpp";
@@ -79,9 +67,9 @@ symlinkJoin {
     inherit settings settingsSchema;
     repls = {
       cling = {
-        display_name = "Cling " + clingToUse.unwrapped.version;
+        display_name = "Cling " + cling.unwrapped.version;
         attr = "cling";
-        args = ["${clingToUse}/bin/cling"];
+        args = ["${cling}/bin/cling"];
         icon = icons.${flavor};
         iconSvg = ./cplusplus.svg;
       };
