@@ -2,6 +2,11 @@
 
 with lib;
 
+let
+  pkgsToUse = config.pkgsMaster;
+
+in
+
 {
   options = {
     kernels.julia = {
@@ -27,7 +32,7 @@ with lib;
             builtins.match "^julia_[0-9].*" n != null
             || builtins.match "^julia-lts.*" n != null
             || builtins.match "^julia-stable.*" n != null
-          ) (builtins.attrNames config.pkgs))
+          ) (builtins.attrNames pkgsToUse))
         );
         default = "julia";
       };
@@ -71,13 +76,13 @@ with lib;
   };
 
   config = mkIf config.kernels.julia.enable {
-    builtKernels.julia = config.pkgs.callPackage ./. {
+    builtKernels.julia = pkgsToUse.callPackage ./. {
       julia = let
         juliaPackage = config.kernels.julia.juliaPackage;
-        requestedJulia = getAttr juliaPackage config.pkgs;
+        requestedJulia = getAttr juliaPackage pkgsToUse;
         in
           if requestedJulia.meta.unsupported
-          then (if builtins.hasAttr (juliaPackage + "-bin") config.pkgs then config.pkgs.${juliaPackage + "-bin"} else throw "${juliaPackage} is not supported on this system and fallback ${juliaPackage}-bin was not found.")
+          then (if builtins.hasAttr (juliaPackage + "-bin") pkgsToUse then pkgsToUse.${juliaPackage + "-bin"} else throw "${juliaPackage} is not supported on this system and fallback ${juliaPackage}-bin was not found.")
           else requestedJulia;
 
       settings = config.kernels.julia;

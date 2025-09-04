@@ -288,8 +288,8 @@ assertDiagnosticRanges' diagnostics desired = if
   where
     found = getDiagnosticRanges' diagnostics
 
-    getDiagnosticRanges' :: [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)]
-    getDiagnosticRanges' = fmap (\x -> (x ^. range, x ^. code, x ^. LSP.message))
+getDiagnosticRanges' :: [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)]
+getDiagnosticRanges' = fmap (\x -> (x ^. range, x ^. code, x ^. LSP.message))
 
 -- hoverShouldSatisfy :: MonadThrow m => Position -> (Maybe Hover -> ExampleT ctx m ()) -> ExampleT ctx m ()
 -- hoverShouldSatisfy pos pred = getHover (TextDocumentIdentifier (Uri undefined)) pos >>= pred

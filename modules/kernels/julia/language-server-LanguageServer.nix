@@ -1,8 +1,5 @@
 { lib
 , callPackage
-, runCommand
-, makeWrapper
-, pkgs
 
 , attrs
 , julia
@@ -13,7 +10,7 @@
 let
   common = callPackage ../common.nix {};
 
-  juliaIndices = callPackage ./julia-modules/indexing { inherit julia; };
+  # juliaIndices = callPackage ./julia-modules/indexing { inherit julia; };
 
   languageServerName = "LanguageServer";
 
@@ -47,7 +44,7 @@ common.writeTextDirWithMetaAndPassthru julia.meta passthru "lib/codedown/languag
         "${julia.projectAndDepot}/project",
         "${julia.projectAndDepot}/depot",
         nothing,
-        ${if settings.index then ''"${juliaIndices}"'' else "nothing"},
+        nothing,
         false,
         nothing
       );

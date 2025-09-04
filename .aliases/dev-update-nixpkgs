@@ -8,4 +8,4 @@ cd "$SCRIPTDIR/.."
 
 nix flake update nixpkgs
 
-dev-update-default-nix
+dev-update-default-nix-to-match-flake

@@ -19,27 +19,30 @@ let
   common = callPackage ../common.nix {};
 
   packageOverrides = {
-    "LanguageServer" = fetchFromGitHub {
-      owner = "julia-vscode";
-      repo = "LanguageServer.jl";
-      rev = "3a000de8d80b2d374d46517a813882ff1aeb895c";
-      sha256 = "0pjwmz6g7fvkqhr4axh4bl7lkpk8fgv7193m7ql8pw9lif8mqx37";
-    };
-    "StaticLint" = fetchFromGitHub {
-      owner = "julia-vscode";
-      repo = "StaticLint.jl";
-      rev = "8334959b9fe1a7f3169621a250eb8ff98db64775";
-      sha256 = "0sxn05b3m1fqcsyp28zddslh7dy4wsrkvhc57nx6y89j30ldbpw1";
-    };
-    "SymbolServer" = fetchFromGitHub {
-      owner = "codedownio";
-      repo = "SymbolServer.jl";
-      rev = "1badb724cebef0ae867c8c1f73cb08efe5b6e291";
-      sha256 = "0j4cjj50mp0cm6aq684kasijk11pwagp3v9d1mf39isk6afa7inn";
-    };
+    # "LanguageServer" = fetchFromGitHub {
+    #   owner = "julia-vscode";
+    #   repo = "LanguageServer.jl";
+    #   rev = "3a000de8d80b2d374d46517a813882ff1aeb895c";
+    #   sha256 = "0pjwmz6g7fvkqhr4axh4bl7lkpk8fgv7193m7ql8pw9lif8mqx37";
+    # };
+    # "StaticLint" = fetchFromGitHub {
+    #   owner = "julia-vscode";
+    #   repo = "StaticLint.jl";
+    #   rev = "8334959b9fe1a7f3169621a250eb8ff98db64775";
+    #   sha256 = "0sxn05b3m1fqcsyp28zddslh7dy4wsrkvhc57nx6y89j30ldbpw1";
+    # };
+    # "SymbolServer" = fetchFromGitHub {
+    #   owner = "codedownio";
+    #   repo = "SymbolServer.jl";
+    #   rev = "1badb724cebef0ae867c8c1f73cb08efe5b6e291";
+    #   sha256 = "0j4cjj50mp0cm6aq684kasijk11pwagp3v9d1mf39isk6afa7inn";
+    # };
   };
 
-  juliaWithPackages = (callPackage ./julia-modules {}).override {
+  # juliaWithPackagesBase = julia.withPackages # To use upstream
+  juliaWithPackagesBase = callPackage ./julia-modules {};
+
+  juliaWithPackages = juliaWithPackagesBase.override {
     inherit packageOverrides julia;
     inherit (settings) precompile;
     juliaCpuTarget = "generic";

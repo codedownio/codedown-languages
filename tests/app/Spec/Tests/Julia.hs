@@ -29,6 +29,9 @@ tests = do
   juliaTests "julia_110"
   juliaTests "julia_110-bin"
 
+  juliaTests "julia_111"
+  juliaTests "julia_111-bin"
+
 kernelName :: Text -> Text
 kernelName _juliaPackage = "julia"
 
