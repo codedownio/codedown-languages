@@ -1,4 +1,5 @@
 { callPackage
+, lib
 , python312
 , symlinkJoin
 
@@ -18,9 +19,11 @@ let
 
   displayName = "Coq " + coq.version;
 
+  isRocq = lib.versionAtLeast coq.version "9.0";
+
   coq_jupyter = callPackage ./coq_jupyter {
     python3 = python312;
-    inherit coq;
+    inherit coq isRocq;
   };
 
   packageOptions = coqPackages;
@@ -33,9 +36,11 @@ symlinkJoin {
 
   paths = [
     (callPackage ./kernel.nix {
-      inherit coq displayName attrs extensions;
-      enableVariableInspector = settings.enableVariableInspector;
-      chosenPackages = map (x: builtins.getAttr x packageOptions) packages;
+      inherit coq displayName attrs extensions isRocq;
+      # enableVariableInspector = settings.enableVariableInspector;
+      chosenPackages = (
+        map (x: builtins.getAttr x packageOptions) packages
+      ) ++ lib.optionals isRocq [ packageOptions.stdlib ];
       inherit coq_jupyter;
     })
 

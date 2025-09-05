@@ -1,11 +1,12 @@
 { callPackage
-, coq
 , imagemagick
-, lib
 , makeWrapper
 , python3
 , runCommand
 , stdenv
+
+, coq
+, isRocq
 }:
 
 let
@@ -27,7 +28,7 @@ rec {
   '';
 
   sizedLogo = size: let
-    imageDir = if lib.versionAtLeast coq.version "9.0" then "rocqide" else "coqide";
+    imageDir = if isRocq then "rocqide" else "coqide";
   in
     stdenv.mkDerivation {
       name = "coq-${coq.version}-logo-${size}x${size}.png";
@@ -45,7 +46,7 @@ rec {
     };
 
   definition = {
-    displayName = "Coq " + coq.version;
+    displayName = (if isRocq then "Rocq " else "Coq ") + coq.version;
     argv = [
       "${launcher}/bin/coq-kernel"
       "-f"

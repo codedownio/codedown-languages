@@ -5,8 +5,9 @@
 , coq_jupyter
 
 , displayName
-, enableVariableInspector
+# , enableVariableInspector
 
+, isRocq
 , chosenPackages
 , attrs
 , extensions
@@ -46,9 +47,20 @@ common.makeJupyterKernel (
           priority = 1;
         };
       };
-      env = {
-        COQPATH = lib.concatStringsSep ":" (map (x: "${x}/lib/coq/${coq.coq-version}/user-contrib/") chosenPackages);
-      };
+      env = lib.listToAttrs [
+        {
+          name = if isRocq then "ROCQPATH" else "COQPATH";
+          value = lib.concatStringsSep ":" (
+            map (x: "${x}/lib/coq/${coq.coq-version}/user-contrib/") chosenPackages
+          );
+        }
+        {
+          name = "OCAMLPATH";
+          value = lib.concatStringsSep ":" (
+            map (x: "${x}/lib/ocaml/${coq.ocaml.version}/site-lib/") ([ coq.ocamlPackages.findlib ] ++ chosenPackages)
+          );
+        }
+      ];
     };
   }]
 )

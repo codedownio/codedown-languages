@@ -1,6 +1,7 @@
 args: {
   bash = import ./sample_environments/bash.nix args;
   clojure = import ./sample_environments/clojure.nix args;
+  coq_8_20 = import ./sample_environments/coq_8_20.nix args;
   coq = import ./sample_environments/coq.nix args;
   cpp11 = import ./sample_environments/cpp11.nix args;
   cpp14 = import ./sample_environments/cpp14.nix args;

@@ -30,7 +30,8 @@ kernelSpec coqPackages = NixKernelSpec {
 
 tests :: LanguageSpec
 tests = do
-  tests' "coqPackages_8_20" -- Current default
+  tests' "coqPackages_8_20"
+  tests' "coqPackages"
 
   -- TODO: https://github.com/codedownio/codedown-languages/issues/75
   -- tests' "coqPackages" -- This is 9.0 on master
