@@ -21,7 +21,7 @@ tests juliaPackage lsName = describe "Diagnostics" $ do
          write(tup)
          printlnzzzz("HI")
          |]
-    ((== [(Range (Position 3 0) (Position 3 11), Nothing, "Missing reference: printlnzzzz")]) . removeMethodCallErrors . getDiagnosticRanges')
+    ((== [(Range (Position 3 0) (Position 3 11), Nothing, "Missing reference: printlnzzzz")]) . getDiagnosticRanges')
 
   testDiagnosticsLabelDesired "finds symbols from Roots package" lsName "test.jl" (Just "julia")
     [__i|using Roots: Bisection, find_zero
@@ -29,7 +29,7 @@ tests juliaPackage lsName = describe "Diagnostics" $ do
          find_zero(f, (8, 9), Bisection())
          printlnzzzz("HI")
          |]
-    ((== [(Range (Position 3 0) (Position 3 11), Nothing, "Missing reference: printlnzzzz")]) . removeMethodCallErrors . getDiagnosticRanges')
+    ((== [(Range (Position 3 0) (Position 3 11), Nothing, "Missing reference: printlnzzzz")]) . getDiagnosticRanges')
 
   -- This test is tricky because symbols like "plot" actually come from RecipesBase (or something), so
   -- it checks we're indexing such a transitive dependency.
@@ -41,18 +41,4 @@ tests juliaPackage lsName = describe "Diagnostics" $ do
          plot!(xx, y)
          printlnzzzz("HI")
          |]
-    ((== [(Range (Position 5 0) (Position 5 11), Nothing, "Missing reference: printlnzzzz")]) . removeMethodCallErrors . getDiagnosticRanges')
-
-
-removeMethodCallErrorsForJulia110 :: Text -> [(Range, Maybe (Int32 |? Text), Text)] -> [(Range, Maybe (Int32 |? Text), Text)]
-removeMethodCallErrorsForJulia110 "julia_110" = removeMethodCallErrors
-removeMethodCallErrorsForJulia110 "julia_110-bin" = removeMethodCallErrors
-removeMethodCallErrorsForJulia110 _ = id
-
-removeMethodCallErrors :: [(Range, Maybe (Int32 |? Text), Text)] -> [(Range, Maybe (Int32 |? Text), Text)]
-removeMethodCallErrors = Prelude.filter (\(_range, _code, msg) -> not (matchesMethodCallError msg))
-
--- | Filter out "method call error" diagnostics, due to
--- https://github.com/julia-vscode/julia-vscode/issues/1576
-matchesMethodCallError :: Text -> Bool
-matchesMethodCallError t = "method call error" `T.isInfixOf` t
+    ((== [(Range (Position 5 0) (Position 5 11), Nothing, "Missing reference: printlnzzzz")]) . getDiagnosticRanges')
