@@ -72,7 +72,7 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
   let NixSrcFetchFromGithub {..} = nixpkgsSrcSpec
   let nixpkgsUri = [i|github:#{nixSrcOwner}/#{nixSrcRepo}/#{nixSrcRev}?narHash=#{URI.encodeTextWith customIsAllowed nixSrcHash}|]
 
-  built <- withSystemTempDirectory "test-nix-build" $ \((</> "link") -> linkPath) -> do
+  built <- withTempDirectory dir "test-nix-build" $ \((</> "link") -> linkPath) -> do
     let args = ["build"
                , "--quiet"
                , "--no-link"
@@ -87,6 +87,8 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
     createProcessWithLogging (proc "nix" args)
       >>= waitForProcess >>= (`shouldBe` ExitSuccess)
     liftIO $ SD.getSymbolicLinkTarget linkPath
+
+  info [i|Built Nix environment: #{built}|]
 
   void $ action built
 
