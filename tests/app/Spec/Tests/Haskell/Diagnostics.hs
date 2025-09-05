@@ -32,7 +32,7 @@ tests ghcPackage lsName = describe "Diagnostics" $ do
           |]
       ((== [(Range (Position 1 6) (Position 1 9), Just (InR "GHC-88464"))]) . getDiagnosticRanges)
 
-    when (ghcPackage /= "haskell-ghc98") $ -- TODO: re-enable hlint test with haskell-language-server 2.8.0.0
+    when (ghcPackage /= "ghc910") $ -- TODO: re-enable hlint test
       testDiagnosticsLabelDesired "Eta reduce" lsName "Foo.hs" Nothing etaExpandCode
         ((== [(Range (Position 6 0) (Position 6 14), Just (InR "refact:Eta reduce"))]) . getDiagnosticRanges)
 

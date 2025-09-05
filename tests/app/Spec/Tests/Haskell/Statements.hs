@@ -20,7 +20,7 @@ tests ghcPackage = describe "Statements" $ do
       ident <- openDoc filename "haskell"
       timeout 120_000_000 (getHighlights ident (Position 0 1)) >>= (`shouldBe` (Just documentHighlightResults))
 
-    when (ghcPackage /= "ghc98") $ -- TODO: re-enable hlint test with haskell-language-server 2.8.0.0
+    when (ghcPackage /= "ghc910") $ -- TODO: re-enable hlint test
       testDiagnosticsLabel "Empty diagnostics" lsName "main.ipynb" Nothing statementsCode $ \diagnostics -> do
         -- Note: normally the server wouldn't send empty diagnostics. But the statement inserts "= unsafePerformIO $ ",
         -- which causes it to emit a "redundant bracket" diagnostic, which then gets filtered out by untransformPosition
@@ -31,7 +31,7 @@ tests ghcPackage = describe "Statements" $ do
       ident <- openDoc filename "haskell"
       timeout 120_000_000 (getHighlights ident (Position 0 1)) >>= (`shouldBe` (Just documentHighlightResults))
 
-    when (ghcPackage /= "ghc98") $ -- TODO: re-enable hlint test with haskell-language-server 2.8.0.0
+    when (ghcPackage /= "ghc910") $ -- TODO: re-enable hlint test
       testDiagnosticsLabel "Redundant bracket" lsName "main.ipynb" Nothing statementsCodeMultiline $ \diagnostics -> do
         info [i|Got diagnostics: #{diagnostics}|]
         assertDiagnosticRanges diagnostics [(Range (Position 1 9) (Position 1 14), Just (InR "refact:Redundant bracket"))]
