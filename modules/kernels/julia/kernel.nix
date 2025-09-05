@@ -20,12 +20,10 @@ let
       using Pkg: pkgversion
 
       kernel_path = joinpath(pathof(IJulia) |> dirname, \"kernel.jl\")
+      include(kernel_path)
 
       if pkgversion(IJulia) >= v\"1.27.0\"
-        include(kernel_path)
         run_kernel()
-      else
-        include(kernel_path)
       end
     " $1
   '';

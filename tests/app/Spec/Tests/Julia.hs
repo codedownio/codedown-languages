@@ -45,12 +45,12 @@ juliaTests juliaPackage = describe [i|Julia (#{juliaPackage})|] $ introduceNixEn
   describe "LSP" $ do
     Diagnostics.tests lsName
 
-    itHasHoverSatisfying lsName "test.jl" Nothing [__i|print("hi")|] (Position 0 2) $ \hover -> do
+    itHasHoverSatisfying lsName "test.jl" (Just "julia") [__i|print("hi")|] (Position 0 2) $ \hover -> do
       let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents
       text `textShouldContain` "Write to `io` (or to the default output stream"
 
     it "highlights foo" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
-      ident <- openDoc filename "haskell"
+      ident <- openDoc filename "julia"
       getHighlights ident (Position 0 1) >>= (`shouldBe` documentHighlightResults)
 
 
