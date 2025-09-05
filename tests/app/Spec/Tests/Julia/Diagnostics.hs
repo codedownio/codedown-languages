@@ -10,8 +10,8 @@ import Test.Sandwich as Sandwich
 import TestLib.LSP
 
 
-tests :: (LspContext context m) => Text -> Text -> SpecFree context m ()
-tests juliaPackage lsName = describe "Diagnostics" $ do
+tests :: (LspContext context m) => Text -> SpecFree context m ()
+tests lsName = describe "Diagnostics" $ do
   testDiagnostics'' "flags a simple missing reference" lsName "test.jl" (Just "julia") [i|printlnzzzz("HI")|] [] $ \diagnostics -> do
     assertDiagnosticRanges' diagnostics [(Range (Position 0 0) (Position 0 11), Nothing, "Missing reference: printlnzzzz")]
 

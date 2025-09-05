@@ -16,7 +16,14 @@ let
 
   runJuliaKernel = writeShellScript "run-julia-kernel.sh" ''
     kernelFilePath=$(find ${julia.projectAndDepot}/depot/packages/IJulia -name kernel.jl)
-    ${julia}/bin/julia -i --startup-file=yes --color=yes $kernelFilePath $1
+    # Check if IJulia version has run_kernel() function (v1.27+)
+    if grep -q "function run_kernel()" "$kernelFilePath"; then
+      # For newer IJulia versions, include and call run_kernel() function
+      ${julia}/bin/julia --startup-file=yes --color=yes -e "using IJulia; include(\"$kernelFilePath\"); run_kernel()" $1
+    else
+      # For older IJulia versions, use interactive mode
+      ${julia}/bin/julia -i --startup-file=yes --color=yes $kernelFilePath $1
+    fi
   '';
 
 in
