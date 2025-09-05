@@ -2,6 +2,11 @@
 
 with lib;
 
+let
+  pkgsToUse = config.pkgsMaster;
+
+in
+
 {
   options = {
     kernels.cpp = {
@@ -54,7 +59,7 @@ with lib;
   };
 
   config = mkIf config.kernels.cpp.enable {
-    builtKernels.cpp = config.pkgs.callPackage ./. {
+    builtKernels.cpp = pkgsToUse.callPackage ./. {
       settings = config.kernels.cpp;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.cpp;
     };

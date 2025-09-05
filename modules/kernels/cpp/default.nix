@@ -44,8 +44,7 @@ symlinkJoin {
       kernelName = "cpp";
     })
     cling
-  ]
-  ;
+  ];
 
   passthru = {
     meta = clang.meta // {
