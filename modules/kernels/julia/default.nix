@@ -26,7 +26,7 @@ let
     juliaCpuTarget = "generic";
   };
 
-  displayName = "Julia";
+  displayName = "Julia " + julia.version;
   kernelName = "julia";
 
   packageOptions = {
