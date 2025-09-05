@@ -3,7 +3,6 @@
 , python
 , julia
 , displayName
-, gnugrep
 , writeShellScript
 
 , attrs
@@ -16,16 +15,19 @@ let
   common = callPackage ../common.nix {};
 
   runJuliaKernel = writeShellScript "run-julia-kernel.sh" ''
-    export PATH="${lib.makeBinPath [gnugrep]}:$PATH"
-    kernelFilePath=$(find ${julia.projectAndDepot}/depot/packages/IJulia -name kernel.jl)
-    # Check if IJulia version has run_kernel() function (v1.27+)
-    if grep -q "function run_kernel()" "$kernelFilePath"; then
-      # For newer IJulia versions, include and call run_kernel() function
-      ${julia}/bin/julia --startup-file=yes --color=yes -e "using IJulia; include(\"$kernelFilePath\"); run_kernel()" $1
-    else
-      # For older IJulia versions, use interactive mode
-      ${julia}/bin/julia -i --startup-file=yes --color=yes $kernelFilePath $1
-    fi
+    ${julia}/bin/julia --startup-file=yes --color=yes -e "
+      import IJulia
+      using Pkg: pkgversion
+
+      kernel_path = joinpath(pathof(IJulia) |> dirname, \"kernel.jl\")
+
+      if pkgversion(IJulia) >= v\"1.27.0\"
+        include(kernel_path)
+        run_kernel()
+      else
+        include(kernel_path)
+      end
+    " $1
   '';
 
 in
