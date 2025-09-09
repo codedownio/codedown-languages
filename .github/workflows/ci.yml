@@ -64,17 +64,19 @@ jobs:
         - name: cpp
         - name: go
         - name: haskell
-          flags: "-f haskell-ghc92"
-        - name: haskell
-          flags: "-f haskell-ghc94"
-        - name: haskell
           flags: "-f haskell-ghc96"
         - name: haskell
           flags: "-f haskell-ghc98"
+        - name: haskell
+          flags: "-f haskell-ghc910"
+        - name: haskell
+          flags: "-f haskell-ghc912"
         - name: julia
           flags: "-f julia_19"
         - name: julia
           flags: "-f julia_110"
+        - name: julia
+          flags: "-f julia_111"
         - name: octave
         - name: postgres
         - name: python
@@ -119,7 +121,7 @@ jobs:
         export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
 
         stack run --nix --no-nix-pure -- \
-          --print-failures \
+          --print \
           --fixed-root "$TEST_ROOT" \
           --markdown-summary "$GITHUB_STEP_SUMMARY" \
           --${{matrix.suite.name}} ${{matrix.suite.flags}}
