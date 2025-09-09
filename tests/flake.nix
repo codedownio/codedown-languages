@@ -6,7 +6,7 @@
     flake-utils.lib.eachSystem ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"] (system:
       let
         pkgs = import nixpkgs { inherit system; };
-        tests = pkgs.haskell.packages.ghc965.callPackage ./tests.nix {};
+        tests = pkgs.haskell.packages.ghc96.callPackage ./tests.nix {};
       in
         rec {
           devShells = {
@@ -41,7 +41,7 @@
 
           defaultPackage = packages.tests;
 
-          stack = pkgs.stack;
+          inherit (pkgs) direnv stack;
         }
     );
 }

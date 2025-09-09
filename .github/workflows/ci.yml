@@ -14,7 +14,7 @@ jobs:
 
     - name: verify-default-nix.sh
       if: "!contains(github.event.head_commit.message, 'noci')"
-      run: ./.aliases/verify-default-nix
+      run: ./.aliases/dev-verify-default-nix
 
   nix-flake-check:
     runs-on: self-hosted
@@ -100,9 +100,11 @@ jobs:
         export NIX_PATH=nixpkgs=$(nix run .#nixpkgsPath)
 
         export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
+        export PATH=$(nix build --no-link .#direnv.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
         echo "Got path: $PATH"
 
-        stack build --nix --no-nix-pure
+        direnv allow
+        direnv exec . stack build --nix --no-nix-pure
 
     - name: Run tests
       if: "!contains(github.event.head_commit.message, 'noci')"
