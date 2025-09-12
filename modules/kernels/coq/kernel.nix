@@ -2,7 +2,7 @@
 , lib
 
 , coq
-, coq_jupyter
+, coq-kernel
 
 , displayName
 # , enableVariableInspector
@@ -22,6 +22,10 @@ let
   #   inspect_variable_command = "print('TODO')";
   # };
 
+  coqKernelToUse = coq-kernel.override {
+    inherit coq;
+  };
+
 in
 
 common.makeJupyterKernel (
@@ -31,12 +35,12 @@ common.makeJupyterKernel (
       displayName = displayName;
       language = lib.head attrs;
       argv = [
-        "${coq_jupyter.launcher}/bin/coq-kernel"
+        "${coqKernelToUse}/bin/coq-kernel"
         "-f"
         "{connection_file}"
       ];
-      logo32 = coq_jupyter.sizedLogo "32";
-      logo64 = coq_jupyter.sizedLogo "64";
+      logo32 = "${coqKernelToUse.logos}/logo-32x32.png";
+      logo64 = "${coqKernelToUse.logos}/logo-64x64.png";
       metadata = {
         codedown = {
           inherit attrs extensions;

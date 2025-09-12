@@ -38,10 +38,13 @@
           devShells = {
             default = pkgsStable.mkShell {
               NIX_PATH = "nixpkgs=${pkgsStable.path}";
+              buildInputs = with pkgsStable; [
+                nixos-render-docs
+              ];
             };
           };
 
-          packages = {
+          packages = rec {
             # For nix repl debugging
             # inherit codedown;
 
@@ -70,6 +73,47 @@
                 makeWrapperArgs = ["--set JUPYTER_PATH ${sampleOutputs.sample_environments.mega}/lib/codedown"];
               })
             );
+
+            # Documentation generation
+            evaluated = (pkgsStable.callPackage ./nix/evaluate-config.nix {
+              inherit pkgsStable pkgsMaster;
+            }) {};
+
+            optionsList = pkgsStable.lib.optionAttrSetToDocList evaluated.options;
+
+            optionsJson = let
+              optionsAttrs = builtins.listToAttrs (
+                map (o: {
+                  name = o.name;
+                  value = builtins.removeAttrs o ["name" "visible" "internal"];
+                }) optionsList
+              );
+            in
+              pkgsStable.writeText "options.json" (pkgsStable.lib.generators.toYAML {} optionsAttrs);
+
+            optionsHtml = let
+              evaluated = (pkgsStable.callPackage ./nix/evaluate-config.nix {
+                pkgsStable = pkgsStable;
+                inherit pkgsMaster;
+              }) {};
+              optionsList = pkgsStable.lib.optionAttrSetToDocList evaluated.options;
+              optionsAttrs = builtins.listToAttrs (
+                map (o: {
+                  name = o.name;
+                  value = builtins.removeAttrs o ["name" "visible" "internal"];
+                }) optionsList
+              );
+              optionsJson = pkgsStable.writeText "options.json" (builtins.toJSON optionsAttrs);
+            in pkgsStable.runCommand "options-html" {
+              buildInputs = [ pkgsStable.nixos-render-docs ];
+            } ''
+              mkdir -p $out
+              nixos-render-docs options \
+                --manpage-urls '{}' \
+                --revision master \
+                ${optionsJson} \
+                $out/index.html
+            '';
           }
           // sampleOutputs.inner
           ;

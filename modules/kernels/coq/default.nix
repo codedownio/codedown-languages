@@ -1,9 +1,9 @@
 { callPackage
 , lib
-, python312
 , symlinkJoin
 
 , coqPackages
+, coq-kernel
 
 , settings
 , settingsSchema
@@ -21,11 +21,6 @@ let
 
   isRocq = lib.versionAtLeast coq.version "9.0";
 
-  coq_jupyter = callPackage ./coq_jupyter {
-    python3 = python312;
-    inherit coq isRocq;
-  };
-
   packageOptions = coqPackages;
   packageSearch = common.searcher packageOptions;
 
@@ -41,7 +36,6 @@ symlinkJoin {
       chosenPackages = (
         map (x: builtins.getAttr x packageOptions) packages
       ) ++ lib.optionals isRocq [ packageOptions.stdlib ];
-      inherit coq_jupyter;
     })
 
     coq
@@ -53,7 +47,7 @@ symlinkJoin {
     meta = coq.meta // {
       inherit displayName settingsSchema;
       version = coq.version;
-      icon = coq_jupyter.sizedLogo "64";
+      icon = "${coq-kernel.logos}/logo-64x64.png";
       hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch;
