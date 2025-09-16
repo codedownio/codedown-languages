@@ -46,6 +46,12 @@ in
         type = types.listOf types.str;
         default = ["v"];
       };
+
+      lsp.coq-lsp.enable = mkOption {
+        example = "Enable coq-lsp language server";
+        type = types.bool;
+        default = true;
+      };
     };
   };
 

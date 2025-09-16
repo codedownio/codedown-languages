@@ -9,6 +9,7 @@ import Data.String.Interpolate
 import Data.Text (Text)
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
+import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
@@ -36,6 +37,7 @@ tests = do
   -- TODO: https://github.com/codedownio/codedown-languages/issues/75
   -- tests' "coqPackages" -- This is 9.0 on master
 
+lsName = "coq-lsp"
 
 tests' :: Text -> LanguageSpec
 tests' coqPackages = describe [i|Coq (#{coqPackages})|] $ introduceNixEnvironment [kernelSpec coqPackages] [] "Coq" $ introduceJupyterRunner $ do
@@ -53,8 +55,9 @@ tests' coqPackages = describe [i|Coq (#{coqPackages})|] $ introduceNixEnvironmen
                                                String "Inductive bool : Set :=  true : bool | false : bool."
                                                ]]
 
-  -- testDiagnostics "coq-lsp-server" "test.v" Nothing [i||] $ \diagnostics -> do
-  --   assertDiagnosticRanges diagnostics []
+  testDiagnosticsLabelDesired "Unrecognized variable" lsName "test.v" Nothing
+    [i|Print asdf.|]
+    ((== []) . getDiagnosticRanges)
 
 
 main :: IO ()

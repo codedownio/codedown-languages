@@ -13,6 +13,8 @@ with { inherit (settings) packages; };
 with { inherit (settings.interface) attrs extensions; };
 
 let
+  kernelName = "coq-" + coq.version;
+
   common = callPackage ../common.nix {};
 
   coq = coqPackages.coq;
@@ -20,6 +22,9 @@ let
   displayName = "Coq " + coq.version;
 
   isRocq = lib.versionAtLeast coq.version "9.0";
+
+  languageServers = lib.optionals settings.lsp.coq-lsp.enable
+    [(callPackage ./coq-lsp.nix { inherit kernelName; })];
 
   packageOptions = coqPackages;
   packageSearch = common.searcher packageOptions;
@@ -40,7 +45,7 @@ symlinkJoin {
 
     coq
   ]
-  ++ []
+  ++ languageServers
   ;
 
   passthru = {
@@ -60,5 +65,6 @@ symlinkJoin {
       inherit attrs extensions;
       code_mirror_mode = "coq";
     };
+    languageServerNames = map (x: x.languageServerName) languageServers;
   };
 }
