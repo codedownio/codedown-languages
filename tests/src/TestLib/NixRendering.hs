@@ -66,7 +66,7 @@ renderNixSrcSpec (NixSrcFetchFromGithub {..}) =
       }|]
 
 renderNixSrcSpecBuiltins :: NixSrcSpec -> Text
-renderNixSrcSpecBuiltins (NixSrcPath {..}) = error "TODO"
+renderNixSrcSpecBuiltins (NixSrcPath {}) = error "TODO"
 renderNixSrcSpecBuiltins (NixSrcFetchGit {..}) =
   [__i|builtins.fetchTree {
          type = "git";

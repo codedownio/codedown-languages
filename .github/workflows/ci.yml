@@ -83,12 +83,12 @@ jobs:
         - name: r
         - name: ruby
         - name: rust
-        - name: sample-environments
-        - name: searchers
-        - name: settings-schemas
         - name: zsh
         - name: spellchecker
 
+        - name: sample-environments
+        - name: searchers
+        - name: settings-schemas
     steps:
     - uses: actions/checkout@v4
       with:

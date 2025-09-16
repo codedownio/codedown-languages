@@ -69,8 +69,9 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
   Just dir <- getCurrentFolder
   liftIO $ T.writeFile (dir </> "expr.nix") rendered
 
-  let NixSrcFetchFromGithub {..} = nixpkgsSrcSpec
-  let nixpkgsUri = [i|github:#{nixSrcOwner}/#{nixSrcRepo}/#{nixSrcRev}?narHash=#{URI.encodeTextWith customIsAllowed nixSrcHash}|]
+  nixpkgsUri <- case nixpkgsSrcSpec of
+    NixSrcFetchFromGithub {..} -> pure [i|github:#{nixSrcOwner}/#{nixSrcRepo}/#{nixSrcRev}?narHash=#{URI.encodeTextWith customIsAllowed nixSrcHash}|]
+    x -> expectationFailure [i|Unhandled src spec type: #{x}|]
 
   built <- withTempDirectory dir "test-nix-build" $ \((</> "link") -> linkPath) -> do
     let args = ["build"

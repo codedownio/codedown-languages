@@ -18,6 +18,7 @@ import TestLib.JupyterRunnerContext
 import TestLib.NixTypes
 import TestLib.TH
 import TestLib.TestBuilding
+import TestLib.Util
 import UnliftIO.Directory
 
 
@@ -43,6 +44,26 @@ tests = describe "Sample environments" $ introduceBootstrapNixpkgs $ introduceJu
           info [i|packages: #{A.encode nixHydrationResultPackages}|]
 
           forM_ (M.toList nixHydrationResultPackages) (\(n, v) -> validatePackage envRoot n v)
+
+        it "Has a good kernelspec" $ do
+          let name = T.dropEnd 4 (T.pack file) -- Drop the .nix suffix
+
+          envRoot <- testBuildUsingFlake [i|.\#sample_environment_#{name}|]
+          let kernelsDir = envRoot </> "lib" </> "codedown" </> "kernels"
+
+          kernels <- doesDirectoryExist kernelsDir >>= \case
+            False -> return []
+            True -> listDirectory kernelsDir
+          info [i|kernels: #{kernels}|]
+
+          forM_ kernels $ \kernel -> do
+            let kernelFile = kernelsDir </> kernel </> "kernel.json"
+            info [i|Looking at kernel: #{kernelFile}|]
+
+            Just (contents :: A.Object) <- liftIO $ A.decodeFileStrict kernelFile
+            case aesonLookup "language" contents of
+              Just (A.String lang) -> info [i|Kernel #{kernel} --> #{lang}|]
+              x -> expectationFailure [i|Expected kernel #{kernel} to contain a language, but it was: #{x}|]
 
 validatePackage :: (MonadLoggerIO m, MonadFail m) => FilePath -> Text -> NixPackage -> m ()
 validatePackage envRoot attr (NixPackage {nixPackageMeta=(NixMeta {..}), ..}) = do
