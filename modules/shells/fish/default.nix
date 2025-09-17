@@ -26,6 +26,7 @@ stdenv.mkDerivation {
 
   meta = fish.meta // {
     icon = ./icon-64x64.png;
+    iconSvg = ./fishshell.svg;
     displayName = "Fish " + fish.version;
     attr = "fish";
   };

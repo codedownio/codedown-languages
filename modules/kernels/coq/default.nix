@@ -48,6 +48,7 @@ symlinkJoin {
       inherit displayName settingsSchema;
       version = coq.version;
       icon = "${coq-kernel.logos}/logo-64x64.png";
+      iconSvg = ./coq-filled.svg;
       hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch;
