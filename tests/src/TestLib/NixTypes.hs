@@ -81,6 +81,7 @@ data NixMeta = NixMeta {
   , nixMetaDescription :: Maybe Text
   , nixMetaDisplayName :: Maybe Text
   , nixMetaIcon :: Maybe Text
+  , nixMetaIconMonochrome :: Maybe Text
   , nixMetaCategory :: Maybe Text
   , nixMetaVersion :: Maybe Text
 

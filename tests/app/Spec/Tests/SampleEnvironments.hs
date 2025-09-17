@@ -74,6 +74,8 @@ validatePackage envRoot attr (NixPackage {nixPackageMeta=(NixMeta {..}), ..}) = 
     info [i|(#{nixPackageName}) Checking for #{envRoot </> "bin" </> program}|]
     doesPathExist (envRoot </> "bin" </> program) >>= (`shouldBe` True)
 
+  shouldBeJust nixMetaIcon
+  shouldBeJust nixMetaIconMonochrome
 
 fileList :: [String]
 fileList = $(getFileListRelativeToRoot "sample_environments")
