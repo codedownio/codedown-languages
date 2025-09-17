@@ -68,7 +68,7 @@ rec {
   '';
 
   allIcons = let
-    uniquePaths = lib.mapAttrsToList (k: v: v.meta.icon or null) filteredPackages;
+    uniquePaths = lib.concatLists (lib.mapAttrsToList (k: v: [(v.meta.icon or null) (v.meta.iconSvg or null)]) filteredPackages);
   in
     linkFarm "all-searcher-icons" (map (path: {
       name = builtins.hashString "md5" (toString path);
