@@ -48,7 +48,8 @@ symlinkJoin {
     name = "nbconvert-exporters";
     description = "CodeDown exporters for PDF, HTML, LaTeX, slides, etc.";
 
-    icon = ../../codedown-icon.png;
+    icon = ../../codedown.png;
+    iconSvg = ../../codedown-monochrome.png;
 
     # To separate these out in search results
     category = "Exporters";
