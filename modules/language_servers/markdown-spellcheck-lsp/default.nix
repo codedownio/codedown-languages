@@ -66,6 +66,7 @@ let
 
   meta = hunspell.meta // {
     icon = ./pen-alt.png;
+    iconMonochrome = ./pen-alt.svg;
     displayName = "Spellchecker ${version}";
     category = "Language servers";
   };
@@ -79,6 +80,7 @@ in
   attrs = ["markdown"];
   type = "stream";
   icon = ./pen-alt.png;
+  iconMonochrome = ./pen-alt.svg;
   notebook_suffix = ".spellchecker";
   args = [
     "${contents}/bin/markdown-spellcheck-lsp"
