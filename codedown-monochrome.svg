@@ -2,8 +2,6 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="512"
-   height="512"
    viewBox="0 0 511.99999 511.99999"
    id="svg2"
    version="1.1"
@@ -70,8 +68,7 @@
      style="display:inline">
     <g
        id="g3500"
-       transform="matrix(1.0915909,0,0,1.1023104,0.16872564,-67.220124)"
-       style="stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1">
+       transform="matrix(1.0915909,0,0,1.1023104,0.16872564,-67.220124)">
       <path
          inkscape:connector-curvature="0"
          id="path3416"
