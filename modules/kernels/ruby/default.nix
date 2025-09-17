@@ -53,7 +53,7 @@ symlinkJoin {
       displayName = "Ruby";
       version = ruby.version;
       icon = ./iruby-64x64.png;
-      iconSvg = ./ruby.svg;
+      iconMonochrome = ./ruby-monochrome.svg;
       inherit settingsSchema;
       hasPackages = packageOptions != {};
     };

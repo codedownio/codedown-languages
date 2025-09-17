@@ -54,7 +54,7 @@ symlinkJoin {
       displayName = "Octave " + octave.version;
       version = octave.version;
       icon = ./octave-logo-64x64.png;
-      iconSvg = ./octave.svg;
+      iconMonochrome = ./octave-monochrome.svg;
       inherit settingsSchema;
       hasPackages = packageOptions != {};
     };
@@ -68,7 +68,7 @@ symlinkJoin {
         attr = "octave";
         args = ["${octaveWithPackages}/bin/octave"];
         icon = ./octave-logo-64x64.png;
-        iconSvg = ./octave.svg;
+        iconMonochrome = ./octave.svg;
       };
     };
     inherit settingsSchema settings;

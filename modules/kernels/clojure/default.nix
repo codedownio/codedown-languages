@@ -18,7 +18,8 @@ let
       display_name = "Clojure " + clojure.version;
       attr = "clojure";
       args = ["${clojure}/bin/clojure"];
-      icon = ./clojure-logo-64x64.png;
+      icon = ./clojure.svg;
+      iconMonochrome = ./clojure-monochrome.svg;
     };
   };
 
@@ -48,7 +49,7 @@ symlinkJoin {
       displayName = "Clojure";
       version = clojure.version;
       icon = ./clojure-logo-64x64.png;
-      iconSvg = ./clojure.svg;
+      iconMonochrome = ./clojure-monochrome.svg;
       inherit settingsSchema;
       hasPackages = packageOptions != {};
     };

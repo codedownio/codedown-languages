@@ -52,7 +52,7 @@ symlinkJoin {
       inherit displayName;
       version = clang.version;
       icon = getAttr flavor icons;
-      iconSvg = ./cplusplus.svg;
+      iconMonochrome = ./cplusplus.svg;
       inherit settingsSchema;
       hasPackages = packageOptions != {};
     };
@@ -70,7 +70,7 @@ symlinkJoin {
         attr = "cling";
         args = ["${cling}/bin/cling"];
         icon = icons.${flavor};
-        iconSvg = ./cplusplus.svg;
+        iconMonochrome = ./cplusplus.svg;
       };
     };
     modes = {

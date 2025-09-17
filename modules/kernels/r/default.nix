@@ -64,7 +64,7 @@ symlinkJoin {
       displayName = "R";
       version = R.version;
       icon = ./r-logo-64x64.png;
-      iconSvg = ./r.svg;
+      iconMonochrome = ./r-monochrome.svg;
       hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch versions;
@@ -75,7 +75,7 @@ symlinkJoin {
         attr = "r";
         args = ["${rWithPackages}/bin/R"];
         icon = ./r-logo-64x64.png;
-        iconSvg = ./r.svg;
+        iconMonochrome = ./r.svg;
       };
     };
     modes = {

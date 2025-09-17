@@ -7,6 +7,6 @@ bashInteractive.overrideAttrs (oldAttrs: {
     displayName = "Bash " + bashInteractive.version;
     attr = "bash";
     icon = ../default_icon_64x64.png;
-    iconSvg = ./gnubash.svg;
+    iconMonochrome = ./gnubash-monochrome.svg;
   };
 })

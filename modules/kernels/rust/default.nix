@@ -81,7 +81,7 @@ symlinkJoin {
       baseName = "rust";
       inherit displayName;
       icon = ./rust-logo-64x64.png;
-      iconSvg = ./rust-logo.svg;
+      iconMonochrome = ./rust-logo-monochrome.svg;
       inherit settingsSchema;
       hasPackages = packageOptions != {};
     };

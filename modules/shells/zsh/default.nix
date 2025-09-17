@@ -50,6 +50,6 @@ stdenv.mkDerivation {
     attr = "zsh";
     # From https://simpleicons.org/?q=zsh
     icon = ./zsh-color.svg;
-    iconSvg = ./zsh.svg;
+    iconMonochrome = ./zsh-monochrome.svg;
   };
 }
