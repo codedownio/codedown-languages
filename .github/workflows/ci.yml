@@ -7,7 +7,16 @@ on:
 
 jobs:
   verify-nixpkgs-revs:
-    runs-on: self-hosted
+    name: "verify-nixpkgs-revs (${{matrix.runs-on}})"
+    runs-on:
+    - self-hosted
+    - ${{matrix.runs-on}}
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+        - macOS
+        - Linux
 
     steps:
     - uses: actions/checkout@v4
@@ -17,7 +26,16 @@ jobs:
       run: ./.aliases/dev-verify-default-nix
 
   nix-flake-check:
-    runs-on: self-hosted
+    name: "nix-flake-check (${{matrix.runs-on}})"
+    runs-on:
+    - self-hosted
+    - ${{matrix.runs-on}}
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+        - macOS
+        - Linux
 
     steps:
     - uses: actions/checkout@v4
@@ -27,7 +45,16 @@ jobs:
       run: nix flake check
 
   build-ui-metadata:
-    runs-on: self-hosted
+    name: "build-ui-metadata (${{matrix.runs-on}})"
+    runs-on:
+    - self-hosted
+    - ${{matrix.runs-on}}
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+        - macOS
+        - Linux
 
     steps:
     - uses: actions/checkout@v4
@@ -38,7 +65,16 @@ jobs:
         nix build .#ui_metadata_farm
 
   build-sample-environments:
-    runs-on: self-hosted
+    name: "build-sample-environments (${{matrix.runs-on}})"
+    runs-on:
+    - self-hosted
+    - ${{matrix.runs-on}}
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+        - macOS
+        - Linux
 
     steps:
     - uses: actions/checkout@v4
@@ -49,14 +85,13 @@ jobs:
         nix build .#sample_environments_farm
 
   test:
-    name: ${{matrix.suite.name}} (${{matrix.suite.flags}})
-    runs-on: ${{ matrix.runs-on || fromJSON('["self-hosted", "Linux"]') }}
+    name: ${{ matrix.suite.name }} (${{ matrix.runs-on }}${{ matrix.suite.flags && format(', {0}', matrix.suite.flags) || '' }})
+    runs-on:
+    - self-hosted
+    - ${{matrix.runs-on}}
     strategy:
       fail-fast: false
       matrix:
-        runs-on:
-        # - [self-hosted, macOS]
-        - [self-hosted, Linux]
         suite:
         - name: bash
         - name: clojure
@@ -89,6 +124,9 @@ jobs:
         - name: sample-environments
         - name: searchers
         - name: settings-schemas
+        runs-on:
+        - macOS
+        - Linux
     steps:
     - uses: actions/checkout@v4
       with:
