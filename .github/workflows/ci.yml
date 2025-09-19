@@ -139,8 +139,8 @@ jobs:
 
         export NIX_PATH=nixpkgs=$(nix run .#nixpkgsPath)
 
-        export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
-        export PATH=$(nix build --no-link .#direnv.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
+        export PATH=$(nix build --no-link .#stack --json | jq -r '.[0].outputs.out')/bin:$PATH
+        export PATH=$(nix build --no-link .#direnv --json | jq -r '.[0].outputs.out')/bin:$PATH
         echo "Got path: $PATH"
 
         direnv allow
@@ -156,7 +156,7 @@ jobs:
         echo TEST_ROOT="$TEST_ROOT" >> $GITHUB_ENV
 
         export NIX_PATH=nixpkgs=$(nix run .#nixpkgsPath)
-        export PATH=$(nix build --no-link .#stack.x86_64-linux --json | jq -r '.[0].outputs.out')/bin:$PATH
+        export PATH=$(nix build --no-link .#stack --json | jq -r '.[0].outputs.out')/bin:$PATH
 
         stack run --nix --no-nix-pure -- \
           --print \

@@ -37,11 +37,11 @@
             print-basic-path = pkgs.writeShellScriptBin "codedown-artifact-sizes.sh" ''
               echo ${pkgs.lib.makeBinPath (with pkgs; [coreutils bash])}
             '';
+
+            inherit (pkgs) direnv stack;
           };
 
           defaultPackage = packages.tests;
-
-          inherit (pkgs) direnv stack;
         }
     );
 }
