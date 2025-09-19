@@ -3,11 +3,10 @@ args: {
   clojure = import ./sample_environments/clojure.nix args;
   coq_8_20 = import ./sample_environments/coq_8_20.nix args;
   coq = import ./sample_environments/coq.nix args;
-  cpp11 = import ./sample_environments/cpp11.nix args;
-  cpp14 = import ./sample_environments/cpp14.nix args;
   cpp17 = import ./sample_environments/cpp17.nix args;
   cpp20 = import ./sample_environments/cpp20.nix args;
   cpp23 = import ./sample_environments/cpp23.nix args;
+  cpp2c = import ./sample_environments/cpp2c.nix args;
   exporters-full = import ./sample_environments/exporters-full.nix args;
   exporters-small = import ./sample_environments/exporters-small.nix args;
   ghc910 = import ./sample_environments/ghc910.nix args;

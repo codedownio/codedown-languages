@@ -19,11 +19,12 @@ tests = describe "C++" $ parallel $ do
   testHasExpectedFields "cpp"
 
   -- tests' "cpp98"
-  tests' "c++11"
-  tests' "c++14"
+  -- tests' "c++11"
+  -- tests' "c++14"
   tests' "c++17"
   tests' "c++20"
   tests' "c++23"
+  tests' "c++2c"
 
 tests' :: Text -> LanguageSpec
 tests' flavor = describe [i|C++ (#{flavor})|] $ introduceNixEnvironment [kernelSpec flavor] [] "C++" $ introduceJupyterRunner $ do

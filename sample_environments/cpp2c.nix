@@ -3,8 +3,8 @@
 }:
 
 codedown.makeEnvironment {
-  name = "cpp11";
+  name = "cpp2c";
 
   kernels.cpp.enable = true;
-  kernels.cpp.flavor = "c++11";
+  kernels.cpp.flavor = "c++2c";
 }

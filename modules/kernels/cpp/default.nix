@@ -21,13 +21,40 @@ let
 
   displayName = "C++";
 
-  icons = {
-    # cpp98 = ./cpp11-logo-64x64.png; # TODO
-    "c++11" = ./cpp11-logo-64x64.png;
-    "c++14" = ./cpp14-logo-64x64.png;
+  iconsPng = {
     "c++17" = ./cpp17-logo-64x64.png;
-    "c++20" = ./cpp2a-logo-64x64.png; # TODO
-    "c++23" = ./cpp2a-logo-64x64.png; # TODO
+    "c++20" = ./cpp20-logo-64x64.png;
+    "c++23" = ./cpp23-logo-64x64.png;
+    "c++2c" = ./cpp2c-logo-64x64.png;
+
+    "gnu++17" = ./cpp17-logo-64x64.png;
+    "gnu++20" = ./cpp20-logo-64x64.png;
+    "gnu++23" = ./cpp23-logo-64x64.png;
+    "gnu++2c" = ./cpp2c-logo-64x64.png;
+  };
+
+  iconsSvg = {
+    "c++17" = ./cpp17.svg;
+    "c++20" = ./cpp20.svg;
+    "c++23" = ./cpp23.svg;
+    "c++2c" = ./cpp2c.svg;
+
+    "gnu++17" = ./cpp17.svg;
+    "gnu++20" = ./cpp20.svg;
+    "gnu++23" = ./cpp23.svg;
+    "gnu++2c" = ./cpp2c.svg;
+  };
+
+  iconsSvgMonochrome = {
+    "c++17" = ./cpp17-monochrome.svg;
+    "c++20" = ./cpp20-monochrome.svg;
+    "c++23" = ./cpp23-monochrome.svg;
+    "c++2c" = ./cpp2c-monochrome.svg;
+
+    "gnu++17" = ./cpp17-monochrome.svg;
+    "gnu++20" = ./cpp20-monochrome.svg;
+    "gnu++23" = ./cpp23-monochrome.svg;
+    "gnu++2c" = ./cpp2c-monochrome.svg;
   };
 
   packageOptions = {};
@@ -51,8 +78,8 @@ symlinkJoin {
       baseName = "cpp";
       inherit displayName;
       version = clang.version;
-      icon = getAttr flavor icons;
-      iconMonochrome = ./cplusplus.svg;
+      icon = getAttr flavor iconsSvg;
+      iconMonochrome = getAttr flavor iconsSvgMonochrome;
       inherit settingsSchema;
       hasPackages = packageOptions != {};
     };
@@ -69,8 +96,8 @@ symlinkJoin {
         display_name = "Cling " + cling.unwrapped.version;
         attr = "cling";
         args = ["${cling}/bin/cling"];
-        icon = icons.${flavor};
-        iconMonochrome = ./cplusplus.svg;
+        icon = iconsSvg.${flavor};
+        iconMonochrome = iconsSvgMonochrome.${flavor};
       };
     };
     modes = {

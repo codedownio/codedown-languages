@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   role="img"
+   viewBox="0 0 24 24"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="cpp20.svg"
+   inkscape:version="1.4.2 (2aeb623e1d, 2025-05-12)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="23.747003"
+     inkscape:cx="12.675284"
+     inkscape:cy="9.0537742"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="204"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <title
+     id="title1">C++</title>
+  <path
+     fill="#00599C"
+     d="M 18.533566,6.093701 C 18.39618,5.855128 18.206144,5.646993 17.997187,5.526061 L 10.744555,1.338686 c -0.418738,-0.241864 -1.1023728,-0.241864 -1.5202876,0 L 1.9699898,5.526061 C 1.552075,5.767102 1.2106682,6.359423 1.2106682,6.842328 v 8.374742 c 0,0.241864 0.085557,0.510054 0.2229428,0.748627 0.1373853,0.238574 0.3274214,0.446708 0.5363788,0.56764 l 7.2526322,4.187375 c 0.4179149,0.241042 1.102373,0.241042 1.520287,0 l 7.252633,-4.187375 c 0.208957,-0.120932 0.398993,-0.329066 0.536379,-0.56764 0.137385,-0.238573 0.22212,-0.506763 0.22212,-0.748627 V 6.842328 c 0.0025,-0.241864 -0.08227,-0.510053 -0.220475,-0.748627 z M 9.9827654,16.878858 c -3.2248537,0 -5.8483387,-2.624308 -5.8483387,-5.849163 0,-3.224846 2.6243077,-5.849154 5.8491617,-5.849154 A 5.8680837,5.8680837 0 0 1 15.047926,8.103477 L 12.517402,9.5678204 A 2.9344532,2.9344532 0 0 0 9.9835884,8.103477 2.9286945,2.9286945 0 0 0 7.0573625,11.029695 2.9286945,2.9286945 0 0 0 9.9827654,13.954276 2.9369212,2.9369212 0 0 0 12.516579,12.491574 l 2.532169,1.464348 a 5.869729,5.869729 0 0 1 -5.0659826,2.922936 z m 5.8491616,-5.524209 h -0.649906 v 0.649907 h -0.649907 v -0.649907 h -0.649907 v -0.649907 h 0.649907 v -0.649907 h 0.649907 v 0.649907 h 0.649906 z m 2.43674,0 H 17.61876 v 0.649907 h -0.649907 v -0.649907 h -0.649907 v -0.649907 h 0.649907 v -0.649907 h 0.649907 v 0.649907 h 0.649907 z"
+     id="path1"
+     style="stroke-width:0.822667" />
+  <text
+     xml:space="preserve"
+     fill="#757575"
+     style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:39.99999879px;line-height:1.25;font-family:FreeSans;-inkscape-font-specification:'FreeSans, Semi-Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;inline-size:53.2293;display:inline"
+     x="13.369727"
+     y="18.878412"
+     id="text1"
+     transform="matrix(0.17301616,0,0,0.17301616,12.462509,19.948923)"><tspan
+       x="13.369727"
+       y="18.878412"
+       id="tspan2">20</tspan></text>
+  <metadata
+     id="metadata1">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>C++</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

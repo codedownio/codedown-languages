@@ -27,20 +27,22 @@ in
       flavor = mkOption {
         example = "C++ flavor";
         type = types.enum [
-          "c++11"
-          "c++14"
+          # "c++11"
+          # "c++14"
           "c++17"
           "c++20"
           "c++23"
+          "c++2c"
 
-          "gnu++11"
-          "gnu++14"
+          # "gnu++11"
+          # "gnu++14"
           "gnu++17"
           "gnu++20"
           "gnu++23"
+          "gnu++2c"
         ];
 
-        default = "c++20";
+        default = "c++23";
       };
 
       interface.attrs = mkOption {
