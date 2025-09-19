@@ -18,7 +18,7 @@ codedown.makeEnvironment {
   kernels.clojure.enable = true;
 
   kernels.cpp.enable = true;
-  kernels.cpp.flavor = "c++14";
+  kernels.cpp.flavor = "c++23";
 
   kernels.julia.enable = true;
   kernels.julia.juliaPackage = "julia_110";
