@@ -19,7 +19,19 @@ let
 
   common = callPackage ../common.nix {};
 
-  displayName = "C++";
+  displaySuffix = {
+    "c++17" = " 17";
+    "c++20" = " 20";
+    "c++23" = " 23";
+    "c++2c" = " 26";
+
+    "gnu++17" = " 17";
+    "gnu++20" = " 20";
+    "gnu++23" = " 23";
+    "gnu++2c" = " 26";
+  };
+
+  displayName = "C++" + (displaySuffix.${flavor} or "");
 
   iconsPng = {
     "c++17" = ./cpp17-logo-64x64.png;
