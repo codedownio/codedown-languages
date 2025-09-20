@@ -43,7 +43,10 @@
           transformOptions = opt: opt // {
             # Remove declarations to hide "Declared by" lines
             declarations = [];
-          };
+          } // (pkgsMaster.lib.optionalAttrs (pkgsMaster.lib.head (opt.loc or []) == "_module") {
+            visible = false;
+            internal = true;
+          });
           warningsAreErrors = false;
         };
       in
