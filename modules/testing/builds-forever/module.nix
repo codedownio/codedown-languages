@@ -9,6 +9,7 @@ with lib;
         type = types.bool;
         default = false;
         description = "Build the builds-forever test.";
+        visible = false;
       };
     };
   };
