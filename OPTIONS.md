@@ -56,9 +56,6 @@ For NixOS, the default value for this option includes at least this argument:
 *Type:*
 lazy attribute set of raw value
 
-*Declared by:*
- - [\<nixpkgs/lib/modules\.nix>](https://github.com/NixOS/nixpkgs/blob//lib/modules.nix)
-
 
 
 ## environment\.variables
@@ -76,9 +73,6 @@ attribute set of string
 
 *Default:*
 ` { } `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/environment/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/environment/module.nix)
 
 
 
@@ -98,9 +92,6 @@ boolean
 *Default:*
 ` false `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/exporters/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/exporters/module.nix)
-
 
 
 ## exporters\.nbconvert\.texliveScheme
@@ -118,9 +109,6 @@ one of “scheme-basic”, “scheme-bookpub”, “scheme-full”, “scheme-me
 
 *Default:*
 ` "scheme-small" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/exporters/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/exporters/module.nix)
 
 
 
@@ -151,9 +139,6 @@ list of string
 *Example:*
 ` "Notebook attributes" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/r/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/r/module.nix)
-
 
 
 ## kernels\.R\.interface\.extensions
@@ -182,9 +167,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/r/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/r/module.nix)
-
 
 
 ## kernels\.R\.lsp\.languageserver\.enable
@@ -207,9 +189,6 @@ boolean
 
 *Example:*
 ` "Enable languageserver" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/r/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/r/module.nix)
 
 
 
@@ -238,9 +217,6 @@ list of string
 
 *Example:*
 ` "Notebook attributes" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/bash/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/bash/module.nix)
 
 
 
@@ -271,9 +247,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/bash/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/bash/module.nix)
-
 
 
 ## kernels\.bash\.lsp\.bash-language-server\.enable
@@ -296,9 +269,6 @@ boolean
 
 *Example:*
 ` "Enable Bash language server" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/bash/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/bash/module.nix)
 
 
 
@@ -328,9 +298,6 @@ list of string
 *Example:*
 ` "Notebook attributes" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/clojure/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/clojure/module.nix)
-
 
 
 ## kernels\.clojure\.interface\.extensions
@@ -359,9 +326,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/clojure/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/clojure/module.nix)
-
 
 
 ## kernels\.clojure\.lsp\.clojure-lsp\.enable
@@ -385,9 +349,6 @@ boolean
 *Example:*
 ` "Enable clojure-lsp language server" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/clojure/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/clojure/module.nix)
-
 
 
 ## kernels\.coq\.coqPackages
@@ -410,9 +371,6 @@ one of “coqPackages”, “coqPackages_8_10”, “coqPackages_8_11”, “coq
 
 *Example:*
 ` "Coq packages set" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/coq/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/coq/module.nix)
 
 
 
@@ -442,9 +400,6 @@ list of string
 *Example:*
 ` "Notebook attributes" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/coq/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/coq/module.nix)
-
 
 
 ## kernels\.coq\.interface\.extensions
@@ -473,9 +428,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/coq/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/coq/module.nix)
-
 
 
 ## kernels\.cpp\.flavor
@@ -498,9 +450,6 @@ one of “c++17”, “c++20”, “c++23”, “c++2c”, “gnu++17”, “gnu
 
 *Example:*
 ` "C++ flavor" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/cpp/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/cpp/module.nix)
 
 
 
@@ -529,9 +478,6 @@ list of string
 
 *Example:*
 ` "Notebook attributes" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/cpp/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/cpp/module.nix)
 
 
 
@@ -566,9 +512,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/cpp/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/cpp/module.nix)
-
 
 
 ## kernels\.go\.go\.gocache
@@ -592,9 +535,6 @@ string
 *Example:*
 ` "Value of GOCACHE environment variable" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/go/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/go/module.nix)
-
 
 
 ## kernels\.go\.goPackage
@@ -617,9 +557,6 @@ one of “go”, “go_1_22”, “go_1_23”, “go_1_24”, “go_latest”
 
 *Example:*
 ` "Go version" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/go/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/go/module.nix)
 
 
 
@@ -649,9 +586,6 @@ list of string
 *Example:*
 ` "Notebook attributes" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/go/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/go/module.nix)
-
 
 
 ## kernels\.go\.interface\.extensions
@@ -680,9 +614,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/go/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/go/module.nix)
-
 
 
 ## kernels\.go\.lsp\.gopls\.enable
@@ -705,9 +636,6 @@ boolean
 
 *Example:*
 ` "Enable gopls language server" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/go/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/go/module.nix)
 
 
 
@@ -732,9 +660,6 @@ boolean
 *Example:*
 ` "Enable hlint warnings in Jupyter kernel output. Normally you don't want this because it is provided by haskell-language-server." `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module.nix)
-
 
 
 ## kernels\.haskell\.ghcPackage
@@ -757,9 +682,6 @@ one of “ghc94”, “ghc96”, “ghc98”, “ghc910”, “ghc912”
 
 *Example:*
 ` "GHC version" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module.nix)
 
 
 
@@ -789,9 +711,6 @@ list of string
 *Example:*
 ` "Notebook attributes" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module.nix)
-
 
 
 ## kernels\.haskell\.interface\.extensions
@@ -820,9 +739,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module.nix)
-
 
 
 ## kernels\.haskell\.lsp\.haskell-language-server\.enable
@@ -845,9 +761,6 @@ boolean
 
 *Example:*
 ` "Enable haskell-language-server" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module.nix)
 
 
 
@@ -872,9 +785,6 @@ boolean
 *Example:*
 ` "Haskell-language-server: enable debug output" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module.nix)
-
 
 
 ## kernels\.haskell\.lsp\.haskell-language-server\.super-debug
@@ -897,9 +807,6 @@ boolean
 
 *Example:*
 ` "Haskell-language-server: enable verbose debug output" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/haskell/module.nix)
 
 
 
@@ -929,9 +836,6 @@ list of string
 *Example:*
 ` "Notebook attributes" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module.nix)
-
 
 
 ## kernels\.julia\.interface\.extensions
@@ -960,9 +864,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module.nix)
-
 
 
 ## kernels\.julia\.juliaPackage
@@ -985,9 +886,6 @@ one of “julia”, “julia-lts”, “julia-lts-bin”, “julia-stable”, �
 
 *Example:*
 ` "Julia version" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module.nix)
 
 
 
@@ -1012,9 +910,6 @@ boolean
 *Example:*
 ` "Enable LanguageServer language server" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module.nix)
-
 
 
 ## kernels\.julia\.lsp\.LanguageServer\.debug
@@ -1037,9 +932,6 @@ boolean
 
 *Example:*
 ` "Log debug messages to stderr" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module.nix)
 
 
 
@@ -1064,9 +956,6 @@ boolean
 *Example:*
 ` "Auto-index packages when building environment" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module.nix)
-
 
 
 ## kernels\.julia\.precompile
@@ -1089,9 +978,6 @@ boolean
 
 *Example:*
 ` "Precompile Julia environment for faster imports" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/julia/module.nix)
 
 
 
@@ -1122,9 +1008,6 @@ string
 *Example:*
 ` "Extra Jupyter configuration" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/octave/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/octave/module.nix)
-
 
 
 ## kernels\.octave\.interface\.attrs
@@ -1152,9 +1035,6 @@ list of string
 
 *Example:*
 ` "Notebook attributes" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/octave/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/octave/module.nix)
 
 
 
@@ -1184,9 +1064,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/octave/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/octave/module.nix)
-
 
 
 ## kernels\.postgres\.enable
@@ -1209,9 +1086,6 @@ boolean
 
 *Example:*
 ` "Enable PostgreSQL kernel" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/postgres/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/postgres/module.nix)
 
 
 
@@ -1241,9 +1115,6 @@ list of string
 *Example:*
 ` "Notebook attributes" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/postgres/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/postgres/module.nix)
-
 
 
 ## kernels\.postgres\.interface\.extensions
@@ -1271,9 +1142,6 @@ list of string
 
 *Example:*
 ` "File extensions" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/postgres/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/postgres/module.nix)
 
 
 
@@ -1304,9 +1172,6 @@ list of string
 *Example:*
 ` "Notebook attributes" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.pypy3\.interface\.extensions
@@ -1335,9 +1200,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.pypy3\.lsp\.flake8\.enable
@@ -1360,9 +1222,6 @@ boolean
 
 *Example:*
 ` "Enable Flake8 language server" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
 
 
 
@@ -1387,9 +1246,6 @@ boolean
 *Example:*
 ` "Enable Jedi language server" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.pypy3\.lsp\.microsoft\.enable
@@ -1412,9 +1268,6 @@ boolean
 
 *Example:*
 ` "Enable Microsoft Python language server" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
 
 
 
@@ -1439,9 +1292,6 @@ boolean
 *Example:*
 ` "Enable pycodestyle language server" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.pypy3\.lsp\.pylint\.enable
@@ -1464,9 +1314,6 @@ boolean
 
 *Example:*
 ` "Enable Pylint language server" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
 
 
 
@@ -1491,9 +1338,6 @@ boolean
 *Example:*
 ` "Enable Pyright language server" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.pypy3\.lsp\.python-language-server\.enable
@@ -1516,9 +1360,6 @@ boolean
 
 *Example:*
 ` "Enable python-language-server language server" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
 
 
 
@@ -1543,9 +1384,6 @@ boolean
 *Example:*
 ` "Enable python-lsp-server language server" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.pypy3\.misc\.enableVariableInspector
@@ -1568,9 +1406,6 @@ boolean
 
 *Example:*
 ` "Enable the variable inspector" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
 
 
 
@@ -1595,9 +1430,6 @@ boolean
 *Example:*
 ` "Permit user site-packages" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.pypy3\.python3Package
@@ -1620,9 +1452,6 @@ value “pypy3” (singular enum)
 
 *Example:*
 ` "PyPy 3 version" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
 
 
 
@@ -1653,9 +1482,6 @@ list of string
 *Example:*
 ` "Notebook attributes" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.python3\.interface\.extensions
@@ -1684,9 +1510,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.python3\.lsp\.flake8\.enable
@@ -1709,9 +1532,6 @@ boolean
 
 *Example:*
 ` "Enable Flake8 language server" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
 
 
 
@@ -1736,9 +1556,6 @@ boolean
 *Example:*
 ` "Enable Jedi language server" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.python3\.lsp\.microsoft\.enable
@@ -1761,9 +1578,6 @@ boolean
 
 *Example:*
 ` "Enable Microsoft Python language server" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
 
 
 
@@ -1788,9 +1602,6 @@ boolean
 *Example:*
 ` "Enable pycodestyle language server" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.python3\.lsp\.pylint\.enable
@@ -1813,9 +1624,6 @@ boolean
 
 *Example:*
 ` "Enable Pylint language server" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
 
 
 
@@ -1840,9 +1648,6 @@ boolean
 *Example:*
 ` "Enable Pyright language server" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.python3\.lsp\.python-language-server\.enable
@@ -1865,9 +1670,6 @@ boolean
 
 *Example:*
 ` "Enable python-language-server language server" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
 
 
 
@@ -1892,9 +1694,6 @@ boolean
 *Example:*
 ` "Enable python-lsp-server language server" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.python3\.misc\.enableVariableInspector
@@ -1917,9 +1716,6 @@ boolean
 
 *Example:*
 ` "Enable the variable inspector" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
 
 
 
@@ -1944,9 +1740,6 @@ boolean
 *Example:*
 ` "Permit user site-packages" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
-
 
 
 ## kernels\.python3\.python3Package
@@ -1969,9 +1762,6 @@ one of “python3”, “python311”, “python312”, “python313”
 
 *Example:*
 ` "Python 3 version" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/python/module.nix)
 
 
 
@@ -2001,9 +1791,6 @@ list of string
 *Example:*
 ` "Notebook attributes" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/ruby/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/ruby/module.nix)
-
 
 
 ## kernels\.ruby\.interface\.extensions
@@ -2032,9 +1819,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/ruby/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/ruby/module.nix)
-
 
 
 ## kernels\.ruby\.lsp\.solargraph\.enable
@@ -2057,9 +1841,6 @@ boolean
 
 *Example:*
 ` "Enable Solargraph language server" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/ruby/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/ruby/module.nix)
 
 
 
@@ -2084,9 +1865,6 @@ one of “ruby”, “ruby_3_1”, “ruby_3_2”, “ruby_3_3”, “ruby_3_4�
 *Example:*
 ` "Ruby version" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/ruby/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/ruby/module.nix)
-
 
 
 ## kernels\.rust\.packages
@@ -2109,9 +1887,6 @@ list of (string or (submodule))
 
 *Example:*
 ` "List of packages" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/rust/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/rust/module.nix)
 
 
 
@@ -2140,9 +1915,6 @@ list of string
 
 *Example:*
 ` "Notebook attributes" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/rust/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/rust/module.nix)
 
 
 
@@ -2173,9 +1945,6 @@ list of string
 *Example:*
 ` "File extensions" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/rust/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/rust/module.nix)
-
 
 
 ## kernels\.rust\.lsp\.rust-analyzer\.enable
@@ -2198,9 +1967,6 @@ boolean
 
 *Example:*
 ` "Rust-analyzer: enable" `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/rust/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/rust/module.nix)
 
 
 
@@ -2225,9 +1991,6 @@ boolean
 *Example:*
 ` "Rust-analyzer: debug output" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/rust/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/rust/module.nix)
-
 
 
 ## kernels\.rust\.rustPackage
@@ -2251,9 +2014,6 @@ one of “rust”, “rust_1_89”
 *Example:*
 ` "Rust version" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/rust/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/kernels/rust/module.nix)
-
 
 
 ## language-servers\.spellchecker\.enable
@@ -2271,9 +2031,6 @@ boolean
 
 *Default:*
 ` false `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/language_servers/markdown-spellcheck-lsp/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/language_servers/markdown-spellcheck-lsp/module.nix)
 
 
 
@@ -2293,9 +2050,6 @@ string
 *Default:*
 ` "codedown-environment" `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/base\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/base.nix)
-
 
 
 ## shells\.bash\.enable
@@ -2313,9 +2067,6 @@ boolean
 
 *Default:*
 ` false `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/shells/bash/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/shells/bash/module.nix)
 
 
 
@@ -2335,9 +2086,6 @@ boolean
 *Default:*
 ` false `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/shells/fish/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/shells/fish/module.nix)
-
 
 
 ## shells\.zsh\.enable
@@ -2356,9 +2104,6 @@ boolean
 *Default:*
 ` false `
 
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/shells/zsh/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/shells/zsh/module.nix)
-
 
 
 ## shells\.zsh\.powerline
@@ -2376,8 +2121,5 @@ boolean
 
 *Default:*
 ` false `
-
-*Declared by:*
- - [/nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/shells/zsh/module\.nix](file:///nix/store/kswnfp0s6yxqxpnr7dr62ddzxfiip3zn-source/modules/shells/zsh/module.nix)
 
 

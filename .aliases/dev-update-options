@@ -1,5 +1,4 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i bash -p yq-go
+#! /usr/bin/env bash
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPTDIR/.."
@@ -7,9 +6,6 @@ cd "$SCRIPTDIR/.."
 set -e
 
 OUTPUT=$(nix build .#optionsCommonMark --no-link --json | jq -r '.[0].outputs.out')
-
-echo "OUTPUT: $OUTPUT"
-pwd
 
 cp "$OUTPUT" ./OPTIONS.md
 chmod u+x ./OPTIONS.md

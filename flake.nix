@@ -40,6 +40,10 @@
               pkgs = {};
             };
           }) {}).options;
+          transformOptions = opt: opt // {
+            # Remove declarations to hide "Declared by" lines
+            declarations = [];
+          };
           warningsAreErrors = false;
         };
       in
