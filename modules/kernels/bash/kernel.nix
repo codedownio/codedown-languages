@@ -12,6 +12,9 @@ let
 
   python = python3.withPackages (ps: [ps.bash_kernel]);
 
+  # Checks failed on macOS on release-25.05. Disabling them is one option:
+  # python = python3.withPackages (ps: [(ps.bash_kernel.overrideAttrs (_oldAttrs: { doCheck = false; }))]);
+
 in
 
 common.makeJupyterKernel {

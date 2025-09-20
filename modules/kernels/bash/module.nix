@@ -1,6 +1,11 @@
-{ config, options, lib, pkgs, nixosOptionsToSettingsSchema, boilerplate, ... }:
+{ config, options, lib, nixosOptionsToSettingsSchema, boilerplate, ... }:
 
 with lib;
+
+let
+  pkgsToUse = config.pkgsMaster;
+
+in
 
 {
   options = {
@@ -34,8 +39,8 @@ with lib;
   };
 
   config = mkIf config.kernels.bash.enable {
-    builtKernels.bash = config.pkgs.callPackage ./. {
-      bash = config.pkgs.bash;
+    builtKernels.bash = pkgsToUse.callPackage ./. {
+      bash = pkgsToUse.bash;
       settings = config.kernels.bash;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.bash;
     };

@@ -10,8 +10,6 @@
 , kernelName
 }:
 
-with lib;
-
 let
   common = callPackage ../../common.nix {};
 

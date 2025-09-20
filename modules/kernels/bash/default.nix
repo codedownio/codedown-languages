@@ -1,10 +1,8 @@
 { callPackage
 , lib
-, pkgs
 , python3
 , nodePackages
 , symlinkJoin
-, writeTextDir
 
 , bash
 
