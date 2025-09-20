@@ -1,6 +1,8 @@
 { lib
 , pkgsStable
 , pkgsMaster
+
+, extraSpecialArgs ? {}
 }:
 
 config:
@@ -15,7 +17,7 @@ lib.evalModules {
       extensionsTitle = "File extensions";
       extensionsDescription = "Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell.";
     };
-  };
+  } // extraSpecialArgs;
   modules = [
     ../modules/base.nix
 

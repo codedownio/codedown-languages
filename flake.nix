@@ -33,6 +33,15 @@
           '') attrs)}
         '';
 
+        optionsDoc = pkgsMaster.nixosOptionsDoc {
+          options = ((pkgsMaster.callPackage ./nix/evaluate-config.nix {
+            inherit pkgsStable pkgsMaster;
+            extraSpecialArgs = {
+              pkgs = {};
+            };
+          }) {}).options;
+          warningsAreErrors = false;
+        };
       in
         {
           devShells = {
@@ -44,7 +53,7 @@
             };
           };
 
-          packages = rec {
+          packages = {
             # For nix repl debugging
             # inherit codedown;
 
@@ -74,42 +83,20 @@
               })
             );
 
-            # # Documentation generation
-            # evaluated = (pkgsStable.callPackage ./nix/evaluate-config.nix {
-            #   inherit pkgsStable pkgsMaster;
-            # }) {};
+            # Documentation generation
+            inherit (optionsDoc) optionsCommonMark optionsJSON;
 
-            # optionsList = pkgsStable.lib.optionAttrSetToDocList evaluated.options;
-
-            # optionsJson = let
-            #   optionsAttrs = builtins.listToAttrs (
-            #     map (o: {
-            #       name = o.name;
-            #       value = builtins.removeAttrs o ["name" "visible" "internal"];
-            #     }) optionsList
-            #   );
-            # in
-            #   pkgsStable.writeText "options.json" (pkgsStable.lib.generators.toYAML {} optionsAttrs);
-
-            # optionsHtml = let
-            #   evaluated = (pkgsStable.callPackage ./nix/evaluate-config.nix {
-            #     pkgsStable = pkgsStable;
-            #     inherit pkgsMaster;
-            #   }) {};
-            #   optionsList = pkgsStable.lib.optionAttrSetToDocList evaluated.options;
-            #   optionsAttrs = builtins.listToAttrs (
-            #     map (o: {
-            #       name = o.name;
-            #       value = builtins.removeAttrs o ["name" "visible" "internal"];
-            #     }) optionsList
-            #   );
-            #   optionsJson = pkgsStable.writeText "options.json" (builtins.toJSON optionsAttrs);
-            # in pkgsStable.runCommand "options-html" {
-            #   buildInputs = [ pkgsStable.nixos-render-docs ];
+            # optionsHtml = pkgsStable.runCommand "options-html" {
+            #   buildInputs = [ pkgsStable.nixos-render-docs pkgsStable.which ];
             # } ''
             #   mkdir -p $out
-            #   nixos-render-docs options \
-            #     --manpage-urls '{}' \
+
+            #   which nixos-render-docs
+
+            #   echo "{}" > manpage-urls.json
+
+            #   nixos-render-docs options commonmark \
+            #     --manpage-urls manpage-urls.json \
             #     --revision master \
             #     ${optionsJson} \
             #     $out/index.html
