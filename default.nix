@@ -22,16 +22,16 @@ let
     inherit overlays;
   } // (if system == null then {} else { inherit system; }));
 
-  masterRev = "06aacd50ad037906523bff549f2ba50f2be7b697"; # nixpkgs-master-rev
+  masterRev = "3813f3fcfd15bac0df363cca1fd35206e66f25a9"; # nixpkgs-master-rev
   masterFetchFromGitHub = fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs";
     rev = masterRev;
-    hash = "sha256-IvwsyfvavAUL3a07xxMfHZ0X437OhjUWLq/eGcv7WeM="; # nixpkgs-master-hash
+    hash = "sha256-tdHRCD5+cNRX27JU/7ionH3Gu5R4sNxhVCownep6ibo="; # nixpkgs-master-hash
   };
   masterBuiltins = builtins.fetchTarball {
     url = ''https://github.com/NixOS/nixpkgs/archive/${masterRev}.tar.gz'';
-    sha256 = "1qsrzg5ikpmg5qb3b1nfgviig78x3w9wffxdvl5hbg6szg4jrz12"; # nixpkgs-master-sha256
+    sha256 = "1fl9gbm9sc1aaihxrc3qjjxwczcwm2wgym5jvdbx8w3y7q4d3ldm"; # nixpkgs-master-sha256
   };
   pkgsMasterSrc = if fetchFromGitHub != null then masterFetchFromGitHub else masterBuiltins;
   pkgsMaster = import pkgsMasterSrc ({
