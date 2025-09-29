@@ -9,7 +9,7 @@
 
 {
   ghc910 = let
-    "ghc-syntax-highlighter_0_0_12_0" = haskell.packages.ghc9102.callPackage
+    "ghc-syntax-highlighter_0_0_12_0" = haskell.packages.ghc910.callPackage
       ({ mkDerivation, base, ghc-lib-parser_9_10_2_20250515, hspec, hspec-discover, text
        }:
          mkDerivation {
