@@ -165,14 +165,26 @@ jobs:
           --${{matrix.suite.name}} ${{matrix.suite.flags}}
 
     - name: Upload test artifacts
-      if: ${{ always() }}
+      if: always() && runner.os != 'macOS'
       continue-on-error: true
+      shell: bash
       run: |
         if [[ -n "$TEST_ROOT" ]]; then
-          echo "Uploading \"$TEST_ROOT/\""
           rsync \
             -e "ssh -F /secrets/ci_ssh_config" \
-            -azW --progress --mkpath \
+            -azW --mkpath \
             "$TEST_ROOT/" \
             tester@desktop1:"/home/tester/all_test_runs/languages_${{github.workflow}}_${{github.run_number}}/${{matrix.suite.name}}-${{matrix.suite.flags}}"
+        fi
+
+    - name: Save test artifacts (macOS)
+      if: always() && runner.os == 'macOS'
+      continue-on-error: true
+      shell: bash
+      run: |
+        if [[ -n "$TEST_ROOT" ]]; then
+          rsync \
+            -azW --mkpath \
+            "$TEST_ROOT/" \
+            /Users/tester/all_test_runs/languages_${{github.workflow}}_${{github.run_number}}/${{matrix.suite.name}}-${{matrix.suite.flags}}
         fi
