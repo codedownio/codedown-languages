@@ -169,12 +169,15 @@ jobs:
       continue-on-error: true
       shell: bash
       run: |
+        DEST="tester@desktop1:/home/tester/all_test_runs/languages_${{github.workflow}}_${{github.run_number}}/${{matrix.suite.name}}-${{matrix.suite.flags}}"
+        DEST="${DEST// /_}"
+        echo "DEST: $DEST"
         if [[ -n "$TEST_ROOT" ]]; then
           rsync \
             -e "ssh -F /secrets/ci_ssh_config" \
             -azW --mkpath \
             "$TEST_ROOT/" \
-            tester@desktop1:"/home/tester/all_test_runs/languages_${{github.workflow}}_${{github.run_number}}/${{matrix.suite.name}}-${{matrix.suite.flags}}"
+            "$DEST"
         fi
 
     - name: Save test artifacts (macOS)
@@ -182,9 +185,12 @@ jobs:
       continue-on-error: true
       shell: bash
       run: |
+        DEST="/Users/tester/all_test_runs/languages_${{github.workflow}}_${{github.run_number}}/${{matrix.suite.name}}-${{matrix.suite.flags}}"
+        DEST="${DEST// /_}"
+        echo "DEST: $DEST"
         if [[ -n "$TEST_ROOT" ]]; then
           rsync \
             -azW --mkpath \
             "$TEST_ROOT/" \
-            /Users/tester/all_test_runs/languages_${{github.workflow}}_${{github.run_number}}/${{matrix.suite.name}}-${{matrix.suite.flags}}
+            "$DEST"
         fi
