@@ -1,6 +1,11 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 with lib;
+
+let
+  pkgsToUse = config.pkgsMaster;
+
+in
 
 {
   options = {
@@ -14,6 +19,6 @@ with lib;
   };
 
   config = mkIf config.language-servers.spellchecker.enable {
-    builtLanguageServers.spellchecker = config.pkgs.callPackage ./. {};
+    builtLanguageServers.spellchecker = pkgsToUse.callPackage ./. {};
   };
 }
