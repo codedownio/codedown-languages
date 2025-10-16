@@ -7,8 +7,9 @@ with lib;
     exporters.nbconvert = {
       enable = mkOption {
         type = types.bool;
-        default = false;
         description = "Enable the nbconvert exporters.";
+        default = false;
+        visible = false;
       };
 
       texliveScheme = mkOption {
