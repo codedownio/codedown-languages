@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, options, lib, nixosOptionsToSettingsSchema, ... }:
 
 with lib;
 
@@ -21,7 +21,7 @@ with lib;
           "scheme-small"
           "scheme-tetex"
         ];
-        default = "scheme-small";
+        default = "scheme-medium";
         description = "The TeX Live scheme to use, as an attribute of pkgs.texlive.combined.*";
       };
     };
@@ -30,6 +30,9 @@ with lib;
   config = mkIf config.exporters.nbconvert.enable {
     builtExporters.nbconvert = config.pkgsMaster.callPackage ./nbconvert.nix {
       texliveScheme = config.pkgs.texlive.combined.${config.exporters.nbconvert.texliveScheme};
+
+      settings = config.exporters.nbconvert;
+      settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.exporters.nbconvert;
     };
   };
 }

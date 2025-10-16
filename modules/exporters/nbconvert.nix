@@ -3,6 +3,9 @@
 , python3
 , symlinkJoin
 , texliveScheme
+
+, settings
+, settingsSchema
 }:
 
 let
@@ -44,23 +47,31 @@ symlinkJoin {
   name = "nbconvert-exporters";
   paths = exporters;
 
-  meta = {
-    name = "nbconvert-exporters";
-    description = "CodeDown exporters for PDF, HTML, LaTeX, slides, etc.";
+  passthru = {
+    meta = {
+      name = "nbconvert-exporters";
+      description = "CodeDown exporters for PDF, HTML, LaTeX, slides, etc.";
 
-    icon = ../../codedown.png;
-    iconMonochrome = ../../codedown-monochrome.svg;
+      icon = ../../codedown.png;
+      iconMonochrome = ../../codedown-monochrome.svg;
 
-    # To separate these out in search results
-    category = "Exporters";
+      # To separate these out in search results
+      category = "Exporters";
 
-    exporterInfos = map (x: {
-      name = x.name;
-      display_name = x.display_name;
-      extension = x.extension;
-      meta = x.meta;
-      icon = x.icon;
-      args = [(x + "/bin/export")];
-    }) exporters;
+      exporterInfos = map (x: {
+        name = x.name;
+        display_name = x.display_name;
+        extension = x.extension;
+        meta = x.meta;
+        icon = x.icon;
+        args = [(x + "/bin/export")];
+      }) exporters;
+    };
+
+    versions = {
+      nbconvert = nbconvert.version;
+    };
+
+    inherit settingsSchema settings;
   };
 }
