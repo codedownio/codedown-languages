@@ -14,13 +14,25 @@ with lib;
 
       texliveScheme = mkOption {
         type = types.enum [
-          "scheme-basic"
-          "scheme-bookpub"
+          # Fails with "OSError: xelatex not found on PATH"
+          # "scheme-minimal"
+
+          # Fails with "OSError: xelatex not found on PATH"
+          # "scheme-basic"
+
+          # Fails with "LaTeX Error: File `tcolorbox.sty' not found."
+          # "scheme-small"
+
+          # Fails with "LaTeX Error: File `tcolorbox.sty' not found."
+          # "scheme-medium"
+
+          # Fails with "OSError: xelatex not found on PATH"
+          # "scheme-bookpub"
+
+          # Fails with "LaTeX Error: File `tcolorbox.sty' not found."
+          # "scheme-tetex"
+
           "scheme-full"
-          "scheme-medium"
-          "scheme-minimal"
-          "scheme-small"
-          "scheme-tetex"
         ];
         default = "scheme-medium";
         description = "The TeX Live scheme to use, as an attribute of pkgs.texlive.combined.*";

@@ -121,6 +121,7 @@ jobs:
         - name: zsh
         - name: spellchecker
 
+        - name: exporters
         - name: sample-environments
         - name: searchers
         - name: settings-schemas

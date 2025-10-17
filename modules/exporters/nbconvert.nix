@@ -13,16 +13,17 @@ let
 
   common = callPackage ../kernels/common.nix {};
 
-  makeNbconvertExporter = name: displayName: extension: to: common.writeShellScriptBinWithAttrs {
-    inherit name extension;
-    display_name = displayName;
-    meta = nbconvert.meta;
-    icon = null;
-  } "export" ''
-    echo_and_run() { echo "$*" ; "$@" ; }
-    echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveScheme}/bin"
-    echo_and_run ${nbconvert}/bin/jupyter-nbconvert "$1" --to ${to}
-  '';
+  makeNbconvertExporter = name: displayName: extension: to:
+    common.writeShellScriptBinWithAttrs {
+      inherit name extension;
+      display_name = displayName;
+      meta = nbconvert.meta;
+      icon = null;
+    } "export" ''
+      echo_and_run() { echo "$*" ; "$@" ; }
+      echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveScheme}/bin"
+      echo_and_run ${nbconvert}/bin/jupyter-nbconvert "$1" --to ${to}
+    '';
 
   exporters = [
     (makeNbconvertExporter "codedown-exporter-asciidoc" "AsciiDoc (.asciidoc)" "asciidoc" "asciidoc")

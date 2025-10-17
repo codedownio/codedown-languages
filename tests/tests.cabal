@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.38.0.
+-- This file has been generated from package.yaml by hpack version 0.38.1.
 --
 -- see: https://github.com/sol/hpack
 
@@ -20,6 +20,7 @@ library
   exposed-modules:
       TestLib.Aeson
       TestLib.Contexts.PostgresqlData
+      TestLib.Exporters
       TestLib.JupyterRunnerContext
       TestLib.JupyterTypes
       TestLib.LSP
@@ -91,6 +92,7 @@ executable tests
       Spec.Tests.Clojure
       Spec.Tests.Coq
       Spec.Tests.Cpp
+      Spec.Tests.Exporters
       Spec.Tests.Go
       Spec.Tests.Haskell
       Spec.Tests.Haskell.CodeActions
