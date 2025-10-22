@@ -34,24 +34,39 @@ tests = describe "Exporters" $ do
 
 testTexliveScheme :: Text -> LanguageSpec
 testTexliveScheme scheme = introduceNixEnvironment [] [otherConfig scheme] [i|Exporters (#{scheme})|] $ do
-  it "Has exporter metadata" $ do
-    nixEnv <- getContext nixEnvironment
-    pdfExporterInfo <- readExporterInfoByName (nixEnv </> "lib" </> "codedown" </> "exporters.yaml") "codedown-exporter-pdf"
+  it "codedown-exporter-asciidoc" $ testExport "codedown-exporter-asciidoc" "asciidoc"
+  it "codedown-exporter-latex" $ testExport "codedown-exporter-latex" "tex"
+  it "codedown-exporter-pdf" $ testExport "codedown-exporter-pdf" "pdf"
+  it "codedown-exporter-html" $ testExport "codedown-exporter-html" "html"
+  it "codedown-exporter-rst" $ testExport "codedown-exporter-rst" "rst"
+  -- it "codedown-exporter-slides" $ testExport "codedown-exporter-slides" "slides.html"
+  it "codedown-exporter-markdown" $ testExport "codedown-exporter-markdown" "md"
 
-    Just dir <- getCurrentFolder
+  -- it "codedown-exporter-slidy" $ testExport "codedown-exporter-beamer" "html"
+  -- it "codedown-exporter-beamer" $ testExport "codedown-exporter-beamer" "html"
+  -- it "codedown-exporter-beamer" $ testExport "codedown-exporter-beamer" "html"
 
-    let inputFile = dir </> "input.ipynb"
-    let outputFile = dir </> "input.pdf"
+testExport :: (HasBaseContext ctx, HasNixEnvironment ctx) => Text -> FilePath -> ExampleT ctx IO ()
+testExport name extension = do
+  nixEnv <- getContext nixEnvironment
+  pdfExporterInfo <- readExporterInfoByName (nixEnv </> "lib" </> "codedown" </> "exporters.yaml") name
 
-    liftIO $ A.encodeFile inputFile sampleJupyterNotebook
+  Just dir <- getCurrentFolder
 
-    cp <- case exporterInfoArgs pdfExporterInfo of
-      [] -> expectationFailure [i|Couldn't get exporter info args|]
-      (x:xs) -> return $ proc (T.unpack x) (fmap T.unpack xs <> [inputFile])
-    info [i|cp: #{cp}|]
-    void $ readCreateProcessWithLogging (cp { cwd = Just dir }) ""
+  let inputFile = dir </> "input.ipynb"
+  let outputFile = dir </> ("output" <.> extension)
 
-    doesPathExist outputFile >>= (`shouldBe` True)
+  liftIO $ A.encodeFile inputFile sampleJupyterNotebook
+
+  cp <- case exporterInfoArgs pdfExporterInfo of
+    [] -> expectationFailure [i|Couldn't get exporter info args|]
+    (x:xs) -> return $ proc (T.unpack x) (fmap T.unpack xs <> [inputFile, outputFile])
+  info [i|cp: #{cp}|]
+  void $ readCreateProcessWithLogging (cp { cwd = Just dir }) ""
+
+  doesPathExist outputFile >>= \case
+    True -> return ()
+    False -> expectationFailure [i|Expected path to exist: '#{outputFile}'|]
 
 readExporterInfos :: MonadIO m => FilePath -> m [ExporterInfo]
 readExporterInfos exportersYaml =

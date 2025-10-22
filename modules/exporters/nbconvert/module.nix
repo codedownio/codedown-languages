@@ -41,7 +41,7 @@ with lib;
   };
 
   config = mkIf config.exporters.nbconvert.enable {
-    builtExporters.nbconvert = config.pkgsMaster.callPackage ./nbconvert.nix {
+    builtExporters.nbconvert = config.pkgsMaster.callPackage ./default.nix {
       texliveScheme = config.pkgs.texlive.combined.${config.exporters.nbconvert.texliveScheme};
 
       settings = config.exporters.nbconvert;

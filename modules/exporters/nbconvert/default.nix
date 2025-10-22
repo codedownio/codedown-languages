@@ -11,7 +11,7 @@
 let
   nbconvert = python3.pkgs.nbconvert;
 
-  common = callPackage ../kernels/common.nix {};
+  common = callPackage ../../kernels/common.nix {};
 
   makeNbconvertExporter = name: displayName: extension: to:
     common.writeShellScriptBinWithAttrs {
@@ -22,7 +22,15 @@ let
     } "export" ''
       echo_and_run() { echo "$*" ; "$@" ; }
       echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveScheme}/bin"
-      echo_and_run ${nbconvert}/bin/jupyter-nbconvert "$1" --to ${to}
+
+      filename=$(basename -- "$2")
+      EXTENSION="''${filename##*.}"
+      FILENAME="''${filename%.*}"
+
+      echo "FILENAME: $FILENAME"
+      echo "EXTENSION: $EXTENSION"
+
+      echo_and_run ${nbconvert}/bin/jupyter-nbconvert "$1" --output "$FILENAME" --to ${to}
     '';
 
   exporters = [
@@ -32,11 +40,11 @@ let
     (makeNbconvertExporter "codedown-exporter-html" "HTML (.html)" "html" "html")
     (makeNbconvertExporter "codedown-exporter-rst" "reStructuredText (.rst)" ".rst" "rst")
     (makeNbconvertExporter "codedown-exporter-slides" "Slides (.html)" ".html" "slides")
-    (callPackage ./nbconvert/slidy.nix {
+    (callPackage ./slidy.nix {
       inherit nbconvert;
       texliveToUse = texliveScheme;
     })
-    (callPackage ./nbconvert/beamer.nix {
+    (callPackage ./beamer.nix {
       texliveToUse = texliveScheme;
     })
     (makeNbconvertExporter "codedown-exporter-markdown" "Markdown (.md)" ".md" "markdown")
@@ -53,8 +61,8 @@ symlinkJoin {
       name = "nbconvert-exporters";
       description = "CodeDown exporters for PDF, HTML, LaTeX, slides, etc.";
 
-      icon = ../../codedown.png;
-      iconMonochrome = ../../codedown-monochrome.svg;
+      icon = ../../../codedown.png;
+      iconMonochrome = ../../../codedown-monochrome.svg;
 
       # To separate these out in search results
       category = "Exporters";
@@ -66,6 +74,7 @@ symlinkJoin {
         meta = x.meta;
         icon = x.icon;
         args = [(x + "/bin/export")];
+        inputs = ["ipynb"];
       }) exporters;
     };
 
