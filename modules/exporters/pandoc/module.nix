@@ -7,6 +7,7 @@ with lib;
     exporters.pandoc = {
       enable = mkOption {
         type = types.bool;
+        example = "Enable pandoc exporters";
         description = "Enable the pandoc exporters.";
         default = false;
         visible = false;
@@ -35,6 +36,7 @@ with lib;
           "scheme-full"
         ];
         default = "scheme-full";
+        example = "TeX Live scheme";
         description = "The TeX Live scheme to use, as an attribute of pkgs.texlive.combined.*";
       };
     };

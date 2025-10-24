@@ -7,7 +7,8 @@ with lib;
     exporters.typst = {
       enable = mkOption {
         type = types.bool;
-        description = "Enable the typst exporter.";
+        example = "Enable Typst exporter";
+        description = "Enable the Typst exporters.";
         default = false;
         visible = false;
       };
