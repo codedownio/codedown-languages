@@ -12,12 +12,9 @@ let
 
   common = callPackage ../../kernels/common.nix {};
 
-  makeNbconvertExporter = name: displayName: extension: to:
+  nbconvertExporter =
     common.writeShellScriptBinWithAttrs {
-      inherit name extension;
-      display_name = displayName;
       meta = nbconvert.meta;
-      icon = null;
     } "export" ''
       echo_and_run() { echo "$*" ; "$@" ; }
       echo_and_run export PATH="''${PATH:+''${PATH}:}:${texliveScheme}/bin"
@@ -29,24 +26,14 @@ let
       echo "FILENAME: $FILENAME"
       echo "EXTENSION: $EXTENSION"
 
-      echo_and_run ${nbconvert}/bin/jupyter-nbconvert "$1" --output "$FILENAME" --to ${to}
+      echo_and_run ${nbconvert}/bin/jupyter-nbconvert "$1" --output "$FILENAME"
     '';
-
-  exporters = [
-    (makeNbconvertExporter "codedown-exporter-asciidoc" "AsciiDoc (.asciidoc)" "asciidoc" "asciidoc")
-    (makeNbconvertExporter "codedown-exporter-latex" "LaTeX (.tex)" "tex" "latex")
-    (makeNbconvertExporter "codedown-exporter-pdf" "PDF (.pdf)" "pdf" "pdf")
-    (makeNbconvertExporter "codedown-exporter-html" "HTML (.html)" "html" "html")
-    (makeNbconvertExporter "codedown-exporter-rst" "reStructuredText (.rst)" ".rst" "rst")
-    (makeNbconvertExporter "codedown-exporter-slides" "Slides (.html)" ".html" "slides")
-    (makeNbconvertExporter "codedown-exporter-markdown" "Markdown (.md)" ".md" "markdown")
-  ];
 
 in
 
 symlinkJoin {
   name = "nbconvert-exporters";
-  paths = exporters;
+  paths = nbconvertExporter;
 
   passthru = {
     meta = {
@@ -59,15 +46,26 @@ symlinkJoin {
       # To separate these out in search results
       category = "Exporters";
 
-      exporterInfos = map (x: {
-        name = x.name;
-        display_name = x.display_name;
-        extension = x.extension;
-        meta = x.meta;
-        icon = x.icon;
-        args = [(x + "/bin/export")];
+      exporterInfo = {
+        name = "codedown-nbconvert-exporter";
+        display_name = "Nbconvert exporter";
+
+        input_extension = "ipynb";
+        output_extensions = [
+          { ext = "pdf";      title = "PDF (.pdf)";              args = ["--to" ""]; }
+          { ext = "asciidoc"; title = "AsciiDoc (.asciidoc)";    args = ["--to" ""]; }
+          { ext = "html";     title = "HTML (.html)";            args = ["--to" ""]; }
+          { ext = "html";     title = "Slides (.html)";          args = ["--to" ""]; }
+          { ext = "md";       title = "Markdown (.md)";          args = ["--to" ""]; }
+          { ext = "rst";      title = "reStructuredText (.rst)"; args = ["--to" ""]; }
+          { ext = "tex";      title = "LaTeX (.tex)";            args = ["--to" ""]; }
+        ];
+
+        meta = nbconvert.meta;
+        icon = null;
+        args = [(nbconvertExporter + "/bin/export")];
         inputs = ["ipynb"];
-      }) exporters;
+      };
     };
 
     versions = {

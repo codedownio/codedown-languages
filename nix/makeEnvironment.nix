@@ -33,7 +33,7 @@ let
     })) evaluated.config.builtKernels;
   builtLanguageServers = evaluated.config.builtLanguageServers;
 
-  exporters = concatMap (exporter: exporter.meta.exporterInfos) (attrValues builtExporters);
+  exporters = map (exporter: exporter.meta.exporterInfo) (attrValues builtExporters);
 
   mkPackageUiMetadata = let
     # This is duplicated from kernels/common.nix, which we'd rather not import here

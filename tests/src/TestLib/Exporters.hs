@@ -16,7 +16,8 @@ data ExporterInfo = ExporterInfo {
   , exporterInfoDisplayName :: Text
   , exporterInfoIcon :: Maybe Text
   , exporterInfoArgs :: [Text]
-  , exporterInfoExtension :: Text
+  , exporterInfoInputExtension :: Text
+  , exporterInfoOutputExtensions :: [Text]
 } deriving (Show, Eq)
 deriveJSON toSnake2 ''ExporterInfo
 

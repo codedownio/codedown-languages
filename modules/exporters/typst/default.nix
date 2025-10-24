@@ -33,7 +33,7 @@ symlinkJoin {
       # To separate these out in search results
       category = "Exporters";
 
-      exporterInfos = [{
+      exporterInfo = {
         name = "codedown-exporter-typst";
         display_name = "Typst";
         extension = "pdf";
@@ -43,7 +43,7 @@ symlinkJoin {
         inputs = ["typ"];
         outputs = ["pdf" "png" "svg" "html"];
         pandoc = pandoc;
-      }];
+      };
     };
 
     versions = {
