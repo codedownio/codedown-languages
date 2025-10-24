@@ -1,4 +1,5 @@
 { callPackage
+, pandoc
 , python3
 , symlinkJoin
 , texliveScheme
@@ -20,7 +21,7 @@ let
       icon = null;
     } "export" ''
       echo_and_run() { echo "$*" ; "$@" ; }
-      echo_and_run export PATH="''${PATH:+''${PATH}:}:${texliveScheme}/bin"
+      echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveScheme}/bin"
 
       filename=$(basename -- "$2")
       EXTENSION="''${filename##*.}"
