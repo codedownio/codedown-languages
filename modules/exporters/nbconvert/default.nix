@@ -1,5 +1,4 @@
 { callPackage
-, pandoc
 , python3
 , symlinkJoin
 , texliveScheme
@@ -21,7 +20,7 @@ let
       icon = null;
     } "export" ''
       echo_and_run() { echo "$*" ; "$@" ; }
-      echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveScheme}/bin"
+      echo_and_run export PATH="''${PATH:+''${PATH}:}:${texliveScheme}/bin"
 
       filename=$(basename -- "$2")
       EXTENSION="''${filename##*.}"
@@ -40,13 +39,6 @@ let
     (makeNbconvertExporter "codedown-exporter-html" "HTML (.html)" "html" "html")
     (makeNbconvertExporter "codedown-exporter-rst" "reStructuredText (.rst)" ".rst" "rst")
     (makeNbconvertExporter "codedown-exporter-slides" "Slides (.html)" ".html" "slides")
-    (callPackage ./slidy.nix {
-      inherit nbconvert;
-      texliveToUse = texliveScheme;
-    })
-    (callPackage ./beamer.nix {
-      texliveToUse = texliveScheme;
-    })
     (makeNbconvertExporter "codedown-exporter-markdown" "Markdown (.md)" ".md" "markdown")
   ];
 

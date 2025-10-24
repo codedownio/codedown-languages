@@ -24,6 +24,7 @@ lib.evalModules {
     ../modules/environment/module.nix
 
     ../modules/exporters/nbconvert/module.nix
+    ../modules/exporters/pandoc/module.nix
     ../modules/exporters/typst/module.nix
 
     ../modules/kernels/bash/module.nix

@@ -13,18 +13,18 @@ let
   script = common.writeShellScriptBinWithAttrs {} "typst-export" ''
     echo_and_run() { echo "$*" ; "$@" ; }
     echo_and_run export PATH="''${PATH:+''${PATH}:}"
-    echo_and_run ${typst}/bin/typst "$1" "$2"
+    echo_and_run ${typst}/bin/typst compile "$1" "$2"
   '';
 
 in
 
 symlinkJoin {
-  name = "typst-exporter";
+  name = "codedown-exporter-typst";
   paths = [script];
 
   passthru = {
     meta = {
-      name = "typst-exporter";
+      name = "codedown-exporter-typst";
       description = "CodeDown exporter using Typst.";
 
       icon = ../../../codedown.png;
@@ -34,13 +34,14 @@ symlinkJoin {
       category = "Exporters";
 
       exporterInfos = [{
-        name = "typst";
+        name = "codedown-exporter-typst";
         display_name = "Typst";
         extension = "pdf";
         meta = typst.meta;
         icon = null;
         args = [(script + "/bin/typst-export")];
-        inputs = ["typst"];
+        inputs = ["typ"];
+        outputs = ["pdf" "png" "svg" "html"];
         pandoc = pandoc;
       }];
     };

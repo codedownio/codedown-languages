@@ -10,6 +10,7 @@ import Control.Monad.IO.Class
 import qualified Data.Aeson as A
 import Data.String.Interpolate
 import Data.Text as T
+import qualified Data.Text.IO as T
 import Safe
 import System.FilePath
 import Test.Sandwich as Sandwich
@@ -31,37 +32,49 @@ tests = describe "Exporters" $ do
 
   testTexliveScheme "scheme-full"
 
+  introduceNixEnvironment [] [pandocConfig] [i|Exporters (pandoc)|] $ do
+    it "codedown-exporter-slidy" $ testExportMd "codedown-exporter-slidy" "html"
+    it "codedown-exporter-beamer" $ testExportMd "codedown-exporter-beamer" "html"
+
+  introduceNixEnvironment [] [typstConfig] [i|Exporters (typst)|] $ do
+    it "codedown-exporter-typst" $ testExportTypst "codedown-exporter-typst" "pdf"
+
 
 testTexliveScheme :: Text -> LanguageSpec
-testTexliveScheme scheme = introduceNixEnvironment [] [otherConfig scheme] [i|Exporters (#{scheme})|] $ do
-  it "codedown-exporter-asciidoc" $ testExport "codedown-exporter-asciidoc" "asciidoc"
-  it "codedown-exporter-latex" $ testExport "codedown-exporter-latex" "tex"
-  it "codedown-exporter-pdf" $ testExport "codedown-exporter-pdf" "pdf"
-  it "codedown-exporter-html" $ testExport "codedown-exporter-html" "html"
-  it "codedown-exporter-rst" $ testExport "codedown-exporter-rst" "rst"
-  -- it "codedown-exporter-slides" $ testExport "codedown-exporter-slides" "slides.html"
-  it "codedown-exporter-markdown" $ testExport "codedown-exporter-markdown" "md"
+testTexliveScheme scheme = do
+  introduceNixEnvironment [] [nbconvertConfig scheme] [i|Exporters (nbconvert, #{scheme})|] $ do
+    it "codedown-exporter-asciidoc" $ testExportIpynb "codedown-exporter-asciidoc" "asciidoc"
+    it "codedown-exporter-latex" $ testExportIpynb "codedown-exporter-latex" "tex"
+    it "codedown-exporter-pdf" $ testExportIpynb "codedown-exporter-pdf" "pdf"
+    it "codedown-exporter-html" $ testExportIpynb "codedown-exporter-html" "html"
+    it "codedown-exporter-rst" $ testExportIpynb "codedown-exporter-rst" "rst"
+    it "codedown-exporter-markdown" $ testExportIpynb "codedown-exporter-markdown" "md"
+    -- it "codedown-exporter-slides" $ testExport "codedown-exporter-slides" "slides.html"
 
-  -- it "codedown-exporter-slidy" $ testExport "codedown-exporter-beamer" "html"
-  -- it "codedown-exporter-beamer" $ testExport "codedown-exporter-beamer" "html"
-  -- it "codedown-exporter-beamer" $ testExport "codedown-exporter-beamer" "html"
+testExportIpynb :: (HasBaseContext ctx, HasNixEnvironment ctx) => Text -> FilePath -> ExampleT ctx IO ()
+testExportIpynb = testExport "ipynb" $ \f -> A.encodeFile f sampleJupyterNotebook
 
-testExport :: (HasBaseContext ctx, HasNixEnvironment ctx) => Text -> FilePath -> ExampleT ctx IO ()
-testExport name extension = do
+testExportMd :: (HasBaseContext ctx, HasNixEnvironment ctx) => Text -> FilePath -> ExampleT ctx IO ()
+testExportMd = testExport "md" $ \f -> T.writeFile f sampleMdFile
+
+testExportTypst :: (HasBaseContext ctx, HasNixEnvironment ctx) => Text -> FilePath -> ExampleT ctx IO ()
+testExportTypst = testExport "typ" $ \f -> T.writeFile f sampleTypstFile
+
+testExport :: (HasBaseContext ctx, HasNixEnvironment ctx) => FilePath -> (FilePath -> IO ()) -> Text -> FilePath -> ExampleT ctx IO ()
+testExport inputExtension writeInputFile exporterName outputExtension = do
   nixEnv <- getContext nixEnvironment
-  pdfExporterInfo <- readExporterInfoByName (nixEnv </> "lib" </> "codedown" </> "exporters.yaml") name
+  exporterInfo <- readExporterInfoByName (nixEnv </> "lib" </> "codedown" </> "exporters.yaml") exporterName
 
   Just dir <- getCurrentFolder
 
-  let inputFile = dir </> "input.ipynb"
-  let outputFile = dir </> ("output" <.> extension)
+  let inputFile = dir </> ("input" <.> inputExtension)
+  let outputFile = dir </> ("output" <.> outputExtension)
 
-  liftIO $ A.encodeFile inputFile sampleJupyterNotebook
+  liftIO $ writeInputFile inputFile
 
-  cp <- case exporterInfoArgs pdfExporterInfo of
+  cp <- case exporterInfoArgs exporterInfo of
     [] -> expectationFailure [i|Couldn't get exporter info args|]
     (x:xs) -> return $ proc (T.unpack x) (fmap T.unpack xs <> [inputFile, outputFile])
-  info [i|cp: #{cp}|]
   void $ readCreateProcessWithLogging (cp { cwd = Just dir }) ""
 
   doesPathExist outputFile >>= \case
@@ -81,6 +94,12 @@ readExporterInfoByName exportersYaml desired = do
     Nothing -> expectationFailure [i|Couldn't find exporter info named '#{desired}'. (Had: #{fmap exporterInfoName exporterInfos})|]
     Just x -> pure x
 
-otherConfig :: Text -> Text
-otherConfig scheme = [__i|exporters.nbconvert.enable = true;
-                          exporters.nbconvert.texliveScheme = "#{scheme}";|]
+nbconvertConfig :: Text -> Text
+nbconvertConfig scheme = [__i|exporters.nbconvert.enable = true;
+                              exporters.nbconvert.texliveScheme = "#{scheme}";|]
+
+pandocConfig :: Text
+pandocConfig = [__i|exporters.pandoc.enable = true;|]
+
+typstConfig :: Text
+typstConfig = [__i|exporters.typst.enable = true;|]

@@ -16,8 +16,8 @@ with lib;
 
   config = mkIf config.exporters.typst.enable {
     builtExporters.typst = config.pkgsMaster.callPackage ./default.nix {
-      settings = config.exporters.nbconvert;
-      settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.exporters.nbconvert;
+      settings = config.exporters.typst;
+      settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.exporters.typst;
     };
   };
 }
