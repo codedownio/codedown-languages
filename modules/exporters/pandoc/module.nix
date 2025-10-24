@@ -4,10 +4,11 @@ with lib;
 
 {
   options = {
-    exporters.nbconvert = {
+    exporters.pandoc = {
       enable = mkOption {
         type = types.bool;
-        description = "Enable the nbconvert exporters.";
+        example = "Enable pandoc exporters";
+        description = "Enable the pandoc exporters.";
         default = false;
         visible = false;
       };
@@ -34,18 +35,19 @@ with lib;
 
           "scheme-full"
         ];
-        default = "scheme-medium";
+        default = "scheme-full";
+        example = "TeX Live scheme";
         description = "The TeX Live scheme to use, as an attribute of pkgs.texlive.combined.*";
       };
     };
   };
 
-  config = mkIf config.exporters.nbconvert.enable {
-    builtExporters.nbconvert = config.pkgsMaster.callPackage ./nbconvert.nix {
-      texliveScheme = config.pkgs.texlive.combined.${config.exporters.nbconvert.texliveScheme};
+  config = mkIf config.exporters.pandoc.enable {
+    builtExporters.pandoc = config.pkgsMaster.callPackage ./default.nix {
+      texliveScheme = config.pkgs.texlive.combined.${config.exporters.pandoc.texliveScheme};
 
-      settings = config.exporters.nbconvert;
-      settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.exporters.nbconvert;
+      settings = config.exporters.pandoc;
+      settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.exporters.pandoc;
     };
   };
 }

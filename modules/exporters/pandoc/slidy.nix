@@ -1,6 +1,5 @@
 { callPackage
 , pandoc
-, nbconvert
 , texliveToUse
 }:
 
@@ -14,7 +13,7 @@ common.writeShellScriptBinWithAttrs {
   name = "codedown-exporter-slidy";
   extension = "html";
   display_name = "Slidy (.html)";
-  meta = nbconvert.meta;
+  meta = pandoc.meta;
   icon = null;
 } "export" ''
   echo_and_run() { echo "$*" ; "$@" ; }

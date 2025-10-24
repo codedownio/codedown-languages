@@ -7,8 +7,9 @@ args: {
   cpp20 = import ./sample_environments/cpp20.nix args;
   cpp23 = import ./sample_environments/cpp23.nix args;
   cpp2c = import ./sample_environments/cpp2c.nix args;
-  exporters-full = import ./sample_environments/exporters-full.nix args;
-  exporters-small = import ./sample_environments/exporters-small.nix args;
+  exporters-nbconvert = import ./sample_environments/exporters-nbconvert.nix args;
+  exporters-pandoc = import ./sample_environments/exporters-pandoc.nix args;
+  exporters-typst = import ./sample_environments/exporters-typst.nix args;
   ghc910 = import ./sample_environments/ghc910.nix args;
   ghc912 = import ./sample_environments/ghc912.nix args;
   ghc96 = import ./sample_environments/ghc96.nix args;

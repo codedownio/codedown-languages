@@ -3,7 +3,7 @@
 }:
 
 codedown.makeEnvironment {
-  name = "exporters-full";
+  name = "exporters-nbconvert";
 
   exporters.nbconvert.enable = true;
   exporters.nbconvert.texliveScheme = "scheme-full";
