@@ -72,6 +72,7 @@ library
     , optparse-applicative
     , postgresql-simple
     , row-types
+    , safe
     , sandwich
     , sandwich-contexts
     , string-interpolate

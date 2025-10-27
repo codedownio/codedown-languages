@@ -40,6 +40,7 @@ dependencies:
 - monad-control
 - mtl
 - optparse-applicative
+- safe
 - sandwich
 - sandwich-contexts
 - string-interpolate
@@ -77,7 +78,6 @@ executables:
     dependencies:
     - monad-logger
     - row-types
-    - safe
     - tests
     - unliftio
     - unliftio-core

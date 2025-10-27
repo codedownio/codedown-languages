@@ -15,6 +15,9 @@ let
     (callPackage ./beamer.nix {
       texliveToUse = texliveScheme;
     })
+    (callPackage ./pdf.nix {
+      texliveToUse = texliveScheme;
+    })
   ];
 
 in
