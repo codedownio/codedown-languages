@@ -1,4 +1,5 @@
 { callPackage
+, coreutils
 , pandoc
 , python3
 , symlinkJoin
@@ -23,7 +24,7 @@ let
       echo_and_run() { echo "$*" ; "$@" ; }
       echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveScheme}/bin"
 
-      filename=$(basename -- "$2")
+      filename=$(${coreutils}/bin/basename -- "$2")
       EXTENSION="''${filename##*.}"
       FILENAME="''${filename%.*}"
 

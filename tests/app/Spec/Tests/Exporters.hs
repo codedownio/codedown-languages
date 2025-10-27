@@ -9,12 +9,14 @@ import Control.Monad
 import Control.Monad.IO.Class
 import qualified Data.Aeson as A
 import Data.String.Interpolate
-import Data.Text as T
+import Data.Text (Text)
+import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import Safe
 import System.FilePath
 import Test.Sandwich as Sandwich
 import TestLib.Exporters
+import TestLib.JupyterRunnerContext (introduceJustBubblewrap)
 import TestLib.NixEnvironmentContext
 import TestLib.Types
 import UnliftIO.Directory
@@ -22,7 +24,7 @@ import UnliftIO.Process
 
 
 tests :: LanguageSpec
-tests = describe "Exporters" $ do
+tests = describe "Exporters" $ introduceJustBubblewrap $ do
   -- testTexliveScheme "scheme-minimal"
   -- testTexliveScheme "scheme-basic"
   -- testTexliveScheme "scheme-small"
@@ -51,16 +53,16 @@ testTexliveScheme scheme = do
     it "codedown-exporter-markdown" $ testExportIpynb "codedown-exporter-markdown" "md"
     -- it "codedown-exporter-slides" $ testExport "codedown-exporter-slides" "slides.html"
 
-testExportIpynb :: (HasBaseContext ctx, HasNixEnvironment ctx) => Text -> FilePath -> ExampleT ctx IO ()
+testExportIpynb :: (HasBaseContext ctx, HasNixEnvironment ctx, HasMaybeBubblewrap ctx) => Text -> FilePath -> ExampleT ctx IO ()
 testExportIpynb = testExport "ipynb" $ \f -> A.encodeFile f sampleJupyterNotebook
 
-testExportMd :: (HasBaseContext ctx, HasNixEnvironment ctx) => Text -> FilePath -> ExampleT ctx IO ()
+testExportMd :: (HasBaseContext ctx, HasNixEnvironment ctx, HasMaybeBubblewrap ctx) => Text -> FilePath -> ExampleT ctx IO ()
 testExportMd = testExport "md" $ \f -> T.writeFile f sampleMdFile
 
-testExportTypst :: (HasBaseContext ctx, HasNixEnvironment ctx) => Text -> FilePath -> ExampleT ctx IO ()
+testExportTypst :: (HasBaseContext ctx, HasNixEnvironment ctx, HasMaybeBubblewrap ctx) => Text -> FilePath -> ExampleT ctx IO ()
 testExportTypst = testExport "typ" $ \f -> T.writeFile f sampleTypstFile
 
-testExport :: (HasBaseContext ctx, HasNixEnvironment ctx) => FilePath -> (FilePath -> IO ()) -> Text -> FilePath -> ExampleT ctx IO ()
+testExport :: (HasBaseContext ctx, HasNixEnvironment ctx, HasMaybeBubblewrap ctx) => FilePath -> (FilePath -> IO ()) -> Text -> FilePath -> ExampleT ctx IO ()
 testExport inputExtension writeInputFile exporterName outputExtension = do
   nixEnv <- getContext nixEnvironment
   exporterInfo <- readExporterInfoByName (nixEnv </> "lib" </> "codedown" </> "exporters.yaml") exporterName
@@ -72,10 +74,30 @@ testExport inputExtension writeInputFile exporterName outputExtension = do
 
   liftIO $ writeInputFile inputFile
 
-  cp <- case exporterInfoArgs exporterInfo of
+  (cmd:args) <- case exporterInfoArgs exporterInfo of
     [] -> expectationFailure [i|Couldn't get exporter info args|]
-    (x:xs) -> return $ proc (T.unpack x) (fmap T.unpack xs <> [inputFile, outputFile])
-  void $ readCreateProcessWithLogging (cp { cwd = Just dir }) ""
+    xs -> return $ fmap T.unpack xs <> [inputFile, outputFile]
+
+  cp <- getContext maybeBubblewrap >>= \case
+    Nothing -> return ((proc cmd args) { cwd = Just dir })
+    Just bwrapBinary -> do
+      let bwrapArgs = ["--ro-bind", "/bin", "/bin" -- It seems to need /bin/sh
+                      , "--bind", dir, dir
+                      , "--ro-bind", "/nix", "/nix"
+                      , "--tmpfs", "/tmp"
+                      , "--dev", "/dev"
+                      , "--proc", "/proc"
+                      , "--chdir", dir
+                      , "--clearenv"
+                      , "--setenv", "HOME", dir
+                      , "--setenv", "TMPDIR", "/tmp"
+                      ]
+                      <> ["--"]
+                      <> (cmd : args)
+
+      return (proc bwrapBinary bwrapArgs)
+
+  void $ readCreateProcessWithLogging cp ""
 
   doesPathExist outputFile >>= \case
     True -> return ()
