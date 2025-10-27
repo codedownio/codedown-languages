@@ -15,6 +15,7 @@ data ExporterInfo = ExporterInfo {
   exporterInfoName :: Text
   , exporterInfoDisplayName :: Text
   , exporterInfoIcon :: Maybe Text
+  , exporterInfoIconMonochrome :: Maybe Text
   , exporterInfoArgs :: [Text]
   , exporterInfoExtension :: Text
 } deriving (Show, Eq)

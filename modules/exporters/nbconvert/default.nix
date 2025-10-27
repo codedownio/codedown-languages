@@ -19,7 +19,8 @@ let
       inherit name extension;
       display_name = displayName;
       meta = nbconvert.meta;
-      icon = null;
+      icon = ./jupyter.svg;
+      iconMonochrome = ./jupyter.svg;
     } "export" ''
       echo_and_run() { echo "$*" ; "$@" ; }
       echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveScheme}/bin"
@@ -55,9 +56,6 @@ symlinkJoin {
       name = "nbconvert-exporters";
       description = "CodeDown exporters for PDF, HTML, LaTeX, slides, etc.";
 
-      icon = ../../../codedown.png;
-      iconMonochrome = ../../../codedown-monochrome.svg;
-
       # To separate these out in search results
       category = "Exporters";
 
@@ -67,6 +65,7 @@ symlinkJoin {
         extension = x.extension;
         meta = x.meta;
         icon = x.icon;
+        iconMonochrome = x.iconMonochrome;
         args = [(x + "/bin/export")];
         inputs = ["ipynb"];
       }) exporters;
