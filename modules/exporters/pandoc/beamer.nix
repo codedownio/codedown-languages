@@ -26,7 +26,7 @@ let
 in
 
 common.writeShellScriptBinWithAttrs {
-  name = "codedown-exporter-beamer";
+  name = "codedown-exporter-pandoc-beamer";
   extension = "pdf";
   display_name = "Beamer slides (.pdf)";
   meta = pandoc.meta;

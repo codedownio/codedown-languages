@@ -10,7 +10,7 @@ let
 in
 
 common.writeShellScriptBinWithAttrs {
-  name = "codedown-exporter-pdf";
+  name = "codedown-exporter-pandoc-pdf";
   extension = "html";
   display_name = "Pandoc PDF (.pdf)";
   meta = pandoc.meta;

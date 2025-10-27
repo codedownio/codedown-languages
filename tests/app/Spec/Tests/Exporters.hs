@@ -26,9 +26,9 @@ tests = describe "Exporters" $ introduceJustBubblewrap $ do
   testTexliveScheme "scheme-full"
 
   introduceNixEnvironment [] [pandocConfig] [i|Exporters (pandoc)|] $ do
-    it "codedown-exporter-slidy" $ testExportMd "codedown-exporter-slidy" "html"
-    it "codedown-exporter-beamer" $ testExportMd "codedown-exporter-beamer" "html"
-    it "codedown-exporter-pdf" $ testExportMd "codedown-exporter-pdf" "pdf"
+    it "codedown-exporter-pandoc-slidy" $ testExportMd "codedown-exporter-pandoc-slidy" "html"
+    it "codedown-exporter-pandoc-beamer" $ testExportMd "codedown-exporter-pandoc-beamer" "html"
+    it "codedown-exporter-pandoc-pdf" $ testExportMd "codedown-exporter-pandoc-pdf" "pdf"
 
   introduceNixEnvironment [] [typstConfig] [i|Exporters (typst)|] $ do
     it "codedown-exporter-typst" $ testExportTypst "codedown-exporter-typst" "pdf"
@@ -37,12 +37,12 @@ tests = describe "Exporters" $ introduceJustBubblewrap $ do
 testTexliveScheme :: Text -> LanguageSpec
 testTexliveScheme scheme = do
   introduceNixEnvironment [] [nbconvertConfig scheme] [i|Exporters (nbconvert, #{scheme})|] $ do
-    it "codedown-exporter-asciidoc" $ testExportIpynb "codedown-exporter-asciidoc" "asciidoc"
-    it "codedown-exporter-latex" $ testExportIpynb "codedown-exporter-latex" "tex"
-    it "codedown-exporter-pdf" $ testExportIpynb "codedown-exporter-pdf" "pdf"
-    it "codedown-exporter-html" $ testExportIpynb "codedown-exporter-html" "html"
-    it "codedown-exporter-rst" $ testExportIpynb "codedown-exporter-rst" "rst"
-    it "codedown-exporter-markdown" $ testExportIpynb "codedown-exporter-markdown" "md"
+    it "codedown-exporter-nbconvert-asciidoc" $ testExportIpynb "codedown-exporter-nbconvert-asciidoc" "asciidoc"
+    it "codedown-exporter-nbconvert-latex" $ testExportIpynb "codedown-exporter-nbconvert-latex" "tex"
+    it "codedown-exporter-nbconvert-pdf" $ testExportIpynb "codedown-exporter-nbconvert-pdf" "pdf"
+    it "codedown-exporter-nbconvert-html" $ testExportIpynb "codedown-exporter-nbconvert-html" "html"
+    it "codedown-exporter-nbconvert-rst" $ testExportIpynb "codedown-exporter-nbconvert-rst" "rst"
+    it "codedown-exporter-nbconvert-markdown" $ testExportIpynb "codedown-exporter-nbconvert-markdown" "md"
     -- it "codedown-exporter-slides" $ testExport "codedown-exporter-slides" "slides.html"
 
 
