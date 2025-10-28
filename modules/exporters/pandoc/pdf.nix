@@ -26,7 +26,7 @@ common.writeShellScriptBinWithAttrs {
 
   echo "Got extension: $EXTENSION"
   EXTRA_ARGS=""
-  if [[ "$EXTENSION" == "md" ]]
+  if [[ "$EXTENSION" == "md" ]]; then
     EXTRA_ARGS="-f markdown+tex_math_dollars+tex_math_single_backslash+raw_html+smart"
   fi
 
