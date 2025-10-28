@@ -11,7 +11,7 @@ in
 
 common.writeShellScriptBinWithAttrs {
   name = "codedown-exporter-pandoc-pdf";
-  extension = "html";
+  extension = "pdf";
   display_name = "Pandoc PDF (.pdf)";
   meta = pandoc.meta;
   icon = null;
