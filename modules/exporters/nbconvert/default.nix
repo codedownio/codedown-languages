@@ -19,8 +19,6 @@ let
       inherit name extension;
       display_name = displayName;
       meta = nbconvert.meta;
-      icon = ./jupyter.svg;
-      iconMonochrome = ./jupyter.svg;
     } "export" ''
       echo_and_run() { echo "$*" ; "$@" ; }
       echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveScheme}/bin"
@@ -45,6 +43,9 @@ let
     (makeNbconvertExporter "codedown-exporter-nbconvert-markdown" "Markdown (.md)" ".md" "markdown")
   ];
 
+  icon = ./jupyter.svg;
+  iconMonochrome = ./jupyter.svg;
+
 in
 
 symlinkJoin {
@@ -59,15 +60,14 @@ symlinkJoin {
       # To separate these out in search results
       category = "Exporters";
 
+      inherit icon iconMonochrome;
+
       exporterInfos = map (x: {
         name = x.name;
         display_name = x.display_name;
         extension = x.extension;
-        meta = x.meta // {
-          inherit (x) icon iconMonochrome;
-        };
-        icon = x.icon;
-        icon_monochrome = x.iconMonochrome;
+        icon = icon;
+        icon_monochrome = iconMonochrome;
         args = [(x + "/bin/export")];
         input_extensions = ["ipynb"];
       }) exporters;

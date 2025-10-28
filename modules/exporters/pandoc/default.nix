@@ -37,13 +37,12 @@ symlinkJoin {
       # To separate these out in search results
       category = "Exporters";
 
+      inherit icon iconMonochrome;
+
       exporterInfos = map (x: {
         name = x.name;
         display_name = x.display_name;
         extension = x.extension;
-        meta = pandoc.meta // {
-          inherit icon iconMonochrome;
-        };
         inherit icon;
         icon_monochrome = iconMonochrome;
         args = [(x + "/bin/export")];

@@ -30,19 +30,15 @@ symlinkJoin {
       name = "codedown-exporter-typst";
       description = "CodeDown exporter using Typst.";
 
-      icon = ../../../codedown.png;
-      iconMonochrome = ../../../codedown-monochrome.svg;
-
       # To separate these out in search results
       category = "Exporters";
+
+      inherit icon iconMonochrome;
 
       exporterInfos = [{
         name = "codedown-exporter-typst";
         display_name = "Typst";
         extension = "pdf";
-        meta = typst.meta // {
-          inherit icon iconMonochrome;
-        };
         inherit icon;
         icon_monochrome = iconMonochrome;
         args = [(script + "/bin/typst-export")];
