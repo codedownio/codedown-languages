@@ -16,6 +16,9 @@ let
     echo_and_run ${typst}/bin/typst compile "$1" "$2"
   '';
 
+  icon = ./typst.png;
+  iconMonochrome = ./typst.svg;
+
 in
 
 symlinkJoin {
@@ -37,9 +40,11 @@ symlinkJoin {
         name = "codedown-exporter-typst";
         display_name = "Typst";
         extension = "pdf";
-        meta = typst.meta;
-        icon = ./typst.png;
-        iconMonochrome = ./typst.svg;
+        meta = typst.meta // {
+          inherit icon iconMonochrome;
+        };
+        inherit icon;
+        icon_monochrome = iconMonochrome;
         args = [(script + "/bin/typst-export")];
         outputs = ["pdf" "png" "svg" "html"];
         input_extensions = ["typ"];

@@ -63,9 +63,11 @@ symlinkJoin {
         name = x.name;
         display_name = x.display_name;
         extension = x.extension;
-        meta = x.meta;
+        meta = x.meta // {
+          inherit (x) icon iconMonochrome;
+        };
         icon = x.icon;
-        iconMonochrome = x.iconMonochrome;
+        icon_monochrome = x.iconMonochrome;
         args = [(x + "/bin/export")];
         input_extensions = ["ipynb"];
       }) exporters;

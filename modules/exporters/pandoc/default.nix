@@ -41,8 +41,10 @@ symlinkJoin {
         name = x.name;
         display_name = x.display_name;
         extension = x.extension;
-        meta = pandoc.meta;
-        icon = icon;
+        meta = pandoc.meta // {
+          inherit icon iconMonochrome;
+        };
+        inherit icon;
         icon_monochrome = iconMonochrome;
         args = [(x + "/bin/export")];
         input_extensions = ["ipynb" "md"];
