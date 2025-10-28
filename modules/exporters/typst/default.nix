@@ -44,7 +44,7 @@ symlinkJoin {
         args = [(script + "/bin/typst-export")];
         outputs = ["pdf" "png" "svg" "html"];
         input_extensions = ["typ"];
-        pandoc = pandoc;
+        pandoc = "${pandoc}/bin/pandoc";
       }];
     };
 

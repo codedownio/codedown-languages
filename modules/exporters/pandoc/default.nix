@@ -47,7 +47,7 @@ symlinkJoin {
         icon_monochrome = iconMonochrome;
         args = [(x + "/bin/export")];
         input_extensions = ["ipynb" "md"];
-        inherit pandoc;
+        pandoc = "${pandoc}/bin/pandoc";
       }) exporters;
     };
 
