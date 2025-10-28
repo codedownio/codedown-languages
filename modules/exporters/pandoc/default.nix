@@ -44,7 +44,7 @@ symlinkJoin {
         meta = x.meta;
         icon = x.icon;
         args = [(x + "/bin/export")];
-        inputs = ["ipynb"];
+        input_extensions = ["ipynb" "md"];
         inherit pandoc;
       }) exporters;
     };

@@ -67,7 +67,7 @@ symlinkJoin {
         icon = x.icon;
         iconMonochrome = x.iconMonochrome;
         args = [(x + "/bin/export")];
-        inputs = ["ipynb"];
+        input_extensions = ["ipynb"];
       }) exporters;
     };
 

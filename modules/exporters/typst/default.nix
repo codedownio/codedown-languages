@@ -40,8 +40,8 @@ symlinkJoin {
         meta = typst.meta;
         icon = null;
         args = [(script + "/bin/typst-export")];
-        inputs = ["typ"];
         outputs = ["pdf" "png" "svg" "html"];
+        input_extensions = ["typ"];
         pandoc = pandoc;
       }];
     };
