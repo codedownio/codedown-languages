@@ -14,7 +14,6 @@ common.writeShellScriptBinWithAttrs {
   extension = "html";
   display_name = "Slidy (.html)";
   meta = pandoc.meta;
-  icon = null;
 } "export" ''
   echo_and_run() { echo "$*" ; "$@" ; }
   echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveToUse}/bin"
@@ -23,6 +22,5 @@ common.writeShellScriptBinWithAttrs {
     -V slidy-url=https://www.w3.org/Talks/Tools/Slidy2 \
     --standalone \
     "--mathjax=https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML-full" \
-    "$1" \
-    "-o" "$2"
+    "$1" -o "$2"
 ''

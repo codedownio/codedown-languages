@@ -38,7 +38,8 @@ symlinkJoin {
         display_name = "Typst";
         extension = "pdf";
         meta = typst.meta;
-        icon = null;
+        icon = ./typst.png;
+        iconMonochrome = ./typst.svg;
         args = [(script + "/bin/typst-export")];
         outputs = ["pdf" "png" "svg" "html"];
         input_extensions = ["typ"];

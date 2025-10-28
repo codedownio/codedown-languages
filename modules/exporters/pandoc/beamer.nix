@@ -29,8 +29,6 @@ common.writeShellScriptBinWithAttrs {
   name = "codedown-exporter-pandoc-beamer";
   extension = "pdf";
   display_name = "Beamer slides (.pdf)";
-  meta = pandoc.meta;
-  icon = null;
 } "export" ''
   echo_and_run() { echo "$*" ; "$@" ; }
   echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveToUse}/bin"

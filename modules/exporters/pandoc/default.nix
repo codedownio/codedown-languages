@@ -20,6 +20,9 @@ let
     })
   ];
 
+  icon = ../../../codedown.png;
+  iconMonochrome = ../../../codedown-monochrome.svg;
+
 in
 
 symlinkJoin {
@@ -31,9 +34,6 @@ symlinkJoin {
       name = "codedown-exporter-pandoc";
       description = "CodeDown exporters for PDF, HTML, LaTeX, slides, etc.";
 
-      icon = ../../../codedown.png;
-      iconMonochrome = ../../../codedown-monochrome.svg;
-
       # To separate these out in search results
       category = "Exporters";
 
@@ -41,8 +41,9 @@ symlinkJoin {
         name = x.name;
         display_name = x.display_name;
         extension = x.extension;
-        meta = x.meta;
-        icon = x.icon;
+        meta = pandoc.meta;
+        icon = icon;
+        icon_monochrome = iconMonochrome;
         args = [(x + "/bin/export")];
         input_extensions = ["ipynb" "md"];
         inherit pandoc;

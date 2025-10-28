@@ -14,8 +14,6 @@ common.writeShellScriptBinWithAttrs {
   name = "codedown-exporter-pandoc-pdf";
   extension = "pdf";
   display_name = "Pandoc PDF (.pdf)";
-  meta = pandoc.meta;
-  icon = null;
 } "export" ''
   echo_and_run() { echo "$*" ; "$@" ; }
   echo_and_run export PATH="''${PATH:+''${PATH}:}${pandoc}/bin:${texliveToUse}/bin"
