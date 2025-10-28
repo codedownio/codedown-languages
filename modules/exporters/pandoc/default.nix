@@ -45,6 +45,7 @@ symlinkJoin {
         icon = x.icon;
         args = [(x + "/bin/export")];
         inputs = ["ipynb"];
+        inherit pandoc;
       }) exporters;
     };
 
