@@ -35,7 +35,7 @@ with lib;
 
           "scheme-full"
         ];
-        default = "scheme-medium";
+        default = "scheme-full";
         example = "TeX Live scheme";
         description = "The TeX Live scheme to use, as an attribute of pkgs.texlive.combined.*";
       };
