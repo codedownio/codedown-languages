@@ -14,24 +14,6 @@ attribute set of string
 
 
 
-## exporters\.nbconvert\.enable
-
-
-
-Enable the nbconvert exporters\.
-
-
-
-*Type:*
-boolean
-
-
-
-*Default:*
-` false `
-
-
-
 ## exporters\.nbconvert\.texliveScheme
 
 
@@ -41,12 +23,40 @@ The TeX Live scheme to use, as an attribute of pkgs\.texlive\.combined\.\*
 
 
 *Type:*
-one of “scheme-basic”, “scheme-bookpub”, “scheme-full”, “scheme-medium”, “scheme-minimal”, “scheme-small”, “scheme-tetex”
+value “scheme-full” (singular enum)
 
 
 
 *Default:*
-` "scheme-small" `
+` "scheme-full" `
+
+
+
+*Example:*
+` "TeX Live scheme" `
+
+
+
+## exporters\.pandoc\.texliveScheme
+
+
+
+The TeX Live scheme to use, as an attribute of pkgs\.texlive\.combined\.\*
+
+
+
+*Type:*
+value “scheme-full” (singular enum)
+
+
+
+*Default:*
+` "scheme-full" `
+
+
+
+*Example:*
+` "TeX Live scheme" `
 
 
 
@@ -1791,7 +1801,7 @@ This option has no description\.
 
 
 *Type:*
-one of “ruby”, “ruby_3_1”, “ruby_3_2”, “ruby_3_3”, “ruby_3_4”
+one of “ruby”, “ruby_3_1”, “ruby_3_2”, “ruby_3_3”, “ruby_3_4”, “ruby_3_5”
 
 
 
