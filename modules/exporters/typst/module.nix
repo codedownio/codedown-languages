@@ -12,6 +12,25 @@ with lib;
         default = false;
         visible = false;
       };
+
+      interface.attrs = mkOption {
+        example = boilerplate.attrsTitle;
+        description = boilerplate.attrsDescription;
+        type = types.listOf types.str;
+        default = ["typst"];
+      };
+      interface.extensions = mkOption {
+        example = boilerplate.extensionsTitle;
+        description = boilerplate.extensionsDescription;
+        type = types.listOf types.str;
+        default = ["typ"];
+      };
+
+      lsp.tinymist.enable = mkOption {
+        example = "Enable tinymist language server";
+        type = types.bool;
+        default = true;
+      };
     };
   };
 

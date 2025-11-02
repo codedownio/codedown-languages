@@ -7,6 +7,8 @@
 , settingsSchema
 }:
 
+with { inherit (settings.interface) attrs extensions; };
+
 let
   common = callPackage ../../kernels/common.nix {};
 
@@ -23,7 +25,10 @@ in
 
 symlinkJoin {
   name = "codedown-exporter-typst";
-  paths = [script];
+  paths = [
+    (callPackage ./kernel.nix { inherit attrs extensions; })
+    script
+  ];
 
   passthru = {
     meta = {
