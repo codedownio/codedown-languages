@@ -7,7 +7,7 @@
 }:
 
 let
-  common = callPackage ../common.nix {};
+  common = callPackage ../../kernels/common.nix {};
 
 in
 

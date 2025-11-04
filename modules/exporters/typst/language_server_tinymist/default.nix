@@ -7,7 +7,7 @@
 }:
 
 let
-  common = callPackage ../../common.nix {};
+  common = callPackage ../../../kernels/common.nix {};
 
   languageServerName = "tinymist";
 
@@ -26,7 +26,6 @@ common.writeTextDirWithMetaAndPassthru tinymist.meta passthru "lib/codedown/lang
   type = "stream";
   primary = true;
   args = [
-    "${tinymist}/bin/typst"
-    "start"
+    "${tinymist}/bin/tinymist"
   ];
 }])

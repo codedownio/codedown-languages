@@ -1,4 +1,5 @@
 { callPackage
+, lib
 , pandoc
 , symlinkJoin
 , typst
@@ -10,6 +11,8 @@
 with { inherit (settings.interface) attrs extensions; };
 
 let
+  kernelName = "typst";
+
   common = callPackage ../../kernels/common.nix {};
 
   script = common.writeShellScriptBinWithAttrs {} "typst-export" ''
@@ -17,6 +20,12 @@ let
     echo_and_run export PATH="''${PATH:+''${PATH}:}"
     echo_and_run ${typst}/bin/typst compile "$1" "$2"
   '';
+
+  languageServers = lib.optionals settings.lsp.tinymist.enable
+    [(callPackage ./language_server_tinymist { inherit kernelName; })];
+
+  packageOptions = {};
+  packageSearch = common.searcher packageOptions;
 
   icon = ./typst.png;
   iconMonochrome = ./typst.svg;
@@ -28,7 +37,9 @@ symlinkJoin {
   paths = [
     (callPackage ./kernel.nix { inherit attrs extensions; })
     script
-  ];
+  ]
+  ++ languageServers
+  ;
 
   passthru = {
     meta = {
@@ -57,6 +68,15 @@ symlinkJoin {
       typst = typst.version;
     };
 
+    inherit packageOptions packageSearch;
+
     inherit settingsSchema settings;
+
+    modes = {
+      inherit attrs extensions;
+      code_mirror_mode = "typst";
+    };
+
+    languageServerNames = map (x: x.languageServerName) languageServers;
   };
 }

@@ -82,6 +82,7 @@ symlinkJoin {
   paths =
     attrValues evaluated.config.builtKernels
     ++ attrValues evaluated.config.builtLanguageServers
+    ++ attrValues evaluated.config.builtExporters
     ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
     ++ attrValues evaluated.config.packages
     ++ lib.mapAttrsToList linkBinaries evaluated.config.extraBinDirs

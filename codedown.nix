@@ -57,6 +57,7 @@ rec {
   };
 
   kernels = everythingEnv.config.builtKernels;
+  exporters = everythingEnv.config.builtExporters;
 
   makeEnvironment = callPackage ./nix/makeEnvironment.nix {
     inherit pkgsStable pkgsMaster;
