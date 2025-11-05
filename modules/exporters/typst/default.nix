@@ -24,7 +24,7 @@ let
   languageServers = lib.optionals settings.lsp.tinymist.enable
     [(callPackage ./language_server_tinymist { inherit kernelName; })];
 
-  packageOptions = {};
+  packageOptions = typst.packages;
   packageSearch = common.searcher packageOptions;
 
   icon = ./typst.png;
@@ -62,6 +62,8 @@ symlinkJoin {
         input_extensions = ["typ"];
         pandoc = "${pandoc}/bin/pandoc";
       }];
+
+      hasPackages = packageOptions != {};
     };
 
     versions = {

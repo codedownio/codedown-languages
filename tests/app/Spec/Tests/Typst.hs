@@ -5,6 +5,7 @@
 module Spec.Tests.Typst (tests) where
 
 import Control.Lens hiding (List)
+import Control.Monad
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Protocol.Lens hiding (diagnostics, hover, text)
@@ -35,6 +36,8 @@ tests = describe [i|Typst|] $ introduceNixEnvironment [] config [i|Typst|] $ int
     -- Used to view all versions in codedown-languages
     testEval [i|exporters.typst.versions|]
 
+  it "searcher builds" $ do
+    void $ testBuild [i|exporters.typst.packageSearch|]
 
   describe "LSP" $ do
     testDiagnosticsLabelDesired "simple" lsName "test.typ" (Just "typst")
