@@ -256,6 +256,7 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
            & set (workspace . _Just . configuration) Nothing
            & set (workspace . _Just . didChangeWatchedFiles . _Just . dynamicRegistration) (Just False)
            & set (workspace . _Just . didChangeConfiguration . _Just . dynamicRegistration) (Just False)
+           & set (textDocument . _Just . semanticTokens . _Just . dynamicRegistration) (Just False)
 
   handleFn $ runSessionWithConfigCustomProcess modifyCp sessionConfig cp caps homeDir (session homeDir)
 

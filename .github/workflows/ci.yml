@@ -120,6 +120,7 @@ jobs:
         - name: rust
         - name: zsh
         - name: spellchecker
+        - name: typst
 
         - name: exporters
         - name: sample-environments

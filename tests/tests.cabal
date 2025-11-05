@@ -121,6 +121,7 @@ executable tests
       Spec.Tests.SettingsSchemas
       Spec.Tests.Shells.Zsh
       Spec.Tests.Spellchecker
+      Spec.Tests.Typst
       Paths_tests
   hs-source-dirs:
       app

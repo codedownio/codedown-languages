@@ -1,4 +1,5 @@
 { callPackage
+, lib
 , pandoc
 , symlinkJoin
 , typst
@@ -7,7 +8,12 @@
 , settingsSchema
 }:
 
+with { inherit (settings) packages; };
+with { inherit (settings.interface) attrs extensions; };
+
 let
+  kernelName = "typst";
+
   common = callPackage ../../kernels/common.nix {};
 
   script = common.writeShellScriptBinWithAttrs {} "typst-export" ''
@@ -16,6 +22,14 @@ let
     echo_and_run ${typst}/bin/typst compile "$1" "$2"
   '';
 
+  typstToUse = typst.withPackages (ps: (map (x: ps.${x}) packages));
+
+  languageServers = lib.optionals settings.lsp.tinymist.enable
+    [(callPackage ./language_server_tinymist { inherit kernelName typstToUse; })];
+
+  packageOptions = typst.packages;
+  packageSearch = common.searcher packageOptions;
+
   icon = ./typst.png;
   iconMonochrome = ./typst.svg;
 
@@ -23,7 +37,12 @@ in
 
 symlinkJoin {
   name = "codedown-exporter-typst";
-  paths = [script];
+  paths = [
+    (callPackage ./kernel.nix { inherit attrs extensions typstToUse; })
+    script
+  ]
+  ++ languageServers
+  ;
 
   passthru = {
     meta = {
@@ -46,12 +65,23 @@ symlinkJoin {
         input_extensions = ["typ"];
         pandoc = "${pandoc}/bin/pandoc";
       }];
+
+      hasPackages = packageOptions != {};
     };
 
     versions = {
       typst = typst.version;
     };
 
+    inherit packageOptions packageSearch;
+
     inherit settingsSchema settings;
+
+    modes = {
+      inherit attrs extensions;
+      code_mirror_mode = "typst";
+    };
+
+    languageServerNames = map (x: x.languageServerName) languageServers;
   };
 }
