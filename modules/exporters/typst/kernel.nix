@@ -1,6 +1,7 @@
 { lib
 , callPackage
 , typst
+, typstToUse # TODO: should this kernel actually do something?
 
 , attrs
 , extensions

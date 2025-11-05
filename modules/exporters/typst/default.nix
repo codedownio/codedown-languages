@@ -8,6 +8,7 @@
 , settingsSchema
 }:
 
+with { inherit (settings) packages; };
 with { inherit (settings.interface) attrs extensions; };
 
 let
@@ -21,8 +22,10 @@ let
     echo_and_run ${typst}/bin/typst compile "$1" "$2"
   '';
 
+  typstToUse = typst.withPackages (ps: (map (x: ps.${x}) packages));
+
   languageServers = lib.optionals settings.lsp.tinymist.enable
-    [(callPackage ./language_server_tinymist { inherit kernelName; })];
+    [(callPackage ./language_server_tinymist { inherit kernelName typstToUse; })];
 
   packageOptions = typst.packages;
   packageSearch = common.searcher packageOptions;
@@ -35,7 +38,7 @@ in
 symlinkJoin {
   name = "codedown-exporter-typst";
   paths = [
-    (callPackage ./kernel.nix { inherit attrs extensions; })
+    (callPackage ./kernel.nix { inherit attrs extensions typstToUse; })
     script
   ]
   ++ languageServers

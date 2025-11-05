@@ -2,6 +2,22 @@
 
 with lib;
 
+let
+  subPackage = types.submodule {
+    options = {
+      name = mkOption {
+        description = "Package name";
+        type = types.str;
+      };
+      outputs = mkOption {
+        example = "Package outputs to include";
+        type = types.listOf types.str;
+      };
+    };
+  };
+
+in
+
 {
   options = {
     exporters.typst = {
@@ -10,6 +26,13 @@ with lib;
         example = "Enable Typst exporter";
         description = "Enable the Typst exporters.";
         default = false;
+        visible = false;
+      };
+
+      packages = mkOption {
+        example = "List of packages";
+        type = types.listOf (types.either types.str subPackage);
+        default = [];
         visible = false;
       };
 

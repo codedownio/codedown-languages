@@ -3,6 +3,9 @@
 
 , tinymist
 
+# TODO: how to make the typstToUse (i.e. Typst with some packages) available to tinymist?
+, typstToUse
+
 , kernelName
 }:
 
