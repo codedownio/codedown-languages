@@ -41,9 +41,8 @@ tests = describe [i|Typst|] $ introduceNixEnvironment [] config [i|Typst|] $ int
 
   describe "LSP" $ do
     testDiagnosticsLabelDesired "simple" lsName "test.typ" (Just "typst")
-      [__i|TODO
-           |]
-      ((== []) . getDiagnosticRanges')
+      [__i|\#loremz(45)|]
+      ((== [(Range (Position 0 1) (Position 0 7), Nothing, "unknown variable: loremz")]) . getDiagnosticRanges')
 
 
 documentHighlightCode :: Text
