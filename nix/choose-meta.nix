@@ -43,4 +43,6 @@ contents:
   inherit (contents) modes;
 }) // (lib.optionalAttrs (contents ? "languageServerNames") {
   language_server_names = contents.languageServerNames;
+}) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "exporterInfos"] contents) {
+  exporter_infos = contents.meta.exporterInfos;
 })
