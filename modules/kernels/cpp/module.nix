@@ -57,6 +57,12 @@ in
         type = types.listOf types.str;
         default = ["cpp" "hpp" "cxx" "hxx" "c" "h"];
       };
+
+      lsp.clangd.enable = mkOption {
+        example = "Enable clangd language server";
+        type = types.bool;
+        default = true;
+      };
     };
   };
 

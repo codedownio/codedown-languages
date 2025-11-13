@@ -4,6 +4,7 @@
 , cling
 , clang
 , xeus-cling
+, llvmPackages
 
 , settings
 , settingsSchema
@@ -17,7 +18,12 @@ with lib;
 let
   attrs = [flavor] ++ settings.interface.attrs;
 
+  kernelName = "cpp";
+
   common = callPackage ../common.nix {};
+
+  languageServers = lib.optionals settings.lsp.clangd.enable
+    [(callPackage ./language_server_clangd { inherit kernelName llvmPackages; })];
 
   displaySuffix = {
     "c++17" = " 17";
@@ -80,10 +86,12 @@ symlinkJoin {
     (callPackage ./kernel_xeus.nix {
       inherit attrs displayName extensions;
       std = flavor;
-      kernelName = "cpp";
+      inherit kernelName;
     })
     cling
-  ];
+  ]
+  ++ languageServers
+  ;
 
   passthru = {
     meta = clang.meta // {
@@ -100,6 +108,7 @@ symlinkJoin {
       clang = clang.version;
       cling = cling.unwrapped.version;
       xeus-cling = xeus-cling.version;
+      clangd = llvmPackages.clang-tools.version;
       std = flavor;
     };
     inherit settings settingsSchema;
@@ -117,6 +126,6 @@ symlinkJoin {
       code_mirror_mode = "clike";
       code_mirror_mime_type = "text/x-c++src";
     };
-    languageServerNames = [];
+    languageServerNames = map (x: x.languageServerName) languageServers;
   };
 }
