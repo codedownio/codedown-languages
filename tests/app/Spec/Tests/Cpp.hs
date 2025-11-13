@@ -40,41 +40,36 @@ tests' flavor = describe [i|C++ (#{flavor})|] $ introduceNixEnvironment [kernelS
 testsWithLsp :: Text -> LanguageSpec
 testsWithLsp flavor = describe [i|C++ (#{flavor}) with LSP|] $ introduceNixEnvironment [kernelSpecWithLsp flavor] [] "C++" $ do
   describe "LSP" $ do
-    testDiagnosticsLabelDesired "simple" lsName "test.cpp" (Just "cpp")
+    testDiagnostics'' "simple" lsName "test.cpp" (Just "cpp")
       [__i|int main() {
              undefined_function();
              return 0;
-           }|]
-      ((== [(Range (Position 1 2) (Position 1 20), Nothing, "use of undeclared identifier 'undefined_function'")]) . getDiagnosticRanges')
+           }|] [] $ \diags -> do
+          info [i|Got diags: #{diags}|]
+          info [i|Got ranges: #{getDiagnosticRanges' diags}|]
+          getDiagnosticRanges' diags `shouldBe` [(Range (Position 1 2) (Position 1 20), Just (InR "undeclared_var_use"), "Use of undeclared identifier 'undefined_function'")]
 
 lsName :: Text
 lsName = "clangd"
 
 kernelSpec :: Text -> NixKernelSpec
-kernelSpec flavor  = NixKernelSpec {
-  nixKernelName = "cpp"
-  , nixKernelChannel = "codedown"
-  , nixKernelDisplayName = Just "CPP"
-  , nixKernelPackages = []
-  , nixKernelMeta = Nothing
-  , nixKernelIcon = Nothing
-  , nixKernelExtraConfig = Just [
-      [i|flavor = "#{flavor}"|]
-      ]
-  }
+kernelSpec flavor  = kernelSpec' [[i|flavor = "#{flavor}"|]]
 
 kernelSpecWithLsp :: Text -> NixKernelSpec
-kernelSpecWithLsp flavor = NixKernelSpec {
+kernelSpecWithLsp flavor = kernelSpec' [
+  [i|flavor = "#{flavor}"|]
+    , "lsp.clangd.enable = true"
+    ]
+
+kernelSpec' :: [Text] -> NixKernelSpec
+kernelSpec' extraConfig = NixKernelSpec {
   nixKernelName = "cpp"
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "CPP"
   , nixKernelPackages = []
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelExtraConfig = Just [
-      [i|flavor = "#{flavor}"|]
-      , "lsp.clangd.enable = true;"
-      ]
+  , nixKernelExtraConfig = Just extraConfig
   }
 
 main :: IO ()
