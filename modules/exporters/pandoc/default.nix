@@ -42,6 +42,7 @@ symlinkJoin {
       exporterInfos = map (x: {
         name = x.name;
         display_name = x.display_name;
+        group = "Pandoc";
         extension = x.extension;
         inherit icon;
         icon_monochrome = iconMonochrome;

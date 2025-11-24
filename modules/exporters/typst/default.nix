@@ -33,6 +33,18 @@ let
   icon = ./typst.png;
   iconMonochrome = ./typst.svg;
 
+  mkTypstExporter = display_name: extension: {
+    name = "codedown-exporter-typst";
+    inherit display_name;
+    group = "Typst";
+    inherit extension;
+    inherit icon;
+    icon_monochrome = iconMonochrome;
+    args = [(script + "/bin/typst-export")];
+    input_extensions = ["typ"];
+    pandoc = "${pandoc}/bin/pandoc";
+  };
+
 in
 
 symlinkJoin {
@@ -54,17 +66,12 @@ symlinkJoin {
 
       inherit icon iconMonochrome;
 
-      exporterInfos = [{
-        name = "codedown-exporter-typst";
-        display_name = "Typst";
-        extension = "pdf";
-        inherit icon;
-        icon_monochrome = iconMonochrome;
-        args = [(script + "/bin/typst-export")];
-        outputs = ["pdf" "png" "svg" "html"];
-        input_extensions = ["typ"];
-        pandoc = "${pandoc}/bin/pandoc";
-      }];
+      exporterInfos = [
+        (mkTypstExporter "PDF (.pdf)" "pdf")
+        (mkTypstExporter "PNG (.png)" "png")
+        (mkTypstExporter "SVG (.svg)" "svg")
+        (mkTypstExporter "HTML (.html)" "html")
+      ];
 
       hasPackages = packageOptions != {};
     };

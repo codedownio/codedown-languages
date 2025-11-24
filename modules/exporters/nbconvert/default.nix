@@ -38,9 +38,9 @@ let
     (makeNbconvertExporter "codedown-exporter-nbconvert-latex" "LaTeX (.tex)" "tex" "latex")
     (makeNbconvertExporter "codedown-exporter-nbconvert-pdf" "PDF (.pdf)" "pdf" "pdf")
     (makeNbconvertExporter "codedown-exporter-nbconvert-html" "HTML (.html)" "html" "html")
-    (makeNbconvertExporter "codedown-exporter-nbconvert-rst" "reStructuredText (.rst)" ".rst" "rst")
-    (makeNbconvertExporter "codedown-exporter-nbconvert-slides" "Slides (.html)" ".html" "slides")
-    (makeNbconvertExporter "codedown-exporter-nbconvert-markdown" "Markdown (.md)" ".md" "markdown")
+    (makeNbconvertExporter "codedown-exporter-nbconvert-rst" "reStructuredText (.rst)" "rst" "rst")
+    (makeNbconvertExporter "codedown-exporter-nbconvert-slides" "Slides (.html)" "html" "slides")
+    (makeNbconvertExporter "codedown-exporter-nbconvert-markdown" "Markdown (.md)" "md" "markdown")
   ];
 
   icon = ./jupyter.svg;
@@ -65,6 +65,7 @@ symlinkJoin {
       exporterInfos = map (x: {
         name = x.name;
         display_name = x.display_name;
+        group = "Nbconvert";
         extension = x.extension;
         icon = icon;
         icon_monochrome = iconMonochrome;
