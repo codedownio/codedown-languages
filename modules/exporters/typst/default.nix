@@ -16,10 +16,10 @@ let
 
   common = callPackage ../../kernels/common.nix {};
 
-  script = common.writeShellScriptBinWithAttrs {} "typst-export" ''
+  script = extraArgs: common.writeShellScriptBinWithAttrs {} "typst-export" ''
     echo_and_run() { echo "$*" ; "$@" ; }
     echo_and_run export PATH="''${PATH:+''${PATH}:}"
-    echo_and_run ${typst}/bin/typst compile "$1" "$2"
+    echo_and_run ${typst}/bin/typst compile ${extraArgs} "$1" "$2"
   '';
 
   typstToUse = typst.withPackages (ps: (map (x: ps.${x}) packages));
@@ -33,14 +33,14 @@ let
   icon = ./typst.png;
   iconMonochrome = ./typst.svg;
 
-  mkTypstExporter = display_name: extension: {
+  mkTypstExporter = display_name: extension: extraArgs: {
     name = "codedown-exporter-typst";
     inherit display_name;
     group = "Typst";
     inherit extension;
     inherit icon;
     icon_monochrome = iconMonochrome;
-    args = [(script + "/bin/typst-export")];
+    args = [((script extraArgs) + "/bin/typst-export")];
     input_extensions = ["typ"];
     pandoc = "${pandoc}/bin/pandoc";
   };
@@ -67,10 +67,10 @@ symlinkJoin {
       inherit icon iconMonochrome;
 
       exporterInfos = [
-        (mkTypstExporter "PDF (.pdf)" "pdf")
-        (mkTypstExporter "PNG (.png)" "png")
-        (mkTypstExporter "SVG (.svg)" "svg")
-        (mkTypstExporter "HTML (.html)" "html")
+        (mkTypstExporter "PDF (.pdf)" "pdf" "")
+        (mkTypstExporter "PNG (.png)" "png" "")
+        (mkTypstExporter "SVG (.svg)" "svg" "")
+        (mkTypstExporter "HTML (.html)" "html" "--features html")
       ];
 
       hasPackages = packageOptions != {};
