@@ -19,7 +19,7 @@
                 postgresql.pg_config
                 zlib
 
-                haskell.compiler.ghc96
+                haskell.compiler.ghc9122
               ];
 
               NIX_PATH = "nixpkgs=${pkgs.path}";

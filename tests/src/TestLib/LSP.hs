@@ -23,11 +23,10 @@ import qualified Data.List as L
 import Data.Map (Map)
 import qualified Data.Map as M
 import Data.Maybe
-import Data.Row.Records hiding (Map)
 import qualified Data.Set as S
 import Data.String.Interpolate
 import qualified Data.Text as T hiding (filter)
-import Data.Text hiding (filter)
+import Data.Text hiding (filter, show)
 import qualified Data.Text.IO as T
 import GHC.Int
 import GHC.Stack
@@ -66,7 +65,7 @@ data LanguageServerConfig = LanguageServerConfig {
   , lspConfigPrimary :: Maybe Bool
   , lspConfigArgs :: [Text]
   , lspConfigLanguageId :: Maybe Text
-  , lspConfigInitializationOptions :: Maybe A.Value
+  , lspConfigInitializationOptions :: Maybe A.Object
   , lspConfigNotebookSuffix :: Text
   , lspConfigKernelName :: Maybe Text
   , lspConfigEnv :: Maybe (Map Text Text)
@@ -103,20 +102,20 @@ doSession' filename lsName codeToUse cb = do
 
 testDiagnostics :: (
   LspContext ctx m
-  ) => Text -> FilePath -> Maybe Text -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+  ) => Text -> FilePath -> Maybe LanguageKind -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics name filename maybeLanguageId codeToTest = testDiagnostics' name filename maybeLanguageId codeToTest []
 
 testDiagnostics' :: (
   LspContext ctx m
-  ) => Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+  ) => Text -> FilePath -> Maybe LanguageKind -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics' name filename maybeLanguageId codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest} (diagnostics)|] name filename maybeLanguageId codeToTest
 
 testDiagnosticsLabelDesired :: (
   LspContext ctx m
-  ) => String -> Text -> FilePath -> Maybe Text -> Text -> ([Diagnostic] -> Bool) -> SpecFree ctx m ()
+  ) => String -> Text -> FilePath -> Maybe LanguageKind -> Text -> ([Diagnostic] -> Bool) -> SpecFree ctx m ()
 testDiagnosticsLabelDesired label name filename maybeLanguageId codeToTest cb = it label $
   withLspSession' id name filename codeToTest [] $ \_homeDir -> do
-    _ <- openDoc filename (fromMaybe name maybeLanguageId)
+    _ <- openDoc filename (fromMaybe (LanguageKind_Custom name) maybeLanguageId)
 
     lastSeenDiagsVar <- newTVarIO mempty
 
@@ -137,15 +136,15 @@ testDiagnosticsLabelDesired label name filename maybeLanguageId codeToTest cb = 
 
 testDiagnosticsLabel :: (
   LspContext ctx m
-  ) => String -> Text -> FilePath -> Maybe Text -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+  ) => String -> Text -> FilePath -> Maybe LanguageKind -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnosticsLabel label name filename maybeLanguageId codeToTest = testDiagnostics'' label name filename maybeLanguageId codeToTest []
 
 testDiagnostics'' :: (
   LspContext ctx m
-  ) => String -> Text -> FilePath -> Maybe Text -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+  ) => String -> Text -> FilePath -> Maybe LanguageKind -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb = it label $ do
   withLspSession' id name filename codeToTest extraFiles $ \_homeDir -> do
-    _ <- openDoc filename (fromMaybe name maybeLanguageId)
+    _ <- openDoc filename (fromMaybe (LanguageKind_Custom name) maybeLanguageId)
 
     lastSeenDiagsVar <- newIORef mempty
 
@@ -158,10 +157,10 @@ testDiagnostics'' label name filename maybeLanguageId codeToTest extraFiles cb =
 
 itHasHoverSatisfying :: (
   LspContext ctx m
-  ) => Text -> FilePath -> Maybe Text -> Text -> Position -> (Hover -> ExampleT ctx m ()) -> SpecFree ctx m ()
+  ) => Text -> FilePath -> Maybe LanguageKind -> Text -> Position -> (Hover -> ExampleT ctx m ()) -> SpecFree ctx m ()
 itHasHoverSatisfying name filename maybeLanguageId codeToTest pos cb = it [i|#{name}: #{show codeToTest} (hover)|] $ do
   withLspSession name filename codeToTest [] $ \_homeDir -> do
-    ident <- openDoc filename (fromMaybe name maybeLanguageId)
+    ident <- openDoc filename (fromMaybe (LanguageKind_Custom name) maybeLanguageId)
     getHover ident pos >>= \case
       Nothing -> expectationFailure [i|Expected a hover.|]
       Just x -> lift $ cb x
@@ -204,7 +203,7 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
   -- Comment this and use openDoc' to simulate an unsaved document
   liftIO $ T.writeFile (homeDir </> filename) codeToTest
 
-  let sessionConfig = def { lspConfig = lspConfigInitializationOptions config
+  let sessionConfig = def { lspConfig = fromMaybe mempty (lspConfigInitializationOptions config)
                           , logStdErr = True
                           , logMessages = True
                           , messageTimeout = 120
@@ -251,7 +250,7 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
   info [i|LSP command: #{cp}|]
 
   -- We don't support certain server-to-client requests, since the waitForDiagnostics doesn't handle them
-  let caps = fullCaps
+  let caps = fullLatestClientCaps
            & set (workspace . _Just . workspaceFolders) Nothing
            & set (workspace . _Just . configuration) Nothing
            & set (workspace . _Just . didChangeWatchedFiles . _Just . dynamicRegistration) (Just False)
@@ -314,7 +313,7 @@ allHoverContentsText (InR markedStrings) = case markedStrings of
   InR mss -> mconcat $ fmap markedStringToText mss
   where
     markedStringToText (MarkedString (InL t)) = t
-    markedStringToText (MarkedString (InR thing)) = thing .! #value
+    markedStringToText (MarkedString (InR thing)) = thing ^. LSP.value
 
 containsAll :: Text -> [Text] -> Bool
 containsAll haystack = Prelude.all (`T.isInfixOf` haystack)

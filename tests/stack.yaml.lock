@@ -5,65 +5,44 @@
 
 packages:
 - completed:
-    commit: 673ff007ce08aed7cf3cf8a5050b4066948afa91
+    commit: d920b28aa25d454812d8d9bbd922e893574d45bc
     git: https://github.com/codedownio/lsp.git
     name: lsp
     pantry-tree:
-      sha256: 9d8370277cc83f157edf368042479b89a770aba92b8aa4072b3426b6b489c12b
-      size: 1043
+      sha256: 0463d2462d7690aa877cf2f79279cc1902be006ca7bfcae34da1a56b46c7d00c
+      size: 1121
     subdir: lsp
-    version: 2.0.0.0
+    version: 2.7.0.1
   original:
-    commit: 673ff007ce08aed7cf3cf8a5050b4066948afa91
+    commit: d920b28aa25d454812d8d9bbd922e893574d45bc
     git: https://github.com/codedownio/lsp.git
     subdir: lsp
 - completed:
-    commit: 673ff007ce08aed7cf3cf8a5050b4066948afa91
+    commit: d920b28aa25d454812d8d9bbd922e893574d45bc
     git: https://github.com/codedownio/lsp.git
     name: lsp-test
     pantry-tree:
-      sha256: ae5d36c3d41b027768f7f62c55a8885ba28c2d9674a135c4c98394778a6a06e3
-      size: 2225
+      sha256: 3671570067b55febf7903af85164d35aa515851318e69b31f048998e64362c6a
+      size: 2304
     subdir: lsp-test
-    version: 0.15.0.0
+    version: 0.17.1.1
   original:
-    commit: 673ff007ce08aed7cf3cf8a5050b4066948afa91
+    commit: d920b28aa25d454812d8d9bbd922e893574d45bc
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-test
 - completed:
-    commit: 673ff007ce08aed7cf3cf8a5050b4066948afa91
+    commit: d920b28aa25d454812d8d9bbd922e893574d45bc
     git: https://github.com/codedownio/lsp.git
     name: lsp-types
     pantry-tree:
-      sha256: f8617d8aaa142ecc8ce62e0b2d930669d4969b6b9143368d20b1680874b8077c
-      size: 45522
+      sha256: 08d01a9208540b71e038e6fb85793a42785b37fa390f6f57df2eba0a5e87fe8e
+      size: 52176
     subdir: lsp-types
-    version: 2.0.0.1
+    version: 2.3.0.1
   original:
-    commit: 673ff007ce08aed7cf3cf8a5050b4066948afa91
+    commit: d920b28aa25d454812d8d9bbd922e893574d45bc
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-types
-- completed:
-    hackage: sandwich-0.3.0.3@sha256:1cd757d3e7af7aaaa68cf91b125aace3fde87a1a347c25e14e3cbf78282eea99,9221
-    pantry-tree:
-      sha256: a583451e9d393700383654d8ab631bf22d246184d29ffdde0745fdc8e549496e
-      size: 6145
-  original:
-    hackage: sandwich-0.3.0.3
-- completed:
-    hackage: sandwich-contexts-0.3.0.1@sha256:de63f120457c084035313f85fe323bc61a172c99a600b134b9322e26ac42a790,3085
-    pantry-tree:
-      sha256: f6cad8a7d1ba25e6d602dc67d5ef06243b139c818f2b11cd0fa369b106cdb444
-      size: 1665
-  original:
-    hackage: sandwich-contexts-0.3.0.1
-- completed:
-    hackage: vty-windows-0.2.0.0@sha256:91a11bab7bb79f8ee0d4a8166824ed855251cbac101eed3fdf607ad519a13557,2815
-    pantry-tree:
-      sha256: 50d343eb4df5d1901b1773baeaff8ae7c6a88204d0997430e26f0dc50a1a63eb
-      size: 2160
-  original:
-    hackage: vty-windows-0.2.0.0
 - completed:
     hackage: ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293
     pantry-tree:
@@ -71,13 +50,6 @@ packages:
       size: 253
   original:
     hackage: ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293
-- completed:
-    hackage: crypton-connection-0.3.1@sha256:4d0958537197956b536ea91718b1749949757022532f50b8f683290056a19021,1581
-    pantry-tree:
-      sha256: e35ac3a35611afab9fafac633d0c4e6328b9cce4c8262378671d6c5a739e7e70
-      size: 394
-  original:
-    hackage: crypton-connection-0.3.1@sha256:4d0958537197956b536ea91718b1749949757022532f50b8f683290056a19021,1581
 - completed:
     commit: 768665c90321d118fdd3cde2c6ac6c01310d76a0
     git: https://github.com/codedownio/minio-hs
@@ -91,7 +63,7 @@ packages:
     git: https://github.com/codedownio/minio-hs
 snapshots:
 - completed:
-    sha256: 238fa745b64f91184f9aa518fe04bdde6552533d169b0da5256670df83a0f1a9
-    size: 721141
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/44.yaml
-  original: lts-22.44
+    sha256: 671a94f04c2cb37457b71c66134242d4b12ab703597c19fad769df2d5e1e5659
+    size: 715416
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2025/12/25.yaml
+  original: nightly-2025-12-25

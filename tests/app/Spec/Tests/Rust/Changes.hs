@@ -5,7 +5,6 @@ module Spec.Tests.Rust.Changes (tests) where
 import Control.Lens
 import Data.Function
 import qualified Data.List as L
-import Data.Row.Records
 import Data.String.Interpolate
 import qualified Language.LSP.Protocol.Lens as LSP
 import Language.LSP.Protocol.Types
@@ -27,7 +26,7 @@ tests = describe "Changes" $ do
           , (Range (Position 0 7) (Position 0 7), Just (InR "E0423"), "use `!` to invoke the macro: `!`")
           ]
 
-    changeDoc ident [TextDocumentContentChangeEvent $ InL (#range .== (Range (p 0 7) (p 0 7)) .+ #rangeLength .== Nothing .+ #text .== "z")]
+    changeDoc ident [TextDocumentContentChangeEvent $ InL $ TextDocumentContentChangePartial (Range (p 0 7) (p 0 7)) Nothing "z"]
 
     waitUntil 120.0 $ do
       waitForDiagnostics >>= \diags -> do
