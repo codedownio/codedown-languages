@@ -30,6 +30,7 @@ import Data.Text hiding (filter, show)
 import qualified Data.Text.IO as T
 import GHC.Int
 import GHC.Stack
+import Language.LSP.Protocol.Capabilities
 import Language.LSP.Protocol.Lens as LSP hiding (diagnostics, hover, id, label, name, ranges)
 import Language.LSP.Protocol.Types
 import Language.LSP.Test
@@ -250,7 +251,7 @@ withLspSession' handleFn name filename codeToTest extraFiles session = do
   info [i|LSP command: #{cp}|]
 
   -- We don't support certain server-to-client requests, since the waitForDiagnostics doesn't handle them
-  let caps = fullLatestClientCaps
+  let caps = fullClientCapsForVersion (LSPVersion 3 15)
            & set (workspace . _Just . workspaceFolders) Nothing
            & set (workspace . _Just . configuration) Nothing
            & set (workspace . _Just . didChangeWatchedFiles . _Just . dynamicRegistration) (Just False)
