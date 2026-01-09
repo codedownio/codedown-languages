@@ -1,5 +1,5 @@
 
-resolver: lts-22.44
+resolver: nightly-2025-12-25
 
 packages:
 - .
@@ -11,21 +11,14 @@ system-ghc: true
 
 extra-deps:
 - git: https://github.com/codedownio/lsp.git
-  commit: 673ff007ce08aed7cf3cf8a5050b4066948afa91
+  # upgrade-monads-newest-jan2026 branch
+  commit: d920b28aa25d454812d8d9bbd922e893574d45bc
   subdirs:
   - lsp
   - lsp-test
   - lsp-types
 
-- sandwich-0.3.0.3
-- sandwich-contexts-0.3.0.1
-
-# Needed by newer sandwich
-- vty-windows-0.2.0.0
-
 - ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293
-
-- crypton-connection-0.3.1@sha256:4d0958537197956b536ea91718b1749949757022532f50b8f683290056a19021,1581
 
 - git: https://github.com/codedownio/minio-hs
   commit: 768665c90321d118fdd3cde2c6ac6c01310d76a0

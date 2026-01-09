@@ -4,20 +4,15 @@
 
 module Spec.Tests.Typst (tests) where
 
-import Control.Lens hiding (List)
 import Control.Monad
 import Data.String.Interpolate
 import Data.Text as T
-import Language.LSP.Protocol.Lens hiding (diagnostics, hover, text)
 import Language.LSP.Protocol.Types
-import Language.LSP.Test hiding (message)
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
-import TestLib.NixTypes
 import TestLib.TestBuilding
-import TestLib.TestSearchers
 import TestLib.Types
 
 
@@ -71,6 +66,7 @@ lsName = "tinymist"
 --       ]
 --   }
 
+config :: [Text]
 config = [
   "exporters.typst.enable = true;"
   , "exporters.typst.lsp.tinymist.enable = true;"
