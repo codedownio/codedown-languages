@@ -11,9 +11,10 @@ import Language.LSP.Test hiding (message)
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
 import TestLib.LSP
+import TestLib.Types
 
 
-tests :: (LspContext context m) => SpecFree context m ()
+tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
 tests = describe "Hover" $ do
   it "hovers foo" $ doNotebookSession lsName hoverCode $ \filename -> do
     ident <- openDoc filename "haskell"

@@ -21,9 +21,10 @@ import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
+import TestLib.Types
 
 
-tests :: (LspContext context m) => Text -> Text -> SpecFree context m ()
+tests :: (LspContext context m, HasNixEnvironment context) => Text -> Text -> SpecFree context m ()
 tests ghcPackage lsName = describe "Diagnostics" $ do
   describe "Foo.hs" $ do
     testDiagnosticsLabelDesired "Out of scope variable" lsName "Foo.hs" Nothing

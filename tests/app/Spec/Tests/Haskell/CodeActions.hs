@@ -11,10 +11,11 @@ import Language.LSP.Test hiding (message)
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
 import TestLib.LSP
+import TestLib.Types
 import UnliftIO.Timeout
 
 
-tests :: (LspContext context m) => Text -> SpecFree context m ()
+tests :: (LspContext context m, HasNixEnvironment context) => Text -> SpecFree context m ()
 tests ghcPackage = describe "Code actions" $ do
   it "gets no code actions for putStrLn" $ doNotebookSession lsName codeActionsCode $ \filename -> do
     ident <- openDoc filename "haskell"
