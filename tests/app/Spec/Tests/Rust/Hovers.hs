@@ -20,7 +20,7 @@ tests = describe "Hovers" $ do
       ident <- openDoc filename "haskell"
 
       waitUntil 60 $
-        handle handleSessionException $ do
+        handle handleSessionException' $ do
           hover <- getHoverOrException ident (Position 0 1)
           allHoverText hover `textShouldContain` [i|Prints to the standard output|]
 
@@ -28,6 +28,6 @@ tests = describe "Hovers" $ do
 
 -- | We may get an UnexpectedResponseError from rust-analyzer, while it's indexing (?)
 -- Not sure why, but rethrow it as a sandwich FailureReason so the waitUntil keeps trying.
-handleSessionException :: MonadIO m => SessionException -> m ()
-handleSessionException (UnexpectedResponseError lspId err) = expectationFailure [i|LSP UnexpectedResponseError: #{lspId}, #{err}|]
-handleSessionException x = throwIO x
+handleSessionException' :: MonadIO m => SessionException -> m ()
+handleSessionException' (UnexpectedResponseError lspId err) = expectationFailure [i|LSP UnexpectedResponseError: #{lspId}, #{err}|]
+handleSessionException' x = throwIO x

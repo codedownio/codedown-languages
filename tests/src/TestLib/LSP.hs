@@ -184,7 +184,10 @@ itHasHoverSatisfying name filename maybeLanguageId codeToTest pos cb = it [i|#{n
 withLspSession :: (
   LspContext ctx m
   ) => LanguageServerConfig -> FilePath -> [FilePath] -> FilePath -> Text -> [(FilePath, B.ByteString)] -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
-withLspSession = withLspSession' (handle (\(e :: SessionException) -> expectationFailure [i|LSP session failed with SessionException: #{e}|]))
+withLspSession = withLspSession' handleSessionException
+
+handleSessionException :: MonadUnliftIO m => ExampleT ctx m a -> ExampleT ctx m a
+handleSessionException = handle (\(e :: SessionException) -> expectationFailure [i|LSP session failed with SessionException: #{e}|])
 
 withLspSession' :: (
   LspContext ctx m
