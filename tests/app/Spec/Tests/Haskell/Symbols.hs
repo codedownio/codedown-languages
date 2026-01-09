@@ -8,10 +8,11 @@ import Spec.Tests.Haskell.Common
 import Spec.Tests.Haskell.DocumentHighlight (documentHighlightCode)
 import Test.Sandwich as Sandwich
 import TestLib.LSP
+import TestLib.Types
 import UnliftIO.Timeout
 
 
-tests :: (LspContext context m) => SpecFree context m ()
+tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
 tests = describe "Symbols" $ do
   it "symbols" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
     ident <- openDoc filename "haskell"

@@ -29,7 +29,7 @@ otherConfig = [
 tests :: TopSpec
 tests = describe "Spellchecker" $ introduceNixEnvironment [] otherConfig "Spellchecker env" $ introduceJustBubblewrap $ do
   it "Gets diagnostics and a working code action" $ do
-    withLspSession' id "spellchecker" "test.md" [i|\# This is mispelled|] [] $ \lspHomeDir -> do
+    doSession' "test.md" "spellchecker" [i|\# This is mispelled|] $ \lspHomeDir -> do
       ident <- openDoc "test.md" "spellchecker"
       waitUntil 300.0 $ do
         diagnostics <- waitForDiagnostics
@@ -50,7 +50,7 @@ tests = describe "Spellchecker" $ introduceNixEnvironment [] otherConfig "Spellc
 
   it "Uses a personal dictionary on startup" $ do
     let extraFiles = [(".codedown/personal-dictionary.dat", "mispelled\n")]
-    withLspSession' id "spellchecker" "test.md" [i|\# This is mispelled|] extraFiles $ \_homeDir -> do
+    doSession'' "test.md" "spellchecker" [i|\# This is mispelled|] extraFiles $ \_homeDir -> do
       _ident <- openDoc "test.md" "spellchecker"
       waitUntil 300.0 $ do
         diagnostics <- waitForDiagnostics

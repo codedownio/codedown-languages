@@ -9,9 +9,10 @@ import qualified Language.LSP.Protocol.Lens as LSP
 import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
 import TestLib.LSP
+import TestLib.Types
 
 
-tests :: (LspContext context m) => SpecFree context m ()
+tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
 tests = describe "Diagnostics" $ do
   testDiagnostics "rust-analyzer" "main.ipynb" Nothing [__i|printlnz!("Hello world");
                                                            |] $ \diagnostics -> do

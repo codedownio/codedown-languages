@@ -12,9 +12,10 @@ import Language.LSP.Test
 import Test.Sandwich as Sandwich
 import Test.Sandwich.Waits (waitUntil)
 import TestLib.LSP
+import TestLib.Types
 
 
-tests :: (LspContext context m) => SpecFree context m ()
+tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
 tests = describe "Changes" $ do
   it [i|Simple change|] $ doSession' "main.ipynb" "rust-analyzer" [i|println("hi");|] $ \filename -> do
     ident <- openDoc filename "haskell"
