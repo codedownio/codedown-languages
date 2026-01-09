@@ -10,10 +10,11 @@ import Spec.Tests.Haskell.Common
 import Spec.Tests.Haskell.DocumentHighlight (documentHighlightResults)
 import Test.Sandwich as Sandwich
 import TestLib.LSP
+import TestLib.Types
 import UnliftIO.Timeout
 
 
-tests :: (LspContext context m) => Text -> SpecFree context m ()
+tests :: (LspContext context m, HasNixEnvironment context) => Text -> SpecFree context m ()
 tests ghcPackage = describe "Statements" $ do
   describe "Single-line" $ do
     it "doesn't choke" $ doNotebookSession lsName statementsCode $ \filename -> do

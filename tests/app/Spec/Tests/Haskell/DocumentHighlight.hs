@@ -13,9 +13,10 @@ import Language.LSP.Test hiding (message)
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
 import TestLib.LSP
+import TestLib.Types
 
 
-tests :: (LspContext context m) => SpecFree context m ()
+tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
 tests = describe "Document highlight" $ do
   it "foo (.ipynb)" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
     ident <- openDoc filename "haskell"

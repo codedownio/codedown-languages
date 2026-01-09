@@ -11,9 +11,10 @@ import Safe
 import Test.Sandwich as Sandwich
 import Test.Sandwich.Waits (waitUntil)
 import TestLib.LSP
+import TestLib.Types
 
 
-tests :: (LspContext context m) => SpecFree context m ()
+tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
 tests = describe "Completions" $ do
   forM_ ["main.ipynb", "test.rs"] $ \doc -> do
     it [i|(#{doc}) Completes printl to println!|] $ doSession' doc "rust-analyzer" [i|printl|] $ \filename -> do
