@@ -27,18 +27,18 @@ import TestLib.Types
 tests :: (LspContext context m, HasNixEnvironment context) => Text -> Text -> SpecFree context m ()
 tests ghcPackage lsName = describe "Diagnostics" $ do
   describe "Foo.hs" $ do
-    testDiagnosticsLabelDesired "Out of scope variable" lsName "Foo.hs" Nothing
+    testDiagnosticsLabelDesired "Out of scope variable" lsName "Foo.hs"
       [__i|module Foo where
            foo = bar
           |]
       ((== [(Range (Position 1 6) (Position 1 9), Just (InR "GHC-88464"))]) . getDiagnosticRanges)
 
     when (ghcPackage /= "ghc910") $ -- TODO: re-enable hlint test
-      testDiagnosticsLabelDesired "Eta reduce" lsName "Foo.hs" Nothing etaExpandCode
+      testDiagnosticsLabelDesired "Eta reduce" lsName "Foo.hs" etaExpandCode
         ((== [(Range (Position 6 0) (Position 6 14), Just (InR "refact:Eta reduce"))]) . getDiagnosticRanges)
 
   describe "main.ipynb" $ do
-    testDiagnosticsLabelDesired "Top-level putStrLn" lsName "main.ipynb" Nothing
+    testDiagnosticsLabelDesired "Top-level putStrLn" lsName "main.ipynb"
       [__i|-- A comment
            foo = bar
 
@@ -46,7 +46,7 @@ tests ghcPackage lsName = describe "Diagnostics" $ do
           |]
       ((== [(Range (Position 1 6) (Position 1 9), Just (InR "GHC-88464"))]) . getDiagnosticRanges)
 
-    testDiagnosticsLabel "Top-level putStrLn with diagnostic" lsName "main.ipynb" Nothing
+    testDiagnosticsLabel "Top-level putStrLn with diagnostic" lsName "main.ipynb"
       [__i|-- Some comment
            import Data.ByteString.Lazy.Char8 as BL
            foo = bar
@@ -56,7 +56,7 @@ tests ghcPackage lsName = describe "Diagnostics" $ do
         [(Range (Position 4 0) (Position 4 8), x)] | containsAll x ["Ambiguous occurrence", "putStrLn"] -> return ()
         xs -> expectationFailure [i|Unexpected diagnostics: #{xs}|]
 
-    testDiagnosticsLabelDesired "Reordering" lsName "main.ipynb" Nothing
+    testDiagnosticsLabelDesired "Reordering" lsName "main.ipynb"
       [__i|import Data.Aeson.TH
            {-\# LANGUAGE TemplateHaskell \#-}
            foo = bar -- This should be the only diagnostic we get
@@ -64,7 +64,7 @@ tests ghcPackage lsName = describe "Diagnostics" $ do
            $(deriveJSON defaultOptions ''Foo)|]
       ((== [(Range (Position 2 6) (Position 2 9), Just (InR "GHC-88464"))]) . getDiagnosticRanges)
 
-    testDiagnosticsLabelDesired "Complicated reordering" lsName "main.ipynb" Nothing
+    testDiagnosticsLabelDesired "Complicated reordering" lsName "main.ipynb"
       [__i|import Data.Aeson as A
            import Data.Aeson.TH
            :set -XTemplateHaskell

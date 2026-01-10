@@ -33,7 +33,7 @@ tests = describe "Go" $ introduceNixEnvironment [kernelSpec] [] "Go" $ introduce
   testKernelStdout "go" [__i|import("fmt")
                              fmt.Println("hi")|] "hi\n"
 
-  testDiagnosticsLabel "gopls: Undeclared name" "gopls" "test.go" Nothing printUnknownCode $ \diagnostics ->
+  testDiagnosticsLabel "gopls: Undeclared name" "gopls" "test.go" printUnknownCode $ \diagnostics ->
     assertDiagnosticRanges diagnostics [(Range (Position 3 12) (Position 3 15), Just (InR "UndeclaredName"))]
 
 printUnknownCode :: Text

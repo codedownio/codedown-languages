@@ -45,7 +45,7 @@ juliaTests juliaPackage = describe [i|Julia (#{juliaPackage})|] $ introduceNixEn
   describe "LSP" $ do
     Diagnostics.tests lsName
 
-    itHasHoverSatisfying lsName "test.jl" (Just "julia") [__i|print("hi")|] (Position 0 2) $ \hover -> do
+    itHasHoverSatisfying lsName "test.jl" [__i|print("hi")|] (Position 0 2) $ \hover -> do
       let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents
       text `textShouldContain` "Write to `io` (or to the default output stream"
 
