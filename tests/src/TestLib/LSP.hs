@@ -4,7 +4,33 @@
 {-# OPTIONS_GHC -fno-warn-deprecations #-} -- For PlainString, CodeString, etc.
 {-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 
-module TestLib.LSP where
+module TestLib.LSP (
+  findLspConfig
+  , getPathAndNixEnvironmentClosure
+
+  , doNotebookSession
+  , doSession'
+
+  , withLspSession
+  , withLspSession'
+
+  , getDiagnosticRanges
+  , getDiagnosticRanges'
+  , assertDiagnosticRanges
+  , assertDiagnosticRanges'
+  , testDiagnostics
+  , testDiagnosticsLabel
+  , testDiagnosticsLabelDesired
+  , testDiagnostics''
+
+  , getHoverOrException
+  , allHoverText
+  , itHasHoverSatisfying
+
+  , containsAll
+
+  , LspContext
+  ) where
 
 import Control.Applicative
 import Control.Lens hiding (List)
@@ -117,6 +143,11 @@ testDiagnostics' :: (
   ) => Text -> FilePath -> Maybe LanguageKind -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics' name filename maybeLanguageId codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest} (diagnostics)|] name filename maybeLanguageId codeToTest
 
+testDiagnosticsLabel :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => String -> Text -> FilePath -> Maybe LanguageKind -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnosticsLabel label name filename maybeLanguageId codeToTest = testDiagnostics'' label name filename maybeLanguageId codeToTest []
+
 testDiagnosticsLabelDesired :: (
   LspContext ctx m, HasNixEnvironment ctx
   ) => String -> Text -> FilePath -> Maybe LanguageKind -> Text -> ([Diagnostic] -> Bool) -> SpecFree ctx m ()
@@ -143,11 +174,6 @@ testDiagnosticsLabelDesired label name filename maybeLanguageId codeToTest cb = 
                    when (x == lastValue) retrySTM
                    return x
                  loop newDiags
-
-testDiagnosticsLabel :: (
-  LspContext ctx m, HasNixEnvironment ctx
-  ) => String -> Text -> FilePath -> Maybe LanguageKind -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
-testDiagnosticsLabel label name filename maybeLanguageId codeToTest = testDiagnostics'' label name filename maybeLanguageId codeToTest []
 
 testDiagnostics'' :: (
   LspContext ctx m, HasNixEnvironment ctx
