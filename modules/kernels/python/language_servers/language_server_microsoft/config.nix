@@ -88,4 +88,5 @@ common.writeTextDirWithMetaAndPassthru python-language-server.meta passthru "lib
     initialization_options = overrideExisting initialization_options {
       # cacheFolderPath = "${cache}/cache";
     };
+    language_id = "python";
   }])

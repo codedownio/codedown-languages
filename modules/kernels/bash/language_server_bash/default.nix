@@ -48,4 +48,5 @@ common.writeTextDirWithMetaAndPassthru bashLanguageServerWithMan.meta passthru "
     "${bashLanguageServerWithMan}/bin/bash-language-server"
     "start"
   ];
+  language_id = "shellscript";
 }])

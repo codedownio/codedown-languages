@@ -30,4 +30,5 @@ common.writeTextDirWithMetaAndPassthru clojure-lsp.meta passthru "lib/codedown/l
   type = "stream";
   args = ["${clojure-lsp}/bin/clojure-lsp"];
   env = {};
+  language_id = "clojure";
 }])

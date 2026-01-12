@@ -81,4 +81,5 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.flake8.meta passthru "lib/cod
       formatters = {};
       formatFiletypes = {};
     };
+    language_id = "python";
   }])

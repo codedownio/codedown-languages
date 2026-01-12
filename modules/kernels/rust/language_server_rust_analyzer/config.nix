@@ -174,6 +174,8 @@ let
 
       # "RA_LOG" = "rust_analyzer=info";
     };
+
+    language_id = "rust";
   };
 
 in

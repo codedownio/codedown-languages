@@ -90,4 +90,5 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.pylint.meta passthru "lib/cod
       formatters = {};
       formatFiletypes = {};
     };
+    language_id = "python";
   }])

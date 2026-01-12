@@ -80,4 +80,5 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.pycodestyle.meta passthru "li
       formatters = {};
       formatFiletypes = {};
     };
+    language_id = "python";
   }])

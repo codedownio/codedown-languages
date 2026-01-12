@@ -61,4 +61,5 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.python-language-server.meta p
     type = "stream";
     args = ["${python}/bin/python" "-m" "pyls"];
     initialization_options = import ../pylsp_initialization_options.nix "pyls";
+    language_id = "python";
   }])

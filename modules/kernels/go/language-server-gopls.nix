@@ -45,6 +45,7 @@ common.writeTextDirWithMetaAndPassthru gopls.meta passthru "lib/codedown/languag
   type = "stream";
   args = ["${goplsWrapped}/bin/gopls"];
   env = {};
+  language_id = "go";
 }])
 
 

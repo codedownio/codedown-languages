@@ -37,4 +37,5 @@ common.writeTextDirWithMetaAndPassthru languageserver.meta passthru "lib/codedow
   type = "stream";
   primary = true;
   args = ["${rWithPackagesAndLanguageServer}/bin/R" "--slave" "-e" "languageserver::run()"];
+  language_id = "r";
 }])
