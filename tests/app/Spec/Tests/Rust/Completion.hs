@@ -7,6 +7,7 @@ import Data.String.Interpolate
 import Language.LSP.Protocol.Lens hiding (edit, item, range)
 import Language.LSP.Protocol.Types
 import Language.LSP.Test
+import qualified Language.LSP.Test.Helpers as Helpers
 import Safe
 import Test.Sandwich as Sandwich
 import Test.Sandwich.Waits (waitUntil)
@@ -17,8 +18,8 @@ import TestLib.Types
 tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
 tests = describe "Completions" $ do
   forM_ ["main.ipynb", "test.rs"] $ \doc -> do
-    it [i|(#{doc}) Completes printl to println!|] $ doSession' doc "rust-analyzer" [i|printl|] $ \filename -> do
-      ident <- openDoc filename "haskell"
+    it [i|(#{doc}) Completes printl to println!|] $ doSession' doc "rust-analyzer" [i|printl|] $ \(Helpers.LspSessionInfo {..}) -> do
+      ident <- openDoc lspSessionInfoFileName "haskell"
 
       waitUntil 60 $ do
         completions <- getCompletions ident (Position 0 6)

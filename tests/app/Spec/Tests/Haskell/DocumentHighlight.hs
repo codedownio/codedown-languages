@@ -10,6 +10,7 @@ import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
+import qualified Language.LSP.Test.Helpers as Helpers
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
 import TestLib.LSP
@@ -18,12 +19,12 @@ import TestLib.Types
 
 tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
 tests = describe "Document highlight" $ do
-  it "foo (.ipynb)" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
-    ident <- openDoc filename "haskell"
+  it "foo (.ipynb)" $ doNotebookSession lsName documentHighlightCode $ \(Helpers.LspSessionInfo {..}) -> do
+    ident <- openDoc lspSessionInfoFileName "haskell"
     getHighlights ident (Position 0 1) >>= (`shouldBe` documentHighlightResults)
 
-  it "foo (.hs)" $ doSession' "Test.hs" lsName documentHighlightCodeRegular $ \filename -> do
-    ident <- openDoc filename "haskell"
+  it "foo (.hs)" $ doSession' "Test.hs" lsName documentHighlightCodeRegular $ \(Helpers.LspSessionInfo {..}) -> do
+    ident <- openDoc lspSessionInfoFileName "haskell"
     getHighlights ident (Position 0 1) >>= (
       `shouldBe`  [
           DocumentHighlight (Range (Position 0 0) (Position 0 3)) (Just DocumentHighlightKind_Write)

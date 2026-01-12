@@ -37,7 +37,6 @@ import Control.Monad.Reader
 import Data.Aeson as A
 import qualified Data.ByteString as B
 import qualified Data.List as L
-import Data.Maybe
 import Data.String.Interpolate
 import qualified Data.Text as T hiding (filter)
 import Data.Text hiding (filter, show)
@@ -58,100 +57,100 @@ import UnliftIO.Process
 
 doNotebookSession :: (
   LspContext ctx m, HasNixEnvironment ctx
-  ) => Text -> Text -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
+  ) => Text -> Text -> (Helpers.LspSessionInfo -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
 doNotebookSession = doSession' "main.ipynb"
 
 doSession' :: (
   LspContext ctx m, HasNixEnvironment ctx
-  ) => Text -> Text -> Text -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
+  ) => Text -> Text -> Text -> (Helpers.LspSessionInfo -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
 doSession' filename lsName codeToUse cb = doSession'' filename lsName codeToUse [] cb
 
 doSession'' :: (
   LspContext ctx m, HasNixEnvironment ctx
-  ) => Text -> Text -> Text -> [(FilePath, B.ByteString)] -> (FilePath -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
+  ) => Text -> Text -> Text -> [(FilePath, B.ByteString)] -> (Helpers.LspSessionInfo -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
 doSession'' filename lsName codeToUse extraFiles cb = do
   lspConfig <- findLspConfig lsName
   (pathToUse, closure) <- getPathAndNixEnvironmentClosure
   let lspSessionOptions = (defaultLspSessionOptions lspConfig) {
         lspSessionOptionsInitialFileName = T.unpack filename
+        , lspSessionOptionsInitialLanguageKind = LanguageKind_Python
         , lspSessionOptionsInitialCode = codeToUse
         , lspSessionOptionsExtraFiles = extraFiles
         , lspSessionOptionsReadOnlyBinds = closure
         , lspSessionOptionsPathEnvVar = pathToUse
         }
-  withLspSession lspSessionOptions $ \_homeDir -> do
-    cb (T.unpack filename)
+  withLspSession lspSessionOptions cb
 
 testDiagnostics :: (
   LspContext ctx m, HasNixEnvironment ctx
-  ) => Text -> FilePath -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
-testDiagnostics name filename code = testDiagnostics' name filename code []
+  ) => Text -> FilePath -> LanguageKind -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnostics name filename languageKind code = testDiagnostics' name filename languageKind code []
 
 testDiagnostics' :: (
   LspContext ctx m, HasNixEnvironment ctx
-  ) => Text -> FilePath -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
-testDiagnostics' name filename codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest} (diagnostics)|] name filename codeToTest
+  ) => Text -> FilePath -> LanguageKind -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnostics' name filename languageKind codeToTest = testDiagnostics'' [i|#{name}, #{filename} with #{show codeToTest} (diagnostics)|] name filename languageKind codeToTest
 
 testDiagnosticsLabel :: (
   LspContext ctx m, HasNixEnvironment ctx
-  ) => String -> Text -> FilePath -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
-testDiagnosticsLabel label name filename codeToTest = testDiagnostics'' label name filename codeToTest []
+  ) => String -> Text -> FilePath -> LanguageKind -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnosticsLabel label name filename languageKind codeToTest = testDiagnostics'' label name filename languageKind codeToTest []
 
 testDiagnosticsLabelDesired :: (
   LspContext ctx m, HasNixEnvironment ctx
-  ) => String -> Text -> FilePath -> Text -> ([Diagnostic] -> Bool) -> SpecFree ctx m ()
-testDiagnosticsLabelDesired label name filename code cb = it label $ do
+  ) => String -> Text -> FilePath -> LanguageKind -> Text -> ([Diagnostic] -> Bool) -> SpecFree ctx m ()
+testDiagnosticsLabelDesired label name filename languageKind code cb = it label $ do
   lspConfig <- findLspConfig name
   (pathToUse, closure) <- getPathAndNixEnvironmentClosure
 
   let lspSessionOptions = (defaultLspSessionOptions lspConfig) {
         lspSessionOptionsInitialFileName = filename
+        , lspSessionOptionsInitialLanguageKind = languageKind
         , lspSessionOptionsInitialCode = code
         , lspSessionOptionsReadOnlyBinds = closure
         , lspSessionOptionsPathEnvVar = pathToUse
         }
 
-  Helpers.testDiagnostics lspSessionOptions $ \diags ->
-    if | cb diags -> return True
+  Helpers.testDiagnostics lspSessionOptions languageKind $ \diags ->
+    if | cb diags -> return ()
        | otherwise -> expectationFailure [i|Got unexpected diagnostics: #{diags}|]
-
 
 testDiagnostics'' :: (
   LspContext ctx m, HasNixEnvironment ctx
-  ) => String -> Text -> FilePath-> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
-testDiagnostics'' label name filename code extraFiles cb = it label $ do
+  ) => String -> Text -> FilePath -> LanguageKind -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnostics'' label name filename languageKind code extraFiles cb = it label $ do
   lspConfig <- findLspConfig name
   (pathToUse, closure) <- getPathAndNixEnvironmentClosure
 
   let lspSessionOptions = (defaultLspSessionOptions lspConfig) {
         lspSessionOptionsInitialFileName = filename
+        , lspSessionOptionsInitialLanguageKind = languageKind
         , lspSessionOptionsInitialCode = code
         , lspSessionOptionsReadOnlyBinds = closure
         , lspSessionOptionsPathEnvVar = pathToUse
         , lspSessionOptionsExtraFiles = extraFiles
         }
 
-  Helpers.testDiagnostics lspSessionOptions $ \diags -> do
+  Helpers.testDiagnostics lspSessionOptions languageKind $ \diags -> do
     lift $ cb diags
-    return True
-
 
 itHasHoverSatisfying :: (
   LspContext ctx m, HasNixEnvironment ctx
-  ) => Text -> FilePath -> Text -> Position -> (Hover -> ExampleT ctx m ()) -> SpecFree ctx m ()
-itHasHoverSatisfying name filename code pos cb = it [i|#{name}: #{show code} (hover)|] $ do
+  ) => Text -> FilePath -> LanguageKind -> Text -> Position -> (Hover -> ExampleT ctx m ()) -> SpecFree ctx m ()
+itHasHoverSatisfying name filename languageKind code pos cb = it [i|#{name}: #{show code} (hover)|] $ do
   lspConfig <- findLspConfig name
   (pathToUse, closure) <- getPathAndNixEnvironmentClosure
 
   let lspSessionOptions = (defaultLspSessionOptions lspConfig) {
         lspSessionOptionsInitialFileName = filename
+        , lspSessionOptionsInitialLanguageKind = languageKind
         , lspSessionOptionsInitialCode = code
         , lspSessionOptionsReadOnlyBinds = closure
         , lspSessionOptionsPathEnvVar = pathToUse
         }
 
   withLspSession lspSessionOptions $ \_ -> do
-    ident <- openDoc filename (fromMaybe (LanguageKind_Custom "unknown") (lspConfigLanguageId lspConfig))
+    ident <- openDoc filename languageKind
     getHover ident pos >>= \case
       Nothing -> expectationFailure [i|Expected a hover.|]
       Just x -> lift $ cb x
@@ -201,27 +200,18 @@ getPathAndNixEnvironmentClosure = do
   return (pathToUse, closure)
 
 assertDiagnosticRanges :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
-assertDiagnosticRanges diagnostics desired = if
-  | found == desired -> return ()
-  | otherwise ->
-      expectationFailure [__i|Got wrong diagnostics!
-
-                              Expected: #{A.encode desired}
-
-                              Found: #{A.encode found}
-                             |]
-  where
-    found = Helpers.getDiagnosticRanges diagnostics
+assertDiagnosticRanges = assertDiagnosticRanges'' Helpers.getDiagnosticRanges
 
 assertDiagnosticRanges' :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)] -> m ()
-assertDiagnosticRanges' diagnostics desired = if
-  | found == desired -> return ()
+assertDiagnosticRanges' = assertDiagnosticRanges'' Helpers.getDiagnosticRanges'
+
+assertDiagnosticRanges'' :: (HasCallStack, MonadIO m, Eq a, ToJSON a) => ([Diagnostic] -> [a]) -> [Diagnostic] -> [a] -> m ()
+assertDiagnosticRanges'' keyFn diagnostics desired = if
+  | keyFn diagnostics == desired -> return ()
   | otherwise ->
       expectationFailure [__i|Got wrong diagnostics!
 
                               Expected: #{A.encode desired}
 
-                              Found: #{A.encode found}
+                              Found: #{A.encode $ keyFn diagnostics}
                              |]
-  where
-    found = Helpers.getDiagnosticRanges' diagnostics

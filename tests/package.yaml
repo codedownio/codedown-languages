@@ -36,6 +36,7 @@ dependencies:
 - filepath
 - lens
 - lsp-test
+- lsp-test-helpers
 - lsp-types
 - monad-control
 - mtl
@@ -55,13 +56,10 @@ library:
   - bytestring
   - conduit
   - conduit-aeson
-  - data-default
   - directory
   - monad-logger
   - postgresql-simple
-  - row-types
   - template-haskell
-  - temporary
   - unliftio
   - unliftio-core
   - uri-encode
@@ -77,7 +75,6 @@ executables:
     build-tools: sandwich:sandwich-discover
     dependencies:
     - monad-logger
-    - row-types
     - tests
     - unliftio
     - unliftio-core

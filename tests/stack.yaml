@@ -21,9 +21,6 @@ extra-deps:
 
 - git: https://github.com/codedownio/lsp-test-helpers.git
   # main branch
-  commit: 10a74a28168b56428ab7c465d8e25e4d9e4e4734
+  commit: 6a73e2393a1d9f21719580ce9ca0efbefabda60f
 
 - ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293
-
-- git: https://github.com/codedownio/minio-hs
-  commit: 768665c90321d118fdd3cde2c6ac6c01310d76a0

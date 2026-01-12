@@ -37,7 +37,7 @@ tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ intro
   --                                            |] $ \diagnostics -> do
   --   assertDiagnosticRanges diagnostics []
 
-  testDiagnostics "bash-language-server" "test.sh" [__i|FOO=42|] $ \diagnostics -> do
+  testDiagnostics "bash-language-server" "test.sh" LanguageKind_ShellScript [__i|FOO=42|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics [
       (Range (Position 0 0) (Position 0 3), Just (InR "SC2034"))
       ]

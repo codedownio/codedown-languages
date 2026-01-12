@@ -8,6 +8,7 @@ import Data.Text
 import Language.LSP.Protocol.Lens hiding (actions)
 import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
+import qualified Language.LSP.Test.Helpers as Helpers
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
 import TestLib.LSP
@@ -17,13 +18,13 @@ import UnliftIO.Timeout
 
 tests :: (LspContext context m, HasNixEnvironment context) => Text -> SpecFree context m ()
 tests ghcPackage = describe "Code actions" $ do
-  it "gets no code actions for putStrLn" $ doNotebookSession lsName codeActionsCode $ \filename -> do
-    ident <- openDoc filename "haskell"
+  it "gets no code actions for putStrLn" $ doNotebookSession lsName codeActionsCode $ \(Helpers.LspSessionInfo {..}) -> do
+    ident <- openDoc lspSessionInfoFileName "haskell"
     actions <- timeout 60_000_000 $ getCodeActions ident (Range (Position 1 0) (Position 1 8))
     actions `shouldBe` (Just [])
 
-  it "gets code actions for foo" $ doNotebookSession lsName codeActionsCode $ \filename -> do
-    ident <- openDoc filename "haskell"
+  it "gets code actions for foo" $ doNotebookSession lsName codeActionsCode $ \(Helpers.LspSessionInfo {..}) -> do
+    ident <- openDoc lspSessionInfoFileName "haskell"
     actions <- timeout 60_000_000 $ getCodeActions ident (Range (Position 0 0) (Position 0 3))
     case ghcPackage of
       x | x `L.elem` ["ghc910", "ghc912"] -> actions `shouldBe` (Just []) -- TODO: figure out why this is

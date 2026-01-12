@@ -9,6 +9,7 @@ import Data.String.Interpolate
 import qualified Language.LSP.Protocol.Lens as LSP
 import Language.LSP.Protocol.Types
 import Language.LSP.Test
+import qualified Language.LSP.Test.Helpers as Helpers
 import Test.Sandwich as Sandwich
 import Test.Sandwich.Waits (waitUntil)
 import TestLib.LSP
@@ -17,8 +18,8 @@ import TestLib.Types
 
 tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
 tests = describe "Changes" $ do
-  it [i|Simple change|] $ doSession' "main.ipynb" "rust-analyzer" [i|println("hi");|] $ \filename -> do
-    ident <- openDoc filename "haskell"
+  it [i|Simple change|] $ doSession' "main.ipynb" "rust-analyzer" [i|println("hi");|] $ \(Helpers.LspSessionInfo {..}) -> do
+    ident <- openDoc lspSessionInfoFileName "haskell"
 
     waitUntil 120.0 $ do
       waitForDiagnostics >>= \diags -> do

@@ -44,23 +44,23 @@ packages:
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-types
 - completed:
+    commit: 6a73e2393a1d9f21719580ce9ca0efbefabda60f
+    git: https://github.com/codedownio/lsp-test-helpers.git
+    name: lsp-test-helpers
+    pantry-tree:
+      sha256: d13e5237e21a6896422743aeee3f46019ca022e3e7d51b3b7196b9db9ec956c8
+      size: 1025
+    version: 0.1.0.0
+  original:
+    commit: 6a73e2393a1d9f21719580ce9ca0efbefabda60f
+    git: https://github.com/codedownio/lsp-test-helpers.git
+- completed:
     hackage: ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293
     pantry-tree:
       sha256: 863f042cd38e712406ac3ca414eb83e4f2264a71913fca0319d940655ebc873a
       size: 253
   original:
     hackage: ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293
-- completed:
-    commit: 768665c90321d118fdd3cde2c6ac6c01310d76a0
-    git: https://github.com/codedownio/minio-hs
-    name: minio-hs
-    pantry-tree:
-      sha256: 63fecbf5146f8704eba62c12ba86494f7bc477d8d882e74846ea0d1dfce03a1a
-      size: 4744
-    version: 1.7.0
-  original:
-    commit: 768665c90321d118fdd3cde2c6ac6c01310d76a0
-    git: https://github.com/codedownio/minio-hs
 snapshots:
 - completed:
     sha256: 671a94f04c2cb37457b71c66134242d4b12ab703597c19fad769df2d5e1e5659

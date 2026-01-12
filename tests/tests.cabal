@@ -59,25 +59,23 @@ library
     , conduit
     , conduit-aeson
     , containers
-    , data-default
     , directory
     , exceptions
     , filepath
     , lens
     , lsp-test
+    , lsp-test-helpers
     , lsp-types
     , monad-control
     , monad-logger
     , mtl
     , optparse-applicative
     , postgresql-simple
-    , row-types
     , safe
     , sandwich
     , sandwich-contexts
     , string-interpolate
     , template-haskell
-    , temporary
     , text
     , unliftio
     , unliftio-core
@@ -150,12 +148,12 @@ executable tests
     , filepath
     , lens
     , lsp-test
+    , lsp-test-helpers
     , lsp-types
     , monad-control
     , monad-logger
     , mtl
     , optparse-applicative
-    , row-types
     , safe
     , sandwich
     , sandwich-contexts
