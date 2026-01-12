@@ -34,7 +34,7 @@
 
             # Print a trivial PATH that we can use to run kernel and LSP tests, to ensure
             # they aren't depending on anything on the test machine's PATH.
-            print-basic-path = pkgs.writeShellScriptBin "codedown-artifact-sizes.sh" ''
+            print-basic-path = pkgs.writeShellScriptBin "basic-path.sh" ''
               echo ${pkgs.lib.makeBinPath (with pkgs; [coreutils bash])}
             '';
 
