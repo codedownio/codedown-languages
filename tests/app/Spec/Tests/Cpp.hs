@@ -20,29 +20,24 @@ import qualified Spec.Tests.Cpp.Hovers as Hovers
 
 
 tests :: LanguageSpec
-tests = describe "C++" $ parallel $ do
-  testKernelSearchersBuild "cpp"
-  testHasExpectedFields "cpp"
+tests = do
+  describe "C++" $ do
+    testKernelSearchersBuild "cpp"
+    testHasExpectedFields "cpp"
 
-  -- tests' "cpp98"
-  -- tests' "c++11"
-  -- tests' "c++14"
-  tests' "c++17"
-  tests' "c++20"
-  tests' "c++23"
-  tests' "c++2c"
-
-  testsWithLsp "c++23"
-  testsWithCppNotebookLanguageServer "c++23"
+  parallel $ do
+    tests' "c++17"
+    tests' "c++20"
+    tests' "c++23"
+    tests' "c++2c"
 
 tests' :: Text -> LanguageSpec
-tests' flavor = describe [i|C++ (#{flavor})|] $ introduceNixEnvironment [kernelSpec flavor] [] "C++" $ introduceJupyterRunner $ do
-  testKernelStdout "cpp" [__i|\#include <iostream>
-                              using namespace std;
-                              cout << "hi" << endl;|] "hi\n"
+tests' flavor = describe [i|C++ (#{flavor})|] $ introduceNixEnvironment [kernelSpecWithLsp flavor] [] "C++ Nix env" $ introduceJupyterRunner $ do
+  describe "Kernel tests" $ do
+    testKernelStdout "cpp" [__i|\#include <iostream>
+                                using namespace std;
+                                cout << "hi" << endl;|] "hi\n"
 
-testsWithLsp :: Text -> LanguageSpec
-testsWithLsp flavor = describe [i|C++ (#{flavor}) with LSP|] $ introduceNixEnvironment [kernelSpecWithLsp flavor] [] "C++" $ do
   describe "LSP" $ do
     testDiagnostics'' "simple" lsName "test.cpp" LanguageKind_CPP
       [__i|int main() {
@@ -53,29 +48,24 @@ testsWithLsp flavor = describe [i|C++ (#{flavor}) with LSP|] $ introduceNixEnvir
           info [i|Got ranges: #{getDiagnosticRanges' diags}|]
           getDiagnosticRanges' diags `shouldBe` [(Range (Position 1 2) (Position 1 20), Just (InR "undeclared_var_use"), "Use of undeclared identifier 'undefined_function'")]
 
+    Completion.tests
+
+    Hovers.tests
+
 lsName :: Text
 lsName = "clangd"
-
-kernelSpec :: Text -> NixKernelSpec
-kernelSpec flavor  = kernelSpec' [[i|flavor = "#{flavor}"|]]
 
 kernelSpecWithLsp :: Text -> NixKernelSpec
 kernelSpecWithLsp flavor = kernelSpec' [
   [i|flavor = "#{flavor}"|]
-    , "lsp.clangd.enable = true"
-    ]
-
-testsWithCppNotebookLanguageServer :: Text -> LanguageSpec
-testsWithCppNotebookLanguageServer flavor = describe [i|C++ (#{flavor}) with cpp-notebook-language-server|] $ introduceNixEnvironment [kernelSpecWithLsp flavor] [] "C++" $ do
-  describe "LSP" $ do
-    Completion.tests
-    Hovers.tests
+  , "lsp.clangd.enable = true"
+  ]
 
 kernelSpec' :: [Text] -> NixKernelSpec
 kernelSpec' extraConfig = NixKernelSpec {
   nixKernelName = "cpp"
   , nixKernelChannel = "codedown"
-  , nixKernelDisplayName = Just "CPP"
+  , nixKernelDisplayName = Just "C++"
   , nixKernelPackages = []
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
