@@ -7,6 +7,7 @@
 , cling
 
 , kernelName
+, settings
 }:
 
 let
@@ -45,6 +46,9 @@ common.writeTextDirWithMetaAndPassthru clangd.meta passthru "lib/codedown/langua
   args = [
     "${cnls-wrapped}/bin/cpp-notebook-language-server"
     "--wrapped-server" "${clangd}/bin/clangd"
-  ];
+  ]
+  ++ lib.optionals settings.debug ["--log-level" "debug"]
+  ++ lib.optionals settings.super-debug ["--debug-client-writes" "--debug-client-reads" "--debug-server-writes" "--debug-server-reads"]
+  ;
   language_id = "cpp";
 }])

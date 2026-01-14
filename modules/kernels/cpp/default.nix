@@ -24,7 +24,10 @@ let
   common = callPackage ../common.nix {};
 
   languageServers = lib.optionals settings.lsp.clangd.enable
-    [(callPackage ./language_server_clangd { inherit kernelName llvmPackages system cling; })];
+    [(callPackage ./language_server_clangd {
+      inherit kernelName llvmPackages system cling;
+      settings = settings.lsp.clangd;
+    })];
 
   displaySuffix = {
     "c++17" = " 17";

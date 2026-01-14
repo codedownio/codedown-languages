@@ -59,6 +59,8 @@ kernelSpecWithLsp :: Text -> NixKernelSpec
 kernelSpecWithLsp flavor = kernelSpec' [
   [i|flavor = "#{flavor}"|]
   , "lsp.clangd.enable = true"
+  , "lsp.clangd.debug = true"
+  -- , "lsp.clangd.super-debug = true"
   ]
 
 kernelSpec' :: [Text] -> NixKernelSpec
