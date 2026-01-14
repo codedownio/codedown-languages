@@ -22,26 +22,23 @@ tests = describe "Hovers" $ do
     -- it [i|hovers std::cout (#{doc})|] $ doSession' doc lsName coutCode $ \(Helpers.LspSessionInfo {..}) -> do
     --   ident <- openDoc lspSessionInfoFileName LanguageKind_CPP
 
-    --   waitUntil 60 $
-    --     handle handleSessionException' $ do
-    --       hover <- getHoverOrException ident (Position 1 6)
-    --       allHoverText hover `textShouldContain` [i|std::ostream|]
+    --   waitUntil 60 $ do
+    --     hover <- getHoverOrException ident (Position 1 6)
+    --     allHoverText hover `textShouldContain` [i|std::ostream|]
 
     -- it [i|hovers variable declaration (#{doc})|] $ doSession' doc lsName varDeclCode $ \(Helpers.LspSessionInfo {..}) -> do
     --   ident <- openDoc lspSessionInfoFileName LanguageKind_CPP
 
-    --   waitUntil 60 $
-    --     handle handleSessionException' $ do
-    --       hover <- getHoverOrException ident (Position 0 4)
-    --       allHoverText hover `textShouldContain` [i|int|]
+    --   waitUntil 60 $ do
+    --     hover <- getHoverOrException ident (Position 0 4)
+    --     allHoverText hover `textShouldContain` [i|int|]
 
     it [i|hovers function call (#{doc})|] $ doSession' doc lsName sqrtCode $ \(Helpers.LspSessionInfo {..}) -> do
       ident <- openDoc lspSessionInfoFileName LanguageKind_CPP
 
-      waitUntil 60 $
-        handle handleSessionException' $ do
-          hover <- getHoverOrException ident (Position 1 16)
-          allHoverText hover `textShouldContain` [i|sqrt|]
+      waitUntil 60 $ do
+        hover <- getHoverOrException ident (Position 1 16)
+        allHoverText hover `textShouldContain` [i|sqrt|]
 
 
 coutCode :: Text
@@ -55,8 +52,3 @@ varDeclCode = [__i|int x = 42;
 sqrtCode :: Text
 sqrtCode = [__i|\#include <cmath>
                 double result = sqrt(16.0);|]
-
--- | Handle potential session exceptions
-handleSessionException' :: MonadIO m => SessionException -> m ()
-handleSessionException' (UnexpectedResponseError lspId err) = expectationFailure [i|LSP UnexpectedResponseError: #{lspId}, #{err}|]
-handleSessionException' x = throwIO x
