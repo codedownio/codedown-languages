@@ -2,6 +2,7 @@
 , callPackage
 , llvmPackages
 , system
+, cling
 
 , kernelName
 }:
@@ -12,6 +13,8 @@ let
   clangd = llvmPackages.clang-tools;
 
   cnls = callPackage ./cnls.nix { inherit system; };
+
+  cling-parser = callPackage ../cling-parser.nix { inherit cling; };
 
   languageServerName = "clangd";
 
@@ -33,5 +36,8 @@ common.writeTextDirWithMetaAndPassthru clangd.meta passthru "lib/codedown/langua
     "${cnls}/bin/cpp-notebook-language-server"
     "--wrapped-clangd" "${clangd}/bin/clangd"
   ];
+  env = {
+    "PATH" = "${cling-parser}/bin";
+  };
   language_id = "cpp";
 }])
