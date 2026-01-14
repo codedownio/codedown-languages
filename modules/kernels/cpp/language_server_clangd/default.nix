@@ -1,5 +1,7 @@
 { lib
 , callPackage
+, runCommand
+, makeWrapper
 , llvmPackages
 , system
 , cling
@@ -15,6 +17,14 @@ let
   cnls = callPackage ./cnls.nix { inherit system; };
 
   cling-parser = callPackage ../cling-parser.nix { inherit cling; };
+
+  cnls-wrapped = runCommand "cpp-notebook-language-server-wrapped" {
+    nativeBuildInputs = [ makeWrapper ];
+  } ''
+    mkdir -p $out/bin
+    makeWrapper ${cnls}/bin/cpp-notebook-language-server $out/bin/cpp-notebook-language-server \
+      --prefix PATH : ${cling-parser}/bin
+  '';
 
   languageServerName = "clangd";
 
@@ -33,11 +43,8 @@ common.writeTextDirWithMetaAndPassthru clangd.meta passthru "lib/codedown/langua
   type = "stream";
   primary = true;
   args = [
-    "${cnls}/bin/cpp-notebook-language-server"
-    "--wrapped-clangd" "${clangd}/bin/clangd"
+    "${cnls-wrapped}/bin/cpp-notebook-language-server"
+    "--wrapped-server" "${clangd}/bin/clangd"
   ];
-  env = {
-    "PATH" = "${cling-parser}/bin";
-  };
   language_id = "cpp";
 }])
