@@ -40,4 +40,5 @@ common.writeTextDirWithMetaAndPassthru jls.meta passthru "lib/codedown/language-
       "/home/user/.local/${pythonEnv.sitePackages}"
     ];
   };
+  language_id = "python";
 }])

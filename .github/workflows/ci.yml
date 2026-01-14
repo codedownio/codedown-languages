@@ -1,7 +1,6 @@
 name: codedown-languages
 
 on:
-  pull_request:
   push:
   workflow_dispatch:
 

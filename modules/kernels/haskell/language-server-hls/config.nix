@@ -81,6 +81,8 @@ let
         # checkParents = "CheckOnSave";
       };
     };
+
+    language_id = "haskell";
   };
 
 in

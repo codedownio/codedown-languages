@@ -40,7 +40,7 @@ tests' flavor = describe [i|C++ (#{flavor})|] $ introduceNixEnvironment [kernelS
 testsWithLsp :: Text -> LanguageSpec
 testsWithLsp flavor = describe [i|C++ (#{flavor}) with LSP|] $ introduceNixEnvironment [kernelSpecWithLsp flavor] [] "C++" $ do
   describe "LSP" $ do
-    testDiagnostics'' "simple" lsName "test.cpp" (Just "cpp")
+    testDiagnostics'' "simple" lsName "test.cpp" LanguageKind_CPP
       [__i|int main() {
              undefined_function();
              return 0;

@@ -29,4 +29,5 @@ common.writeTextDirWithMetaAndPassthru clangd.meta passthru "lib/codedown/langua
   args = [
     "${clangd}/bin/clangd"
   ];
+  language_id = "cpp";
 }])

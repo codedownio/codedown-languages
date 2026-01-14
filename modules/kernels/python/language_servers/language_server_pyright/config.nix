@@ -64,4 +64,6 @@ common.writeTextDirWithMetaAndPassthru pyright.meta passthru "lib/codedown/langu
     # We need to send empty string, otherwise  pyright-langserver fails with parse error
     # "python.venvPath" = "";
   };
+
+  language_id = "python";
 }])

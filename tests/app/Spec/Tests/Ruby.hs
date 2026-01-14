@@ -49,7 +49,7 @@ kernelTests rubyPackage = do
             info [i|RUBY_VERSION result: #{t}|]
             t `textShouldContain` versionString
 
-    itHasHoverSatisfying "solargraph" "test.rb" Nothing [__i|puts "hi"|] (Position 0 2) $ \hover -> do
+    itHasHoverSatisfying "solargraph" "test.rb" (LanguageKind_Ruby) [__i|puts "hi"|] (Position 0 2) $ \hover -> do
       let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents
       text `textShouldContain` "Kernel#puts"
       text `textShouldContain` "$stdout.puts(obj"

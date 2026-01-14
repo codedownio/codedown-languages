@@ -62,4 +62,5 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.python-lsp-server.meta passth
     type = "stream";
     args = ["${python}/bin/python" "-m" "pylsp"];
     initialization_options = import ../pylsp_initialization_options.nix "pylsp";
+    language_id = "python";
   }])

@@ -30,4 +30,5 @@ common.writeTextDirWithMetaAndPassthru solargraph.meta passthru "lib/codedown/la
   attrs = ["ruby"];
   type = "stream";
   args = ["${solargraph}/bin/solargraph" "stdio"];
+  language_id = "ruby";
 }])

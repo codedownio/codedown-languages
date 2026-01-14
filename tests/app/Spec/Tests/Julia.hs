@@ -10,6 +10,7 @@ import Data.Text as T
 import Language.LSP.Protocol.Lens hiding (diagnostics, hover, text)
 import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
+import qualified Language.LSP.Test.Helpers as Helpers
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -45,12 +46,12 @@ juliaTests juliaPackage = describe [i|Julia (#{juliaPackage})|] $ introduceNixEn
   describe "LSP" $ do
     Diagnostics.tests lsName
 
-    itHasHoverSatisfying lsName "test.jl" (Just "julia") [__i|print("hi")|] (Position 0 2) $ \hover -> do
+    itHasHoverSatisfying lsName "test.jl" (LanguageKind_Custom "julia") [__i|print("hi")|] (Position 0 2) $ \hover -> do
       let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents
       text `textShouldContain` "Write to `io` (or to the default output stream"
 
-    it "highlights foo" $ doNotebookSession lsName documentHighlightCode $ \filename -> do
-      ident <- openDoc filename "julia"
+    it "highlights foo" $ doNotebookSession lsName documentHighlightCode $ \(Helpers.LspSessionInfo {..}) -> do
+      ident <- openDoc lspSessionInfoFileName "julia"
       getHighlights ident (Position 0 1) >>= (`shouldBe` documentHighlightResults)
 
 

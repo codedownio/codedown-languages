@@ -8,6 +8,7 @@ import Data.Text as T
 import Language.LSP.Protocol.Lens hiding (hover)
 import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
+import qualified Language.LSP.Test.Helpers as Helpers
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
 import TestLib.LSP
@@ -16,14 +17,14 @@ import TestLib.Types
 
 tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
 tests = describe "Hover" $ do
-  it "hovers foo" $ doNotebookSession lsName hoverCode $ \filename -> do
-    ident <- openDoc filename "haskell"
+  it "hovers foo" $ doNotebookSession lsName hoverCode $ \(Helpers.LspSessionInfo {..}) -> do
+    ident <- openDoc lspSessionInfoFileName "haskell"
     hover <- getHoverOrException ident (Position 0 1)
     allHoverText hover `textShouldContain` [i|foo|]
     allHoverText hover `textShouldContain` [i|main.ipynb.hs:1:1|]
 
-  it "hovers putStrLn" $ doNotebookSession lsName hoverCode $ \filename -> do
-    ident <- openDoc filename "haskell"
+  it "hovers putStrLn" $ doNotebookSession lsName hoverCode $ \(Helpers.LspSessionInfo {..}) -> do
+    ident <- openDoc lspSessionInfoFileName "haskell"
     hover <- getHoverOrException ident (Position 1 1)
     (hover ^. range) `shouldBe` Just (Range (Position 1 0) (Position 1 8))
     let InL (MarkupContent {..}) = hover ^. contents

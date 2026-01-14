@@ -11,6 +11,7 @@ import Data.Text.IO as T
 import Language.LSP.Protocol.Lens hiding (actions, diagnostics, executeCommand, id)
 import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
+import qualified Language.LSP.Test.Helpers as Helpers
 import Safe
 import System.FilePath
 import Test.Sandwich as Sandwich
@@ -29,9 +30,7 @@ otherConfig = [
 tests :: TopSpec
 tests = describe "Spellchecker" $ introduceNixEnvironment [] otherConfig "Spellchecker env" $ introduceJustBubblewrap $ do
   it "Gets diagnostics and a working code action" $ do
-    lspConfig <- findLspConfig "spellchecker"
-    (pathToUse, closure) <- getPathAndNixEnvironmentClosure
-    withLspSession lspConfig pathToUse closure "test.md" [i|\# This is mispelled|] [] $ \lspHomeDir -> do
+    doSession'' "test.md" "spellchecker" [i|\# This is mispelled|] [] $ \(Helpers.LspSessionInfo {..}) -> do
       ident <- openDoc "test.md" "spellchecker"
       waitUntil 300.0 $ do
         diagnostics <- waitForDiagnostics
@@ -46,21 +45,19 @@ tests = describe "Spellchecker" $ introduceNixEnvironment [] otherConfig "Spellc
         Just (InR ca) -> executeCodeAction ca
 
       waitUntil 30 $ do
-        let datPath = lspHomeDir </> ".codedown/personal-dictionary.dat"
+        let datPath = lspSessionInfoHomeDir </> ".codedown/personal-dictionary.dat"
         doesFileExist datPath >>= (`shouldBe` True)
         liftIO (T.readFile datPath) >>= (`shouldBe` "mispelled\n")
 
   it "Uses a personal dictionary on startup" $ do
-    lspConfig <- findLspConfig "spellchecker"
-    (pathToUse, closure) <- getPathAndNixEnvironmentClosure
     let extraFiles = [(".codedown/personal-dictionary.dat", "mispelled\n")]
-    withLspSession' id lspConfig pathToUse closure "test.md" [i|\# This is mispelled|] extraFiles $ \_homeDir -> do
+    doSession'' "test.md" "spellchecker" [i|\# This is mispelled|] extraFiles $ \_homeDir -> do
       _ident <- openDoc "test.md" "spellchecker"
       waitUntil 300.0 $ do
         diagnostics <- waitForDiagnostics
         lift $ assertDiagnosticRanges diagnostics []
 
-  testDiagnostics "spellchecker" "test.md" Nothing [i|I've done a thing.|] $ \diagnostics -> do
+  testDiagnostics "spellchecker" "test.md" LanguageKind_Markdown [i|I've done a thing.|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
 
 

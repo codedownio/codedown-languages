@@ -6,6 +6,7 @@ import Control.Monad.IO.Unlift
 import Data.String.Interpolate
 import Language.LSP.Protocol.Types
 import Language.LSP.Test
+import qualified Language.LSP.Test.Helpers as Helpers
 import Test.Sandwich as Sandwich
 import Test.Sandwich.Waits (waitUntil)
 import TestLib.LSP
@@ -16,8 +17,8 @@ import UnliftIO.Exception
 tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
 tests = describe "Hovers" $ do
   forM_ ["main.ipynb", "test.rs"] $ \doc -> do
-    it [i|hovers println! (#{doc})|] $ doSession' doc "rust-analyzer" [i|println!("hi")|] $ \filename -> do
-      ident <- openDoc filename "haskell"
+    it [i|hovers println! (#{doc})|] $ doSession' doc "rust-analyzer" [i|println!("hi")|] $ \(Helpers.LspSessionInfo {..}) -> do
+      ident <- openDoc lspSessionInfoFileName "haskell"
 
       waitUntil 60 $
         handle handleSessionException' $ do
