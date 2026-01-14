@@ -1,6 +1,7 @@
 { lib
 , callPackage
 , llvmPackages
+, system
 
 , kernelName
 }:
@@ -10,6 +11,8 @@ let
 
   clangd = llvmPackages.clang-tools;
 
+  cnls = callPackage ./cnls.nix { inherit system; };
+
   languageServerName = "clangd";
 
   passthru = {
@@ -18,7 +21,7 @@ let
 
 in
 
-common.writeTextDirWithMetaAndPassthru clangd.meta passthru "lib/codedown/language-servers/cpp-${kernelName}-clangd.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMetaAndPassthru clangd.meta passthru "lib/codedown/language-servers/cpp-${kernelName}-${languageServerName}.yaml" (lib.generators.toYAML {} [{
   name = languageServerName;
   version = clangd.version;
   extensions = ["cpp" "hpp" "cxx" "hxx" "c" "h"];
@@ -27,7 +30,8 @@ common.writeTextDirWithMetaAndPassthru clangd.meta passthru "lib/codedown/langua
   type = "stream";
   primary = true;
   args = [
-    "${clangd}/bin/clangd"
+    "${cnls}/bin/cpp-notebook-language-server"
+    "--wrapped-clangd" "${clangd}/bin/clangd"
   ];
   language_id = "cpp";
 }])

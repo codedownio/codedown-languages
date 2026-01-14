@@ -15,6 +15,9 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
+import qualified Spec.Tests.Cpp.Completion as Completion
+import qualified Spec.Tests.Cpp.Hovers as Hovers
+
 
 tests :: LanguageSpec
 tests = describe "C++" $ parallel $ do
@@ -30,6 +33,7 @@ tests = describe "C++" $ parallel $ do
   tests' "c++2c"
 
   testsWithLsp "c++23"
+  testsWithCppNotebookLanguageServer "c++23"
 
 tests' :: Text -> LanguageSpec
 tests' flavor = describe [i|C++ (#{flavor})|] $ introduceNixEnvironment [kernelSpec flavor] [] "C++" $ introduceJupyterRunner $ do
@@ -60,6 +64,12 @@ kernelSpecWithLsp flavor = kernelSpec' [
   [i|flavor = "#{flavor}"|]
     , "lsp.clangd.enable = true"
     ]
+
+testsWithCppNotebookLanguageServer :: Text -> LanguageSpec
+testsWithCppNotebookLanguageServer flavor = describe [i|C++ (#{flavor}) with cpp-notebook-language-server|] $ introduceNixEnvironment [kernelSpecWithLsp flavor] [] "C++" $ do
+  describe "LSP" $ do
+    Completion.tests
+    Hovers.tests
 
 kernelSpec' :: [Text] -> NixKernelSpec
 kernelSpec' extraConfig = NixKernelSpec {

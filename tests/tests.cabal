@@ -91,6 +91,9 @@ executable tests
       Spec.Tests.Clojure
       Spec.Tests.Coq
       Spec.Tests.Cpp
+      Spec.Tests.Cpp.Common
+      Spec.Tests.Cpp.Completion
+      Spec.Tests.Cpp.Hovers
       Spec.Tests.Exporters
       Spec.Tests.Go
       Spec.Tests.Haskell
