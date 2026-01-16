@@ -17,7 +17,7 @@ let
 
   cnls = callPackage ./cnls.nix { inherit system; };
 
-  cling-parser = callPackage ../cling-parser.nix { inherit cling; };
+  cling-parser = callPackage ./cling-parser.nix { inherit cling; };
 
   cnls-wrapped = runCommand "cpp-notebook-language-server-wrapped" {
     nativeBuildInputs = [ makeWrapper ];

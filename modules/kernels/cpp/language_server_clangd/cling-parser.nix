@@ -9,13 +9,13 @@
 
 stdenv.mkDerivation rec {
   pname = "cling-parser";
-  version = "0.1.0.0";
+  version = import ./cnls-version.nix;
 
   src = fetchFromGitHub {
     owner = "codedownio";
     repo = "cpp-notebook-language-server";
     rev = "v${version}";
-    hash = "sha256-440JYZX9GE08SFsVs321eDZuDga2BadSll5lgZ5zeDE=";
+    hash = "sha256-WuGEvLF/6OqZFc0xBspyb/NRjvBL7khGG7C90LznOHQ=";
   };
 
   sourceRoot = "${src.name}/cling-parser";
