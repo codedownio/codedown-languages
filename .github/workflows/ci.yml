@@ -203,3 +203,63 @@ jobs:
             "$TEST_ROOT/" \
             "$DEST"
         fi
+
+  # aarch64-linux test using QEMU binfmt emulation on the x86_64-linux runner
+  # Requires: boot.binfmt.emulatedSystems = [ "aarch64-linux" ]; on the NixOS runner
+  test-aarch64-linux:
+    name: "bash (aarch64-linux via emulation)"
+    runs-on:
+    - self-hosted
+    - Linux
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Build tests
+      if: "!contains(github.event.head_commit.message, 'noci')"
+      run: |
+        cd tests
+
+        export NIX_PATH=nixpkgs=$(nix run .#nixpkgsPath)
+
+        export PATH=$(nix build --no-link .#stack --json | jq -r '.[0].outputs.out')/bin:$PATH
+        export PATH=$(nix build --no-link .#direnv --json | jq -r '.[0].outputs.out')/bin:$PATH
+        echo "Got path: $PATH"
+
+        direnv allow
+        direnv exec . stack build --nix --no-nix-pure
+
+    - name: Run tests (aarch64-linux)
+      if: "!contains(github.event.head_commit.message, 'noci')"
+      run: |
+        cd tests
+
+        export TEST_ROOT=$(pwd)/test_root_aarch64
+        echo "Got TEST_ROOT: $TEST_ROOT"
+        echo TEST_ROOT="$TEST_ROOT" >> $GITHUB_ENV
+
+        export NIX_PATH=nixpkgs=$(nix run .#nixpkgsPath)
+        export PATH=$(nix build --no-link .#stack --json | jq -r '.[0].outputs.out')/bin:$PATH
+
+        stack run --nix --no-nix-pure -- \
+          --target-system aarch64-linux \
+          --print \
+          --fixed-root "$TEST_ROOT" \
+          --markdown-summary "$GITHUB_STEP_SUMMARY" \
+          --bash
+
+    - name: Upload test artifacts
+      if: always()
+      continue-on-error: true
+      shell: bash
+      run: |
+        DEST="tester@desktop1:/home/tester/all_test_runs/languages_${{github.workflow}}_${{github.run_number}}/bash-aarch64-linux"
+        echo "DEST: $DEST"
+        if [[ -n "$TEST_ROOT" ]]; then
+          rsync \
+            -e "ssh -F /secrets/ci_ssh_config" \
+            -azW --mkpath \
+            "$TEST_ROOT/" \
+            "$DEST"
+        fi

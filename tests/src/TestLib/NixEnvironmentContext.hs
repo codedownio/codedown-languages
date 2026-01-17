@@ -28,7 +28,7 @@ import UnliftIO.Temporary
 
 
 introduceNixEnvironment :: (
-  HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  HasBaseContext context, HasTargetSystem context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   )
   => [NixKernelSpec]
   -> [Text]
@@ -36,6 +36,7 @@ introduceNixEnvironment :: (
   -> SpecFree (LabelValue "nixEnvironment" FilePath :> context) m ()
   -> SpecFree context m ()
 introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeOptions {nodeOptionsVisibilityThreshold = 60}) [i|#{label}|] nixEnvironment $ \action -> do
+  maybeTargetSys <- getContext targetSystem
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
 
   metadata :: A.Object <- bracket (openFile "/dev/null" WriteMode) hClose $ \devNullHandle -> do
@@ -74,6 +75,7 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
     x -> expectationFailure [i|Unhandled src spec type: #{x}|]
 
   built <- withTempDirectory dir "test-nix-build" $ \((</> "link") -> linkPath) -> do
+    let systemArgs = maybe [] (\sys -> ["--system", sys]) maybeTargetSys
     let args = ["build"
                , "--quiet"
                , "--no-link"
@@ -84,6 +86,7 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
                , "--expr", T.unpack rendered
                , "-o", linkPath
                ]
+               ++ systemArgs
     info [i|nix #{L.unwords args}|]
     createProcessWithLogging (proc "nix" args)
       >>= waitForProcess >>= (`shouldBe` ExitSuccess)

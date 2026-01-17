@@ -25,6 +25,7 @@ tests :: forall context. (
   , Typeable context
   ) => SpecFree context IO ()
 tests =
+  introduceTargetSystem $
   introduceJupyterRunner $
   introduceJustBubblewrap $
   introduceBootstrapNixpkgs $
