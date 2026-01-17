@@ -27,12 +27,14 @@ let
   #   tar -czvf $out "$dir"
   # '';
 
+  version = "0.6.2";
+
   indexJs = stdenv.mkDerivation {
     name = "markdown-spellcheck-lsp-index.js";
 
     src = fetchurl {
-      url = "https://github.com/codedownio/markdown-spellcheck-lsp/releases/download/v0.6.1/markdown-spellcheck-lsp.tar.gz";
-      hash = "sha256-CSxfCEb/R/a8YuGOcF2hA3Ra/HWya+E04AsOwHajU+E=";
+      url = "https://github.com/codedownio/markdown-spellcheck-lsp/releases/download/v${version}/markdown-spellcheck-lsp.tar.gz";
+      hash = "sha256-eGJkPHynLJnqtRXmJqd+VZzGLkRakP33vo1FDtIAbnw=";
     };
 
     buildPhase = "true";
@@ -54,8 +56,6 @@ let
       --set NODE_PATH ${nodehun}/lib/node_modules \
       --add-flags ${indexJs}
   '';
-
-  version = "1.1.0";
 
   meta = hunspell.meta // {
     icon = ./pen-alt.png;
