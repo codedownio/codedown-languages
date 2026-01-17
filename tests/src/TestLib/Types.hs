@@ -18,11 +18,13 @@ import TestLib.NixTypes
 
 data SpecialOptions = SpecialOptions {
   optTestParallelism :: Int
+  , optTargetSystem :: Maybe String
   }
 
 specialOptions :: Parser SpecialOptions
 specialOptions = SpecialOptions
   <$> option auto (long "test-parallelism" <> short 'n' <> showDefault <> help "Test parallelism" <> value 4 <> metavar "INT")
+  <*> optional (strOption (long "target-system" <> help "Target system for nix builds (e.g., aarch64-linux)" <> metavar "SYSTEM"))
 
 -- * Nix
 
@@ -53,6 +55,10 @@ lockedToNixSrcSpec name (LockedGithub {..}) = NixSrcFetchFromGithub {
 
 -- * Labels
 
+targetSystem :: Label "targetSystem" (Maybe String)
+targetSystem = Label
+type HasTargetSystem context = HasLabel context "targetSystem" (Maybe String)
+
 nixEnvironment :: Label "nixEnvironment" FilePath
 nixEnvironment = Label
 type HasNixEnvironment context = HasLabel context "nixEnvironment" FilePath
@@ -76,8 +82,12 @@ type SomeLanguageSpec context = (
   , HasJupyterRunner context
   , HasMaybeBubblewrap context
   , HasBootstrapNixpkgs context
+  , HasTargetSystem context
   )
 
 type LanguageSpec = forall context. SomeLanguageSpec context => SpecFree context IO ()
 
-type SimpleSpec = forall context. (HasBaseContext context, HasBootstrapNixpkgs context) => SpecFree context IO ()
+type SimpleSpec = forall context. (HasBaseContext context, HasBootstrapNixpkgs context, HasTargetSystem context) => SpecFree context IO ()
+
+-- | Spec type for tests that only need nix environment building capability
+type NixEnvSpec = forall context. (HasBaseContext context, HasTargetSystem context) => SpecFree context IO ()

@@ -5,6 +5,7 @@ module Spec.Tests.Shells.Zsh (tests) where
 import Data.String.Interpolate
 import Data.Text
 import Test.Sandwich as Sandwich
+import TestLib.JupyterRunnerContext (introduceTargetSystem)
 import TestLib.NixEnvironmentContext
 import TestLib.Types
 
@@ -14,7 +15,7 @@ otherConfig = [
   "shells.zsh.enable = true;"
   ]
 
-tests :: TopSpec
+tests :: NixEnvSpec
 tests = describe "ZSH" $ introduceNixEnvironment [] otherConfig "ZSH environment" $ do
   it "can run a command" $ do
     nixEnv <- getContext nixEnvironment
@@ -23,4 +24,5 @@ tests = describe "ZSH" $ introduceNixEnvironment [] otherConfig "ZSH environment
     pending
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = runSandwichWithCommandLineArgs' Sandwich.defaultOptions specialOptions $
+  introduceTargetSystem tests

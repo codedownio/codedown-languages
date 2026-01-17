@@ -31,6 +31,14 @@ import UnliftIO.Directory
 import UnliftIO.Process
 
 
+introduceTargetSystem :: (
+  HasBaseContext context, HasCommandLineOptions context SpecialOptions, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  ) => SpecFree (LabelValue "targetSystem" (Maybe String) :> context) m () -> SpecFree context m ()
+introduceTargetSystem = introduceWith [i|Target system|] targetSystem $ \action -> do
+  opts <- getCommandLineOptions
+  let ts = optTargetSystem (optUserOptions opts)
+  void $ action ts
+
 introduceJupyterRunner :: (
   HasBaseContext context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
   ) => SpecFree (LabelValue "jupyterRunner" FilePath :> context) m () -> SpecFree context m ()
@@ -52,6 +60,26 @@ introduceBootstrapNixpkgs = introduceWith [i|Jupyter runner|] bootstrapNixpkgs $
 
   out <- readCreateProcessWithLogging ((proc "nix" ["run", ".#nixpkgsPath"]) { cwd = Just (rootDir </> "tests") }) ""
   void $ action (T.unpack $ T.strip $ T.pack out)
+
+-- | Use bubblewrap unless we're cross-compiling (target system differs from host)
+introduceBubblewrap :: (
+  HasBaseContext context, HasTargetSystem context, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  ) => SpecFree (LabelValue "maybeBubblewrap" (Maybe FilePath) :> context) m () -> SpecFree context m ()
+introduceBubblewrap = introduceWith [i|bwrap|] maybeBubblewrap $ \action -> do
+  maybeTargetSys <- getContext targetSystem
+  case maybeTargetSys of
+    Just _ -> do
+      -- Skip bubblewrap for cross-architecture tests to avoid closure issues
+      info [i|Skipping bubblewrap due to cross-architecture target system|]
+      void $ action Nothing
+    Nothing -> do
+#ifdef darwin_HOST_OS
+      void $ action Nothing
+#else
+      liftIO (findExecutable "bwrap") >>= \case
+        Nothing -> expectationFailure [i|The tests currently require bubblewrap to be present.|]
+        Just path -> void $ action (Just path)
+#endif
 
 -- | TODO: pipe through a command-line argument to control whether bwrap is used?
 introduceJustBubblewrap :: (
@@ -352,7 +380,8 @@ notebookWithCode kernel code = A.object [
 
 jupyterMain :: LanguageSpec -> IO ()
 jupyterMain tests = runSandwichWithCommandLineArgs' Sandwich.defaultOptions specialOptions $
+  introduceTargetSystem $
   introduceJupyterRunner $
-  introduceJustBubblewrap $
+  introduceBubblewrap $
   introduceBootstrapNixpkgs
   tests

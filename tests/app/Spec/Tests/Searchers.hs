@@ -13,6 +13,7 @@ tests = describe "Searchers" $ do
   it "searcher has some results" $ testSearcherHasNonemptyResults "packageSearch"
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
+main = runSandwichWithCommandLineArgs' Sandwich.defaultOptions specialOptions $
+  introduceTargetSystem $
   introduceBootstrapNixpkgs $
   tests

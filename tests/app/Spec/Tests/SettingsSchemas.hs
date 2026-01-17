@@ -47,6 +47,7 @@ itemsLackingField byPackage field = catMaybes [
       _ -> Just ([i|#{packageName}.#{targetName}|] :: Text)
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
+main = runSandwichWithCommandLineArgs' Sandwich.defaultOptions specialOptions $
+  introduceTargetSystem $
   introduceBootstrapNixpkgs $
   tests

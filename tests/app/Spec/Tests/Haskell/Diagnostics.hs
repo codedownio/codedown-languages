@@ -87,7 +87,8 @@ etaExpandCode = [__i|module Foo where
                     |]
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
+main = runSandwichWithCommandLineArgs' Sandwich.defaultOptions specialOptions $
+  introduceTargetSystem $
   introduceNixEnvironment [kernelSpec ghcPackage] [] "Haskell" $
     introduceJustBubblewrap $
       tests ghcPackage HaskellCommon.lsName

@@ -19,6 +19,7 @@ import Test.Sandwich.Waits (waitUntil)
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
+import TestLib.Types
 import UnliftIO.Directory
 
 
@@ -27,7 +28,7 @@ otherConfig = [
   "language-servers.spellchecker.enable = true;"
   ]
 
-tests :: TopSpec
+tests :: NixEnvSpec
 tests = describe "Spellchecker" $ introduceNixEnvironment [] otherConfig "Spellchecker env" $ introduceJustBubblewrap $ do
   it "Gets diagnostics and a working code action" $ do
     doSession'' "test.md" "spellchecker" [i|\# This is mispelled|] [] $ \(Helpers.LspSessionInfo {..}) -> do
@@ -66,4 +67,5 @@ getTitle (InL x) = x ^. title
 getTitle (InR x) = x ^. title
 
 main :: IO ()
-main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
+main = runSandwichWithCommandLineArgs' Sandwich.defaultOptions specialOptions $
+  introduceTargetSystem tests
