@@ -63,6 +63,16 @@ in
         type = types.bool;
         default = true;
       };
+      lsp.clangd.debug = mkOption {
+        example = "Clangd: enable debug output";
+        type = types.bool;
+        default = false;
+      };
+      lsp.clangd.super-debug = mkOption {
+        example = "Clangd: enable verbose debug output";
+        type = types.bool;
+        default = false;
+      };
     };
   };
 

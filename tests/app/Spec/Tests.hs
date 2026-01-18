@@ -32,7 +32,6 @@ tests =
       $(getSpecFromFolder $ defaultGetSpecFromFolderOptions {
            getSpecCombiner = 'describeParallel
            , getSpecIndividualSpecHooks = 'withParallelSemaphore
-           , getSpecWarnOnParseError = NoWarnOnParseError
            })
   where
     getQSem = getCommandLineOptions >>= liftIO . newQSem . getParallelism
