@@ -15,7 +15,7 @@ stdenv.mkDerivation rec {
     owner = "codedownio";
     repo = "cpp-notebook-language-server";
     rev = "v${version}";
-    hash = "sha256-+Af5Rn03iaV5JcKVr8625YPOjqZx8Pf/4Chv6bqcwJY=";
+    hash = "sha256-mR5Ok1LqeLF7pTy+wB8zjIwq6XPt/hsQrmpfOeeDwl8=";
   };
 
   sourceRoot = "${src.name}/cling-parser";

@@ -6,28 +6,28 @@
 {
   # HASHES_START
   "aarch64-linux" = fetchzip {
-    name = "cpp-notebook-language-server-0.1.0.2";
+    name = "cpp-notebook-language-server-0.1.0.3";
     stripRoot = false;
-    url = "https://github.com/codedownio/cpp-notebook-language-server/releases/download/v0.1.0.2/cpp-notebook-language-server-0.1.0.2-aarch64-linux.tar.gz";
-    hash = "sha256-1/RkOXXxgL6YiJ54T82Vii+MC1tbpXSeVIWFzaTLBbk=";
+    url = "https://github.com/codedownio/cpp-notebook-language-server/releases/download/v0.1.0.3/cpp-notebook-language-server-0.1.0.3-aarch64-linux.tar.gz";
+    hash = "sha256-YK5ebj1/nc7CmFuU5wwV7R30deHt3TwgKqGg4+e1qsM=";
   };
   "x86_64-linux" = fetchzip {
-    name = "cpp-notebook-language-server-0.1.0.2";
+    name = "cpp-notebook-language-server-0.1.0.3";
     stripRoot = false;
-    url = "https://github.com/codedownio/cpp-notebook-language-server/releases/download/v0.1.0.2/cpp-notebook-language-server-0.1.0.2-x86_64-linux.tar.gz";
-    hash = "sha256-CwdcEOsM3Mwy6F9B81U4an8gWrq/sdc2N809ni4SWMo=";
+    url = "https://github.com/codedownio/cpp-notebook-language-server/releases/download/v0.1.0.3/cpp-notebook-language-server-0.1.0.3-x86_64-linux.tar.gz";
+    hash = "sha256-ce9Fc3m3YhFmLe8R7cHzVmJmORxEqmbLU6PpuWx7Fx8=";
   };
   "x86_64-darwin" = fetchzip {
-    name = "cpp-notebook-language-server-0.1.0.2";
+    name = "cpp-notebook-language-server-0.1.0.3";
     stripRoot = false;
-    url = "https://github.com/codedownio/cpp-notebook-language-server/releases/download/v0.1.0.2/cpp-notebook-language-server-0.1.0.2-x86_64-darwin.tar.gz";
-    hash = "sha256-GyxLufGx4bCoFFhQ19E9GTEBXZCvEbMzYM103IDkjJ8=";
+    url = "https://github.com/codedownio/cpp-notebook-language-server/releases/download/v0.1.0.3/cpp-notebook-language-server-0.1.0.3-x86_64-darwin.tar.gz";
+    hash = "sha256-Zh7XLNrTYungQOYpHA9dMNyfkbx1+3mHtAWFr+NRtt4=";
   };
   "aarch64-darwin" = fetchzip {
-    name = "cpp-notebook-language-server-0.1.0.2";
+    name = "cpp-notebook-language-server-0.1.0.3";
     stripRoot = false;
-    url = "https://github.com/codedownio/cpp-notebook-language-server/releases/download/v0.1.0.2/cpp-notebook-language-server-0.1.0.2-aarch64-darwin.tar.gz";
-    hash = "sha256-mV2PBPoSjA68g2uoKw2t+dBrerAv5cg3Z42i9n1kN80=";
+    url = "https://github.com/codedownio/cpp-notebook-language-server/releases/download/v0.1.0.3/cpp-notebook-language-server-0.1.0.3-aarch64-darwin.tar.gz";
+    hash = "sha256-tv5qcWaVZdG9tEBVeDfCN8wkAYwkp5wPkPPo+FQG2pg=";
   };
   # HASHES_END
 }.${system}
