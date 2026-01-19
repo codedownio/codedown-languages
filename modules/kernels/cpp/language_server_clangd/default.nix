@@ -17,9 +17,11 @@ let
 
   cnls = callPackage ./cnls.nix { inherit system; };
 
+  cnlsVersion = import ./cnls-version.nix;
+
   cling-parser = callPackage ./cling-parser.nix { inherit cling; };
 
-  cnls-wrapped = runCommand "cpp-notebook-language-server-wrapped" {
+  cnls-wrapped = runCommand "cpp-notebook-language-server-${cnlsVersion}-wrapped" {
     nativeBuildInputs = [ makeWrapper ];
   } ''
     mkdir -p $out/bin
