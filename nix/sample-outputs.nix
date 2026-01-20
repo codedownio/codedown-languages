@@ -36,10 +36,13 @@ in
       versionsMap = with lib;
         mapAttrs (lang: value: if (hasAttr "versions" value) then value.versions else {})
           (filterAttrs (k: _: !(hasPrefix "override") k) codedown.kernels);
+      versionsMapExporters = with lib;
+        mapAttrs (lang: value: if (hasAttr "versions" value) then value.versions else {})
+          (filterAttrs (k: _: !(hasPrefix "override") k) codedown.exporters);
 
       file = writeTextFile {
         name = "versions.yaml";
-        text = lib.generators.toPretty {} versionsMap;
+        text = lib.generators.toPretty {} (versionsMap // versionsMapExporters);
       };
     in
       writeShellScriptBin "print-versions.sh" ''
