@@ -41,7 +41,7 @@ common.writeTextDirWithMetaAndPassthru clangd.meta passthru "lib/codedown/langua
   name = languageServerName;
   version = clangd.version;
   extensions = ["cpp" "hpp" "cxx" "hxx" "c" "h"];
-  notebook_suffix = ".cpp";
+  notebook_suffix = "";
   attrs = ["cpp"];
   type = "stream";
   primary = true;

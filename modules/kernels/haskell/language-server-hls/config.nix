@@ -20,8 +20,6 @@
 , settings
 }:
 
-with lib;
-
 let
   common = callPackage ../../common.nix {};
   util = import ../util.nix;
