@@ -56,7 +56,7 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
 
   let nixEnv = NixEnvironment {
         nixEnvironmentChannels = [
-            NixSrcPath "codedown" [i|builtins.fetchTree { type = "path"; path = "#{rootDir}"; }|]
+            NixSrcPath "codedown" [i|builtins.fetchGit { url = "file://#{rootDir}"; }|]
             , nixpkgsSrcSpec
             ]
         , nixEnvironmentKernels = kernels
@@ -80,7 +80,7 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
                , "--impure"
                -- , "--include", rootDir
                , "--option", "restrict-eval", "true"
-               , "--option", "allowed-uris", L.unwords ["path:" <> rootDir, nixpkgsUri]
+               , "--option", "allowed-uris", L.unwords ["git+file://" <> rootDir <> "?exportIgnore=1", nixpkgsUri]
                , "--expr", T.unpack rendered
                , "-o", linkPath
                ]
