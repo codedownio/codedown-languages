@@ -1,7 +1,11 @@
 { callPackage
 , lib
+, makeWrapper
+, runCommand
+, writeTextDir
 
 , rubyPackages
+, rubocopYaml
 , kernelName
 }:
 
@@ -10,7 +14,17 @@ let
 
   languageServerName = "solargraph";
 
-  solargraph = rubyPackages.solargraph;
+  solargraphRaw = rubyPackages.solargraph;
+
+  solargraph = runCommand "solargraph-${solargraphRaw.version}-wrapped" {
+    inherit (solargraphRaw) meta version;
+
+    nativeBuildInputs = [makeWrapper];
+  } ''
+    mkdir -p $out/bin
+    makeWrapper ${solargraphRaw}/bin/solargraph $out/bin/solargraph \
+      --set XDG_CONFIG_HOME "${writeTextDir "rubocop/config.yml" rubocopYaml}"
+  '';
 
   passthru = {
     inherit languageServerName;

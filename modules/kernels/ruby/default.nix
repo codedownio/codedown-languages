@@ -29,7 +29,11 @@ let
 
   languageServers =
     []
-    ++ lib.optionals settings.lsp.solargraph.enable [(callPackage ./solargraph.nix { rubyPackages = packageOptions; inherit kernelName; })]
+    ++ lib.optionals settings.lsp.solargraph.enable [(callPackage ./solargraph.nix {
+      rubyPackages = packageOptions;
+      rubocopYaml = settings.lsp.solargraph.rubocopYaml;
+      inherit kernelName;
+    })]
   ;
 
   iruby = (callPackage ./iruby { inherit ruby; }).iruby;

@@ -10,6 +10,7 @@ import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Protocol.Lens hiding (hover, text)
 import Language.LSP.Protocol.Types
+import qualified Language.LSP.Test.Helpers as Helpers
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -25,7 +26,8 @@ tests = describe "Ruby" $ do
   kernelTests "ruby_3_1"
   kernelTests "ruby_3_2"
   kernelTests "ruby_3_3"
-
+  kernelTests "ruby_3_4"
+  -- kernelTests "ruby_3_5"
 
 kernelName :: Text -> Text
 kernelName _rubyPackage = "ruby"
@@ -53,6 +55,10 @@ kernelTests rubyPackage = do
       let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents
       text `textShouldContain` "Kernel#puts"
       text `textShouldContain` "$stdout.puts(obj"
+
+    testDiagnosticsLabel "solargraph: Double quote literal" "solargraph" "test.rb" LanguageKind_Ruby [__i|puts "Hello"|] $ \diags -> do
+      info [i|Got ranges: #{Helpers.getDiagnosticRanges diags}|]
+      assertDiagnosticRanges diags [(Range (Position 0 5) (Position 0 12), Just (InR "Style/StringLiterals"))]
 
 kernelSpec :: Text -> NixKernelSpec
 kernelSpec rubyPackage = NixKernelSpec {

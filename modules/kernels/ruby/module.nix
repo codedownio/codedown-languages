@@ -26,11 +26,15 @@ in
 
       rubyPackage = mkOption {
         example = "Ruby version";
-        type = types.enum (
-          ["ruby"]
-          ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "ruby_") name == "ruby_")
-                              (builtins.attrNames pkgs))
-        );
+        type = types.enum ([
+          "ruby"
+          "ruby_3_1"
+          "ruby_3_2"
+          "ruby_3_3"
+          "ruby_3_4"
+        ]);
+        # ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "ruby_") name == "ruby_")
+        #                     (builtins.attrNames pkgs))
         default = "ruby";
       };
 
@@ -52,6 +56,25 @@ in
         type = types.bool;
         default = true;
       };
+
+      lsp.solargraph.rubocopYaml = mkOption {
+        example = "YAML configuration for the rubocop reporter";
+        type = types.str;
+        default = ''
+          # Disable whitespace-related rules that don't play well with notebooks
+          Layout/EmptyLines:
+            Enabled: false
+          Layout/LeadingEmptyLines:
+            Enabled: false
+          Layout/TrailingEmptyLines:
+            Enabled: false
+
+          # This one seems to appear randomly
+          Style/FrozenStringLiteralComment:
+            Enabled: false
+        '';
+      };
+
     };
   };
 
