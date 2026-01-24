@@ -7,8 +7,24 @@
 
 config:
 
-lib.evalModules {
+let
+  extendedLib = lib.extend (final: prev: {
+    types = prev.types // {
+      codeMirrorLines = mode: prev.mkOptionType {
+        name = "codeMirrorLines";
+        description = "string (${mode})";
+        check = builtins.isString;
+        merge = prev.options.mergeEqualOption;
+      } // { codeMirrorMode = mode; };
+    };
+  });
+
+in
+
+extendedLib.evalModules {
   specialArgs = {
+    lib = extendedLib;
+
     nixosOptionsToSettingsSchema = pkgsStable.callPackage ./nixos-options-to-settings-schema.nix {};
     boilerplate = {
       attrsTitle = "Notebook attributes";
