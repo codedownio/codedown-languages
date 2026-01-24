@@ -59,7 +59,7 @@ in
 
       lsp.solargraph.rubocopYaml = mkOption {
         example = "YAML configuration for the rubocop reporter";
-        type = types.str;
+        type = types.lines;
         default = ''
           # Disable whitespace-related rules that don't play well with notebooks
           Layout/EmptyLines:

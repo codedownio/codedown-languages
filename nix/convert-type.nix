@@ -3,6 +3,7 @@
 let
   convertType = target: type:
     if (type.name == "str") then { type = "string"; }
+    else if (type.name == "separatedString") then { type = "lines"; }
     else if (type.name == "anything") then { type = "any"; }
     else if (type.name == "bool") then { type = "boolean"; }
     else if (type.name == "attrs") then {
