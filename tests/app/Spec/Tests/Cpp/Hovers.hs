@@ -1,7 +1,6 @@
 module Spec.Tests.Cpp.Hovers (tests) where
 
 import Control.Monad
-import Control.Monad.IO.Unlift
 import Data.String.Interpolate
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -13,7 +12,6 @@ import Test.Sandwich as Sandwich
 import Test.Sandwich.Waits (waitUntil)
 import TestLib.LSP
 import TestLib.Types
-import UnliftIO.Exception
 
 
 tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
@@ -41,13 +39,13 @@ tests = describe "Hovers" $ do
         allHoverText hover `textShouldContain` [i|sqrt|]
 
 
-coutCode :: Text
-coutCode = [__i|\#include <iostream>
-                std::cout << "hello" << std::endl;|]
+-- coutCode :: Text
+-- coutCode = [__i|\#include <iostream>
+--                 std::cout << "hello" << std::endl;|]
 
-varDeclCode :: Text
-varDeclCode = [__i|int x = 42;
-                   float y = 3.14;|]
+-- varDeclCode :: Text
+-- varDeclCode = [__i|int x = 42;
+--                    float y = 3.14;|]
 
 sqrtCode :: Text
 sqrtCode = [__i|\#include <cmath>

@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
 {-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
@@ -10,8 +11,10 @@ import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Protocol.Lens hiding (hover, text)
 import Language.LSP.Protocol.Types
+import Language.LSP.Test
 import qualified Language.LSP.Test.Helpers as Helpers
 import Test.Sandwich as Sandwich
+import Test.Sandwich.Waits (waitUntil)
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
@@ -51,14 +54,22 @@ kernelTests rubyPackage = do
             info [i|RUBY_VERSION result: #{t}|]
             t `textShouldContain` versionString
 
-    itHasHoverSatisfying "solargraph" "test.rb" (LanguageKind_Ruby) [__i|puts "hi"|] (Position 0 2) $ \hover -> do
-      let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents
-      text `textShouldContain` "Kernel#puts"
-      text `textShouldContain` "$stdout.puts(obj"
+    describe "LSP" $ forM_ ["test.rb", "main.ipynb"] $ \filename -> describe filename $ do
+      itHasHoverSatisfying "solargraph" filename (LanguageKind_Ruby) [__i|puts "hi"|] (Position 0 2) $ \hover -> do
+        let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents
+        text `textShouldContain` "Kernel#puts"
+        text `textShouldContain` "$stdout.puts(obj"
 
-    testDiagnosticsLabel "solargraph: Double quote literal" "solargraph" "test.rb" LanguageKind_Ruby [__i|puts "Hello"|] $ \diags -> do
-      info [i|Got ranges: #{Helpers.getDiagnosticRanges diags}|]
-      assertDiagnosticRanges diags [(Range (Position 0 5) (Position 0 12), Just (InR "Style/StringLiterals"))]
+      it [i|solargraph: "pu" includes "puts" completion|] $ doSession' (T.pack filename) "solargraph" [i|pu|] $ \(Helpers.LspSessionInfo {..}) -> do
+        ident <- openDoc lspSessionInfoFileName LanguageKind_Ruby
+        waitUntil 60 $ do
+          completions <- getCompletions ident (Position 0 2)
+          let labels = fmap (^. label) completions
+          labels `shouldContain` ["puts"]
+
+      testDiagnosticsLabel "solargraph: Double quote literal" "solargraph" filename LanguageKind_Ruby [__i|puts "Hello"|] $ \diags -> do
+        info [i|Got ranges: #{Helpers.getDiagnosticRanges diags}|]
+        assertDiagnosticRanges diags [(Range (Position 0 5) (Position 0 12), Just (InR "Style/StringLiterals"))]
 
 kernelSpec :: Text -> NixKernelSpec
 kernelSpec rubyPackage = NixKernelSpec {
