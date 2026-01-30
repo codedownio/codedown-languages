@@ -74,14 +74,14 @@ let
     done
   '';
 
-  getAllIcons = pkg: filter (x: x != null) (
-    [(pkg.meta.icon or null) (pkg.meta.iconMonochrome or null)]
-    ++
-    (concatMap (subPackageName: getAllIcons (pkg.packageOptions.${packageName subPackageName} or {})) (pkg.settings.packages or []))
-  );
-
   allIcons =
     let
+      getAllIcons = pkg: filter (x: x != null) (
+        [(pkg.meta.icon or null) (pkg.meta.iconMonochrome or null)]
+        ++
+        (concatMap (subPackageName: getAllIcons (pkg.packageOptions.${packageName subPackageName} or {})) (pkg.settings.packages or []))
+      );
+
       allPaths =
         concatLists (mapAttrsToList (n: v: getAllIcons v) builtExporters)
         ++ concatLists (mapAttrsToList (n: v: getAllIcons v) builtKernels)
