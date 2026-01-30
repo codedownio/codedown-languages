@@ -77,7 +77,7 @@ let
   getAllIcons = pkg: filter (x: x != null) (
     [(pkg.meta.icon or null) (pkg.meta.iconMonochrome or null)]
     ++
-    (concatMap (subPackageName: getAllIcons (pkg.packageOptions.${packageName subPackageName})) (pkg.settings.packages or []))
+    (concatMap (subPackageName: getAllIcons (pkg.packageOptions.${packageName subPackageName} or {})) (pkg.settings.packages or []))
   );
 
   allIcons =
