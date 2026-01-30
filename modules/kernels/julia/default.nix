@@ -29,19 +29,19 @@ let
   displayName = "Julia " + julia.version;
   kernelName = "julia";
 
-  packageOptions = {
-    packages = lib.listToAttrs (map (x: {
-      name = x;
-      value = {
-        meta = {
-          name = x;
-          displayName = x;
-        };
+  packageOptions = lib.listToAttrs (map (x: {
+    name = x;
+    value = {
+      meta = {
+        name = x;
+        displayName = x;
       };
-    }) (import ./julia-modules/package-names.nix));
+    };
+  }) (import ./julia-modules/package-names.nix));
+  packageSearch = common.searcher' {
+    packages = packageOptions;
     packageMustBeDerivation = false;
   };
-  packageSearch = common.searcher' packageOptions;
 
   juliaToUse = juliaWithPackages (
     ["IJulia"]
