@@ -2,6 +2,7 @@
 , lib
 , fetchgit
 , fetchFromGitHub
+, linkFarm
 , runCommand
 , symlinkJoin
 , system
@@ -35,34 +36,33 @@ let
 
   exporters = concatMap (exporter: exporter.meta.exporterInfos) (attrValues builtExporters);
 
-  mkPackageUiMetadata = let
-    # This is duplicated from kernels/common.nix, which we'd rather not import here
-    packageName = p: if lib.isString p then p else p.name;
+  # This is duplicated from kernels/common.nix, which we'd rather not import here
+  packageName = p: if lib.isString p then p else p.name;
 
-    mkSubPackageMetadata = pkg: p:
-      let
-        meta = chooseMeta (pkg.packageOptions.${packageName p} or {});
-        settings = if lib.isAttrs p
-                   then removeNonDefaultSettings (meta.settings_schema or {}) (lib.removeAttrs p ["name"])
-                   else {};
-      in {
-        name = packageName p;
-        inherit meta;
-      } // lib.optionalAttrs (builtins.length (builtins.attrNames settings) > 0) {
-        inherit settings;
-      };
-  in
-    pkg: {
-      # Dry
-      name = pkg.name;
-      settings = lib.removeAttrs (pkg.settings or {}) ["packages"];
-
-      # Different for hydrated
-      packages = map (p: mkSubPackageMetadata pkg p) (pkg.settings.packages or []);
-
-      # Hydrated
-      meta = chooseMeta pkg;
+  mkSubPackageMetadata = pkg: p:
+    let
+      meta = chooseMeta (pkg.packageOptions.${packageName p} or {});
+      settings = if lib.isAttrs p
+                 then removeNonDefaultSettings (meta.settings_schema or {}) (lib.removeAttrs p ["name"])
+                 else {};
+    in {
+      name = packageName p;
+      inherit meta;
+    } // lib.optionalAttrs (builtins.length (builtins.attrNames settings) > 0) {
+      inherit settings;
     };
+
+  mkPackageUiMetadata = pkg: {
+    # Dry
+    name = pkg.name;
+    settings = lib.removeAttrs (pkg.settings or {}) ["packages"];
+
+    # Different for hydrated
+    packages = map (p: mkSubPackageMetadata pkg p) (pkg.settings.packages or []);
+
+    # Hydrated
+    meta = chooseMeta pkg;
+  };
 
   linkBinaries = newBin: inputs: runCommand "codedown-environment-${newBin}" {} ''
     mkdir -p "$out/${newBin}"
@@ -73,6 +73,26 @@ let
       done
     done
   '';
+
+  getAllIcons = pkg: filter (x: x != null) (
+    [(pkg.meta.icon or null) (pkg.meta.iconMonochrome or null)]
+    ++
+    (concatMap (subPackageName: getAllIcons (pkg.packageOptions.${packageName subPackageName})) (pkg.settings.packages or []))
+  );
+
+  allIcons =
+    let
+      allPaths =
+        concatLists (mapAttrsToList (n: v: getAllIcons v) builtExporters)
+        ++ concatLists (mapAttrsToList (n: v: getAllIcons v) builtKernels)
+        ++ concatLists (mapAttrsToList (n: v: getAllIcons v) builtLanguageServers)
+        ++ concatLists (mapAttrsToList (n: v: getAllIcons v) evaluated.config.packages)
+        ;
+    in
+      linkFarm "all-icons" (map (path: {
+        name = "lib/codedown/icons/" + builtins.hashString "md5" (toString path);
+        path = path;
+      }) allPaths);
 
 in
 
@@ -87,6 +107,7 @@ symlinkJoin {
     ++ attrValues evaluated.config.packages
     ++ lib.mapAttrsToList linkBinaries evaluated.config.extraBinDirs
     ++ [(writeTextDir "lib/codedown/.env" (lib.generators.toKeyValue {} evaluated.config.environment.variables))]
+    ++ [allIcons]
   ;
 
   passthru = rec {
