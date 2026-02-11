@@ -20,6 +20,16 @@ let
 
   gnlsVersion = import ./gnls-version.nix;
 
+  go-parser = callPackage ./go-parser.nix {};
+
+  gnls-wrapped = runCommand "go-notebook-language-server-${gnlsVersion}-wrapped" {
+    nativeBuildInputs = [ makeWrapper ];
+  } ''
+    mkdir -p $out/bin
+    makeWrapper ${gnls}/bin/go-notebook-language-server $out/bin/go-notebook-language-server \
+      --prefix PATH : ${go-parser}/bin
+  '';
+
   goplsWrapped = runCommand "gopls-wrapped" { buildInputs = [makeWrapper]; } ''
     mkdir -p $out/bin
     makeWrapper ${gopls}/bin/gopls $out/bin/gopls \
@@ -49,7 +59,7 @@ common.writeTextDirWithMetaAndPassthru gopls.meta passthru "lib/codedown/languag
   attrs = attrs;
   type = "stream";
   args = [
-    "${gnls}/bin/go-notebook-language-server"
+    "${gnls-wrapped}/bin/go-notebook-language-server"
     "--wrapped-server" "${goplsWrapped}/bin/gopls"
   ]
   ++ lib.optionals settings.debug ["--log-level" "debug"]

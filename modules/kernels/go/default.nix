@@ -1,7 +1,6 @@
 { callPackage
 , gopls
 , lib
-, pkgs
 , symlinkJoin
 , system
 
@@ -23,7 +22,7 @@ let
 
   languageServers =
     []
-    ++ lib.optionals settings.lsp.gopls.enable [(callPackage ./language-server-gopls.nix {
+    ++ lib.optionals settings.lsp.gopls.enable [(callPackage ./language-server-gopls/language-server-gopls.nix {
       inherit go attrs kernelName system;
       settings = settings.lsp.gopls;
     })]
