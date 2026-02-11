@@ -14,7 +14,7 @@
 }:
 
 let
-  common = callPackage ../common.nix {};
+  common = callPackage ../../common.nix {};
 
   gnls = callPackage ./gnls.nix { inherit system; };
 
@@ -51,7 +51,7 @@ common.writeTextDirWithMetaAndPassthru gopls.meta passthru "lib/codedown/languag
   version = gopls.version;
   display_name = "gopls";
   description = gopls.meta.description;
-  icon = ./go-logo-64x64.png;
+  icon = ../go-logo-64x64.png;
   extensions = ["go"];
   notebook_suffix = ".go";
   kernel_name = kernelName;
