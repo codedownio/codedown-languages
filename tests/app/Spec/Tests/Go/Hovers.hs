@@ -1,9 +1,7 @@
 module Spec.Tests.Go.Hovers (tests) where
 
-import Control.Monad
 import Data.String.Interpolate
 import Data.Text (Text)
-import qualified Data.Text as T
 import Language.LSP.Protocol.Types
 import Language.LSP.Test
 import qualified Language.LSP.Test.Helpers as Helpers
@@ -16,18 +14,31 @@ import TestLib.Types
 
 tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
 tests = describe "Hovers" $ do
-  forM_ ["main.ipynb", "test.go"] $ \doc -> describe (T.unpack doc) $ do
-    it [i|hovers function call (#{doc})|] $ doSession' doc lsName sqrtCode $ \(Helpers.LspSessionInfo {..}) -> do
+  describe "main.ipynb" $ do
+    it "hovers function call (main.ipynb)" $ doSession' "main.ipynb" lsName sqrtCodeNotebook $ \(Helpers.LspSessionInfo {..}) -> do
       ident <- openDoc lspSessionInfoFileName LanguageKind_Go
 
       waitUntil 60 $ do
-        hover <- getHoverOrException ident (Position 2 14)
+        hover <- getHoverOrException ident (Position 1 15)
         allHoverText hover `textShouldContain` [i|Sqrt|]
 
+  describe "test.go" $ do
+    it "hovers function call (test.go)" $ doSession' "test.go" lsName sqrtCodeStandalone $ \(Helpers.LspSessionInfo {..}) -> do
+      ident <- openDoc lspSessionInfoFileName LanguageKind_Go
 
-sqrtCode :: Text
-sqrtCode = [__i|import "math"
-                func test() {
-                    result := math.Sqrt(16.0)
-                    _ = result
-                }|]
+      waitUntil 60 $ do
+        hover <- getHoverOrException ident (Position 3 19)
+        allHoverText hover `textShouldContain` [i|Sqrt|]
+
+sqrtCodeNotebook :: Text
+sqrtCodeNotebook = [__i|import "math"
+                        result := math.Sqrt(16.0)
+                        _ = result|]
+
+sqrtCodeStandalone :: Text
+sqrtCodeStandalone = [__i|package main
+                          import "math"
+                          func main() {
+                              result := math.Sqrt(16.0)
+                              _ = result
+                          }|]
