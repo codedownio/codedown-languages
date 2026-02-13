@@ -16,9 +16,9 @@
 let
   common = callPackage ../../common.nix {};
 
-  gnls = callPackage ./gnls.nix { inherit system; };
-
   gnlsVersion = import ./gnls-version.nix;
+
+  gnls = callPackage ./gnls.nix { inherit system; };
 
   go-parser = callPackage ./go-parser.nix {};
 

@@ -13,7 +13,7 @@ system-ghc: true
 extra-deps:
 - git: https://github.com/codedownio/lsp.git
   # upgrade-monads-newest-jan2026 branch
-  commit: d920b28aa25d454812d8d9bbd922e893574d45bc
+  commit: c723f4a4fb99661c76b1356f8a839a0e266b0f32
   subdirs:
   - lsp
   - lsp-test
