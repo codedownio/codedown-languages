@@ -47,6 +47,16 @@ with lib;
         type = types.bool;
         default = true;
       };
+      lsp.gopls.debug = mkOption {
+        example = "Gopls: enable debug output";
+        type = types.bool;
+        default = false;
+      };
+      lsp.gopls.super-debug = mkOption {
+        example = "Gopls: enable verbose debug output";
+        type = types.bool;
+        default = false;
+      };
 
       go.gocache = mkOption {
         example = "Value of GOCACHE environment variable";

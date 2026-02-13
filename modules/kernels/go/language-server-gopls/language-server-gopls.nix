@@ -3,17 +3,32 @@
 , runCommand
 , makeWrapper
 , pkgs
+, system
 
 , attrs
 , kernelName
+, settings
 
 , go
 , gopls
-# , go-langserver
 }:
 
 let
-  common = callPackage ../common.nix {};
+  common = callPackage ../../common.nix {};
+
+  gnlsVersion = import ./gnls-version.nix;
+
+  gnls = callPackage ./gnls.nix { inherit system; };
+
+  go-parser = callPackage ./go-parser.nix {};
+
+  gnls-wrapped = runCommand "go-notebook-language-server-${gnlsVersion}-wrapped" {
+    nativeBuildInputs = [ makeWrapper ];
+  } ''
+    mkdir -p $out/bin
+    makeWrapper ${gnls}/bin/go-notebook-language-server $out/bin/go-notebook-language-server \
+      --prefix PATH : ${go-parser}/bin
+  '';
 
   goplsWrapped = runCommand "gopls-wrapped" { buildInputs = [makeWrapper]; } ''
     mkdir -p $out/bin
@@ -36,32 +51,20 @@ common.writeTextDirWithMetaAndPassthru gopls.meta passthru "lib/codedown/languag
   version = gopls.version;
   display_name = "gopls";
   description = gopls.meta.description;
-  icon = ./go-logo-64x64.png;
+  icon = ../go-logo-64x64.png;
   extensions = ["go"];
   notebook_suffix = ".go";
   kernel_name = kernelName;
   header_lines = ["package Notebook"];
   attrs = attrs;
   type = "stream";
-  args = ["${goplsWrapped}/bin/gopls"];
+  args = [
+    "${gnls-wrapped}/bin/go-notebook-language-server"
+    "--wrapped-server" "${goplsWrapped}/bin/gopls"
+  ]
+  ++ lib.optionals settings.debug ["--log-level" "debug"]
+  ++ lib.optionals settings.super-debug ["--debug-client-writes" "--debug-client-reads" "--debug-server-writes" "--debug-server-reads"]
+  ;
   env = {};
   language_id = "go";
 }])
-
-
-# Deprecated: go-langserver
-# https://github.com/sourcegraph/go-langserver
-# common.writeTextDirWithMeta go-langserver.meta "lib/codedown/language-servers/go-langserver.yaml" (lib.generators.toYAML {} [{
-#   name = "go-langserver";
-#   display_name = "go-langserver";
-#   description = go-langserver.meta.description;
-#   icon = ./go-logo-64x64.png;
-#   extensions = ["go"];
-#   notebook_suffix = ".go";
-#   kernel_name = kernelName;
-#   header_lines = ["package Notebook"];
-#   attrs = ["go"];
-#   type = "stream";
-#   args = ["${go-langserver}/bin/go-langserver"];
-#   env = {};
-# }])

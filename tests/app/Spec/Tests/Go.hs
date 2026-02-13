@@ -13,28 +13,44 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
+import qualified Spec.Tests.Go.Completion as Completion
+import qualified Spec.Tests.Go.Hovers as Hovers
 
-kernelSpec :: NixKernelSpec
-kernelSpec = NixKernelSpec {
+
+tests :: LanguageSpec
+tests = describe "Go" $ do
+  testKernelSearchersBuild "go"
+  testHasExpectedFields "go"
+
+  introduceNixEnvironment [kernelSpecWithLsp] [] "Go" $ introduceJupyterRunner $ do
+    describe "Kernel tests" $ do
+      testKernelStdout "go" [__i|import("fmt")
+                                 fmt.Println("hi")|] "hi\n"
+
+    describe "LSP" $ do
+      testDiagnosticsLabel "gopls: Undeclared name" lsName "test.go" LanguageKind_Go printUnknownCode $ \diagnostics ->
+        assertDiagnosticRanges diagnostics [(Range (Position 3 12) (Position 3 15), Just (InR "UndeclaredName"))]
+
+      Completion.tests
+
+      Hovers.tests
+
+lsName :: Text
+lsName = "gopls"
+
+kernelSpecWithLsp :: NixKernelSpec
+kernelSpecWithLsp = NixKernelSpec {
   nixKernelName = "go"
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "Go"
   , nixKernelPackages = []
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelExtraConfig = Nothing
+  , nixKernelExtraConfig = Just [
+      "lsp.gopls.enable = true"
+      , "lsp.gopls.debug = true"
+      ]
   }
-
-tests :: LanguageSpec
-tests = describe "Go" $ introduceNixEnvironment [kernelSpec] [] "Go" $ introduceJupyterRunner $ do
-  testKernelSearchersBuild "go"
-  testHasExpectedFields "go"
-
-  testKernelStdout "go" [__i|import("fmt")
-                             fmt.Println("hi")|] "hi\n"
-
-  testDiagnosticsLabel "gopls: Undeclared name" "gopls" "test.go" LanguageKind_Go printUnknownCode $ \diagnostics ->
-    assertDiagnosticRanges diagnostics [(Range (Position 3 12) (Position 3 15), Just (InR "UndeclaredName"))]
 
 printUnknownCode :: Text
 printUnknownCode = [__i|package main

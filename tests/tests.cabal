@@ -96,6 +96,9 @@ executable tests
       Spec.Tests.Cpp.Hovers
       Spec.Tests.Exporters
       Spec.Tests.Go
+      Spec.Tests.Go.Common
+      Spec.Tests.Go.Completion
+      Spec.Tests.Go.Hovers
       Spec.Tests.Haskell
       Spec.Tests.Haskell.CodeActions
       Spec.Tests.Haskell.Common
