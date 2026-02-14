@@ -55,7 +55,7 @@ common.writeTextDirWithMetaAndPassthru gopls.meta passthru "lib/codedown/languag
   extensions = ["go"];
   notebook_suffix = "";
   kernel_name = kernelName;
-  header_lines = ["package Notebook"];
+  header_lines = [];
   attrs = attrs;
   type = "stream";
   args = [
