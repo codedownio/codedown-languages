@@ -53,7 +53,7 @@ common.writeTextDirWithMetaAndPassthru gopls.meta passthru "lib/codedown/languag
   description = gopls.meta.description;
   icon = ../go-logo-64x64.png;
   extensions = ["go"];
-  notebook_suffix = ".go";
+  notebook_suffix = "";
   kernel_name = kernelName;
   header_lines = ["package Notebook"];
   attrs = attrs;
