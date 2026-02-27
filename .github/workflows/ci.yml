@@ -71,7 +71,7 @@ jobs:
     name: "build-sample-environments (${{matrix.runs-on.os}}, ${{matrix.runs-on.arch}})"
     runs-on:
     - self-hosted
-    - ${{matrix.runs-on}}
+    - ${{matrix.runs-on.os}}
     strategy:
       fail-fast: false
       matrix:
