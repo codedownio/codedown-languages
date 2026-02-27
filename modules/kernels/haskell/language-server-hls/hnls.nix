@@ -122,4 +122,4 @@ in
 
 if builtins.hasAttr desiredVersion versions
 then builtins.getAttr desiredVersion versions
-else throw ("Unsupported GHC version: " + ghc.version)
+else throw ("Unsupported GHC version ${desiredVersion} (had: ${toString (builtins.attrNames versions)})")
