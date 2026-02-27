@@ -44,7 +44,7 @@ jobs:
       run: nix flake check
 
   build-ui-metadata:
-    name: "build-ui-metadata (${{matrix.runs-on}})"
+    name: "build-ui-metadata (${{matrix.runs-on.os}}, ${{matrix.runs-on.arch}})"
     runs-on:
     - self-hosted
     - ${{matrix.runs-on.os}}
@@ -68,7 +68,7 @@ jobs:
         nix build .#packages.${{matrix.runs-on.arch}}.ui_metadata_farm
 
   build-sample-environments:
-    name: "build-sample-environments (${{matrix.runs-on}})"
+    name: "build-sample-environments (${{matrix.runs-on.os}}, ${{matrix.runs-on.arch}})"
     runs-on:
     - self-hosted
     - ${{matrix.runs-on}}
