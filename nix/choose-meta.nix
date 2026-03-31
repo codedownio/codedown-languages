@@ -44,5 +44,11 @@ contents:
 }) // (lib.optionalAttrs (contents ? "languageServerNames") {
   language_server_names = contents.languageServerNames;
 }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "exporterInfos"] contents) {
-  exporter_infos = contents.meta.exporterInfos;
+  exporter_infos = let
+    # Whitelist fields to avoid leaking store paths (e.g. args, pandoc) into the search index
+    keepFields = info: lib.filterAttrs (n: _:
+      n == "name" || n == "display_name" || n == "group" || n == "extension"
+      || n == "icon" || n == "icon_monochrome" || n == "input_extensions"
+    ) info;
+  in map keepFields contents.meta.exporterInfos;
 })

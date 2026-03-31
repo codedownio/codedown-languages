@@ -19,9 +19,45 @@ import System.FilePath
 import Test.Sandwich
 import TestLib.TestBuilding
 import TestLib.Types
+import Text.Read (readMaybe)
 import UnliftIO.IO
 import UnliftIO.Process
 
+
+-- Testing closure size
+
+testSearcherClosureSize :: (
+  HasCallStack, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  , HasBaseContext context, HasBootstrapNixpkgs context
+  ) => String -> SpecFree context m ()
+testSearcherClosureSize expr = it [i|#{expr}: closure size < 100MB|] $ do
+  built <- testBuild expr
+  checkClosureSize built
+
+testSearcherClosureSizeFlake :: (
+  HasCallStack, MonadIO m, MonadMask m, MonadUnliftIO m, MonadBaseControl IO m
+  , HasBaseContext context, HasBootstrapNixpkgs context
+  ) => String -> SpecFree context m ()
+testSearcherClosureSizeFlake expr = it [i|#{expr}: closure size < 100MB|] $ do
+  built <- testBuildUsingFlake expr
+  checkClosureSize built
+
+checkClosureSize :: (
+  HasCallStack, MonadUnliftIO m, MonadLogger m, MonadFail m
+  ) => FilePath -> m ()
+checkClosureSize built = do
+  info [i|Checking closure size of: #{built}|]
+  let cp = (proc "nix" ["path-info", "--closure-size", built]) {
+        std_out = CreatePipe
+        , std_err = CreatePipe
+        }
+  output <- readCreateProcess cp ""
+  case L.words output of
+    [_path, sizeStr] | Just closureBytes <- readMaybe sizeStr -> do
+      let maxBytes = 100 * 1000 * 1000 :: Int
+      when (closureBytes > maxBytes) $
+        expectationFailure [i|Closure size #{closureBytes} bytes exceeds 100MB limit. Store paths are likely leaking into the search index.|]
+    _ -> expectationFailure [i|Failed to parse nix path-info output: #{output}|]
 
 -- Testing for successful build
 
