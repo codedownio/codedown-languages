@@ -12,7 +12,9 @@ tests :: SimpleSpec
 tests = describe "Searchers" $ do
   it "searcher has some results" $ testSearcherHasNonemptyResults "packageSearch"
   testSearcherClosureSize "packageSearch"
+
   testSearcherClosureSizeFlake ".#searcher"
+  testSearcherClosureSizeFlake ".#packageSearch"
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
