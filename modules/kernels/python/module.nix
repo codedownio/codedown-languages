@@ -13,7 +13,28 @@ let
         example = "Package outputs to include";
         type = types.listOf types.str;
       };
+      extras = mkOption {
+        example = "Extras (optional-dependencies) to enable for the package";
+        type = types.listOf types.str;
+        default = [];
+      };
     };
+  };
+
+  subPackageEvaluated = lib.evalModules {
+    modules = [
+      {
+        options = {
+          subPackage = {
+            extras = mkOption {
+              example = "Extras (optional-dependencies) to enable for the package";
+              type = types.listOf types.str;
+              default = [];
+            };
+          };
+        };
+      }
+    ];
   };
 
   mkOptions = packageOption: {
@@ -162,6 +183,7 @@ in
 
           settings = config.kernels.python3;
           settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.python3;
+          subPackageSettingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } subPackageEvaluated.options.subPackage;
         };
     })
 
@@ -174,6 +196,7 @@ in
 
           settings = config.kernels.pypy3;
           settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.pypy3;
+          subPackageSettingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } subPackageEvaluated.options.subPackage;
         };
     })
   ];

@@ -9,6 +9,7 @@
 
 , settings
 , settingsSchema
+, subPackageSettingsSchema
 }:
 
 with { inherit (settings) packages; };
@@ -23,11 +24,31 @@ let
   displayName = name + " " +  python3.version;
   kernelName = "python3";
 
-  packageOptions = python3.pkgs;
-  packageSearch = common.searcher packageOptions;
+  packageOptionsBase = python3.pkgs;
+  packageSearch = common.searcher packageOptionsBase;
+
+  # For makeEnvironment.nix's chooseMeta lookup: lazily add settingsSchema to packages
+  # that have optional-dependencies, so the UI knows extras are available.
+  # Nix's laziness means only actually-accessed packages get evaluated.
+  packageOptions = lib.mapAttrs (_name: pkg:
+    if (builtins.tryEval (pkg ? optional-dependencies && pkg.optional-dependencies != {})).value or false
+    then pkg // { inherit subPackageSettingsSchema; settingsSchema = subPackageSettingsSchema; }
+    else pkg
+  ) packageOptionsBase;
+
+  resolvePackage = p:
+    let
+      pname = common.packageName p;
+      basePkg = builtins.getAttr pname packageOptionsBase;
+      extras = if lib.isAttrs p then (p.extras or []) else [];
+      extraPkgs = lib.concatMap (extra:
+        basePkg.optional-dependencies.${extra} or []
+      ) extras;
+    in [basePkg] ++ extraPkgs;
+
   allPackages =
-    [packageOptions.ipykernel packageOptions.ipywidgets]
-    ++ map (x: builtins.getAttr x packageOptions) (map common.packageName packages)
+    [packageOptionsBase.ipykernel packageOptionsBase.ipywidgets]
+    ++ lib.concatMap resolvePackage packages
   ;
 
   pythonWithPackages = f: python3.withPackages (_: allPackages ++ f packageOptions);
