@@ -40,6 +40,7 @@ let
     display_name = "rust-analyzer";
     description = rustAnalyzerToUse.meta.description;
     icon = ./rust-analyzer-logo-64x64.png;
+    icon_monochrome = ./rust-analyzer-logo-64x64-monochrome.png;
     extensions = ["rs" "rlib"];
     notebook_suffix = if raw then ".rs" else "";
 

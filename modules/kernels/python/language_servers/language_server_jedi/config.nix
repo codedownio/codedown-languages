@@ -27,6 +27,7 @@ common.writeTextDirWithMetaAndPassthru jls.meta passthru "lib/codedown/language-
   display_name = "Jedi";
   description = jls.meta.description;
   icon = ./jedi-logo.png;
+  icon_monochrome = ./jedi-logo-monochrome.png;
   extensions = ["py"];
   notebook_suffix = ".py";
   kernel_name = kernelName;

@@ -73,7 +73,7 @@ in
   attrs = ["markdown"];
   type = "stream";
   icon = ./pen-alt.png;
-  iconMonochrome = ./pen-alt.svg;
+  icon_monochrome = ./pen-alt.svg;
   notebook_suffix = ".spellchecker";
   args = [
     "${contents}/bin/markdown-spellcheck-lsp"

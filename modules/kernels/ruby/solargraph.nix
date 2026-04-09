@@ -38,6 +38,7 @@ common.writeTextDirWithMetaAndPassthru solargraph.meta passthru "lib/codedown/la
   display_name = "Solargraph";
   description = "A Ruby language server";
   icon = ./iruby-64x64.png;
+  icon_monochrome = ./ruby-monochrome.svg;
   extensions = ["rb"];
   notebook_suffix = ".rb";
   kernel_name = kernelName;

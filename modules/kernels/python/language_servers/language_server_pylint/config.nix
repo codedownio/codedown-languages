@@ -30,6 +30,7 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.pylint.meta passthru "lib/cod
     display_name = "Pylint";
     description = python.pkgs.pylint.meta.description;
     icon = ./pylint-logo.png;
+    icon_monochrome = ./pylint-logo-monochrome.png;
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;

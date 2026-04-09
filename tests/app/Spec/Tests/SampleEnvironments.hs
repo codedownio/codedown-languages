@@ -45,6 +45,23 @@ tests = describe "Sample environments" $ introduceBootstrapNixpkgs $ introduceJu
 
           forM_ (M.toList nixHydrationResultPackages) (\(n, v) -> validatePackage envRoot n v)
 
+        it "Has well-formed language server configs" $ do
+          let name = T.dropEnd 4 (T.pack file) -- Drop the .nix suffix
+
+          envRoot <- testBuildUsingFlake [i|.\#sample_environment_#{name}|]
+          let lsDir = envRoot </> "lib" </> "codedown" </> "language-servers"
+
+          doesDirectoryExist lsDir >>= \case
+            False -> info [i|No language-servers directory found|]
+            True -> do
+              yamlFiles <- L.filter (\x -> ".yaml" `L.isSuffixOf` x) <$> listDirectory lsDir
+              info [i|Found #{L.length yamlFiles} language server config(s)|]
+              forM_ yamlFiles $ \yamlFile -> do
+                let fullPath = lsDir </> yamlFile
+                liftIO (A.eitherDecodeFileStrict fullPath) >>= \case
+                  Left err -> expectationFailure [i|Failed to decode #{yamlFile}: #{err}|]
+                  Right (configs :: [A.Object]) -> forM_ configs (validateLanguageServerConfig fullPath)
+
         it "Has a good kernelspec" $ do
           let name = T.dropEnd 4 (T.pack file) -- Drop the .nix suffix
 
@@ -64,6 +81,20 @@ tests = describe "Sample environments" $ introduceBootstrapNixpkgs $ introduceJu
             case aesonLookup "language" contents of
               Just (A.String lang) -> info [i|Kernel #{kernel} --> #{lang}|]
               x -> expectationFailure [i|Expected kernel #{kernel} to contain a language, but it was: #{x}|]
+
+validateLanguageServerConfig :: (MonadLoggerIO m, MonadFail m) => FilePath -> A.Object -> m ()
+validateLanguageServerConfig path obj = do
+  case aesonLookup "name" obj of
+    Just (A.String name) -> info [i|Checking language server config: #{name} (#{path})|]
+    _ -> expectationFailure [i|Language server config missing 'name': #{path}|]
+  -- If icon is present and non-null, icon_monochrome must also be present
+  case aesonLookup "icon" obj of
+    Just A.Null -> return ()
+    Just _ -> case aesonLookup "icon_monochrome" obj of
+      Nothing -> expectationFailure [i|Language server config has 'icon' but missing 'icon_monochrome': #{path}|]
+      Just A.Null -> expectationFailure [i|Language server config has 'icon' but 'icon_monochrome' is null: #{path}|]
+      Just _ -> return ()
+    Nothing -> return ()
 
 validatePackage :: (MonadLoggerIO m, MonadFail m) => FilePath -> Text -> NixPackage -> m ()
 validatePackage envRoot attr (NixPackage {nixPackageMeta=(NixMeta {..}), ..}) = do

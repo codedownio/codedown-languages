@@ -22,7 +22,8 @@ common.writeTextDirWithMetaAndPassthru clojure-lsp.meta passthru "lib/codedown/l
   version = clojure-lsp.version;
   display_name = "Clojure LSP";
   description = clojure-lsp.meta.description or "Clojure & ClojureScript Language Server (LSP) implementation";
-  icon = ./clojure-logo-64x64.png;
+  icon = ./clojure.svg;
+  icon_monochrome = ./clojure-monochrome.svg;
   extensions = ["clj"];
   notebook_suffix = ".clj";
   kernel_name = kernelName;

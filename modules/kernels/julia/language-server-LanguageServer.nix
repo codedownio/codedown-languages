@@ -39,6 +39,7 @@ common.writeTextDirWithMetaAndPassthru juliaWithPackages.meta passthru "lib/code
   display_name = "LanguageServer.jl";
   description = "An implementation of the Microsoft Language Server Protocol for the Julia language";
   icon = ./julia-logo-64x64.png;
+  icon_monochrome = ./julia-monochrome.svg;
   extensions = ["jl"];
   notebook_suffix = ".jl";
   kernel_name = kernelName;

@@ -46,6 +46,7 @@ let
     display_name = "Haskell Language Server";
     description = haskell-language-server.meta.description;
     icon = ./hls-icon-64x64.png;
+    icon_monochrome = ./hls-icon-64x64-monochrome.png;
     extensions = if raw then ["hs"] else [];
     notebook_suffix = if raw then ".hs" else "";
     kernel_name = kernelName;
