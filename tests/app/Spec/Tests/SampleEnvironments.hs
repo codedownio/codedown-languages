@@ -87,14 +87,14 @@ validateLanguageServerConfig path obj = do
   case aesonLookup "name" obj of
     Just (A.String name) -> info [i|Checking language server config: #{name} (#{path})|]
     _ -> expectationFailure [i|Language server config missing 'name': #{path}|]
-  -- If icon is present and non-null, icon_monochrome must also be present
   case aesonLookup "icon" obj of
-    Just A.Null -> return ()
-    Just _ -> case aesonLookup "icon_monochrome" obj of
-      Nothing -> expectationFailure [i|Language server config has 'icon' but missing 'icon_monochrome': #{path}|]
-      Just A.Null -> expectationFailure [i|Language server config has 'icon' but 'icon_monochrome' is null: #{path}|]
-      Just _ -> return ()
-    Nothing -> return ()
+    Nothing -> expectationFailure [i|Language server config missing 'icon': #{path}|]
+    Just A.Null -> expectationFailure [i|Language server config has null 'icon': #{path}|]
+    Just _ -> return ()
+  case aesonLookup "icon_monochrome" obj of
+    Nothing -> expectationFailure [i|Language server config missing 'icon_monochrome': #{path}|]
+    Just A.Null -> expectationFailure [i|Language server config has null 'icon_monochrome': #{path}|]
+    Just _ -> return ()
 
 validatePackage :: (MonadLoggerIO m, MonadFail m) => FilePath -> Text -> NixPackage -> m ()
 validatePackage envRoot attr (NixPackage {nixPackageMeta=(NixMeta {..}), ..}) = do

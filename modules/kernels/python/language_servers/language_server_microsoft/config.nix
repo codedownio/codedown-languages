@@ -78,6 +78,8 @@ common.writeTextDirWithMetaAndPassthru python-language-server.meta passthru "lib
     version = python-language-server.version;
     display_name = "Python Language Server";
     description = python-language-server.meta.description;
+    icon = ../../python-logo-64x64.png;
+    icon_monochrome = ../../python-monochrome.svg;
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;

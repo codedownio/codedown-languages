@@ -23,6 +23,8 @@ in
 common.writeTextDirWithMetaAndPassthru tinymist.meta passthru "lib/codedown/language-servers/typst-${kernelName}-tinymist-language-server.yaml" (lib.generators.toYAML {} [{
   name = languageServerName;
   version = tinymist.version;
+  icon = ../typst.png;
+  icon_monochrome = ../typst.svg;
   extensions = ["typ"];
   notebook_suffix = ".typ";
   attrs = ["typst"];

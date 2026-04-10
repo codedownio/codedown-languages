@@ -54,6 +54,8 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.python-language-server.meta p
     version = python.pkgs.python-language-server.version;
     display_name = "Python Language Server";
     description = python.pkgs.python-language-server.meta.description;
+    icon = ../../python-logo-64x64.png;
+    icon_monochrome = ../../python-monochrome.svg;
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;

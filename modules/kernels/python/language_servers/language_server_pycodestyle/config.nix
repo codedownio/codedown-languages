@@ -29,6 +29,8 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.pycodestyle.meta passthru "li
     version = python.pkgs.pycodestyle.version;
     display_name = "pycodestyle";
     description = python.pkgs.pycodestyle.meta.description;
+    icon = ../../python-logo-64x64.png;
+    icon_monochrome = ../../python-monochrome.svg;
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;

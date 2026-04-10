@@ -30,7 +30,7 @@ common.writeTextDirWithMetaAndPassthru languageserver.meta passthru "lib/codedow
   version = languageserver.version;
   display_name = "";
   description = "An implementation of the Language Server Protocol for R";
-  icon = null;
+  icon = ../r-logo-64x64.png;
   icon_monochrome = ../r-monochrome.svg;
   extensions = ["r"];
   notebook_suffix = ".r";

@@ -39,6 +39,8 @@ in
 common.writeTextDirWithMetaAndPassthru bashLanguageServerWithMan.meta passthru "lib/codedown/language-servers/bash-${kernelName}-bash-language-server.yaml" (lib.generators.toYAML {} [{
   name = languageServerName;
   version = bashLanguageServer.version;
+  icon = ../bash-logo-128x128.png;
+  icon_monochrome = ../gnubash-monochrome.svg;
   extensions = ["sh" "bash"];
   notebook_suffix = ".bash";
   attrs = ["bash"];

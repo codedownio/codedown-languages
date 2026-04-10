@@ -55,6 +55,8 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.python-lsp-server.meta passth
     version = python.pkgs.python-lsp-server.version;
     display_name = "Python LSP Server";
     description = python.pkgs.python-lsp-server.meta.description;
+    icon = ../../python-logo-64x64.png;
+    icon_monochrome = ../../python-monochrome.svg;
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;

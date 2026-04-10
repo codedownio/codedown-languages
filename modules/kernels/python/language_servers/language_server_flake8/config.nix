@@ -28,6 +28,8 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.flake8.meta passthru "lib/cod
     version = python.pkgs.flake8.version;
     display_name = "Flake8";
     description = python.pkgs.flake8.meta.description;
+    icon = ../../python-logo-64x64.png;
+    icon_monochrome = ../../python-monochrome.svg;
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;

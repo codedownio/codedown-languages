@@ -40,6 +40,8 @@ in
 common.writeTextDirWithMetaAndPassthru clangd.meta passthru "lib/codedown/language-servers/cpp-${kernelName}-${languageServerName}.yaml" (lib.generators.toYAML {} [{
   name = languageServerName;
   version = clangd.version;
+  icon = ../cplusplus.svg;
+  icon_monochrome = ../cplusplus.svg;
   extensions = ["cpp" "hpp" "cxx" "hxx" "c" "h"];
   notebook_suffix = "";
   attrs = ["cpp"];
