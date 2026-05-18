@@ -13,6 +13,10 @@
 let
   common = callPackage ../../common.nix {};
 
+  # Note: we don't want to override nodejs to nodejs-slim here, because that
+  # will make it fail to hit in the cache.nixos.org and then the user will need
+  # to download pnpm in order to build it. But we submitted an upstream fix to reduce
+  # the closure size; see https://github.com/NixOS/nixpkgs/pull/521755
   bashLanguageServer = nodePackages.bash-language-server;
 
   # manWithPages = (import ../shared.nix).manWithPages;
