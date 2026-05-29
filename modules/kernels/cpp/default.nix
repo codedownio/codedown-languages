@@ -5,7 +5,6 @@
 , clang
 , xeus-cling
 , llvmPackages
-, system
 
 , settings
 , settingsSchema
@@ -25,7 +24,7 @@ let
 
   languageServers = lib.optionals settings.lsp.clangd.enable
     [(callPackage ./language_server_clangd {
-      inherit kernelName llvmPackages system cling;
+      inherit kernelName llvmPackages cling;
       settings = settings.lsp.clangd;
     })];
 

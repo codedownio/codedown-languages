@@ -3,7 +3,6 @@
 , runCommand
 , makeWrapper
 , llvmPackages
-, system
 , cling
 
 , kernelName
@@ -15,7 +14,7 @@ let
 
   clangd = llvmPackages.clang-tools;
 
-  cnls = callPackage ./cnls.nix { inherit system; };
+  cnls = callPackage ./cnls.nix {};
 
   cnlsVersion = import ./cnls-version.nix;
 

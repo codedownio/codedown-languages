@@ -3,7 +3,6 @@
 , fetchzip
 , lib
 , stdenv
-, system
 
 , ghc
 , snapshot
@@ -22,7 +21,7 @@ let
         cp -r ./. $out
       '';
     };
-    mkUrl = ghc: system: "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-${ghc}-${system}.tar.gz";
+    mkUrl = ghc: sys: "https://github.com/codedownio/haskell-notebook-language-server/releases/download/v${version}/haskell-notebook-language-server-${version}-${ghc}-${sys}.tar.gz";
   in
     {
       # HASHES_START
@@ -138,7 +137,7 @@ let
   #   };
   # versions = localFlakeVersions;
 
-  desiredVersion = "ghc" + (builtins.replaceStrings ["."] [""] (lib.versions.majorMinor ghc.version)) + "-" + system;
+  desiredVersion = "ghc" + (builtins.replaceStrings ["."] [""] (lib.versions.majorMinor ghc.version)) + "-" + stdenv.hostPlatform.system;
 
 in
 

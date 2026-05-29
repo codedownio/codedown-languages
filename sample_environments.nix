@@ -26,9 +26,9 @@ args: {
   python313 = import ./sample_environments/python313.nix args;
   python3 = import ./sample_environments/python3.nix args;
   r = import ./sample_environments/r.nix args;
-  ruby = import ./sample_environments/ruby.nix args;
   ruby_3_3 = import ./sample_environments/ruby_3_3.nix args;
   ruby_3_4 = import ./sample_environments/ruby_3_4.nix args;
+  ruby = import ./sample_environments/ruby.nix args;
   rust = import ./sample_environments/rust.nix args;
   shells-bash = import ./sample_environments/shells-bash.nix args;
   shells-fish = import ./sample_environments/shells-fish.nix args;

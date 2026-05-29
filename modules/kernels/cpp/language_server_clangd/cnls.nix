@@ -1,5 +1,5 @@
 { fetchzip
-, system
+, stdenv
 }:
 
 # Fetch a static binary from GitHub releases
@@ -30,4 +30,4 @@
     hash = "sha256-UGB6tVuWlMOxskNFdICaVTurdbd95auAMg7Ty4Iawng=";
   };
   # HASHES_END
-}.${system}
+}.${stdenv.hostPlatform.system}

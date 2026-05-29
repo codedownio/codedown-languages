@@ -1,6 +1,5 @@
 { fetchzip
 , stdenv
-, system
 }:
 
 # Build from source method. Blows up the closure!
@@ -46,4 +45,4 @@
     hash = "sha256-Krsoh3WLG8TkXKTEtFNCThbCc1UQjlziiDngOgvOtF4=";
   };
   # HASHES_END
-}.${system}
+}.${stdenv.hostPlatform.system}
