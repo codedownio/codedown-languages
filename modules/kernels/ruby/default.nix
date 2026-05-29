@@ -1,10 +1,6 @@
 { lib
 , callPackage
-, pkgs
-, recurseIntoAttrs
-, stdenv
 , symlinkJoin
-, writeTextDir
 
 , ruby
 
@@ -22,7 +18,7 @@ let
 
   kernelName = "ruby";
 
-  rubyPackages = recurseIntoAttrs ruby.gems;
+  rubyPackages = lib.recurseIntoAttrs ruby.gems;
 
   packageOptions = rubyPackages;
   packageSearch = common.searcher packageOptions;

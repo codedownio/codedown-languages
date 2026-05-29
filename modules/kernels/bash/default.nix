@@ -1,10 +1,10 @@
 { callPackage
 , lib
 , python3
-, nodePackages
 , symlinkJoin
 
 , bash
+, bash-language-server
 
 , settings
 , settingsSchema
@@ -47,8 +47,8 @@ symlinkJoin {
     };
     versions = {
       bash = bash.version;
-      bash-language-server = nodePackages.bash-language-server.version;
-      bash_kernel = python3.pkgs.bash_kernel.version;
+      bash-language-server = bash-language-server.version;
+      bash-kernel = python3.pkgs.bash-kernel.version;
     };
     inherit packageOptions packageSearch;
     inherit settingsSchema settings;

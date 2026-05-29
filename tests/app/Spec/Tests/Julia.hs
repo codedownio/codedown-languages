@@ -24,9 +24,6 @@ import qualified Spec.Tests.Julia.Diagnostics as Diagnostics
 
 tests :: LanguageSpec
 tests = do
-  juliaTests "julia_19"
-  juliaTests "julia_19-bin"
-
   juliaTests "julia_110"
   juliaTests "julia_110-bin"
 

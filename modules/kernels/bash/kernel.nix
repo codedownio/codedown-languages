@@ -10,10 +10,10 @@
 let
   common = callPackage ../common.nix {};
 
-  python = python3.withPackages (ps: [ps.bash_kernel]);
+  python = python3.withPackages (ps: [ps.bash-kernel]);
 
   # Checks failed on macOS on release-25.05. Disabling them is one option:
-  # python = python3.withPackages (ps: [(ps.bash_kernel.overrideAttrs (_oldAttrs: { doCheck = false; }))]);
+  # python = python3.withPackages (ps: [(ps.bash-kernel.overrideAttrs (_oldAttrs: { doCheck = false; }))]);
 
 in
 

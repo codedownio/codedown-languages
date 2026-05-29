@@ -25,7 +25,7 @@ let
       sha256 = "1gmvybwfj6m1sjk1h6350446z3wfnai2062sfs0zgs3lczhflxsc";
     };
 
-    buildInputs = with python3.pkgs; [ jupyter_client ipykernel ];
+    buildInputs = with python3.pkgs; [ jupyter-client ipykernel ];
 
     propagatedBuildInputs = with python3.pkgs; [ graphviz fontconfig ipykernel ];
 
@@ -44,7 +44,7 @@ let
   fontsConf = makeFontsConf {
     fontDirectories = [
       carlito dejavu_fonts
-      freefont_ttf xorg.fontmiscmisc
+      freefont_ttf font-misc-misc
       # liberation_ttf_v1_binary
       # liberation_ttf_v2_binary
     ];

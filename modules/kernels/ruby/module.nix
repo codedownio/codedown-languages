@@ -28,10 +28,14 @@ in
         example = "Ruby version";
         type = types.enum ([
           "ruby"
-          "ruby_3_1"
-          "ruby_3_2"
+          # "ruby_3_1" # EOL
+          # "ruby_3_2" # EOL
           "ruby_3_3"
           "ruby_3_4"
+
+          # iruby doesn't support yet; upstream has unreleased fix though; see
+          # https://github.com/SciRuby/iruby/pull/380
+          # "ruby_4_0"
         ]);
         # ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "ruby_") name == "ruby_")
         #                     (builtins.attrNames pkgs))
