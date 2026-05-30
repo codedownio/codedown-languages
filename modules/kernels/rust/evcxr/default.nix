@@ -1,8 +1,10 @@
 { callPackage
 , lib
+, libiconv
 , makeWrapper
 , python3
 , runCommand
+, stdenv
 
 , CoreServices
 , Security
@@ -72,10 +74,19 @@ evcxr.overrideAttrs (oldAttrs: {
 
         buildInputs = [makeWrapper];
 
+        # On Darwin, rustc invokes `cc` for linking at runtime. cc is the Nix
+        # clang wrapper, which only adds library paths it has been told about
+        # via NIX_LDFLAGS_<suffix>. libiconv is normally pulled in by stdenv
+        # buildInputs during a Nix build, but evcxr links user code at *runtime*
+        # outside any derivation, so the wrapper sees no NIX_LDFLAGS and rustc
+        # ends up emitting `-liconv` with no `-L` for it. Bake the libiconv
+        # path into the wrapper here so runtime linking finds it.
         makeWrapperArgs = [
           "--set" "CARGO_HOME" "${cargoHome packages}"
           "--set" "EVCXR_CONFIG_DIR" "${evcxrConfigDir packages}"
           "--prefix" "PATH" ":" "${lib.makeBinPath [rustc cargo]}"
+        ] ++ lib.optionals stdenv.isDarwin [
+          "--set" "NIX_LDFLAGS_${stdenv.cc.suffixSalt}" "-L${lib.getLib libiconv}/lib"
         ];
 
         passthru = {
