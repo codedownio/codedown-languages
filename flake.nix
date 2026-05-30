@@ -9,7 +9,9 @@
   outputs = { self, nixpkgs, nixpkgs-master, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        overlays = [];
+        overlays = [
+          (import ./nix/nodehun-overlay.nix)
+        ];
         pkgsStable = import nixpkgs { inherit system overlays; };
         pkgsMaster = import nixpkgs-master { inherit system overlays; };
 
