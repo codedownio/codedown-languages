@@ -20,15 +20,16 @@ tests = describe "Diagnostics" $ do
       , (Range (Position 0 0) (Position 0 8), Nothing, "a macro with a similar name exists: `println`")
       ]
 
-  testDiagnostics "rust-analyzer" "test.rs" LanguageKind_Rust [__i|struct A { a: u8, b: u8 }
-                                                                   const a: A = A { a: 10, };
-                                                                  |] $ \diagnostics -> do
-    assertDiagnosticRanges' (L.sortBy (compare `on` (^. LSP.message)) diagnostics) [
-      (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing field `b` in initializer of `A`\nmissing `b`")
-      -- (Range (Position 1 6) (Position 1 7), Just (InR "non_upper_case_globals"), "Constant `a` should have UPPER_SNAKE_CASE name, e.g. `A`")
-      -- , (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing field `b` in initializer of `A`\nmissing `b`")
-      -- , (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing structure fields:\n- b\n")
-      ]
+  testDiagnosticsLabel "rust-analyzer, test.rs with missing struct field" "rust-analyzer" "test.rs" LanguageKind_Rust
+    [__i|struct A { a: u8, b: u8 }
+         const a: A = A { a: 10, };
+        |] $ \diagnostics ->
+      assertDiagnosticRanges' (L.sortBy (compare `on` (^. LSP.message)) diagnostics) [
+        (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing field `b` in initializer of `A`\nmissing `b`")
+        -- (Range (Position 1 6) (Position 1 7), Just (InR "non_upper_case_globals"), "Constant `a` should have UPPER_SNAKE_CASE name, e.g. `A`")
+        -- , (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing field `b` in initializer of `A`\nmissing `b`")
+        -- , (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing structure fields:\n- b\n")
+        ]
 
   testDiagnostics "rust-analyzer" "main.ipynb" LanguageKind_Rust [__i|println!("Hello world");
                                                                       eprintln!("Hello error");
