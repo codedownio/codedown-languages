@@ -58,6 +58,8 @@ let
 
   extraOctaveConfig = ''
     warning('off', 'Octave:gnuplot-graphics')
+    warning('off', 'Octave:fltk-graphics')
+    graphics_toolkit('gnuplot')
   '';
 
   extraOctaveConfigArgs = if extraOctaveConfig == null then "" else
