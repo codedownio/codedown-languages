@@ -6,6 +6,12 @@
 }:
 
 let
+  # Overlays that must apply to every codedown consumer, including the test
+  # harness which imports this default.nix directly (bypassing flake.nix). The
+  # nodehun overlay fixes the spellchecker's native build on newer Apple clang.
+  baseOverlays = [ (import ./nix/nodehun-overlay.nix) ];
+  allOverlays = baseOverlays ++ overlays;
+
   stableRev = "f5190b692864072e79a2fb7c52d72d1d57fcb269"; # nixpkgs-rev
   stableFetchFromGitHub = fetchFromGitHub {
     owner = "NixOS";
@@ -19,7 +25,7 @@ let
   };
   pkgsStableSrc = if fetchFromGitHub != null then stableFetchFromGitHub else stableBuiltins;
   pkgsStable = import pkgsStableSrc ({
-    inherit overlays;
+    overlays = allOverlays;
   } // (if system == null then {} else { inherit system; }));
 
   masterRev = "f4d46d85b687293bc8d872010fb66a4f23c23139"; # nixpkgs-master-rev
@@ -35,7 +41,7 @@ let
   };
   pkgsMasterSrc = if fetchFromGitHub != null then masterFetchFromGitHub else masterBuiltins;
   pkgsMaster = import pkgsMasterSrc ({
-    inherit overlays;
+    overlays = allOverlays;
   } // (if system == null then {} else { inherit system; }));
 
 in
