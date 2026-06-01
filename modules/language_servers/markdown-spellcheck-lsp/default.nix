@@ -20,6 +20,11 @@ let
 
   nodejs = nodejs-slim;
 
+  # nodehun's native build fails on Darwin under newer Apple clang; patch it.
+  nodehun' = if stdenv.isDarwin
+             then (import ./nodehun-darwin-fix.nix) nodehun
+             else nodehun;
+
   # nodeHeaders = runCommand "node-${nodejs.version}-headers.tar.gz" { buildInputs = []; } ''
   #   dir="node-v${nodejs.version}"
   #   mkdir "$dir"
@@ -53,7 +58,7 @@ let
   } ''
     mkdir -p $out/bin
     makeWrapper ${nodejs}/bin/node $out/bin/markdown-spellcheck-lsp \
-      --set NODE_PATH ${nodehun}/lib/node_modules \
+      --set NODE_PATH ${nodehun'}/lib/node_modules \
       --add-flags ${indexJs}
   '';
 
