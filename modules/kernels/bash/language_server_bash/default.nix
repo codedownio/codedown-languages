@@ -1,9 +1,9 @@
-{ lib
-, runCommand
-, callPackage
+{ callPackage
+, lib
 , makeWrapper
-, nodePackages
+, runCommand
 
+, bash-language-server
 , shellcheck
 , unixtools
 
@@ -17,7 +17,7 @@ let
   # will make it fail to hit in the cache.nixos.org and then the user will need
   # to download pnpm in order to build it. But we submitted an upstream fix to reduce
   # the closure size; see https://github.com/NixOS/nixpkgs/pull/521755
-  bashLanguageServer = nodePackages.bash-language-server;
+  bashLanguageServer = bash-language-server;
 
   # manWithPages = (import ../shared.nix).manWithPages;
 

@@ -3,7 +3,6 @@
 , runCommand
 , makeWrapper
 , pkgs
-, system
 
 , attrs
 , kernelName
@@ -18,7 +17,7 @@ let
 
   gnlsVersion = import ./gnls-version.nix;
 
-  gnls = callPackage ./gnls.nix { inherit system; };
+  gnls = callPackage ./gnls.nix {};
 
   go-parser = callPackage ./go-parser.nix {};
 

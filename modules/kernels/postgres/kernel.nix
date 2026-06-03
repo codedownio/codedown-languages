@@ -1,7 +1,6 @@
 { callPackage
 , fetchFromGitHub
 , python3
-, bash
 , attrs
 , extensions
 }:
@@ -9,9 +8,12 @@
 let
   common = callPackage ../common.nix {};
 
-  app = python3.pkgs.buildPythonPackage rec {
+  app = python3.pkgs.buildPythonPackage {
     pname = "postgres_kernel";
     version = "0.1";
+
+    pyproject = true;
+    build-system = [ python3.pkgs.setuptools ];
 
     src = fetchFromGitHub {
       owner = "codedownio";
@@ -20,13 +22,13 @@ let
       sha256 = "1cwn3glgwa6gq1hn6bq8b14c8vn2xmjv5wrwsjc5n6ydqkx3qlhf";
     };
 
-    propagatedBuildInputs = with python3.pkgs; [jupyter_client psycopg2 tabulate ipykernel];
+    propagatedBuildInputs = with python3.pkgs; [jupyter-client psycopg2 tabulate ipykernel];
 
     doCheck = false;
 
     meta = {
       description = "A simple Jupyter kernel for PostgreSQL";
-      homepage = https://github.com/bgschiller/postgres_kernel;
+      homepage = "https://github.com/bgschiller/postgres_kernel";
     };
   };
 

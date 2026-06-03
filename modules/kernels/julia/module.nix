@@ -80,9 +80,14 @@ in
       julia = let
         juliaPackage = config.kernels.julia.juliaPackage;
         requestedJulia = getAttr juliaPackage pkgsToUse;
+        hasBin = builtins.hasAttr (juliaPackage + "-bin") pkgsToUse;
+        # On Darwin, nixpkgs lists julia source builds as supported (meta.unsupported = false)
+        # but the actual build fails (PCRE2 build errors). Prefer the -bin variant on Darwin
+        # whenever it's available, since it works in practice.
+        preferBin = requestedJulia.meta.unsupported || (pkgsToUse.stdenv.isDarwin && hasBin);
         in
-          if requestedJulia.meta.unsupported
-          then (if builtins.hasAttr (juliaPackage + "-bin") pkgsToUse then pkgsToUse.${juliaPackage + "-bin"} else throw "${juliaPackage} is not supported on this system and fallback ${juliaPackage}-bin was not found.")
+          if preferBin
+          then (if hasBin then pkgsToUse.${juliaPackage + "-bin"} else throw "${juliaPackage} is not supported on this system and fallback ${juliaPackage}-bin was not found.")
           else requestedJulia;
 
       settings = config.kernels.julia;

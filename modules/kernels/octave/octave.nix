@@ -7,8 +7,8 @@
 , makeFontsConf
 , carlito
 , dejavu_fonts
+, font-misc-misc
 , freefont_ttf
-, xorg
 
 , epstool
 , fig2dev
@@ -24,7 +24,7 @@ let
   fontsConf = makeFontsConf {
     fontDirectories = [
       carlito dejavu_fonts
-      freefont_ttf xorg.fontmiscmisc
+      freefont_ttf font-misc-misc
       # liberation_ttf_v1_binary
       # liberation_ttf_v2_binary
     ];

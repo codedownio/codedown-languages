@@ -17,7 +17,6 @@ args: {
   go = import ./sample_environments/go.nix args;
   julia110 = import ./sample_environments/julia110.nix args;
   julia111 = import ./sample_environments/julia111.nix args;
-  julia19 = import ./sample_environments/julia19.nix args;
   mega = import ./sample_environments/mega.nix args;
   octave = import ./sample_environments/octave.nix args;
   postgres = import ./sample_environments/postgres.nix args;
@@ -27,6 +26,8 @@ args: {
   python313 = import ./sample_environments/python313.nix args;
   python3 = import ./sample_environments/python3.nix args;
   r = import ./sample_environments/r.nix args;
+  ruby_3_3 = import ./sample_environments/ruby_3_3.nix args;
+  ruby_3_4 = import ./sample_environments/ruby_3_4.nix args;
   ruby = import ./sample_environments/ruby.nix args;
   rust = import ./sample_environments/rust.nix args;
   shells-bash = import ./sample_environments/shells-bash.nix args;

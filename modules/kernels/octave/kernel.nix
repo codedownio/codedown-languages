@@ -58,6 +58,8 @@ let
 
   extraOctaveConfig = ''
     warning('off', 'Octave:gnuplot-graphics')
+    warning('off', 'Octave:fltk-graphics')
+    graphics_toolkit('gnuplot')
   '';
 
   extraOctaveConfigArgs = if extraOctaveConfig == null then "" else
@@ -68,7 +70,7 @@ let
 
   python = runCommand "python" {
     inherit octave;
-    python = python3.withPackages (ps: [ps.metakernel octaveKernel] ++ (with ps; [traitlets jupyter_core ipykernel]));
+    python = python3.withPackages (ps: [ps.metakernel octaveKernel] ++ (with ps; [traitlets jupyter-core ipykernel]));
     bash = bashInteractive;
     buildInputs = [makeWrapper];
   } ''
