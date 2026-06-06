@@ -98,7 +98,7 @@ self: super: {
                   packages = [];
                   settings = removeNonDefaultSettings settings_schema evaluated.config.${n};
                 }
-            ) (filterAttrs (k: _: !(hasPrefix "_") k) config);
+            ) (filterAttrs (k: _: k != "_module") config);
           };
         };
       };
