@@ -1,4 +1,25 @@
+## environment\.extraNix
+
+Arbitrary Nix expression that evaluates to a derivation, which will be joined into the environment\. The expression has “pkgs” in scope, an imported Nixpkgs package set\.
+
+
+
+*Type:*
+string (nix)
+
+
+
+*Default:*
+
+```nix
+""
+```
+
+
+
 ## environment\.variables
+
+
 
 Environment variables to set\.
 
@@ -10,7 +31,10 @@ attribute set of string
 
 
 *Default:*
-` { } `
+
+```nix
+{ }
+```
 
 
 
@@ -28,12 +52,18 @@ value “scheme-full” (singular enum)
 
 
 *Default:*
-` "scheme-full" `
+
+```nix
+"scheme-full"
+```
 
 
 
 *Example:*
-` "TeX Live scheme" `
+
+```nix
+"TeX Live scheme"
+```
 
 
 
@@ -51,12 +81,109 @@ value “scheme-full” (singular enum)
 
 
 *Default:*
-` "scheme-full" `
+
+```nix
+"scheme-full"
+```
 
 
 
 *Example:*
-` "TeX Live scheme" `
+
+```nix
+"TeX Live scheme"
+```
+
+
+
+## exporters\.typst\.interface\.attrs
+
+
+
+Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "typst"
+]
+```
+
+
+
+*Example:*
+
+```nix
+"Notebook attributes"
+```
+
+
+
+## exporters\.typst\.interface\.extensions
+
+
+
+Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "typ"
+]
+```
+
+
+
+*Example:*
+
+```nix
+"File extensions"
+```
+
+
+
+## exporters\.typst\.lsp\.tinymist\.enable
+
+
+
+This option has no description\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+*Example:*
+
+```nix
+"Enable tinymist language server"
+```
 
 
 
@@ -75,7 +202,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "r"
   "R"
@@ -85,7 +212,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -104,7 +234,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "r"
 ]
@@ -113,7 +243,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -131,12 +264,18 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Enable languageserver" `
+
+```nix
+"Enable languageserver"
+```
 
 
 
@@ -155,7 +294,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "bash"
 ]
@@ -164,7 +303,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -183,7 +325,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "sh"
   "bash"
@@ -193,7 +335,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -211,12 +356,18 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Enable Bash language server" `
+
+```nix
+"Enable Bash language server"
+```
 
 
 
@@ -235,7 +386,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "clojure"
 ]
@@ -244,7 +395,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -263,7 +417,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "clj"
 ]
@@ -272,7 +426,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -290,12 +447,18 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Enable clojure-lsp language server" `
+
+```nix
+"Enable clojure-lsp language server"
+```
 
 
 
@@ -308,17 +471,23 @@ This option has no description\.
 
 
 *Type:*
-one of “coqPackages”, “coqPackages_8_10”, “coqPackages_8_11”, “coqPackages_8_12”, “coqPackages_8_13”, “coqPackages_8_14”, “coqPackages_8_15”, “coqPackages_8_16”, “coqPackages_8_17”, “coqPackages_8_18”, “coqPackages_8_19”, “coqPackages_8_20”, “coqPackages_8_7”, “coqPackages_8_8”, “coqPackages_8_9”, “coqPackages_9_0”, “coqPackages_9_1”
+one of “coqPackages”, “coqPackages_8_10”, “coqPackages_8_11”, “coqPackages_8_12”, “coqPackages_8_13”, “coqPackages_8_14”, “coqPackages_8_15”, “coqPackages_8_16”, “coqPackages_8_17”, “coqPackages_8_18”, “coqPackages_8_19”, “coqPackages_8_20”, “coqPackages_8_7”, “coqPackages_8_8”, “coqPackages_8_9”, “coqPackages_9_0”, “coqPackages_9_1”, “coqPackages_9_2”
 
 
 
 *Default:*
-` "coqPackages" `
+
+```nix
+"coqPackages"
+```
 
 
 
 *Example:*
-` "Coq packages set" `
+
+```nix
+"Coq packages set"
+```
 
 
 
@@ -337,7 +506,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "coq"
 ]
@@ -346,7 +515,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -365,7 +537,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "v"
 ]
@@ -374,7 +546,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -392,12 +567,18 @@ one of “c++17”, “c++20”, “c++23”, “c++2c”, “gnu++17”, “gnu
 
 
 *Default:*
-` "c++23" `
+
+```nix
+"c++23"
+```
 
 
 
 *Example:*
-` "C++ flavor" `
+
+```nix
+"C++ flavor"
+```
 
 
 
@@ -416,7 +597,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "cpp"
 ]
@@ -425,7 +606,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -444,7 +628,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "cpp"
   "hpp"
@@ -458,7 +642,97 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
+
+
+
+## kernels\.cpp\.lsp\.clangd\.enable
+
+
+
+This option has no description\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+*Example:*
+
+```nix
+"Enable clangd language server"
+```
+
+
+
+## kernels\.cpp\.lsp\.clangd\.debug
+
+
+
+This option has no description\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+*Example:*
+
+```nix
+"Clangd: enable debug output"
+```
+
+
+
+## kernels\.cpp\.lsp\.clangd\.super-debug
+
+
+
+This option has no description\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+*Example:*
+
+```nix
+"Clangd: enable verbose debug output"
+```
 
 
 
@@ -476,12 +750,18 @@ string
 
 
 *Default:*
-` "/home/.gocache" `
+
+```nix
+"/home/.gocache"
+```
 
 
 
 *Example:*
-` "Value of GOCACHE environment variable" `
+
+```nix
+"Value of GOCACHE environment variable"
+```
 
 
 
@@ -494,17 +774,23 @@ This option has no description\.
 
 
 *Type:*
-one of “go”, “go_1_22”, “go_1_23”, “go_1_24”, “go_latest”
+one of “go”, “go_1_23”, “go_1_24”, “go_1_25”, “go_1_26”, “go_latest”
 
 
 
 *Default:*
-` "go" `
+
+```nix
+"go"
+```
 
 
 
 *Example:*
-` "Go version" `
+
+```nix
+"Go version"
+```
 
 
 
@@ -523,7 +809,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "go"
 ]
@@ -532,7 +818,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -551,7 +840,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "go"
 ]
@@ -560,7 +849,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -578,12 +870,76 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Enable gopls language server" `
+
+```nix
+"Enable gopls language server"
+```
+
+
+
+## kernels\.go\.lsp\.gopls\.debug
+
+
+
+This option has no description\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+*Example:*
+
+```nix
+"Gopls: enable debug output"
+```
+
+
+
+## kernels\.go\.lsp\.gopls\.super-debug
+
+
+
+This option has no description\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+*Example:*
+
+```nix
+"Gopls: enable verbose debug output"
+```
 
 
 
@@ -601,12 +957,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable hlint warnings in Jupyter kernel output. Normally you don't want this because it is provided by haskell-language-server." `
+
+```nix
+"Enable hlint warnings in Jupyter kernel output. Normally you don't want this because it is provided by haskell-language-server."
+```
 
 
 
@@ -624,12 +986,18 @@ one of “ghc94”, “ghc96”, “ghc98”, “ghc910”, “ghc912”
 
 
 *Default:*
-` "ghc910" `
+
+```nix
+"ghc910"
+```
 
 
 
 *Example:*
-` "GHC version" `
+
+```nix
+"GHC version"
+```
 
 
 
@@ -648,7 +1016,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "haskell"
 ]
@@ -657,7 +1025,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -676,7 +1047,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "hs"
 ]
@@ -685,7 +1056,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -703,12 +1077,18 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Enable haskell-language-server" `
+
+```nix
+"Enable haskell-language-server"
+```
 
 
 
@@ -726,12 +1106,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Haskell-language-server: enable debug output" `
+
+```nix
+"Haskell-language-server: enable debug output"
+```
 
 
 
@@ -749,12 +1135,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Haskell-language-server: enable verbose debug output" `
+
+```nix
+"Haskell-language-server: enable verbose debug output"
+```
 
 
 
@@ -773,7 +1165,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "julia"
 ]
@@ -782,7 +1174,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -801,7 +1196,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "jl"
 ]
@@ -810,7 +1205,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -823,17 +1221,23 @@ This option has no description\.
 
 
 *Type:*
-one of “julia”, “julia-lts”, “julia-lts-bin”, “julia-stable”, “julia-stable-bin”, “julia_110”, “julia_110-bin”, “julia_111”, “julia_111-bin”, “julia_16-bin”, “julia_19”, “julia_19-bin”
+one of “julia”, “julia-lts”, “julia-lts-bin”, “julia-stable”, “julia-stable-bin”, “julia_110”, “julia_110-bin”, “julia_111”, “julia_111-bin”, “julia_112”, “julia_112-bin”, “julia_19”, “julia_19-bin”
 
 
 
 *Default:*
-` "julia" `
+
+```nix
+"julia"
+```
 
 
 
 *Example:*
-` "Julia version" `
+
+```nix
+"Julia version"
+```
 
 
 
@@ -851,12 +1255,18 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Enable LanguageServer language server" `
+
+```nix
+"Enable LanguageServer language server"
+```
 
 
 
@@ -874,12 +1284,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Log debug messages to stderr" `
+
+```nix
+"Log debug messages to stderr"
+```
 
 
 
@@ -897,12 +1313,18 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Auto-index packages when building environment" `
+
+```nix
+"Auto-index packages when building environment"
+```
 
 
 
@@ -920,12 +1342,18 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Precompile Julia environment for faster imports" `
+
+```nix
+"Precompile Julia environment for faster imports"
+```
 
 
 
@@ -944,7 +1372,7 @@ string
 
 *Default:*
 
-```
+```nix
 ''
   # use Qt as the default backend for plots
   # c.OctaveKernel.plot_settings = dict(backend='qt')
@@ -954,7 +1382,10 @@ string
 
 
 *Example:*
-` "Extra Jupyter configuration" `
+
+```nix
+"Extra Jupyter configuration"
+```
 
 
 
@@ -973,7 +1404,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "octave"
 ]
@@ -982,7 +1413,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -1001,7 +1435,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "m"
 ]
@@ -1010,7 +1444,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -1028,12 +1465,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable PostgreSQL kernel" `
+
+```nix
+"Enable PostgreSQL kernel"
+```
 
 
 
@@ -1052,7 +1495,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "postgres"
 ]
@@ -1061,7 +1504,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -1080,7 +1526,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "sql"
 ]
@@ -1089,7 +1535,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -1108,7 +1557,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "python3"
   "python"
@@ -1118,7 +1567,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -1137,7 +1589,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "py"
 ]
@@ -1146,7 +1598,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -1164,12 +1619,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable Flake8 language server" `
+
+```nix
+"Enable Flake8 language server"
+```
 
 
 
@@ -1187,12 +1648,18 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Enable Jedi language server" `
+
+```nix
+"Enable Jedi language server"
+```
 
 
 
@@ -1210,12 +1677,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable Microsoft Python language server" `
+
+```nix
+"Enable Microsoft Python language server"
+```
 
 
 
@@ -1233,12 +1706,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable pycodestyle language server" `
+
+```nix
+"Enable pycodestyle language server"
+```
 
 
 
@@ -1256,12 +1735,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable Pylint language server" `
+
+```nix
+"Enable Pylint language server"
+```
 
 
 
@@ -1279,12 +1764,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable Pyright language server" `
+
+```nix
+"Enable Pyright language server"
+```
 
 
 
@@ -1302,12 +1793,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable python-language-server language server" `
+
+```nix
+"Enable python-language-server language server"
+```
 
 
 
@@ -1325,12 +1822,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable python-lsp-server language server" `
+
+```nix
+"Enable python-lsp-server language server"
+```
 
 
 
@@ -1348,12 +1851,18 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Enable the variable inspector" `
+
+```nix
+"Enable the variable inspector"
+```
 
 
 
@@ -1371,12 +1880,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Permit user site-packages" `
+
+```nix
+"Permit user site-packages"
+```
 
 
 
@@ -1394,12 +1909,18 @@ value “pypy3” (singular enum)
 
 
 *Default:*
-` "pypy3" `
+
+```nix
+"pypy3"
+```
 
 
 
 *Example:*
-` "PyPy 3 version" `
+
+```nix
+"PyPy 3 version"
+```
 
 
 
@@ -1418,7 +1939,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "python3"
   "python"
@@ -1428,7 +1949,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -1447,7 +1971,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "py"
 ]
@@ -1456,7 +1980,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -1474,12 +2001,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable Flake8 language server" `
+
+```nix
+"Enable Flake8 language server"
+```
 
 
 
@@ -1497,12 +2030,18 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Enable Jedi language server" `
+
+```nix
+"Enable Jedi language server"
+```
 
 
 
@@ -1520,12 +2059,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable Microsoft Python language server" `
+
+```nix
+"Enable Microsoft Python language server"
+```
 
 
 
@@ -1543,12 +2088,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable pycodestyle language server" `
+
+```nix
+"Enable pycodestyle language server"
+```
 
 
 
@@ -1566,12 +2117,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable Pylint language server" `
+
+```nix
+"Enable Pylint language server"
+```
 
 
 
@@ -1589,12 +2146,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable Pyright language server" `
+
+```nix
+"Enable Pyright language server"
+```
 
 
 
@@ -1612,12 +2175,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable python-language-server language server" `
+
+```nix
+"Enable python-language-server language server"
+```
 
 
 
@@ -1635,12 +2204,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Enable python-lsp-server language server" `
+
+```nix
+"Enable python-lsp-server language server"
+```
 
 
 
@@ -1658,12 +2233,18 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Enable the variable inspector" `
+
+```nix
+"Enable the variable inspector"
+```
 
 
 
@@ -1681,12 +2262,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Permit user site-packages" `
+
+```nix
+"Permit user site-packages"
+```
 
 
 
@@ -1704,12 +2291,18 @@ one of “python3”, “python311”, “python312”, “python313”
 
 
 *Default:*
-` "python3" `
+
+```nix
+"python3"
+```
 
 
 
 *Example:*
-` "Python 3 version" `
+
+```nix
+"Python 3 version"
+```
 
 
 
@@ -1728,7 +2321,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "ruby"
 ]
@@ -1737,7 +2330,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -1756,7 +2352,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "rb"
 ]
@@ -1765,7 +2361,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -1783,12 +2382,59 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Enable Solargraph language server" `
+
+```nix
+"Enable Solargraph language server"
+```
+
+
+
+## kernels\.ruby\.lsp\.solargraph\.rubocopYaml
+
+
+
+This option has no description\.
+
+
+
+*Type:*
+string (yaml)
+
+
+
+*Default:*
+
+```nix
+''
+  # Disable whitespace-related rules that don't play well with notebooks
+  Layout/EmptyLines:
+    Enabled: false
+  Layout/LeadingEmptyLines:
+    Enabled: false
+  Layout/TrailingEmptyLines:
+    Enabled: false
+  
+  # This one seems to appear randomly
+  Style/FrozenStringLiteralComment:
+    Enabled: false
+''
+```
+
+
+
+*Example:*
+
+```nix
+"YAML configuration for the rubocop reporter"
+```
 
 
 
@@ -1801,17 +2447,23 @@ This option has no description\.
 
 
 *Type:*
-one of “ruby”, “ruby_3_1”, “ruby_3_2”, “ruby_3_3”, “ruby_3_4”, “ruby_3_5”
+one of “ruby”, “ruby_3_3”, “ruby_3_4”
 
 
 
 *Default:*
-` "ruby" `
+
+```nix
+"ruby"
+```
 
 
 
 *Example:*
-` "Ruby version" `
+
+```nix
+"Ruby version"
+```
 
 
 
@@ -1829,12 +2481,18 @@ list of (string or (submodule))
 
 
 *Default:*
-` [ ] `
+
+```nix
+[ ]
+```
 
 
 
 *Example:*
-` "List of packages" `
+
+```nix
+"List of packages"
+```
 
 
 
@@ -1853,7 +2511,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "rust"
 ]
@@ -1862,7 +2520,10 @@ list of string
 
 
 *Example:*
-` "Notebook attributes" `
+
+```nix
+"Notebook attributes"
+```
 
 
 
@@ -1881,7 +2542,7 @@ list of string
 
 *Default:*
 
-```
+```nix
 [
   "rs"
   "rlib"
@@ -1891,7 +2552,10 @@ list of string
 
 
 *Example:*
-` "File extensions" `
+
+```nix
+"File extensions"
+```
 
 
 
@@ -1909,12 +2573,18 @@ boolean
 
 
 *Default:*
-` true `
+
+```nix
+true
+```
 
 
 
 *Example:*
-` "Rust-analyzer: enable" `
+
+```nix
+"Rust-analyzer: enable"
+```
 
 
 
@@ -1932,12 +2602,18 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
 *Example:*
-` "Rust-analyzer: debug output" `
+
+```nix
+"Rust-analyzer: debug output"
+```
 
 
 
@@ -1950,17 +2626,23 @@ This option has no description\.
 
 
 *Type:*
-one of “rust”, “rust_1_89”
+one of “rust”, “rust_1_95”
 
 
 
 *Default:*
-` "rust" `
+
+```nix
+"rust"
+```
 
 
 
 *Example:*
-` "Rust version" `
+
+```nix
+"Rust version"
+```
 
 
 
@@ -1978,7 +2660,10 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
@@ -1996,7 +2681,10 @@ string
 
 
 *Default:*
-` "codedown-environment" `
+
+```nix
+"codedown-environment"
+```
 
 
 
@@ -2014,7 +2702,10 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
@@ -2032,7 +2723,10 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
@@ -2050,7 +2744,10 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
 
@@ -2068,6 +2765,9 @@ boolean
 
 
 *Default:*
-` false `
+
+```nix
+false
+```
 
 
