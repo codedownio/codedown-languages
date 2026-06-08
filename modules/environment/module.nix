@@ -9,6 +9,12 @@ with lib;
       default = {};
       description = "Environment variables to set.";
     };
+
+    environment.extraNix = mkOption {
+      type = types.codeMirrorLines "nix";
+      default = "";
+      description = "Arbitrary Nix expression that evaluates to a derivation, which will be joined into the environment. The expression has \"pkgs\" in scope, an imported Nixpkgs package set.";
+    };
   };
 
   config = {

@@ -73,6 +73,11 @@ let
     done
   '';
 
+  extraNixCode = evaluated.config.environment.extraNix;
+  extraNixDrv =
+    if extraNixCode == "" then []
+    else [(import (builtins.toFile "extra-nix.nix" "{ pkgs }:\n${extraNixCode}") { pkgs = pkgsStable; })];
+
   allIcons =
     let
       getAllIcons = pkg: filter (x: x != null) (
@@ -106,6 +111,7 @@ symlinkJoin {
     ++ attrValues evaluated.config.packages
     ++ lib.mapAttrsToList linkBinaries evaluated.config.extraBinDirs
     ++ [(writeTextDir "lib/codedown/.env" (lib.generators.toKeyValue {} evaluated.config.environment.variables))]
+    ++ extraNixDrv
     ++ [allIcons]
   ;
 
