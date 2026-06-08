@@ -1,9 +1,5 @@
 { pkgsStable, ... }@args:
 
-let
-  isAarch64 = pkgsStable.stdenv.hostPlatform.isAarch64;
-in
-
 {
   bash = import ./sample_environments/bash.nix args;
   clojure = import ./sample_environments/clojure.nix args;
@@ -39,7 +35,7 @@ in
   shells-fish = import ./sample_environments/shells-fish.nix args;
   shells-zsh = import ./sample_environments/shells-zsh.nix args;
   spellchecker = import ./sample_environments/spellchecker.nix args;
-} // pkgsStable.lib.optionalAttrs (!isAarch64) {
+} // pkgsStable.lib.optionalAttrs (pkgsStable.stdenv.hostPlatform.system != "aarch64-linux") {
   # Disable these in aarch 64 builds; see
   # https://github.com/codedownio/codedown-languages/issues/96
   julia110 = import ./sample_environments/julia110.nix args;
