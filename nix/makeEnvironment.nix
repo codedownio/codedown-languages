@@ -20,7 +20,9 @@ let
   chooseMeta = callPackage ./choose-meta.nix {};
   evaluated = (callPackage ./evaluate-config.nix { inherit pkgsStable pkgsMaster; }) config;
   removeNonDefaultSettings = callPackage ./remove-non-default-settings.nix {};
-  nixosOptionsToSettingsSchema = callPackage ./nixos-options-to-settings-schema.nix {};
+  # Only used for the channel-level environment settings_schema, which is currently exposed on the
+  # Nixpkgs-channel overlay makeEnvironment only (see nix/nixpkgs-overlay.nix), not here.
+  # nixosOptionsToSettingsSchema = callPackage ./nixos-options-to-settings-schema.nix {};
 
   builtExporters = evaluated.config.builtExporters;
   builtKernels = mapAttrs (_: kernel:
@@ -111,7 +113,8 @@ symlinkJoin {
     ++ lib.optionals (builtins.length exporters > 0) [(writeTextDir "lib/codedown/exporters.yaml" (lib.generators.toYAML {} exporters))]
     ++ attrValues evaluated.config.packages
     ++ lib.mapAttrsToList linkBinaries evaluated.config.extraBinDirs
-    ++ [(writeTextDir "lib/codedown/.env" (lib.generators.toKeyValue {} evaluated.config.environment.variables))]
+    # environment.variables isn't wired up to anything at runtime yet, so skip the .env file for now.
+    # ++ [(writeTextDir "lib/codedown/.env" (lib.generators.toKeyValue {} evaluated.config.environment.variables))]
     ++ extraNixDrv
     ++ [allIcons]
   ;
@@ -127,9 +130,11 @@ symlinkJoin {
         // (mapAttrs' (n: v: nameValuePair n (mkPackageUiMetadata v)) evaluated.config.packages)
       ;
 
-      # Schema for the channel-level "environment.*" settings, keyed relative to the environment
-      # submodule (e.g. "variables", "extraNix"). Picked up during hydration.
-      settings_schema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } evaluated.options.environment;
+      # No channel-level environment settings are exposed here yet (they currently live only on the
+      # Nixpkgs-channel overlay makeEnvironment; see nix/nixpkgs-overlay.nix). Leave the field present
+      # but empty so the shape is stable and we can populate it later.
+      settings_schema = {};
+      # settings_schema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } evaluated.options.environment;
     };
 
     ui_metadata_yaml = writeText "ui-metadata.yaml" (lib.generators.toYAML {} ui_metadata);

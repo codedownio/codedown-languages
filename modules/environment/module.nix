@@ -4,12 +4,14 @@ with lib;
 
 {
   options = {
-    environment.variables = mkOption {
-      title = "Environment variables";
-      type = types.attrsOf types.str;
-      default = {};
-      description = "Environment variables to set.";
-    };
+    # Commented out for now: environment.variables isn't wired up to anything at runtime yet (the
+    # .env file it produced wasn't consumed), so it's hidden from the settings UI until it does.
+    # environment.variables = mkOption {
+    #   title = "Environment variables";
+    #   type = types.attrsOf types.str;
+    #   default = {};
+    #   description = "Environment variables to set.";
+    # };
 
     environment.extraNix = mkOption {
       title = "Extra Nix";

@@ -101,8 +101,9 @@ self: super: {
       evaluated = evaluate self (builtins.attrNames packageConfig) packageConfig;
 
       # environment.variables -> a .env file joined into the environment.
-      variables = environmentConfig.variables or {};
-      envFileDrv = lib.optionals (variables != {}) [(self.writeTextDir "lib/codedown/.env" (lib.generators.toKeyValue {} variables))];
+      # Commented out for now: the .env file isn't consumed at runtime yet, so it doesn't do anything.
+      # variables = environmentConfig.variables or {};
+      # envFileDrv = lib.optionals (variables != {}) [(self.writeTextDir "lib/codedown/.env" (lib.generators.toKeyValue {} variables))];
 
       # environment.extraNix -> an arbitrary derivation (with "pkgs" in scope) joined into the environment.
       extraNixCode = environmentConfig.extraNix or "";
@@ -112,7 +113,7 @@ self: super: {
     in
       symlinkJoin {
         inherit name;
-        paths = evaluated.config.paths ++ envFileDrv ++ extraNixDrv;
+        paths = evaluated.config.paths ++ extraNixDrv;
 
         passthru = {
           ui_metadata = {
