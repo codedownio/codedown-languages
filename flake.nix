@@ -33,12 +33,13 @@
         '';
 
         optionsDoc = pkgsMaster.nixosOptionsDoc {
-          options = ((pkgsMaster.callPackage ./nix/evaluate-config.nix {
+          # Fold each option's "title" into its description so it survives into the docs.
+          options = (import ./nix/fold-option-titles.nix { lib = pkgsMaster.lib; }) (((pkgsMaster.callPackage ./nix/evaluate-config.nix {
             inherit pkgsStable pkgsMaster;
             extraSpecialArgs = {
               pkgs = {};
             };
-          }) {}).options;
+          }) {}).options);
           transformOptions = opt: opt // {
             # Remove declarations to hide "Declared by" lines
             declarations = [];

@@ -6,26 +6,26 @@ with lib;
   options = {
     kernels.postgres = {
       enable = mkOption {
-        example = "Enable PostgreSQL kernel";
+        title = "Enable PostgreSQL kernel";
         type = types.bool;
         default = false;
       };
 
       packages = mkOption {
-        example = "List of packages";
+        title = "List of packages";
         type = types.listOf types.str;
         default = [];
         visible = false;
       };
 
       interface.attrs = mkOption {
-        example = boilerplate.attrsTitle;
+        title = boilerplate.attrsTitle;
         description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["postgres"];
       };
       interface.extensions = mkOption {
-        example = boilerplate.extensionsTitle;
+        title = boilerplate.extensionsTitle;
         description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["sql"];

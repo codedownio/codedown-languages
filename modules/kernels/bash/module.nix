@@ -11,27 +11,27 @@ in
   options = {
     kernels.bash = {
       enable = mkOption {
-        example = "Enable Bash kernel";
+        title = "Enable Bash kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       interface.attrs = mkOption {
-        example = boilerplate.attrsTitle;
+        title = boilerplate.attrsTitle;
         description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["bash"];
       };
       interface.extensions = mkOption {
-        example = boilerplate.extensionsTitle;
+        title = boilerplate.extensionsTitle;
         description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["sh" "bash"];
       };
 
       lsp.bash-language-server.enable = mkOption {
-        example = "Enable Bash language server";
+        title = "Enable Bash language server";
         type = types.bool;
         default = true;
       };

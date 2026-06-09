@@ -16,10 +16,13 @@ let
 
   common = callPackage ../../kernels/common.nix {};
 
+  # Also writes a dependency file at "<output>.deps" (typst's native JSON
+  # {"inputs": [...]}, paths relative to cwd) so the runner can watch imported
+  # files and re-render when any of them changes. See exporterInfoDeps below.
   script = common.writeShellScriptBinWithAttrs {} "typst-export" ''
     echo_and_run() { echo "$*" ; "$@" ; }
     echo_and_run export PATH="''${PATH:+''${PATH}:}"
-    echo_and_run ${typst}/bin/typst compile "$1" "$2"
+    echo_and_run ${typst}/bin/typst compile --deps "$2.deps" "$1" "$2"
   '';
 
   typstToUse = typst.withPackages (ps: (map (x: ps.${x}) packages));
@@ -43,6 +46,7 @@ let
     args = [(script + "/bin/typst-export")];
     input_extensions = ["typ"];
     pandoc = "${pandoc}/bin/pandoc";
+    deps = "typst_json";
   };
 
 in

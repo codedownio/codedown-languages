@@ -11,21 +11,21 @@ in
   options = {
     kernels.cpp = {
       enable = mkOption {
-        example = "Enable C++ kernel";
+        title = "Enable C++ kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
-        example = "List of packages";
+        title = "List of packages";
         type = types.listOf types.str;
         default = [];
         visible = false;
       };
 
       flavor = mkOption {
-        example = "C++ flavor";
+        title = "C++ flavor";
         type = types.enum [
           # "c++11"
           # "c++14"
@@ -46,30 +46,30 @@ in
       };
 
       interface.attrs = mkOption {
-        example = boilerplate.attrsTitle;
+        title = boilerplate.attrsTitle;
         description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["cpp"];
       };
       interface.extensions = mkOption {
-        example = boilerplate.extensionsTitle;
+        title = boilerplate.extensionsTitle;
         description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["cpp" "hpp" "cxx" "hxx" "c" "h"];
       };
 
       lsp.clangd.enable = mkOption {
-        example = "Enable clangd language server";
+        title = "Enable clangd language server";
         type = types.bool;
         default = true;
       };
       lsp.clangd.debug = mkOption {
-        example = "Clangd: enable debug output";
+        title = "Clangd: enable debug output";
         type = types.bool;
         default = false;
       };
       lsp.clangd.super-debug = mkOption {
-        example = "Clangd: enable verbose debug output";
+        title = "Clangd: enable verbose debug output";
         type = types.bool;
         default = false;
       };

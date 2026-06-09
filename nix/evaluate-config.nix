@@ -8,16 +8,7 @@
 config:
 
 let
-  extendedLib = lib.extend (final: prev: {
-    types = prev.types // {
-      codeMirrorLines = mode: prev.mkOptionType {
-        name = "codeMirrorLines";
-        description = "string (${mode})";
-        check = builtins.isString;
-        merge = prev.options.mergeEqualOption;
-      } // { codeMirrorMode = mode; };
-    };
-  });
+  extendedLib = import ./extended-lib.nix { inherit lib; };
 
 in
 

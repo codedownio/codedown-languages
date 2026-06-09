@@ -14,17 +14,8 @@ let
   removeNonDefaultSettings = callPackage ./remove-non-default-settings.nix {};
   nixosOptionsToSettingsSchema = callPackage ./nixos-options-to-settings-schema.nix {};
 
-  # Lib extended with the codeMirrorLines option type used by the environment module.
-  extendedLib = lib.extend (final: prev: {
-    types = prev.types // {
-      codeMirrorLines = mode: prev.mkOptionType {
-        name = "codeMirrorLines";
-        description = "string (${mode})";
-        check = builtins.isString;
-        merge = prev.options.mergeEqualOption;
-      } // { codeMirrorMode = mode; };
-    };
-  });
+  # Lib extended with the codeMirrorLines option type + "title" support, used by the environment module.
+  extendedLib = import ./extended-lib.nix { inherit lib; };
 
   # Schema for the channel-level "environment.*" settings (e.g. environment.variables,
   # environment.extraNix), keyed relative to the environment submodule. Evaluated independently

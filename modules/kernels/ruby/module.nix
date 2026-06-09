@@ -11,21 +11,21 @@ in
   options = {
     kernels.ruby = {
       enable = mkOption {
-        example = "Enable Ruby kernel";
+        title = "Enable Ruby kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
-        example = "List of packages";
+        title = "List of packages";
         type = types.listOf types.str;
         default = [];
         visible = false;
       };
 
       rubyPackage = mkOption {
-        example = "Ruby version";
+        title = "Ruby version";
         type = types.enum ([
           "ruby"
           # "ruby_3_1" # EOL
@@ -43,26 +43,26 @@ in
       };
 
       interface.attrs = mkOption {
-        example = boilerplate.attrsTitle;
+        title = boilerplate.attrsTitle;
         description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["ruby"];
       };
       interface.extensions = mkOption {
-        example = boilerplate.extensionsTitle;
+        title = boilerplate.extensionsTitle;
         description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["rb"];
       };
 
       lsp.solargraph.enable = mkOption {
-        example = "Enable Solargraph language server";
+        title = "Enable Solargraph language server";
         type = types.bool;
         default = true;
       };
 
       lsp.solargraph.rubocopYaml = mkOption {
-        example = "YAML configuration for the rubocop reporter";
+        title = "YAML configuration for the rubocop reporter";
         type = types.codeMirrorLines "yaml";
         default = ''
           # Disable whitespace-related rules that don't play well with notebooks

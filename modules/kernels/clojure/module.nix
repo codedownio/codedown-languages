@@ -6,27 +6,27 @@ with lib;
   options = {
     kernels.clojure = {
       enable = mkOption {
-        example = "Enable Clojure kernel";
+        title = "Enable Clojure kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       interface.attrs = mkOption {
-        example = boilerplate.attrsTitle;
+        title = boilerplate.attrsTitle;
         description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["clojure"];
       };
       interface.extensions = mkOption {
-        example = boilerplate.extensionsTitle;
+        title = boilerplate.extensionsTitle;
         description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["clj"];
       };
 
       lsp.clojure-lsp.enable = mkOption {
-        example = "Enable clojure-lsp language server";
+        title = "Enable clojure-lsp language server";
         type = types.bool;
         default = true;
       };

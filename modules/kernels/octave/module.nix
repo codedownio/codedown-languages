@@ -11,34 +11,34 @@ in
   options = {
     kernels.octave = {
       enable = mkOption {
-        example = "Enable Octave kernel";
+        title = "Enable Octave kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
-        example = "List of packages";
+        title = "List of packages";
         type = types.listOf types.str;
         default = [];
         visible = false;
       };
 
       interface.attrs = mkOption {
-        example = boilerplate.attrsTitle;
+        title = boilerplate.attrsTitle;
         description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["octave"];
       };
       interface.extensions = mkOption {
-        example = boilerplate.extensionsTitle;
+        title = boilerplate.extensionsTitle;
         description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["m"];
       };
 
       extraJupyterConfig = mkOption {
-        example = "Extra Jupyter configuration";
+        title = "Extra Jupyter configuration";
         type = types.str;
         default = ''
           # use Qt as the default backend for plots

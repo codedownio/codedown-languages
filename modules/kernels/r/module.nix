@@ -6,34 +6,34 @@ with lib;
   options = {
     kernels.R = {
       enable = mkOption {
-        example = "Enable R kernel";
+        title = "Enable R kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
-        example = "List of packages";
+        title = "List of packages";
         type = types.listOf types.str;
         default = [];
         visible = false;
       };
 
       interface.attrs = mkOption {
-        example = boilerplate.attrsTitle;
+        title = boilerplate.attrsTitle;
         description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["r" "R"];
       };
       interface.extensions = mkOption {
-        example = boilerplate.extensionsTitle;
+        title = boilerplate.extensionsTitle;
         description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["r"];
       };
 
       lsp.languageserver.enable = mkOption {
-        example = "Enable languageserver";
+        title = "Enable languageserver";
         type = types.bool;
         default = true;
       };

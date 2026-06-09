@@ -1,5 +1,7 @@
 ## environment\.extraNix
 
+**Extra Nix**
+
 Arbitrary Nix expression that evaluates to a derivation, which will be joined into the environment\. The expression has “pkgs” in scope, an imported Nixpkgs package set\.
 
 
@@ -17,9 +19,25 @@ string (nix)
 
 
 
+*Example:*
+
+```nix
+''
+  with pkgs;
+  symlinkJoin {
+    name = "extra-packages";
+    paths = [ hello cowsay ];
+  }
+''
+```
+
+
+
 ## environment\.variables
 
 
+
+**Environment variables**
 
 Environment variables to set\.
 
@@ -42,6 +60,8 @@ attribute set of string
 
 
 
+**TeX Live scheme**
+
 The TeX Live scheme to use, as an attribute of pkgs\.texlive\.combined\.\*
 
 
@@ -55,14 +75,6 @@ value “scheme-full” (singular enum)
 
 ```nix
 "scheme-full"
-```
-
-
-
-*Example:*
-
-```nix
-"TeX Live scheme"
 ```
 
 
@@ -71,6 +83,8 @@ value “scheme-full” (singular enum)
 
 
 
+**TeX Live scheme**
+
 The TeX Live scheme to use, as an attribute of pkgs\.texlive\.combined\.\*
 
 
@@ -88,17 +102,11 @@ value “scheme-full” (singular enum)
 
 
 
-*Example:*
-
-```nix
-"TeX Live scheme"
-```
-
-
-
 ## exporters\.typst\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -119,17 +127,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## exporters\.typst\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -150,19 +152,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## exporters\.typst\.lsp\.tinymist\.enable
 
 
 
-This option has no description\.
+**Enable tinymist language server**
 
 
 
@@ -179,17 +173,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable tinymist language server"
-```
-
-
-
 ## kernels\.R\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -211,17 +199,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.R\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -242,19 +224,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.R\.lsp\.languageserver\.enable
 
 
 
-This option has no description\.
+**Enable languageserver**
 
 
 
@@ -271,17 +245,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable languageserver"
-```
-
-
-
 ## kernels\.bash\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -302,17 +270,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.bash\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -334,19 +296,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.bash\.lsp\.bash-language-server\.enable
 
 
 
-This option has no description\.
+**Enable Bash language server**
 
 
 
@@ -363,17 +317,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable Bash language server"
-```
-
-
-
 ## kernels\.clojure\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -394,17 +342,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.clojure\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -425,19 +367,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.clojure\.lsp\.clojure-lsp\.enable
 
 
 
-This option has no description\.
+**Enable clojure-lsp language server**
 
 
 
@@ -454,19 +388,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable clojure-lsp language server"
-```
-
-
-
 ## kernels\.coq\.coqPackages
 
 
 
-This option has no description\.
+**Coq packages set**
 
 
 
@@ -483,17 +409,11 @@ one of “coqPackages”, “coqPackages_8_10”, “coqPackages_8_11”, “coq
 
 
 
-*Example:*
-
-```nix
-"Coq packages set"
-```
-
-
-
 ## kernels\.coq\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -514,17 +434,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.coq\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -545,19 +459,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.cpp\.flavor
 
 
 
-This option has no description\.
+**C++ flavor**
 
 
 
@@ -574,17 +480,11 @@ one of “c++17”, “c++20”, “c++23”, “c++2c”, “gnu++17”, “gnu
 
 
 
-*Example:*
-
-```nix
-"C++ flavor"
-```
-
-
-
 ## kernels\.cpp\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -605,17 +505,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.cpp\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -641,19 +535,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.cpp\.lsp\.clangd\.enable
 
 
 
-This option has no description\.
+**Enable clangd language server**
 
 
 
@@ -670,19 +556,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable clangd language server"
-```
-
-
-
 ## kernels\.cpp\.lsp\.clangd\.debug
 
 
 
-This option has no description\.
+**Clangd: enable debug output**
 
 
 
@@ -695,14 +573,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Clangd: enable debug output"
 ```
 
 
@@ -711,7 +581,7 @@ false
 
 
 
-This option has no description\.
+**Clangd: enable verbose debug output**
 
 
 
@@ -728,19 +598,11 @@ false
 
 
 
-*Example:*
-
-```nix
-"Clangd: enable verbose debug output"
-```
-
-
-
 ## kernels\.go\.go\.gocache
 
 
 
-This option has no description\.
+**Value of GOCACHE environment variable**
 
 
 
@@ -757,19 +619,11 @@ string
 
 
 
-*Example:*
-
-```nix
-"Value of GOCACHE environment variable"
-```
-
-
-
 ## kernels\.go\.goPackage
 
 
 
-This option has no description\.
+**Go version**
 
 
 
@@ -786,17 +640,11 @@ one of “go”, “go_1_23”, “go_1_24”, “go_1_25”, “go_1_26”, “
 
 
 
-*Example:*
-
-```nix
-"Go version"
-```
-
-
-
 ## kernels\.go\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -817,17 +665,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.go\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -848,19 +690,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.go\.lsp\.gopls\.enable
 
 
 
-This option has no description\.
+**Enable gopls language server**
 
 
 
@@ -877,19 +711,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable gopls language server"
-```
-
-
-
 ## kernels\.go\.lsp\.gopls\.debug
 
 
 
-This option has no description\.
+**Gopls: enable debug output**
 
 
 
@@ -902,14 +728,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Gopls: enable debug output"
 ```
 
 
@@ -918,7 +736,7 @@ false
 
 
 
-This option has no description\.
+**Gopls: enable verbose debug output**
 
 
 
@@ -931,14 +749,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Gopls: enable verbose debug output"
 ```
 
 
@@ -947,7 +757,7 @@ false
 
 
 
-This option has no description\.
+**Enable hlint warnings in Jupyter kernel output\. Normally you don’t want this because it is provided by haskell-language-server\.**
 
 
 
@@ -964,19 +774,11 @@ false
 
 
 
-*Example:*
-
-```nix
-"Enable hlint warnings in Jupyter kernel output. Normally you don't want this because it is provided by haskell-language-server."
-```
-
-
-
 ## kernels\.haskell\.ghcPackage
 
 
 
-This option has no description\.
+**GHC version**
 
 
 
@@ -993,17 +795,11 @@ one of “ghc94”, “ghc96”, “ghc98”, “ghc910”, “ghc912”
 
 
 
-*Example:*
-
-```nix
-"GHC version"
-```
-
-
-
 ## kernels\.haskell\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -1024,17 +820,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.haskell\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -1055,19 +845,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.haskell\.lsp\.haskell-language-server\.enable
 
 
 
-This option has no description\.
+**Enable haskell-language-server**
 
 
 
@@ -1084,19 +866,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable haskell-language-server"
-```
-
-
-
 ## kernels\.haskell\.lsp\.haskell-language-server\.debug
 
 
 
-This option has no description\.
+**Haskell-language-server: enable debug output**
 
 
 
@@ -1109,14 +883,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Haskell-language-server: enable debug output"
 ```
 
 
@@ -1125,7 +891,7 @@ false
 
 
 
-This option has no description\.
+**Haskell-language-server: enable verbose debug output**
 
 
 
@@ -1142,17 +908,11 @@ false
 
 
 
-*Example:*
-
-```nix
-"Haskell-language-server: enable verbose debug output"
-```
-
-
-
 ## kernels\.julia\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -1173,17 +933,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.julia\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -1204,19 +958,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.julia\.juliaPackage
 
 
 
-This option has no description\.
+**Julia version**
 
 
 
@@ -1233,19 +979,11 @@ one of “julia”, “julia-lts”, “julia-lts-bin”, “julia-stable”, �
 
 
 
-*Example:*
-
-```nix
-"Julia version"
-```
-
-
-
 ## kernels\.julia\.lsp\.LanguageServer\.enable
 
 
 
-This option has no description\.
+**Enable LanguageServer language server**
 
 
 
@@ -1262,19 +1000,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable LanguageServer language server"
-```
-
-
-
 ## kernels\.julia\.lsp\.LanguageServer\.debug
 
 
 
-This option has no description\.
+**Log debug messages to stderr**
 
 
 
@@ -1291,19 +1021,11 @@ false
 
 
 
-*Example:*
-
-```nix
-"Log debug messages to stderr"
-```
-
-
-
 ## kernels\.julia\.lsp\.LanguageServer\.index
 
 
 
-This option has no description\.
+**Auto-index packages when building environment**
 
 
 
@@ -1320,17 +1042,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Auto-index packages when building environment"
-```
-
-
-
 ## kernels\.julia\.precompile
 
 
+
+**Precompile Julia environment for faster imports**
 
 In some cases, precompilation can make the build fail, so turning this off can help\.
 
@@ -1349,19 +1065,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Precompile Julia environment for faster imports"
-```
-
-
-
 ## kernels\.octave\.extraJupyterConfig
 
 
 
-This option has no description\.
+**Extra Jupyter configuration**
 
 
 
@@ -1381,17 +1089,11 @@ string
 
 
 
-*Example:*
-
-```nix
-"Extra Jupyter configuration"
-```
-
-
-
 ## kernels\.octave\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -1412,17 +1114,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.octave\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -1443,19 +1139,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.postgres\.enable
 
 
 
-This option has no description\.
+**Enable PostgreSQL kernel**
 
 
 
@@ -1472,17 +1160,11 @@ false
 
 
 
-*Example:*
-
-```nix
-"Enable PostgreSQL kernel"
-```
-
-
-
 ## kernels\.postgres\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -1503,17 +1185,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.postgres\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -1534,17 +1210,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.pypy3\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -1566,17 +1236,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.pypy3\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -1597,19 +1261,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.pypy3\.lsp\.flake8\.enable
 
 
 
-This option has no description\.
+**Enable Flake8 language server**
 
 
 
@@ -1626,19 +1282,11 @@ false
 
 
 
-*Example:*
-
-```nix
-"Enable Flake8 language server"
-```
-
-
-
 ## kernels\.pypy3\.lsp\.jedi\.enable
 
 
 
-This option has no description\.
+**Enable Jedi language server**
 
 
 
@@ -1655,19 +1303,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable Jedi language server"
-```
-
-
-
 ## kernels\.pypy3\.lsp\.microsoft\.enable
 
 
 
-This option has no description\.
+**Enable Microsoft Python language server**
 
 
 
@@ -1680,14 +1320,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Enable Microsoft Python language server"
 ```
 
 
@@ -1696,7 +1328,7 @@ false
 
 
 
-This option has no description\.
+**Enable pycodestyle language server**
 
 
 
@@ -1709,14 +1341,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Enable pycodestyle language server"
 ```
 
 
@@ -1725,7 +1349,7 @@ false
 
 
 
-This option has no description\.
+**Enable Pylint language server**
 
 
 
@@ -1738,14 +1362,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Enable Pylint language server"
 ```
 
 
@@ -1754,7 +1370,7 @@ false
 
 
 
-This option has no description\.
+**Enable Pyright language server**
 
 
 
@@ -1767,14 +1383,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Enable Pyright language server"
 ```
 
 
@@ -1783,7 +1391,7 @@ false
 
 
 
-This option has no description\.
+**Enable python-language-server language server**
 
 
 
@@ -1796,14 +1404,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Enable python-language-server language server"
 ```
 
 
@@ -1812,7 +1412,7 @@ false
 
 
 
-This option has no description\.
+**Enable python-lsp-server language server**
 
 
 
@@ -1829,17 +1429,11 @@ false
 
 
 
-*Example:*
-
-```nix
-"Enable python-lsp-server language server"
-```
-
-
-
 ## kernels\.pypy3\.misc\.enableVariableInspector
 
 
+
+**Enable the variable inspector**
 
 This will show a summary of the currently defined variables in the UI\.
 
@@ -1858,17 +1452,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable the variable inspector"
-```
-
-
-
 ## kernels\.pypy3\.misc\.permitUserSite
 
 
+
+**Permit user site-packages**
 
 Skip setting the PYTHONNOUSERSITE variable\. This will allow your Python code to import local packages (e\.g\. from ~/\.local/lib)\. This is useful if you want to use pip to install Python packages independently of Nix\.
 
@@ -1887,19 +1475,11 @@ false
 
 
 
-*Example:*
-
-```nix
-"Permit user site-packages"
-```
-
-
-
 ## kernels\.pypy3\.python3Package
 
 
 
-This option has no description\.
+**PyPy 3 version**
 
 
 
@@ -1916,17 +1496,11 @@ value “pypy3” (singular enum)
 
 
 
-*Example:*
-
-```nix
-"PyPy 3 version"
-```
-
-
-
 ## kernels\.python3\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -1948,17 +1522,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.python3\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -1979,19 +1547,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.python3\.lsp\.flake8\.enable
 
 
 
-This option has no description\.
+**Enable Flake8 language server**
 
 
 
@@ -2008,19 +1568,11 @@ false
 
 
 
-*Example:*
-
-```nix
-"Enable Flake8 language server"
-```
-
-
-
 ## kernels\.python3\.lsp\.jedi\.enable
 
 
 
-This option has no description\.
+**Enable Jedi language server**
 
 
 
@@ -2037,19 +1589,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable Jedi language server"
-```
-
-
-
 ## kernels\.python3\.lsp\.microsoft\.enable
 
 
 
-This option has no description\.
+**Enable Microsoft Python language server**
 
 
 
@@ -2062,14 +1606,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Enable Microsoft Python language server"
 ```
 
 
@@ -2078,7 +1614,7 @@ false
 
 
 
-This option has no description\.
+**Enable pycodestyle language server**
 
 
 
@@ -2091,14 +1627,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Enable pycodestyle language server"
 ```
 
 
@@ -2107,7 +1635,7 @@ false
 
 
 
-This option has no description\.
+**Enable Pylint language server**
 
 
 
@@ -2120,14 +1648,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Enable Pylint language server"
 ```
 
 
@@ -2136,7 +1656,7 @@ false
 
 
 
-This option has no description\.
+**Enable Pyright language server**
 
 
 
@@ -2149,14 +1669,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Enable Pyright language server"
 ```
 
 
@@ -2165,7 +1677,7 @@ false
 
 
 
-This option has no description\.
+**Enable python-language-server language server**
 
 
 
@@ -2178,14 +1690,6 @@ boolean
 
 ```nix
 false
-```
-
-
-
-*Example:*
-
-```nix
-"Enable python-language-server language server"
 ```
 
 
@@ -2194,7 +1698,7 @@ false
 
 
 
-This option has no description\.
+**Enable python-lsp-server language server**
 
 
 
@@ -2211,17 +1715,11 @@ false
 
 
 
-*Example:*
-
-```nix
-"Enable python-lsp-server language server"
-```
-
-
-
 ## kernels\.python3\.misc\.enableVariableInspector
 
 
+
+**Enable the variable inspector**
 
 This will show a summary of the currently defined variables in the UI\.
 
@@ -2240,17 +1738,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable the variable inspector"
-```
-
-
-
 ## kernels\.python3\.misc\.permitUserSite
 
 
+
+**Permit user site-packages**
 
 Skip setting the PYTHONNOUSERSITE variable\. This will allow your Python code to import local packages (e\.g\. from ~/\.local/lib)\. This is useful if you want to use pip to install Python packages independently of Nix\.
 
@@ -2269,19 +1761,11 @@ false
 
 
 
-*Example:*
-
-```nix
-"Permit user site-packages"
-```
-
-
-
 ## kernels\.python3\.python3Package
 
 
 
-This option has no description\.
+**Python 3 version**
 
 
 
@@ -2298,17 +1782,11 @@ one of “python3”, “python311”, “python312”, “python313”
 
 
 
-*Example:*
-
-```nix
-"Python 3 version"
-```
-
-
-
 ## kernels\.ruby\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -2329,17 +1807,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.ruby\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -2360,19 +1832,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.ruby\.lsp\.solargraph\.enable
 
 
 
-This option has no description\.
+**Enable Solargraph language server**
 
 
 
@@ -2389,19 +1853,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Enable Solargraph language server"
-```
-
-
-
 ## kernels\.ruby\.lsp\.solargraph\.rubocopYaml
 
 
 
-This option has no description\.
+**YAML configuration for the rubocop reporter**
 
 
 
@@ -2430,19 +1886,11 @@ string (yaml)
 
 
 
-*Example:*
-
-```nix
-"YAML configuration for the rubocop reporter"
-```
-
-
-
 ## kernels\.ruby\.rubyPackage
 
 
 
-This option has no description\.
+**Ruby version**
 
 
 
@@ -2459,19 +1907,11 @@ one of “ruby”, “ruby_3_3”, “ruby_3_4”
 
 
 
-*Example:*
-
-```nix
-"Ruby version"
-```
-
-
-
 ## kernels\.rust\.packages
 
 
 
-This option has no description\.
+**List of packages**
 
 
 
@@ -2488,17 +1928,11 @@ list of (string or (submodule))
 
 
 
-*Example:*
-
-```nix
-"List of packages"
-```
-
-
-
 ## kernels\.rust\.interface\.attrs
 
 
+
+**Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
 
@@ -2519,17 +1953,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"Notebook attributes"
-```
-
-
-
 ## kernels\.rust\.interface\.extensions
 
 
+
+**File extensions**
 
 Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
 
@@ -2551,19 +1979,11 @@ list of string
 
 
 
-*Example:*
-
-```nix
-"File extensions"
-```
-
-
-
 ## kernels\.rust\.lsp\.rust-analyzer\.enable
 
 
 
-This option has no description\.
+**Rust-analyzer: enable**
 
 
 
@@ -2580,19 +2000,11 @@ true
 
 
 
-*Example:*
-
-```nix
-"Rust-analyzer: enable"
-```
-
-
-
 ## kernels\.rust\.lsp\.rust-analyzer\.debug
 
 
 
-This option has no description\.
+**Rust-analyzer: debug output**
 
 
 
@@ -2609,19 +2021,11 @@ false
 
 
 
-*Example:*
-
-```nix
-"Rust-analyzer: debug output"
-```
-
-
-
 ## kernels\.rust\.rustPackage
 
 
 
-This option has no description\.
+**Rust version**
 
 
 
@@ -2634,14 +2038,6 @@ one of “rust”, “rust_1_95”
 
 ```nix
 "rust"
-```
-
-
-
-*Example:*
-
-```nix
-"Rust version"
 ```
 
 

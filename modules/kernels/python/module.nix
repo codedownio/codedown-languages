@@ -10,11 +10,11 @@ let
         type = types.str;
       };
       outputs = mkOption {
-        example = "Package outputs to include";
+        title = "Package outputs to include";
         type = types.listOf types.str;
       };
       extras = mkOption {
-        example = "Extras (optional-dependencies) to enable for the package";
+        title = "Extras (optional-dependencies) to enable for the package";
         type = types.listOf types.str;
         default = [];
       };
@@ -27,7 +27,7 @@ let
         options = {
           subPackage = {
             extras = mkOption {
-              example = "Extras (optional-dependencies) to enable for the package";
+              title = "Extras (optional-dependencies) to enable for the package";
               type = types.listOf types.str;
               default = [];
             };
@@ -39,14 +39,14 @@ let
 
   mkOptions = packageOption: {
     enable = mkOption {
-      example = "Enable Python 3 kernel";
+      title = "Enable Python 3 kernel";
       type = types.bool;
       default = false;
       visible = false;
     };
 
     packages = mkOption {
-      example = "List of packages";
+      title = "List of packages";
       type = types.listOf (types.either types.str subPackage);
       default = [];
       visible = false;
@@ -55,67 +55,67 @@ let
     python3Package = packageOption;
 
     interface.attrs = mkOption {
-      example = boilerplate.attrsTitle;
+      title = boilerplate.attrsTitle;
       description = boilerplate.attrsDescription;
       type = types.listOf types.str;
       default = ["python3" "python"];
     };
     interface.extensions = mkOption {
-      example = boilerplate.extensionsTitle;
+      title = boilerplate.extensionsTitle;
       description = boilerplate.extensionsDescription;
       type = types.listOf types.str;
       default = ["py"];
     };
 
     lsp.jedi.enable = mkOption {
-      example = "Enable Jedi language server";
+      title = "Enable Jedi language server";
       type = types.bool;
       default = true;
     };
     lsp.pyright.enable = mkOption {
-      example = "Enable Pyright language server";
+      title = "Enable Pyright language server";
       type = types.bool;
       default = false;
     };
     lsp.pylint.enable = mkOption {
-      example = "Enable Pylint language server";
+      title = "Enable Pylint language server";
       type = types.bool;
       default = false;
     };
     lsp.flake8.enable = mkOption {
-      example = "Enable Flake8 language server";
+      title = "Enable Flake8 language server";
       type = types.bool;
       default = false;
     };
     lsp.pycodestyle.enable = mkOption {
-      example = "Enable pycodestyle language server";
+      title = "Enable pycodestyle language server";
       type = types.bool;
       default = false;
     };
     lsp.microsoft.enable = mkOption {
-      example = "Enable Microsoft Python language server";
+      title = "Enable Microsoft Python language server";
       type = types.bool;
       default = false;
     };
     lsp.python-lsp-server.enable = mkOption {
-      example = "Enable python-lsp-server language server";
+      title = "Enable python-lsp-server language server";
       type = types.bool;
       default = false;
     };
     lsp.python-language-server.enable = mkOption {
-      example = "Enable python-language-server language server";
+      title = "Enable python-language-server language server";
       type = types.bool;
       default = false;
     };
 
     misc.permitUserSite = mkOption {
-      example = "Permit user site-packages";
+      title = "Permit user site-packages";
       description = "Skip setting the PYTHONNOUSERSITE variable. This will allow your Python code to import local packages (e.g. from ~/.local/lib). This is useful if you want to use pip to install Python packages independently of Nix.";
       type = types.bool;
       default = false;
     };
     misc.enableVariableInspector = mkOption {
-      example = "Enable the variable inspector";
+      title = "Enable the variable inspector";
       description = "This will show a summary of the currently defined variables in the UI.";
       type = types.bool;
       default = true;
@@ -127,7 +127,7 @@ in
 {
   options = {
     kernels.python3 = mkOptions (mkOption {
-      example = "Python 3 version";
+      title = "Python 3 version";
       type = types.enum (lib.unique (
         [
           "python3"
@@ -144,7 +144,7 @@ in
     });
 
     kernels.pypy3 = mkOptions (mkOption {
-      example = "PyPy 3 version";
+      title = "PyPy 3 version";
       type = types.enum (lib.unique (
         [
           "pypy3"

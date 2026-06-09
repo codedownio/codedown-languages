@@ -5,7 +5,7 @@ with lib;
 let
   subPackage = {
     features = mkOption {
-      example = "Features to enable for the package";
+      title = "Features to enable for the package";
       type = types.listOf types.str;
       default = [];
     };
@@ -25,14 +25,14 @@ in
   options = {
     kernels.rust = {
       enable = mkOption {
-        example = "Enable Rust kernel";
+        title = "Enable Rust kernel";
         type = types.bool;
         default = false;
         visible = false;
       };
 
       packages = mkOption {
-        example = "List of packages";
+        title = "List of packages";
         type = types.listOf (types.either types.str (types.submodule {
           options = subPackage // {
             name = mkOption {
@@ -46,7 +46,7 @@ in
       };
 
       rustPackage = mkOption {
-        example = "Rust version";
+        title = "Rust version";
         type = types.enum (
           ["rust"]
           ++ (builtins.filter (name: builtins.substring 0 (builtins.stringLength "rust_") name == "rust_")
@@ -56,25 +56,25 @@ in
       };
 
       interface.attrs = mkOption {
-        example = boilerplate.attrsTitle;
+        title = boilerplate.attrsTitle;
         description = boilerplate.attrsDescription;
         type = types.listOf types.str;
         default = ["rust"];
       };
       interface.extensions = mkOption {
-        example = boilerplate.extensionsTitle;
+        title = boilerplate.extensionsTitle;
         description = boilerplate.extensionsDescription;
         type = types.listOf types.str;
         default = ["rs" "rlib"];
       };
 
       lsp.rust-analyzer.enable = mkOption {
-        example = "Rust-analyzer: enable";
+        title = "Rust-analyzer: enable";
         type = types.bool;
         default = true;
       };
       lsp.rust-analyzer.debug = mkOption {
-        example = "Rust-analyzer: debug output";
+        title = "Rust-analyzer: debug output";
         type = types.bool;
         default = false;
       };
