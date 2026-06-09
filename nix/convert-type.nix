@@ -10,6 +10,10 @@ let
     else if (type.name == "attrs") then {
       type = "attrs";
     }
+    else if (type.name == "attrsOf") then {
+      type = "attrs";
+      valueType = convertType target type.nestedTypes.elemType;
+    }
     else if (type.name == "listOf") then {
       type = "list";
       listType = convertType target type.nestedTypes.elemType;

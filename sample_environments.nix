@@ -9,6 +9,7 @@
   cpp20 = import ./sample_environments/cpp20.nix args;
   cpp23 = import ./sample_environments/cpp23.nix args;
   cpp2c = import ./sample_environments/cpp2c.nix args;
+  environment-settings = import ./sample_environments/environment-settings.nix args;
   extra-nix = import ./sample_environments/extra-nix.nix args;
   exporters-nbconvert = import ./sample_environments/exporters-nbconvert.nix args;
   exporters-pandoc = import ./sample_environments/exporters-pandoc.nix args;

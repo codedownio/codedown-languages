@@ -14,6 +14,30 @@ let
   removeNonDefaultSettings = callPackage ./remove-non-default-settings.nix {};
   nixosOptionsToSettingsSchema = callPackage ./nixos-options-to-settings-schema.nix {};
 
+  # Lib extended with the codeMirrorLines option type used by the environment module.
+  extendedLib = lib.extend (final: prev: {
+    types = prev.types // {
+      codeMirrorLines = mode: prev.mkOptionType {
+        name = "codeMirrorLines";
+        description = "string (${mode})";
+        check = builtins.isString;
+        merge = prev.options.mergeEqualOption;
+      } // { codeMirrorMode = mode; };
+    };
+  });
+
+  # Schema for the channel-level "environment.*" settings (e.g. environment.variables,
+  # environment.extraNix), keyed relative to the environment submodule. Evaluated independently
+  # of the package config so it can be surfaced in ui_metadata during hydration.
+  environmentSettingsSchema =
+    let
+      environmentOptions = (extendedLib.evalModules {
+        specialArgs = { lib = extendedLib; };
+        modules = [ ../modules/environment/module.nix ];
+      }).options;
+    in
+      nixosOptionsToSettingsSchema { componentsToDrop = 1; } environmentOptions.environment;
+
   # Test if the derivation has a single output
   hasSimpleOutputs = contents:
     hasAttr "outputName" contents
@@ -79,11 +103,25 @@ self: super: {
 
   makeEnvironment = config:
     let
-      evaluated = evaluate self (builtins.attrNames config) config;
+      # The channel-level "environment.*" settings are handled separately from the package config.
+      environmentConfig = config.environment or {};
+      packageConfig = removeAttrs config ["environment"];
+
+      evaluated = evaluate self (builtins.attrNames packageConfig) packageConfig;
+
+      # environment.variables -> a .env file joined into the environment.
+      variables = environmentConfig.variables or {};
+      envFileDrv = lib.optionals (variables != {}) [(self.writeTextDir "lib/codedown/.env" (lib.generators.toKeyValue {} variables))];
+
+      # environment.extraNix -> an arbitrary derivation (with "pkgs" in scope) joined into the environment.
+      extraNixCode = environmentConfig.extraNix or "";
+      extraNixDrv =
+        if extraNixCode == "" then []
+        else [(import (builtins.toFile "extra-nix.nix" "{ pkgs }:\n${extraNixCode}") { pkgs = self; })];
     in
       symlinkJoin {
         inherit name;
-        paths = evaluated.config.paths;
+        paths = evaluated.config.paths ++ envFileDrv ++ extraNixDrv;
 
         passthru = {
           ui_metadata = {
@@ -98,7 +136,10 @@ self: super: {
                   packages = [];
                   settings = removeNonDefaultSettings settings_schema evaluated.config.${n};
                 }
-            ) (filterAttrs (k: _: k != "_module") config);
+            ) (filterAttrs (k: _: k != "_module") packageConfig);
+
+            # Channel-level settings schema for the "environment.*" options.
+            settings_schema = environmentSettingsSchema;
           };
         };
       };

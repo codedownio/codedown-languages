@@ -20,6 +20,7 @@ let
   chooseMeta = callPackage ./choose-meta.nix {};
   evaluated = (callPackage ./evaluate-config.nix { inherit pkgsStable pkgsMaster; }) config;
   removeNonDefaultSettings = callPackage ./remove-non-default-settings.nix {};
+  nixosOptionsToSettingsSchema = callPackage ./nixos-options-to-settings-schema.nix {};
 
   builtExporters = evaluated.config.builtExporters;
   builtKernels = mapAttrs (_: kernel:
@@ -125,6 +126,10 @@ symlinkJoin {
         // (mapAttrs' (n: v: nameValuePair "language-servers.${n}" (mkPackageUiMetadata v)) builtLanguageServers)
         // (mapAttrs' (n: v: nameValuePair n (mkPackageUiMetadata v)) evaluated.config.packages)
       ;
+
+      # Schema for the channel-level "environment.*" settings, keyed relative to the environment
+      # submodule (e.g. "variables", "extraNix"). Picked up during hydration.
+      settings_schema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } evaluated.options.environment;
     };
 
     ui_metadata_yaml = writeText "ui-metadata.yaml" (lib.generators.toYAML {} ui_metadata);
