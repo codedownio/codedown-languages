@@ -49,6 +49,22 @@ let
     deps = "typst_json";
   };
 
+  # Live preview exporter. Instead of running a command, the runner attaches a tinymist
+  # preview to the document's (already-running) tinymist LSP and relays its data-plane to
+  # the browser (see exporterInfoKind = "tinymist_preview"). So it has no args, and is only
+  # offered when the tinymist language server is enabled.
+  typstPreviewExporter = {
+    name = "codedown-exporter-typst-preview";
+    display_name = "Live Preview";
+    group = "Typst";
+    extension = "pdf";   # sentinel; preview renders in-browser and produces no output file
+    inherit icon;
+    icon_monochrome = iconMonochrome;
+    args = [];
+    input_extensions = ["typ"];
+    kind = "tinymist_preview";
+  };
+
 in
 
 symlinkJoin {
@@ -75,7 +91,7 @@ symlinkJoin {
         (mkTypstExporter "PNG (.png)" "png")
         (mkTypstExporter "SVG (.svg)" "svg")
         (mkTypstExporter "HTML (.html)" "html")
-      ];
+      ] ++ lib.optionals settings.lsp.tinymist.enable [ typstPreviewExporter ];
 
       hasPackages = packageOptions != {};
     };
