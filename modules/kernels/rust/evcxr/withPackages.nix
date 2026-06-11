@@ -71,7 +71,16 @@ let
 
     echo "{rustPlatform}: rustPlatform.importCargoLock { lockFile = ./Cargo.lock; }" >> default.nix
 
-    cp -r Cargo.toml Cargo.lock default.nix $out
+    # Emit the full resolved crate list (including transitive deps) as a Nix list,
+    # so callers can intersect it with nixpkgs' defaultCrateOverrides to discover
+    # which native build inputs are needed to compile this dependency set.
+    {
+      echo "["
+      grep '^name = ' Cargo.lock | sed -E 's/^name = "(.*)"/  "\1"/'
+      echo "]"
+    } >> crate-names.nix
+
+    cp -r Cargo.toml Cargo.lock default.nix crate-names.nix $out
   '';
 
   vendorDependencies = packages:
