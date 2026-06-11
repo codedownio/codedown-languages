@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-import toml
+import tomllib
 import sys
 
 vendor_dir = Path(sys.argv[1])
@@ -16,7 +16,8 @@ for subdir in (f for f in vendor_dir.resolve().glob('**/*') if f.is_dir()):
   cargo_toml_path = subdir / "Cargo.toml"
   if not cargo_toml_path.exists(): continue
 
-  cargo_toml = toml.load(cargo_toml_path)
+  with open(cargo_toml_path, "rb") as cargo_toml_file:
+    cargo_toml = tomllib.load(cargo_toml_file)
 
   if "package" in cargo_toml:
     if "name" in cargo_toml["package"]:

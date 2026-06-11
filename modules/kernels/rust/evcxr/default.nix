@@ -52,7 +52,7 @@ let
     let
       deps = withPackages.vendorDependencies packages;
     in
-      runCommand "evcxr-config" { buildInputs = [(python3.withPackages (ps: [ps.toml]))]; } ''
+      runCommand "evcxr-config" { buildInputs = [python3]; } ''
         mkdir -p $out
         echo ":offline 1" >> $out/init.evcxr
         python ${./python}/build_init_evcxr.py \
