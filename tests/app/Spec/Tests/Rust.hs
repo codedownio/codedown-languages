@@ -22,37 +22,46 @@ import qualified Spec.Tests.Rust.Hovers as Hovers
 
 
 tests :: LanguageSpec
-tests = describe "Rust" $ introduceNixEnvironment [kernelSpec] [] "Rust" $ do
-  introduceJupyterRunner $ describe "Kernel" $ do
-    testKernelSearchersBuild "rust"
-    testHasExpectedFields "rust"
+tests = describe "Rust" $ do
+  introduceNixEnvironment [kernelSpec] [] "Rust" $ do
+    introduceJupyterRunner $ describe "Kernel" $ do
+      testKernelSearchersBuild "rust"
+      testHasExpectedFields "rust"
 
-    testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
+      testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
-    testKernelStdout "rust" [__i|use serde::{Serialize, Deserialize};
+      testKernelStdout "rust" [__i|use serde::{Serialize, Deserialize};
 
-                                 \#[derive(Serialize, Deserialize, Debug)]
-                                 struct Point {
-                                     x: i32,
-                                     y: i32,
-                                 }
+                                   \#[derive(Serialize, Deserialize, Debug)]
+                                   struct Point {
+                                       x: i32,
+                                       y: i32,
+                                   }
 
-                                 let point = Point { x: 1, y: 2 };
+                                   let point = Point { x: 1, y: 2 };
 
-                                 let serialized: String = serde_json::to_string(&point).unwrap();
-                                 println!("serialized = {}", serialized);
-                                 |] [i|serialized = {"x":1,"y":2}\n|]
-    testKernelStdoutCallback "rust" randCode $ \case
-      Just t -> case readMay (T.unpack (T.strip t)) of
-        Just (x :: Int) | x >= 0 && x < 256 -> return ()
-        _ -> expectationFailure [i|Unexpected output: #{show t}|]
-      Nothing -> expectationFailure [i|Kernel produced no output.|]
+                                   let serialized: String = serde_json::to_string(&point).unwrap();
+                                   println!("serialized = {}", serialized);
+                                   |] [i|serialized = {"x":1,"y":2}\n|]
+      testKernelStdoutCallback "rust" randCode $ \case
+        Just t -> case readMay (T.unpack (T.strip t)) of
+          Just (x :: Int) | x >= 0 && x < 256 -> return ()
+          _ -> expectationFailure [i|Unexpected output: #{show t}|]
+        Nothing -> expectationFailure [i|Kernel produced no output.|]
 
-  describe "LSP" $ do
-    Changes.tests
-    Completion.tests
-    Diagnostics.tests
-    Hovers.tests
+    describe "LSP" $ do
+      Changes.tests
+      Completion.tests
+      Diagnostics.tests
+      Hovers.tests
+
+  -- Data-science crates (polars, ndarray, plotters, smartcore) pull in native
+  -- dependencies that evcxr must compile at runtime. plotters in particular
+  -- needs pkg-config + fontconfig/freetype, which the evcxr wrapper bakes in.
+  -- This guards against regressions where the import block fails to compile.
+  introduceNixEnvironment [dataScienceKernelSpec] [] "Rust data science" $
+    introduceJupyterRunner $ describe "Data science kernel" $
+      testKernelSucceeds "rust" dataScienceImports
 
 -- We need a sleep to make this test reliable. It seems the kernel has a problem where
 -- it can exit before flushing stdout?
@@ -80,6 +89,26 @@ kernelSpec = NixKernelSpec {
       "lsp.rust-analyzer.debug = true"
       ]
   }
+
+-- | The same data-science crates as the rust sample environment.
+dataScienceKernelSpec :: NixKernelSpec
+dataScienceKernelSpec = kernelSpec {
+  nixKernelPackages = [
+      nameOnly "ndarray"
+      , nameOnly "polars"
+      , nameOnly "plotters"
+      , nameOnly "smartcore"
+      ]
+  }
+
+dataScienceImports :: T.Text
+dataScienceImports = [__i|use polars::prelude::*;
+                          use polars::frame::DataFrame;
+                          use std::path::Path;
+                          use ndarray::{ArrayBase, DataMut, Dimension, concatenate, Axis};
+                          use plotters::prelude::*;
+                          use smartcore::linalg::basic::matrix::DenseMatrix;
+                          use ndarray::prelude::*;|]
 
 main :: IO ()
 main = jupyterMain tests

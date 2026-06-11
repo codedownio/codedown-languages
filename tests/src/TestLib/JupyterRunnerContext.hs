@@ -117,6 +117,18 @@ testKernelStdout'' kernel code cb = do
       True -> liftIO (T.readFile outFile) >>= cb . Just
       False -> cb Nothing
 
+-- | Assert that the given code runs to completion without producing any error output.
+-- Useful for code that compiles and runs but produces no stdout, e.g. a block of
+-- `use` imports that only needs to type-check.
+testKernelSucceeds :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> SpecFree context m ()
+testKernelSucceeds kernel code = it [i|#{kernel} -- #{summarizeCode code} (no errors)|] $
+  notebookShouldSatisfy kernel code $ \(JupyterNotebook {..}) ->
+    case [(errorOutputEname, errorOutputEvalue) | CodeCell {..} <- notebookCells, ErrorOutput {..} <- codeOutputs] of
+      [] -> return ()
+      ((ename, evalue) : _) -> expectationFailure [i|Kernel produced an error output: #{ename}: #{evalue}|]
+
 itHasDisplayDatas :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()

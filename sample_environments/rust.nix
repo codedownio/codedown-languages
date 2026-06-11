@@ -15,6 +15,9 @@ codedown.makeEnvironment {
     }
     "serde_json"
 
-    "ndarray" # this one has modern TOML
+    "ndarray"
+    "polars"
+    "plotters"
+    "smartcore"
   ];
 }
