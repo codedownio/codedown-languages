@@ -13,8 +13,8 @@ let
   cratesIndex = fetchFromGitHub {
     owner = "rust-lang";
     repo = "crates.io-index";
-    rev = "b6c0211bd5c02fcff4ae199e7efcf8c2e087e239";
-    sha256 = "sha256-iJCUHbQoOYoXj0a/qvn4OxQdcnahukm+zOhsXlQI+Hs=";
+    rev = "11e3fcf4f37f7540f34ef3681a3f0a2a11d69233";
+    sha256 = "sha256-xKs7GMldNEqAqdBwsmdqc5fxHE6oXKQBp5usVTfUZxo=";
   };
 
   allPackageNames = runCommand "rust-package-names.nix" {} ''
