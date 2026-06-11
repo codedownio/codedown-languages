@@ -74,6 +74,17 @@
             #   # _module.check = false;
             # });
 
+            # Survey helper: build a Rust kernel environment for an arbitrary set
+            # of crates passed via the CODEDOWN_RUST_PROBE_PACKAGES env var (a JSON
+            # list, e.g. '["serde","plotters"]'). Used by scripts/rust-crate-survey
+            # to measure how many popular crates build/run out of the box.
+            # Requires --impure (reads the environment).
+            rustCrateProbe = codedown.makeEnvironment {
+              name = "rust-crate-probe";
+              kernels.rust.enable = true;
+              kernels.rust.packages = builtins.fromJSON (builtins.getEnv "CODEDOWN_RUST_PROBE_PACKAGES");
+            };
+
             searcher = codedown.searcher pkgsStable;
 
             testing = linkFarmWithPassthru "codedown-languages-testing" codedown.testing;
