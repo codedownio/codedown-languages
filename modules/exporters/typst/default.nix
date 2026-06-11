@@ -86,12 +86,16 @@ symlinkJoin {
 
       inherit icon iconMonochrome;
 
-      exporterInfos = [
-        (mkTypstExporter "PDF (.pdf)" "pdf")
-        (mkTypstExporter "PNG (.png)" "png")
-        (mkTypstExporter "SVG (.svg)" "svg")
-        (mkTypstExporter "HTML (.html)" "html")
-      ] ++ lib.optionals settings.lsp.tinymist.enable [ typstPreviewExporter ];
+      # Live Preview first (when tinymist is enabled) so it's the leading Typst option.
+      exporterInfos = lib.optionals settings.lsp.tinymist.enable (
+        [ typstPreviewExporter ]
+        ++ [
+          (mkTypstExporter "PDF (.pdf)" "pdf")
+          (mkTypstExporter "PNG (.png)" "png")
+          (mkTypstExporter "SVG (.svg)" "svg")
+          (mkTypstExporter "HTML (.html)" "html")
+        ]
+      );
 
       hasPackages = packageOptions != {};
     };
