@@ -23,12 +23,30 @@ let
 
   rustPackages = rust.packages.stable;
 
-  evcxr = ((callPackage ./evcxr {
+  evcxrBase = (callPackage ./evcxr {
     inherit (darwin.apple_sdk.frameworks) CoreServices Security;
   }).override {
     rustPlatform = rustPackages.rustPlatform;
     cargo = rustPackages.cargo;
-  }).withPackages packages;
+  };
+  evcxr = evcxrBase.withPackages packages;
+
+  # Crate -> available Cargo features, parsed once from the pinned index (~40k
+  # crates, a few MB). Forced only when per-package settings schemas are built
+  # (i.e. the package searcher), not for ordinary environment builds.
+  cratesFeatures = builtins.fromJSON (builtins.readFile "${evcxrBase.cratesFeatures}");
+  featuresOf = name: cratesFeatures.${name} or [];
+
+  # The generic subPackage settings schema, but with the free-form `features`
+  # field replaced by a multi-select enum of the crate's actual features. Crates
+  # with no known features keep the free-form field.
+  mkSubPackageSettingsSchema = features:
+    if features == [] then subPackageSettingsSchema
+    else subPackageSettingsSchema // {
+      features = subPackageSettingsSchema.features // {
+        listType = { type = "enum"; values = features; };
+      };
+    };
 
   languageServers =
     []
@@ -48,7 +66,7 @@ let
       meta = {
         name = x;
       };
-      settingsSchema = subPackageSettingsSchema;
+      settingsSchema = mkSubPackageSettingsSchema (featuresOf x);
     };
   }) (import ./all_package_names.nix));
 
@@ -93,7 +111,7 @@ symlinkJoin {
       rust-analyzer = rust-analyzer.version;
     };
     inherit settingsSchema settings;
-    inherit (evcxr) cratesIndex;
+    inherit (evcxrBase) cratesIndex;
     modes = {
       inherit attrs extensions;
       code_mirror_mode = "rust";

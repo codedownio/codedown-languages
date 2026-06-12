@@ -156,6 +156,7 @@ in
 evcxr.overrideAttrs (oldAttrs: {
   passthru = (oldAttrs.passthru or {}) // {
     cratesIndex = withPackages.cratesIndex;
+    cratesFeatures = withPackages.cratesFeatures;
 
     withPackages = packages:
       let

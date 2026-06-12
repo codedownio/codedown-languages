@@ -1,6 +1,7 @@
 { callPackage
 , fetchFromGitHub
 , lib
+, python3
 , runCommand
 , writeTextFile
 
@@ -26,6 +27,13 @@ let
       >> $out
 
     echo "]" >> $out
+  '';
+
+  # Map of crate name -> available Cargo features, parsed from the index. Lets the
+  # kernel surface each package's features as a multi-select in settings. Built
+  # once per index revision (~40k crates that have features, a few MB of JSON).
+  cratesFeatures = runCommand "crates-features.json" { nativeBuildInputs = [python3]; } ''
+    python3 ${./python}/build_crates_features.py "${cratesIndex}" "$out"
   '';
 
   renderPackage = pn:
@@ -94,6 +102,8 @@ in
   inherit cratesIndex;
 
   inherit allPackageNames;
+
+  inherit cratesFeatures;
 
   inherit cargoToml;
 
