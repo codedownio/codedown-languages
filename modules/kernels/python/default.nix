@@ -47,7 +47,7 @@ let
     in [basePkg] ++ extraPkgs;
 
   allPackages =
-    [packageOptionsBase.ipykernel packageOptionsBase.ipywidgets]
+    [packageOptionsBase.ipykernel packageOptionsBase.ipywidgets packageOptionsBase.debugpy]
     ++ lib.concatMap resolvePackage packages
   ;
 
