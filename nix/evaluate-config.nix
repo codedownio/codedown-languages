@@ -45,6 +45,7 @@ extendedLib.evalModules {
     ../modules/kernels/postgres/module.nix
     ../modules/kernels/python/module.nix
     ../modules/kernels/r/module.nix
+    ../modules/kernels/r-ark/module.nix
     ../modules/kernels/ruby/module.nix
     ../modules/kernels/rust/module.nix
 

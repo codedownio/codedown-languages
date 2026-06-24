@@ -23,6 +23,7 @@
   postgres = import ./sample_environments/postgres.nix args;
   pypy3 = import ./sample_environments/pypy3.nix args;
   r = import ./sample_environments/r.nix args;
+  r-ark = import ./sample_environments/r-ark.nix args;
   ruby_3_3 = import ./sample_environments/ruby_3_3.nix args;
   ruby_3_4 = import ./sample_environments/ruby_3_4.nix args;
   ruby = import ./sample_environments/ruby.nix args;

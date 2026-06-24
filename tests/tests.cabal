@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.38.1.
+-- This file has been generated from package.yaml by hpack version 0.38.3.
 --
 -- see: https://github.com/sol/hpack
 
@@ -114,6 +114,7 @@ executable tests
       Spec.Tests.Postgres
       Spec.Tests.Python
       Spec.Tests.R
+      Spec.Tests.RArk
       Spec.Tests.Ruby
       Spec.Tests.Rust
       Spec.Tests.Rust.Changes
