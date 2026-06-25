@@ -45,6 +45,8 @@ let
 
   juliaToUse = juliaWithPackages (
     ["IJulia"]
+    # The variable inspector (variable_inspector.jl) imports JSON to serialize its output.
+    ++ lib.optionals settings.misc.enableVariableInspector ["JSON"]
     ++ packages
     ++ lib.optionals settings.lsp.LanguageServer.enable ["LanguageServer" "SymbolServer"]
   );
@@ -69,6 +71,7 @@ symlinkJoin {
       inherit attrs extensions displayName;
       julia = juliaToUse;
       python = python3;
+      enableVariableInspector = settings.misc.enableVariableInspector;
     })
     juliaToUse
   ]

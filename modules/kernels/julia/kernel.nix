@@ -5,6 +5,8 @@
 , displayName
 , writeShellScript
 
+, enableVariableInspector
+
 , attrs
 , extensions
 }:
@@ -13,6 +15,12 @@ with lib;
 
 let
   common = callPackage ../common.nix {};
+
+  variableInspector = {
+    initial_code_path = ./variable_inspector.jl;
+    list_variables_command = "CodedownVariableInspector.dict_list()";
+    inspect_variable_command = "CodedownVariableInspector.inspect(\"{{VARIABLE_NAME}}\")";
+  };
 
   runJuliaKernel = writeShellScript "run-julia-kernel.sh" ''
     ${julia}/bin/julia --startup-file=yes --color=yes -e "
@@ -51,6 +59,7 @@ common.makeJupyterKernel (
         codedown = {
           inherit attrs extensions;
           language_version = julia.version;
+          variable_inspector = if enableVariableInspector then variableInspector else null;
           priority = 1;
         };
       };
