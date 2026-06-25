@@ -296,6 +296,29 @@ list of string
 
 
 
+## kernels\.R-ark\.misc\.enableVariableInspector
+
+
+
+**Enable the variable inspector**
+
+This will show a summary of the currently defined variables in the UI\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
 ## kernels\.bash\.interface\.attrs
 
 
@@ -368,6 +391,29 @@ true
 
 
 
+## kernels\.bash\.misc\.enableVariableInspector
+
+
+
+**Enable the variable inspector**
+
+This will show a summary of the currently defined variables in the UI\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
 ## kernels\.clojure\.interface\.attrs
 
 
@@ -423,6 +469,29 @@ list of string
 
 
 **Enable clojure-lsp language server**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## kernels\.clojure\.misc\.enableVariableInspector
+
+
+
+**Enable the variable inspector**
+
+This will show a summary of the currently defined variables in the UI\.
 
 
 
@@ -1209,6 +1278,29 @@ list of string
 [
   "m"
 ]
+```
+
+
+
+## kernels\.octave\.misc\.enableVariableInspector
+
+
+
+**Enable the variable inspector**
+
+This will show a summary of the currently defined variables in the UI\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
 ```
 
 
@@ -2201,8 +2293,6 @@ false
 
 
 ## shells\.zsh\.enable
-
-
 
 Enable the ZSH shell\.
 
