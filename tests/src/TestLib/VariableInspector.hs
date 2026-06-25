@@ -129,7 +129,10 @@ withListVariables :: (
   ) => Text -> Text -> (Map Text VariableInfo -> ExampleT context m ()) -> ExampleT context m ()
 withListVariables kernel setup cb = do
   InspectorConfig {..} <- getInspectorConfig kernel
-  let code = T.intercalate "\n" [setup, inspectorInitialCode, inspectorListCommand]
+  -- Run the initial code first (as the frontend does at startup), then the user
+  -- setup, then the command. Some inspectors (e.g. bash) snapshot a baseline of
+  -- pre-existing variables at init time.
+  let code = T.intercalate "\n" [inspectorInitialCode, setup, inspectorListCommand]
   runInspectorCommand kernel code "variable list" cb
 
 -- | Like 'withListVariables', but runs the inspect command for a single variable
@@ -141,7 +144,7 @@ withInspectVariable :: (
 withInspectVariable kernel setup varName cb = do
   InspectorConfig {..} <- getInspectorConfig kernel
   let inspectCommand = T.replace "{{VARIABLE_NAME}}" varName inspectorInspectCommand
-  let code = T.intercalate "\n" [setup, inspectorInitialCode, inspectCommand]
+  let code = T.intercalate "\n" [inspectorInitialCode, setup, inspectCommand]
   runInspectorCommand kernel code [i|inspect of '#{varName}'|] cb
 
 -- | Run a notebook cell and decode the last non-empty stdout line as JSON.

@@ -12,6 +12,8 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
+import qualified Spec.Tests.Bash.VariableInspector as VariableInspector
+
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
@@ -32,6 +34,8 @@ tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ intro
   testHasExpectedFields "bash"
 
   testKernelStdout "bash" [i|echo hi|] "hi\n"
+
+  VariableInspector.tests "bash"
 
   -- testDiagnostics "shellcheck" "test.sh" Nothing [__i|FOO=42
   --                                            |] $ \diagnostics -> do

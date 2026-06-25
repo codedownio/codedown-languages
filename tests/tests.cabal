@@ -89,6 +89,7 @@ executable tests
   other-modules:
       Spec.Tests
       Spec.Tests.Bash
+      Spec.Tests.Bash.VariableInspector
       Spec.Tests.Clojure
       Spec.Tests.Coq
       Spec.Tests.Cpp

@@ -29,7 +29,10 @@ symlinkJoin {
   name = "bash";
 
   paths = [
-    (callPackage ./kernel.nix { inherit attrs extensions; })
+    (callPackage ./kernel.nix {
+      inherit attrs extensions;
+      enableVariableInspector = settings.misc.enableVariableInspector;
+    })
     (callPackage ./man-with-pages.nix {})
   ]
   ++ languageServers

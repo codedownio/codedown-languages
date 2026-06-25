@@ -3,6 +3,8 @@
 , python3
 , bashInteractive
 
+, enableVariableInspector
+
 , attrs
 , extensions
 }:
@@ -14,6 +16,12 @@ let
 
   # Checks failed on macOS on release-25.05. Disabling them is one option:
   # python = python3.withPackages (ps: [(ps.bash-kernel.overrideAttrs (_oldAttrs: { doCheck = false; }))]);
+
+  variableInspector = {
+    initial_code_path = ./variable_inspector.sh;
+    list_variables_command = "__codedown_variable_inspector_list";
+    inspect_variable_command = "__codedown_variable_inspector_inspect '{{VARIABLE_NAME}}'";
+  };
 
 in
 
@@ -34,6 +42,7 @@ common.makeJupyterKernel {
       codedown = {
         inherit attrs extensions;
         language_version = bashInteractive.version;
+        variable_inspector = if enableVariableInspector then variableInspector else null;
         priority = 10;
       };
     };
