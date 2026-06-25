@@ -1,203 +1,273 @@
-# Derived from https://github.com/lckr/jupyterlab-variableInspector/blob/master/src/inspectorscripts.ts
+# Variable inspector for the Python (ipykernel) Jupyter kernel.
+#
+# Introspection logic derived from
+# https://github.com/lckr/jupyterlab-variableInspector/blob/master/src/inspectorscripts.ts
 # BSD 3-Clause "New" or "Revised" License
 # https://github.com/lckr/jupyterlab-variableInspector/blob/ffff68edcd8f0912a4af7951cbe58b307afe920d/LICENSE
-
-import json
-import sys
-from IPython import get_ipython
-from IPython.core.magics.namespace import NamespaceMagics
-
-
-_codedown_variableinspector_nms = NamespaceMagics()
-_codedown_variableinspector_Jupyter = get_ipython()
-_codedown_variableinspector_nms.shell = _codedown_variableinspector_Jupyter.kernel.shell
-
-__np = None
-__pd = None
-__pyspark = None
-__tf = None
-__K = None
-__torch = None
-__ipywidgets = None
+#
+# Everything is wrapped in a single object, `_codedown_variable_inspector`, so the
+# inspector adds exactly one name to the user namespace (and that name is hidden
+# from its own listing). The frontend runs this file once at kernel startup, then
+# calls `_codedown_variable_inspector.list()` and
+# `_codedown_variable_inspector.inspect('<name>')`.
 
 
-def _check_imported():
-    global __np, __pd, __pyspark, __tf, __K, __torch, __ipywidgets
+def _codedown_make_variable_inspector():
+    import json
+    import sys
+    from IPython import get_ipython
+    from IPython.core.magics.namespace import NamespaceMagics
 
-    if 'numpy' in sys.modules:
-        # don't really need the try
-        import numpy as __np
+    own_name = "_codedown_variable_inspector"
+    max_content = 150
+    max_rows = 10000
 
-    if 'pandas' in sys.modules:
-        import pandas as __pd
+    class _VariableInspector:
+        def __init__(self):
+            self._nms = NamespaceMagics()
+            self._nms.shell = get_ipython().kernel.shell
+            # Optional libraries, populated lazily by _check_imported(). Kept as
+            # instance attributes so they never leak into the user namespace.
+            self._np = None
+            self._pd = None
+            self._pyspark = None
+            self._tf = None
+            self._K = None
+            self._torch = None
+            self._ipywidgets = None
 
-    if 'pyspark' in sys.modules:
-        import pyspark as __pyspark
+        def _check_imported(self):
+            if 'numpy' in sys.modules:
+                import numpy
+                self._np = numpy
 
-    if 'tensorflow' in sys.modules or 'keras' in sys.modules:
-        import tensorflow as __tf
+            if 'pandas' in sys.modules:
+                import pandas
+                self._pd = pandas
 
-        try:
-            import keras.backend as __K
-        except ImportError:
-            try:
-                import tensorflow.keras.backend as __K
-            except ImportError:
-                __K = None
+            if 'pyspark' in sys.modules:
+                import pyspark
+                self._pyspark = pyspark
 
-    if 'torch' in sys.modules:
-        import torch as __torch
+            if 'tensorflow' in sys.modules or 'keras' in sys.modules:
+                import tensorflow
+                self._tf = tensorflow
+                try:
+                    import keras.backend as K
+                    self._K = K
+                except ImportError:
+                    try:
+                        import tensorflow.keras.backend as K
+                        self._K = K
+                    except ImportError:
+                        self._K = None
 
-    if 'ipywidgets' in sys.modules:
-        import ipywidgets as __ipywidgets
+            if 'torch' in sys.modules:
+                import torch
+                self._torch = torch
 
-def _codedown_variableinspector_getsizeof(x):
-    if type(x).__name__ in ['ndarray', 'Series']:
-        return x.nbytes
-    elif __pyspark and isinstance(x, __pyspark.sql.DataFrame):
-        return None
-    elif __tf and isinstance(x, __tf.Variable):
-        return None
-    elif __torch and isinstance(x, __torch.Tensor):
-        return x.element_size() * x.nelement()
-    elif __pd and type(x).__name__ == 'DataFrame':
-        return x.memory_usage().sum()
-    else:
-        return sys.getsizeof(x)
+            if 'ipywidgets' in sys.modules:
+                import ipywidgets
+                self._ipywidgets = ipywidgets
 
-def _codedown_variableinspector_getshapeof(x):
-    if __pd and isinstance(x, __pd.DataFrame):
-        return x.shape
-    if __pd and isinstance(x, __pd.Series):
-        return x.shape
-    if __np and isinstance(x, __np.ndarray):
-        return x.shape
-    if __pyspark and isinstance(x, __pyspark.sql.DataFrame):
-        return ["?", len(x.columns)]
-    if __tf and isinstance(x, __tf.Variable):
-        return x.shape
-    if __tf and isinstance(x, __tf.Tensor):
-        return x.shape
-    if __torch and isinstance(x, __torch.Tensor):
-        return x.shape
-    if isinstance(x, list):
-        return [len(x)]
-    if isinstance(x, dict):
-        return [len(x)]
-    return None
+        def _getsizeof(self, x):
+            # Returns the size in bytes, or None when it can't be determined.
+            if type(x).__name__ in ['ndarray', 'Series']:
+                return x.nbytes
+            elif self._pyspark and isinstance(x, self._pyspark.sql.DataFrame):
+                return None
+            elif self._tf and isinstance(x, self._tf.Variable):
+                return None
+            elif self._torch and isinstance(x, self._torch.Tensor):
+                return x.element_size() * x.nelement()
+            elif self._pd and type(x).__name__ == 'DataFrame':
+                return x.memory_usage().sum()
+            else:
+                return sys.getsizeof(x)
 
-def _codedown_variableinspector_getcontentof(x):
-    # returns content in a friendly way for python variables
-    # pandas and numpy
-    if __pd and isinstance(x, __pd.DataFrame):
-        colnames = ', '.join(x.columns.map(str))
-        content = "Columns: %s" % colnames
-    elif __pd and isinstance(x, __pd.Series):
-        content = str(x.values).replace(" ", ", ")[1:-1]
-        content = content.replace("\\n", "")
-    elif __np and isinstance(x, __np.ndarray):
-        content = x.__repr__()
-    else:
-        content = str(x)
+        def _getshapeof(self, x):
+            # Returns a list of ints (dimensions), or None.
+            if self._pd and isinstance(x, self._pd.DataFrame):
+                return list(x.shape)
+            if self._pd and isinstance(x, self._pd.Series):
+                return list(x.shape)
+            if self._np and isinstance(x, self._np.ndarray):
+                return list(x.shape)
+            if self._pyspark and isinstance(x, self._pyspark.sql.DataFrame):
+                return [None, len(x.columns)]
+            if self._tf and isinstance(x, self._tf.Variable):
+                return [int(d) for d in x.shape]
+            if self._tf and isinstance(x, self._tf.Tensor):
+                return [int(d) for d in x.shape]
+            if self._torch and isinstance(x, self._torch.Tensor):
+                return list(x.shape)
+            if isinstance(x, list):
+                return [len(x)]
+            if isinstance(x, dict):
+                return [len(x)]
+            return None
 
-    if len(content) > 150:
-        return content[:150] + " ..."
-    else:
-        return content
+        def _getcontentof(self, x):
+            # A short, friendly preview string.
+            if self._pd and isinstance(x, self._pd.DataFrame):
+                colnames = ', '.join(x.columns.map(str))
+                content = "Columns: %s" % colnames
+            elif self._pd and isinstance(x, self._pd.Series):
+                content = str(x.values).replace(" ", ", ")[1:-1]
+                content = content.replace("\\n", "")
+            elif self._np and isinstance(x, self._np.ndarray):
+                content = x.__repr__()
+            else:
+                content = str(x)
 
-def _codedown_variableinspector_is_matrix(x):
-    # True if type(x).__name__ in ["DataFrame", "ndarray", "Series"] else False
-    if __pd and isinstance(x, __pd.DataFrame):
-        return True
-    if __pd and isinstance(x, __pd.Series):
-        return True
-    if __np and isinstance(x, __np.ndarray) and len(x.shape) <= 2:
-        return True
-    if __pyspark and isinstance(x, __pyspark.sql.DataFrame):
-        return True
-    if __tf and isinstance(x, __tf.Variable) and len(x.shape) <= 2:
-        return True
-    if __tf and isinstance(x, __tf.Tensor) and len(x.shape) <= 2:
-        return True
-    if __torch and isinstance(x, __torch.Tensor) and len(x.shape) <= 2:
-        return True
-    if isinstance(x, list):
-        return True
-    return False
+            if len(content) > max_content:
+                return content[:max_content] + " ..."
+            else:
+                return content
 
-def _codedown_variableinspector_is_widget(x):
-    return __ipywidgets and issubclass(x, __ipywidgets.DOMWidget)
-
-def _codedown_variableinspector_dict_list():
-    _check_imported()
-    def keep_cond(v):
-        try:
-            obj = eval(v)
-            if isinstance(obj, str):
+        def _is_matrix(self, x):
+            if self._pd and isinstance(x, self._pd.DataFrame):
                 return True
-            if __tf and isinstance(obj, __tf.Variable):
+            if self._pd and isinstance(x, self._pd.Series):
                 return True
-            if __pd and __pd is not None and (
-                isinstance(obj, __pd.core.frame.DataFrame)
-                or isinstance(obj, __pd.core.series.Series)):
+            if self._np and isinstance(x, self._np.ndarray) and len(x.shape) <= 2:
                 return True
-            if str(obj)[0] == "<":
-                return False
-            if  v in ['__np', '__pd', '__pyspark', '__tf', '__K', '__torch', '__ipywidgets']:
-                return obj is not None
-            if str(obj).startswith("_Feature"):
-                # removes tf/keras objects
-                return False
-            return True
-        except:
+            if self._pyspark and isinstance(x, self._pyspark.sql.DataFrame):
+                return True
+            if self._tf and isinstance(x, self._tf.Variable) and len(x.shape) <= 2:
+                return True
+            if self._tf and isinstance(x, self._tf.Tensor) and len(x.shape) <= 2:
+                return True
+            if self._torch and isinstance(x, self._torch.Tensor) and len(x.shape) <= 2:
+                return True
+            if isinstance(x, list):
+                return True
             return False
-    values = _codedown_variableinspector_nms.who_ls()
-    print(json.dumps({
-        _v: {
-            "type": type(eval(_v)).__name__,
-            "size": int(_codedown_variableinspector_getsizeof(eval(_v))),
-            "shape": _codedown_variableinspector_getshapeof(eval(_v)),
-            "content": str(_codedown_variableinspector_getcontentof(eval(_v))),
-            "isMatrix": _codedown_variableinspector_is_matrix(eval(_v)),
-            "isWidget": _codedown_variableinspector_is_widget(type(eval(_v)))
-        } for _v in values if keep_cond(_v)
-    }, ensure_ascii=False))
 
-def _codedown_variableinspector_getmatrixcontent(x, max_rows=10000):
-    # to do: add something to handle this in the future
-    threshold = max_rows
+        def _is_widget(self, typ):
+            return bool(self._ipywidgets and issubclass(typ, self._ipywidgets.DOMWidget))
 
-    if __pd and __pyspark and isinstance(x, __pyspark.sql.DataFrame):
-        df = x.limit(threshold).toPandas()
-        return _codedown_variableinspector_getmatrixcontent(df.copy())
-    elif __np and __pd and type(x).__name__ == "DataFrame":
-        if threshold is not None:
-            x = x.head(threshold)
-        x.columns = x.columns.map(str)
-        return x.to_json(orient="table", default_handler=_codedown_variableinspector_default, force_ascii=False)
-    elif __np and __pd and type(x).__name__ == "Series":
-        if threshold is not None:
-            x = x.head(threshold)
-        return x.to_json(orient="table", default_handler=_codedown_variableinspector_default, force_ascii=False)
-    elif __np and __pd and type(x).__name__ == "ndarray":
-        df = __pd.DataFrame(x)
-        return _codedown_variableinspector_getmatrixcontent(df)
-    elif __tf and (isinstance(x, __tf.Variable) or isinstance(x, __tf.Tensor)):
-        df = __K.get_value(x)
-        return _codedown_variableinspector_getmatrixcontent(df)
-    elif __torch and isinstance(x, __torch.Tensor):
-        df = x.cpu().numpy()
-        return _codedown_variableinspector_getmatrixcontent(df)
-    elif isinstance(x, list):
-        s = __pd.Series(x)
-        return _codedown_variableinspector_getmatrixcontent(s)
+        def _keep(self, name):
+            if name == own_name:
+                return False
+            ns = self._nms.shell.user_ns
+            try:
+                obj = ns[name]
+            except KeyError:
+                return False
+            try:
+                if isinstance(obj, str):
+                    return True
+                if self._tf and isinstance(obj, self._tf.Variable):
+                    return True
+                if self._pd and (isinstance(obj, self._pd.core.frame.DataFrame)
+                                 or isinstance(obj, self._pd.core.series.Series)):
+                    return True
+                if str(obj)[0] == "<":
+                    return False
+                if str(obj).startswith("_Feature"):
+                    # removes tf/keras objects
+                    return False
+                return True
+            except Exception:
+                return False
 
-def _codedown_variableinspector_displaywidget(widget):
-    display(widget)
+        def _default(self, o):
+            if self._np and isinstance(o, self._np.number):
+                return int(o)
+            raise TypeError
 
-def _codedown_variableinspector_default(o):
-    if isinstance(o, __np.number): return int(o)
-    raise TypeError
+        def _table(self, x):
+            # Returns {"columns": [...], "data": [[...], ...]} for tabular things,
+            # capped at max_rows, or None if x isn't tabular.
+            if self._pyspark and isinstance(x, self._pyspark.sql.DataFrame):
+                if self._pd:
+                    return self._table(x.limit(max_rows).toPandas())
+                return None
+            if self._tf and isinstance(x, (self._tf.Variable, self._tf.Tensor)) and self._K:
+                return self._table(self._K.get_value(x))
+            if self._torch and isinstance(x, self._torch.Tensor):
+                return self._table(x.cpu().numpy())
+            if self._pd and isinstance(x, self._pd.DataFrame):
+                df = x.head(max_rows)
+                columns = [str(c) for c in df.columns]
+                data = json.loads(df.to_json(orient="values", default_handler=self._default, force_ascii=False))
+                return {"columns": columns, "data": data}
+            if self._pd and isinstance(x, self._pd.Series):
+                s = x.head(max_rows)
+                data = json.loads(s.to_json(orient="values", default_handler=self._default, force_ascii=False))
+                return {"columns": ["value"], "data": [[v] for v in data]}
+            if self._np and isinstance(x, self._np.ndarray):
+                arr = x[:max_rows]
+                if arr.ndim <= 1:
+                    return {"columns": ["value"], "data": [[v] for v in arr.tolist()]}
+                return {"columns": [str(i) for i in range(arr.shape[1])], "data": arr.tolist()}
+            if isinstance(x, list):
+                rows = x[:max_rows]
+                if rows and isinstance(rows[0], (list, tuple)):
+                    ncol = max(len(r) for r in rows)
+                    return {"columns": [str(i) for i in range(ncol)], "data": [list(r) for r in rows]}
+                return {"columns": ["value"], "data": [[v] for v in rows]}
+            return None
 
-def _codedown_variableinspector_deletevariable(x):
-    exec("del %s" % x, globals())
+        def list(self):
+            self._check_imported()
+            ns = self._nms.shell.user_ns
+            result = {}
+            for name in self._nms.who_ls():
+                if not self._keep(name):
+                    continue
+                x = ns[name]
+                size = self._getsizeof(x)
+                result[name] = {
+                    "type": type(x).__name__,
+                    "size": int(size) if size is not None else None,
+                    "shape": self._getshapeof(x),
+                    "content": str(self._getcontentof(x)),
+                    "isMatrix": self._is_matrix(x),
+                    "isWidget": self._is_widget(type(x)),
+                }
+            print(json.dumps(result, ensure_ascii=False))
+
+        def inspect(self, name):
+            self._check_imported()
+            ns = self._nms.shell.user_ns
+            try:
+                x = ns[name]
+            except KeyError:
+                print(json.dumps({
+                    "name": name, "type": None, "size": None, "shape": None,
+                    "isMatrix": False, "content": "<undefined>", "table": None,
+                }, ensure_ascii=False))
+                return
+
+            is_mat = self._is_matrix(x)
+            size = self._getsizeof(x)
+            table = None
+            if is_mat:
+                try:
+                    table = self._table(x)
+                except Exception:
+                    table = None
+            print(json.dumps({
+                "name": name,
+                "type": type(x).__name__,
+                "size": int(size) if size is not None else None,
+                "shape": self._getshapeof(x),
+                "isMatrix": is_mat,
+                "content": str(x),
+                "table": table,
+            }, ensure_ascii=False))
+
+        def display_widget(self, widget):
+            from IPython.display import display
+            display(widget)
+
+        def delete_variable(self, name):
+            self._nms.shell.user_ns.pop(name, None)
+
+    return _VariableInspector()
+
+
+_codedown_variable_inspector = _codedown_make_variable_inspector()
+del _codedown_make_variable_inspector

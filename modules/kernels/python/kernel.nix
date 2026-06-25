@@ -18,8 +18,8 @@ let
 
   variableInspector = {
     initial_code_path = ./variable_inspector.py;
-    list_variables_command = "_codedown_variableinspector_dict_list()";
-    inspect_variable_command = "print('TODO')";
+    list_variables_command = "_codedown_variable_inspector.list()";
+    inspect_variable_command = "_codedown_variable_inspector.inspect('{{VARIABLE_NAME}}')";
   };
 
 in
