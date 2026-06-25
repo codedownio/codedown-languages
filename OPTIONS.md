@@ -33,29 +33,6 @@ string (nix)
 
 
 
-## environment\.variables
-
-
-
-**Environment variables**
-
-Environment variables to set\.
-
-
-
-*Type:*
-attribute set of string
-
-
-
-*Default:*
-
-```nix
-{ }
-```
-
-
-
 ## exporters\.nbconvert\.texliveScheme
 
 
@@ -241,6 +218,80 @@ boolean
 
 ```nix
 true
+```
+
+
+
+## kernels\.R\.misc\.enableVariableInspector
+
+
+
+**Enable the variable inspector**
+
+This will show a summary of the currently defined variables in the UI\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## kernels\.R-ark\.interface\.attrs
+
+
+
+**Notebook attributes**
+
+Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "r"
+  "R"
+]
+```
+
+
+
+## kernels\.R-ark\.interface\.extensions
+
+
+
+**File extensions**
+
+Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "r"
+]
 ```
 
 
@@ -1026,6 +1077,29 @@ false
 
 
 **Auto-index packages when building environment**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## kernels\.julia\.misc\.enableVariableInspector
+
+
+
+**Enable the variable inspector**
+
+This will show a summary of the currently defined variables in the UI\.
 
 
 
