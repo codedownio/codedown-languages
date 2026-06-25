@@ -37,7 +37,11 @@ in
 symlinkJoin {
   name = "clojure";
   paths = [
-    (callPackage ./kernel.nix { inherit attrs extensions; version = clojure.version; })
+    (callPackage ./kernel.nix {
+      inherit attrs extensions;
+      version = clojure.version;
+      enableVariableInspector = settings.misc.enableVariableInspector;
+    })
     clojure
   ]
   ++ languageServers

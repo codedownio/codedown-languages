@@ -12,6 +12,8 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
+import qualified Spec.Tests.Clojure.VariableInspector as VariableInspector
+
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
@@ -30,6 +32,8 @@ tests = describe "Clojure" $ introduceNixEnvironment [kernelSpec] [] "Clojure" $
   testHasExpectedFields "clojure"
 
   testKernelStdout "clojure" [__i|(println "hi")|] "hi\n"
+
+  VariableInspector.tests "clojure"
 
   testDiagnostics "clojure-lsp" "test.clj" LanguageKind_Clojure [__i|(foo 42)|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics [(Range (Position 0 1) (Position 0 4), Just (InR "unresolved-symbol"))]

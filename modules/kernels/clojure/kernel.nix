@@ -3,10 +3,18 @@
 , extensions
 , version
 , clojupyter
+
+, enableVariableInspector
 }:
 
 let
   common = callPackage ../common.nix {};
+
+  variableInspector = {
+    initial_code_path = ./variable_inspector.clj;
+    list_variables_command = "(codedown-variable-inspector-list)";
+    inspect_variable_command = "(codedown-variable-inspector-inspect \"{{VARIABLE_NAME}}\")";
+  };
 
 in
 
@@ -24,6 +32,7 @@ common.makeJupyterKernel {
       codedown = {
         inherit attrs extensions;
         language_version = version;
+        variable_inspector = if enableVariableInspector then variableInspector else null;
         priority = 1;
       };
     };
