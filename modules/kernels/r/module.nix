@@ -37,6 +37,13 @@ with lib;
         type = types.bool;
         default = true;
       };
+
+      misc.enableVariableInspector = mkOption {
+        title = "Enable the variable inspector";
+        description = "This will show a summary of the currently defined variables in the UI.";
+        type = types.bool;
+        default = true;
+      };
     };
   };
 

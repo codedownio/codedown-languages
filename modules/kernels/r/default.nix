@@ -52,6 +52,7 @@ symlinkJoin {
     (callPackage ./kernel.nix {
       inherit rWithPackages attrs extensions;
       version = R.version;
+      enableVariableInspector = settings.misc.enableVariableInspector;
     })
     rWithPackages
   ]
