@@ -113,6 +113,7 @@ executable tests
       Spec.Tests.Julia.Diagnostics
       Spec.Tests.Julia.VariableInspector
       Spec.Tests.Octave
+      Spec.Tests.Octave.VariableInspector
       Spec.Tests.Postgres
       Spec.Tests.Python
       Spec.Tests.Python.VariableInspector

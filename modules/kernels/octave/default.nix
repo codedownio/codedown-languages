@@ -45,6 +45,7 @@ symlinkJoin {
       inherit (settings) extraJupyterConfig;
       octave = octaveToUse;
       version = octave.version;
+      enableVariableInspector = settings.misc.enableVariableInspector;
     })
     octaveToUse
   ];

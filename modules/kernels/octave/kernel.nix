@@ -9,6 +9,8 @@
 
 , extraJupyterConfig
 
+, enableVariableInspector
+
 , attrs
 , extensions
 , version
@@ -18,6 +20,18 @@ let
   common = callPackage ../common.nix {};
 
   inherit (python3.pkgs) buildPythonPackage fetchPypi;
+
+  # The Octave inspector ships as a function file on the load path (its filename
+  # must match the function name). The initial code just addpath's its directory.
+  inspectorDir = runCommand "octave-variable-inspector" {} ''
+    mkdir -p $out
+    cp ${./codedown_variable_inspector.m} $out/codedown_variable_inspector.m
+  '';
+  variableInspector = {
+    initial_code_path = writeText "octave_inspector_init.m" "addpath('${inspectorDir}');\n";
+    list_variables_command = "codedown_variable_inspector()";
+    inspect_variable_command = "codedown_variable_inspector('{{VARIABLE_NAME}}')";
+  };
 
   octaveKernel = buildPythonPackage rec {
     pname = "octave_kernel";
@@ -103,6 +117,8 @@ common.makeJupyterKernel {
         inherit attrs extensions;
 
         language_version = version;
+
+        variable_inspector = if enableVariableInspector then variableInspector else null;
 
         priority = 1;
       };

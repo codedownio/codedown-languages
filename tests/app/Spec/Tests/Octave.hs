@@ -10,6 +10,8 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
+import qualified Spec.Tests.Octave.VariableInspector as VariableInspector
+
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
@@ -28,6 +30,8 @@ tests = describe "Octave" $ introduceNixEnvironment [kernelSpec] [] "Octave" $ i
   testHasExpectedFields "octave"
 
   testKernelStdout "octave" [__i|printf('%s', 'hi')|] "hi"
+
+  VariableInspector.tests "octave"
 
 
 main :: IO ()
