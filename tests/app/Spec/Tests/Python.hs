@@ -14,6 +14,8 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
+import qualified Spec.Tests.Python.VariableInspector as VariableInspector
+
 
 tests :: LanguageSpec
 tests = describe "Python" $ parallel $ do
@@ -34,6 +36,8 @@ tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelN
   testKernelStdout "python3" [i|print("hi")|] "hi\n"
   testKernelStdout "python3" [i|print(42)|] "42\n"
   testKernelStdout' "python3" [i|import scipy|] Nothing
+
+  VariableInspector.tests "python3"
 
   testDiagnostics "python-lsp-server" "test.py" LanguageKind_Python [i|\n\n\nfoo = 42|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []

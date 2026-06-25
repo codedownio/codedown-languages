@@ -10,6 +10,8 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
+import qualified Spec.Tests.R.VariableInspector as VariableInspector
+
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
@@ -29,6 +31,8 @@ tests = describe "R" $ introduceNixEnvironment [kernelSpec] [] "R" $ introduceJu
 
   testKernelStdout "R" [__i|cat("hi")|] "hi"
   testKernelStdout "R" [__i|print("hi")|] [i|[1] "hi"\n|]
+
+  VariableInspector.tests "R"
 
 
 main :: IO ()

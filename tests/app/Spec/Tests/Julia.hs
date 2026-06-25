@@ -20,6 +20,7 @@ import TestLib.TestSearchers
 import TestLib.Types
 
 import qualified Spec.Tests.Julia.Diagnostics as Diagnostics
+import qualified Spec.Tests.Julia.VariableInspector as VariableInspector
 
 
 tests :: LanguageSpec
@@ -39,6 +40,8 @@ juliaTests juliaPackage = describe [i|Julia (#{juliaPackage})|] $ introduceNixEn
   testHasExpectedFields (kernelName juliaPackage)
 
   testKernelStdout (kernelName juliaPackage) [i|println("hi")|] "hi\n"
+
+  VariableInspector.tests (kernelName juliaPackage)
 
   describe "LSP" $ do
     Diagnostics.tests lsName

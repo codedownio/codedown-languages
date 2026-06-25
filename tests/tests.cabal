@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.38.3.
+-- This file has been generated from package.yaml by hpack version 0.39.1.
 --
 -- see: https://github.com/sol/hpack
 
@@ -33,6 +33,7 @@ library
       TestLib.TH
       TestLib.Types
       TestLib.Util
+      TestLib.VariableInspector
   other-modules:
       Paths_tests
   hs-source-dirs:
@@ -110,10 +111,13 @@ executable tests
       Spec.Tests.Haskell.Symbols
       Spec.Tests.Julia
       Spec.Tests.Julia.Diagnostics
+      Spec.Tests.Julia.VariableInspector
       Spec.Tests.Octave
       Spec.Tests.Postgres
       Spec.Tests.Python
+      Spec.Tests.Python.VariableInspector
       Spec.Tests.R
+      Spec.Tests.R.VariableInspector
       Spec.Tests.RArk
       Spec.Tests.Ruby
       Spec.Tests.Rust
