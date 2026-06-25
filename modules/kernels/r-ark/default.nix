@@ -18,7 +18,11 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  basePackages = map (x: lib.getAttr x rPackages) (map common.packageName packages);
+  basePackages =
+    (map (x: lib.getAttr x rPackages) (map common.packageName packages))
+    # The variable inspector (../r/variable_inspector.R) uses jsonlite. The regular
+    # R kernel gets it transitively via IRkernel; ark embeds R directly, so add it.
+    ++ lib.optionals settings.misc.enableVariableInspector [rPackages.jsonlite];
 
   kernelName = "R (Ark)";
 
@@ -52,6 +56,7 @@ symlinkJoin {
     (callPackage ./kernel.nix {
       inherit ark R rLibsSite attrs extensions;
       version = R.version;
+      enableVariableInspector = settings.misc.enableVariableInspector;
     })
     rWithPackages
   ]
