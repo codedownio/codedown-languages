@@ -34,7 +34,7 @@ rec {
               else "";
           in ''
             mkdir -p '${dir}/${kernelName}';
-            echo '${config}' > '${dir}/${kernelName}/kernel.json';
+            echo ${escapeShellArg config} > '${dir}/${kernelName}/kernel.json';
 
             ${logo32}
             ${logo64}
