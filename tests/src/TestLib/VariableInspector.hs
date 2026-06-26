@@ -27,15 +27,18 @@ import Control.Monad.IO.Class
 import Data.Aeson as A
 import Data.Aeson.TH as A
 import Data.Map (Map)
+import qualified Data.Map as M
 import Data.String.Interpolate
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.IO as TIO
+import qualified Data.Vector as V
 import System.FilePath
 import Test.Sandwich
 import TestLib.Aeson
 import TestLib.JupyterRunnerContext
+import TestLib.JupyterTypes
 import TestLib.Types
 import TestLib.Util
 import UnliftIO.Directory
@@ -74,12 +77,13 @@ data VariableDetail = VariableDetail {
   } deriving (Show, Eq)
 $(deriveJSON (dropNAndToCamelCaseOptions (length ("variableDetail" :: String))) ''VariableDetail)
 
--- | The three pieces of the variable-inspector contract, read from kernel.json
--- (with the initial code already loaded from its file).
+-- | The variable-inspector contract, read from kernel.json (with the initial code
+-- already loaded from its file). @inspectorInspectCommand@ is optional (e.g. Rust
+-- has no inspect command).
 data InspectorConfig = InspectorConfig {
   inspectorInitialCode :: Text
   , inspectorListCommand :: Text
-  , inspectorInspectCommand :: Text
+  , inspectorInspectCommand :: Maybe Text
   } deriving (Show, Eq)
 
 
@@ -111,7 +115,10 @@ getInspectorConfig kernel = do
 
   initialCodePath <- requireString viObj "initial_code_path"
   listCommand <- requireString viObj "list_variables_command"
-  inspectCommand <- requireString viObj "inspect_variable_command"
+
+  let inspectCommand = case lookupKey "inspect_variable_command" viObj of
+        Just (A.String s) -> Just s
+        _ -> Nothing
 
   initialCode <- liftIO $ TIO.readFile (T.unpack initialCodePath)
 
@@ -130,9 +137,15 @@ withListVariables :: (
 withListVariables kernel setup cb = do
   InspectorConfig {..} <- getInspectorConfig kernel
   -- Run the initial code first (as the frontend does at startup), then the user
-  -- setup, then the command. Some inspectors (e.g. bash) snapshot a baseline of
-  -- pre-existing variables at init time.
-  let code = T.intercalate "\n" [inspectorInitialCode, setup, inspectorListCommand]
+  -- setup, then the command, and decode the printed JSON from stdout. (Some
+  -- inspectors, e.g. bash, snapshot a baseline of variables at init time.)
+  --
+  -- The frontend always runs the list command as its own execute request; most
+  -- kernels also tolerate it appended to setup in one cell, but evcxr's
+  -- meta-commands (":...") must be their own cell, so split in that case.
+  let code = if ":" `T.isPrefixOf` T.strip inspectorListCommand
+             then T.intercalate "\n" [inspectorInitialCode, setup] <> "\n@@@CELL@@@\n" <> inspectorListCommand
+             else T.intercalate "\n" [inspectorInitialCode, setup, inspectorListCommand]
   runInspectorCommand kernel code "variable list" cb
 
 -- | Like 'withListVariables', but runs the inspect command for a single variable
@@ -143,25 +156,48 @@ withInspectVariable :: (
   ) => Text -> Text -> Text -> (VariableDetail -> ExampleT context m ()) -> ExampleT context m ()
 withInspectVariable kernel setup varName cb = do
   InspectorConfig {..} <- getInspectorConfig kernel
-  let inspectCommand = T.replace "{{VARIABLE_NAME}}" varName inspectorInspectCommand
-  let code = T.intercalate "\n" [inspectorInitialCode, setup, inspectCommand]
-  runInspectorCommand kernel code [i|inspect of '#{varName}'|] cb
+  case inspectorInspectCommand of
+    Nothing -> expectationFailure [i|kernel '#{kernel}' has no inspect_variable_command|]
+    Just tmpl -> do
+      let inspectCommand = T.replace "{{VARIABLE_NAME}}" varName tmpl
+      let code = T.intercalate "\n" [inspectorInitialCode, setup, inspectCommand]
+      runInspectorCommand kernel code [i|inspect of '#{varName}'|] cb
 
--- | Run a notebook cell and decode the last non-empty stdout line as JSON.
+-- | Run the code and decode the command's JSON output. Most kernels print JSON to
+-- stdout; evcxr's :vars_json command returns it as an execute_result instead, so we
+-- fall back to that. Decodes the last non-empty line as JSON.
 runInspectorCommand :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m, FromJSON a
   ) => Text -> Text -> Text -> (a -> ExampleT context m ()) -> ExampleT context m ()
 runInspectorCommand kernel code what cb =
-  runKernelCode kernel code $ \_notebook _outputNotebook outFile _errFile ->
-    doesFileExist outFile >>= \case
-      False -> expectationFailure [i|Variable inspector (#{what}) produced no stdout|]
-      True -> do
-        contents <- liftIO $ TIO.readFile outFile
-        case lastNonEmptyLine contents of
-          Nothing -> expectationFailure [i|Variable inspector (#{what}) produced empty stdout|]
-          Just jsonLine -> case A.eitherDecodeStrict (TE.encodeUtf8 jsonLine) of
-            Left err -> expectationFailure [i|Failed to parse #{what} JSON: #{err}\nStdout was:\n#{contents}|]
-            Right x -> cb x
+  runKernelCode kernel code $ \notebookFile outputNotebook outFile _errFile -> do
+    stdoutContents <- doesFileExist outFile >>= \case
+      True -> liftIO (TIO.readFile outFile)
+      False -> return ""
+    candidate <- case lastNonEmptyLine stdoutContents of
+      Just l -> return (Just l)
+      Nothing -> liftIO (A.eitherDecodeFileStrict outputNotebook) >>= \case
+        Right nb -> return (lastNonEmptyLine =<< lastExecuteResultText nb)
+        Left err -> expectationFailure [i|Failed to decode notebook '#{notebookFile}': #{err}|]
+    case candidate of
+      Nothing -> expectationFailure [i|Variable inspector (#{what}) produced no output|]
+      Just jsonLine -> case A.eitherDecodeStrict (TE.encodeUtf8 jsonLine) of
+        Left err -> expectationFailure [i|Failed to parse #{what} JSON: #{err}\nGot: #{jsonLine}|]
+        Right x -> cb x
+
+-- | The text/plain of the last execute_result in the notebook (evcxr's :vars_json
+-- output lands here rather than on stdout).
+lastExecuteResultText :: JupyterNotebook -> Maybe Text
+lastExecuteResultText (JupyterNotebook {..}) =
+  case [ mimeText executeResultData | CodeCell {..} <- notebookCells
+                                    , ExecuteResultOutput {..} <- codeOutputs ] of
+    [] -> Nothing
+    xs -> Just (last xs)
+  where
+    mimeText m = case M.lookup (MimeType "text/plain") m of
+      Just (A.String s) -> s
+      Just (A.Array xs) -> T.concat [s | A.String s <- V.toList xs]
+      _ -> ""
 
 lookupKey :: Text -> A.Value -> Maybe A.Value
 lookupKey k (A.Object o) = aesonLookup k o

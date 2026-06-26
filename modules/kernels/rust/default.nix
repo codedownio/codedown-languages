@@ -85,6 +85,7 @@ symlinkJoin {
       inherit evcxr;
       inherit displayName attrs extensions;
       version = rustPackages.rustc.version;
+      enableVariableInspector = settings.misc.enableVariableInspector;
     })
 
     rustPackages.rustc

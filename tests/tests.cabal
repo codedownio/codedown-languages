@@ -129,6 +129,7 @@ executable tests
       Spec.Tests.Rust.Completion
       Spec.Tests.Rust.Diagnostics
       Spec.Tests.Rust.Hovers
+      Spec.Tests.Rust.VariableInspector
       Spec.Tests.SampleEnvironments
       Spec.Tests.Searchers
       Spec.Tests.SettingsSchemas

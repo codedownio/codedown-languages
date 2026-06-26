@@ -347,18 +347,23 @@ notebookWithCode kernel code = A.object [
         )
 
         ])
-  , ("cells", A.Array [A.Object [
-                  ("cell_type", A.String "code")
-                  , ("metadata", A.object [])
-                  , ("execution_count", A.Null)
-                  , ("source", A.Array (V.fromList (fmap A.String ls)))
-                  , ("outputs", A.Array [])
-                  ]])
+  , ("cells", A.Array (V.fromList (fmap mkCell cellTexts)))
   ]
 
   where
-    rawLines = T.splitOn "\n" code
-    ls = [x <> "\n" | x <- L.init rawLines] <> [L.last rawLines]
+    -- Split into multiple notebook cells on a sentinel, so callers can run code
+    -- as separate execute requests in one kernel session (some kernels, e.g.
+    -- evcxr, require meta-commands like :vars to be their own cell).
+    cellTexts = T.splitOn "\n@@@CELL@@@\n" code
+    mkCell t = A.Object [
+        ("cell_type", A.String "code")
+        , ("metadata", A.object [])
+        , ("execution_count", A.Null)
+        , ("source", A.Array (V.fromList (fmap A.String (linesOf t))))
+        , ("outputs", A.Array [])
+        ]
+    linesOf t = let rawLines = T.splitOn "\n" t
+                in [x <> "\n" | x <- L.init rawLines] <> [L.last rawLines]
 
 -- * Utility main function
 

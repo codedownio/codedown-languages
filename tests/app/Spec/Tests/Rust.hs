@@ -19,6 +19,7 @@ import qualified Spec.Tests.Rust.Changes as Changes
 import qualified Spec.Tests.Rust.Completion as Completion
 import qualified Spec.Tests.Rust.Diagnostics as Diagnostics
 import qualified Spec.Tests.Rust.Hovers as Hovers
+import qualified Spec.Tests.Rust.VariableInspector as VariableInspector
 
 
 tests :: LanguageSpec
@@ -48,6 +49,8 @@ tests = describe "Rust" $ do
           Just (x :: Int) | x >= 0 && x < 256 -> return ()
           _ -> expectationFailure [i|Unexpected output: #{show t}|]
         Nothing -> expectationFailure [i|Kernel produced no output.|]
+
+      VariableInspector.tests "rust"
 
     describe "LSP" $ do
       Changes.tests
