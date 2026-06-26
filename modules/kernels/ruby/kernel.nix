@@ -3,6 +3,8 @@
 
 , iruby
 
+, enableVariableInspector
+
 , attrs
 , extensions
 , version
@@ -12,6 +14,12 @@ with lib;
 
 let
   common = callPackage ../common.nix {};
+
+  variableInspector = {
+    initial_code_path = ./variable_inspector.rb;
+    list_variables_command = "CodedownVariableInspector.list(binding)";
+    inspect_variable_command = "CodedownVariableInspector.inspect_var(binding, \"{{VARIABLE_NAME}}\")";
+  };
 
 in
 
@@ -32,6 +40,8 @@ common.makeJupyterKernel (
         codedown = {
           inherit attrs extensions;
           language_version = version;
+
+          variable_inspector = if enableVariableInspector then variableInspector else null;
 
           priority = 1;
         };

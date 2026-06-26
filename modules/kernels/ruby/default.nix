@@ -42,6 +42,7 @@ symlinkJoin {
     (callPackage ./kernel.nix {
       inherit iruby;
       inherit attrs extensions version;
+      enableVariableInspector = settings.misc.enableVariableInspector;
     })
     ruby
   ]

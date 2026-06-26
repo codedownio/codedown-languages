@@ -123,11 +123,13 @@ executable tests
       Spec.Tests.R.VariableInspector
       Spec.Tests.RArk
       Spec.Tests.Ruby
+      Spec.Tests.Ruby.VariableInspector
       Spec.Tests.Rust
       Spec.Tests.Rust.Changes
       Spec.Tests.Rust.Completion
       Spec.Tests.Rust.Diagnostics
       Spec.Tests.Rust.Hovers
+      Spec.Tests.Rust.VariableInspector
       Spec.Tests.SampleEnvironments
       Spec.Tests.Searchers
       Spec.Tests.SettingsSchemas

@@ -22,6 +22,8 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
+import qualified Spec.Tests.Ruby.VariableInspector as VariableInspector
+
 
 tests :: LanguageSpec
 tests = describe "Ruby" $ do
@@ -42,6 +44,8 @@ kernelTests rubyPackage = do
     testHasExpectedFields (kernelName rubyPackage)
 
     testKernelStdout (kernelName rubyPackage) [__i|puts "hi"|] "hi\n"
+
+    VariableInspector.tests (kernelName rubyPackage)
 
     when ("_" `T.isInfixOf` rubyPackage) $ do
       let versionString = rubyPackage
