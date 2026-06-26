@@ -2052,6 +2052,29 @@ string (yaml)
 
 
 
+## kernels\.ruby\.misc\.enableVariableInspector
+
+
+
+**Enable the variable inspector**
+
+This will show a summary of the currently defined variables in the UI\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
 ## kernels\.ruby\.rubyPackage
 
 
@@ -2187,6 +2210,29 @@ false
 
 
 
+## kernels\.rust\.misc\.enableVariableInspector
+
+
+
+**Enable the variable inspector**
+
+This will show a summary of the currently defined variables in the UI\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
 ## kernels\.rust\.rustPackage
 
 
@@ -2252,8 +2298,6 @@ string
 
 ## shells\.bash\.enable
 
-
-
 Enable the Bash shell\.
 
 
@@ -2293,6 +2337,8 @@ false
 
 
 ## shells\.zsh\.enable
+
+
 
 Enable the ZSH shell\.
 
