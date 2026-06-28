@@ -93,6 +93,8 @@ symlinkJoin {
       icon = ./python-logo-64x64.png;
       iconMonochrome = ./python-monochrome.svg;
       hasPackages = packageOptions != {};
+      # Supports the Jupyter debugger protocol (debugpy). Drives the breakpoint gutter in the UI.
+      hasDebugger = true;
     };
     inherit packageOptions packageSearch;
     versions = {

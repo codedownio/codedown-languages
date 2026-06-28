@@ -71,6 +71,8 @@ symlinkJoin {
       icon = ./r-logo-64x64.png;
       iconMonochrome = ./r-monochrome.svg;
       hasPackages = packageOptions != {};
+      # Ark supports the Jupyter debugger protocol (DAP). Drives the breakpoint gutter in the UI.
+      hasDebugger = true;
     };
     inherit packageOptions packageSearch versions;
     inherit settingsSchema settings;

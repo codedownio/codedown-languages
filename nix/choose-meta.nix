@@ -31,6 +31,8 @@ contents:
   display_name = contents.meta.displayName;
 }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "hasPackages"] contents) {
   has_packages = contents.meta.hasPackages;
+}) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "hasDebugger"] contents) {
+  has_debugger = contents.meta.hasDebugger;
 }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "lessCommon"] contents) {
   less_common = contents.meta.lessCommon;
 }) // (lib.optionalAttrs (lib.hasAttrByPath ["meta" "mainProgram"] contents) {
