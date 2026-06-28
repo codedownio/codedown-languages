@@ -34,6 +34,16 @@ common.writeTextDirWithMetaAndPassthru jls.meta passthru "lib/codedown/language-
   attrs = ["python"];
   type = "stream";
   args = ["${pythonEnv}/bin/jedi-language-server"];
+
+  # Force Markdown hover/completion docs. jedi-language-server's _choose_markup() picks the
+  # markup kind from the client's completion.documentation_format capability (not hover.contentFormat),
+  # so without this it falls back to PlainText: signatures come through unfenced and rst docstrings
+  # aren't converted, which renders badly in codedown's markdown frontend. Setting markupKindPreferred
+  # makes it emit ```python-fenced signatures and run docstrings through docstring-to-markdown.
+  initialization_options = {
+    markupKindPreferred = "markdown";
+  };
+
   # Not sure whether to do this using an environment variable or initialization option
   env = {
     JEDI_LANGUAGE_SERVER_EXTRA_PATHS = lib.concatStringsSep ":" [
