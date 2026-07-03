@@ -1,13 +1,9 @@
-{ stdenv
-, lib
-, pkgs
+{ lib
 , callPackage
 , pythonWithPackages
-, bash
 , kernelName
+, attrs
 }:
-
-with lib;
 
 let
   # This is slightly different than how the kernel is configured. For the language server,
@@ -60,7 +56,7 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.python-lsp-server.meta passth
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;
-    attrs = ["python"];
+    inherit attrs;
     type = "stream";
     args = ["${python}/bin/python" "-m" "pylsp"];
     initialization_options = import ../pylsp_initialization_options.nix "pylsp";

@@ -2,12 +2,12 @@
 , callPackage
 , makeWrapper
 , runCommand
-, writeTextDir
 
 , pythonWithPackages
 , pyright
 
 , kernelName
+, attrs
 }:
 
 
@@ -44,7 +44,7 @@ common.writeTextDirWithMetaAndPassthru pyright.meta passthru "lib/codedown/langu
   extensions = ["py"];
   notebook_suffix = ".py";
   kernel_name = kernelName;
-  attrs = ["python"];
+  inherit attrs;
   type = "stream";
   args = ["${pyright}/bin/pyright-langserver" "--stdio"];
 

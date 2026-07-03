@@ -1,10 +1,9 @@
-{ stdenv
-, coreutils
-, pythonWithPackages
+{ pythonWithPackages
 , python-language-server
 , callPackage
 , lib
 , kernelName
+, attrs
 }:
 
 with lib;
@@ -28,41 +27,41 @@ let
     cacheFolderPath = "FILLED_IN";
   };
 
-  configuration_settings = cacheFolderPath: {
-    python = {
-      linting = {
-        enabled = true;
-      };
-      analysis = {
-        enabled = true;
-        cachingLevel = "System";
-        cacheFolderPath = cacheFolderPath;
-      };
-    };
-  };
+  # configuration_settings = cacheFolderPath: {
+  #   python = {
+  #     linting = {
+  #       enabled = true;
+  #     };
+  #     analysis = {
+  #       enabled = true;
+  #       cachingLevel = "System";
+  #       cacheFolderPath = cacheFolderPath;
+  #     };
+  #   };
+  # };
 
-  generate_cache = ./generate_cache.py;
+  # generate_cache = ./generate_cache.py;
 
-  cache = stdenv.mkDerivation {
-    name = "microsoft-python-language-server-cache";
+  # cache = stdenv.mkDerivation {
+  #   name = "microsoft-python-language-server-cache";
 
-    dontUnpack = true;
+  #   dontUnpack = true;
 
-    buildInputs = [coreutils python];
+  #   buildInputs = [coreutils python];
 
-    buildPhase = ''
-      mkdir -p $out/cache
+  #   buildPhase = ''
+  #     mkdir -p $out/cache
 
-      echo '${generators.toJSON {} initialization_options}' > initialization_options.json
-      echo '${generators.toJSON {} (configuration_settings "FILLED_IN")}' > configuration_settings.json
+  #     echo '${generators.toJSON {} initialization_options}' > initialization_options.json
+  #     echo '${generators.toJSON {} (configuration_settings "FILLED_IN")}' > configuration_settings.json
 
-      python ${generate_cache} ${python-language-server}/bin/python-language-server $out/cache ./initialization_options.json ./configuration_settings.json
-    '';
+  #     python ${generate_cache} ${python-language-server}/bin/python-language-server $out/cache ./initialization_options.json ./configuration_settings.json
+  #   '';
 
-    dontInstall = true;
+  #   dontInstall = true;
 
-    dontFixup = true;
-  };
+  #   dontFixup = true;
+  # };
 
   languageServerName = "python-language-server";
 
@@ -83,7 +82,7 @@ common.writeTextDirWithMetaAndPassthru python-language-server.meta passthru "lib
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;
-    attrs = ["python"];
+    inherit attrs;
     type = "stream";
     args = ["${python-language-server}/bin/python-language-server"];
     # configuration_settings = configuration_settings "${cache}/cache";

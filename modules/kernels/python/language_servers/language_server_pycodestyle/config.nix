@@ -1,10 +1,10 @@
 { callPackage
 , lib
-, stdenv
 
 , pythonWithPackages
 , kernelName
-, packages ? []
+, attrs
+# , packages ? []
 }:
 
 let
@@ -34,7 +34,7 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.pycodestyle.meta passthru "li
     extensions = ["py"];
     notebook_suffix = ".py";
     kernel_name = kernelName;
-    attrs = ["python"];
+    inherit attrs;
     type = "stream";
     args = ["${diagnostic-languageserver}/bin/diagnostic-languageserver" "--stdio" "--log-level" "1"];
     # Not sure whether to do this using an environment variable or initialization option

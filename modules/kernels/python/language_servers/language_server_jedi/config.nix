@@ -2,8 +2,8 @@
 , lib
 
 , pythonWithPackages
-, writeTextDir
 , kernelName
+, attrs
 }:
 
 let
@@ -31,7 +31,7 @@ common.writeTextDirWithMetaAndPassthru jls.meta passthru "lib/codedown/language-
   extensions = ["py"];
   notebook_suffix = ".py";
   kernel_name = kernelName;
-  attrs = ["python"];
+  inherit attrs;
   type = "stream";
   args = ["${pythonEnv}/bin/jedi-language-server"];
 
