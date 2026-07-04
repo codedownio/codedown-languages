@@ -115,7 +115,7 @@ self: super: {
         inherit name;
         paths = evaluated.config.paths ++ extraNixDrv;
 
-        passthru = {
+        passthru = rec {
           ui_metadata = {
             packages = mapAttrs (n: v: let
               settings_schema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } (removeAttrs evaluated.options.${n} ["_module"]);
@@ -133,6 +133,9 @@ self: super: {
             # Channel-level settings schema for the "environment.*" options.
             settings_schema = environmentSettingsSchema;
           };
+
+          # Serialize ui_metadata like codedown.makeEnvironment does, so ui_metadata_farm can read it.
+          ui_metadata_yaml = self.writeText "ui-metadata.yaml" (lib.generators.toYAML {} ui_metadata);
         };
       };
 }
