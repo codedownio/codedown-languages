@@ -71,7 +71,7 @@ let
 
 in
 
-(common.writeTextDirWithMeta meta "lib/codedown/language-servers/codedown-spellchecker.yaml" (lib.generators.toYAML {} [{
+(common.writeTextDirWithMeta meta "lib/codedown/language-servers/codedown-markdown-spellchecker.yaml" (lib.generators.toYAML {} [{
   name = "spellchecker";
   inherit version;
   extensions = ["md" "ipynb"];

@@ -49,7 +49,7 @@ extendedLib.evalModules {
     ../modules/kernels/ruby/module.nix
     ../modules/kernels/rust/module.nix
 
-    ../modules/language_servers/markdown-spellcheck-lsp/module.nix
+    ../modules/language_servers/spellchecker/module.nix
 
     ../modules/shells/bash/module.nix
     ../modules/shells/fish/module.nix
