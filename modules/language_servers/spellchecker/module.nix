@@ -56,12 +56,14 @@ in
   config = mkIf cfg.enable {
     builtLanguageServers.spellchecker =
       let
-        typstSettingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 3; } options.language-servers.spellchecker.typst;
+        # Schema over the whole spellchecker subtree so both "Check Markdown" and the Typst options show up.
+        # componentsToDrop = 2 keeps the nested keys distinct (markdown.enable, typst.enable, ...) and
+        # avoids the empty loc that the top-level `enable` produces at drop 3.
+        spellcheckerSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.language-servers.spellchecker;
 
         markdown = pkgsToUse.callPackage ../markdown-spellcheck-lsp {};
         typst = pkgsToUse.callPackage ../typst-spellcheck-lsp {
           settings = cfg.typst;
-          settingsSchema = typstSettingsSchema;
         };
 
         parts = (optional cfg.markdown.enable markdown)
@@ -73,8 +75,8 @@ in
           meta = markdown.meta;
           passthru = {
             languageServerNames = concatMap (p: p.languageServerNames) parts;
-            settings = cfg.typst;
-            settingsSchema = typstSettingsSchema;
+            settings = cfg;
+            settingsSchema = spellcheckerSchema;
           };
         };
   };

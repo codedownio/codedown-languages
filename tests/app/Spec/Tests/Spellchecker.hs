@@ -57,6 +57,13 @@ tests = describe "Spellchecker" $ introduceNixEnvironment [] otherConfig "Spellc
         diagnostics <- waitForDiagnostics
         lift $ assertDiagnosticRanges diagnostics []
 
+  it "Gets diagnostics on a Typst file" $ do
+    doSession'' "test.typ" "typst-spellchecker" [i|= This is mispelled|] [] $ \_ -> do
+      _ident <- openDoc "test.typ" "typst-spellchecker"
+      waitUntil 300.0 $ do
+        diagnostics <- waitForDiagnostics
+        lift $ assertDiagnosticRanges diagnostics [(Range (Position 0 10) (Position 0 19), Nothing)]
+
   testDiagnostics "markdown-spellchecker" "test.md" LanguageKind_Markdown [i|I've done a thing.|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
 
