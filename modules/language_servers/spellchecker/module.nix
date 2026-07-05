@@ -50,16 +50,32 @@ in
     };
   };
 
-  config = mkIf cfg.enable (mkMerge [
-    (mkIf cfg.markdown.enable {
-      builtLanguageServers.markdown-spellchecker = pkgsToUse.callPackage ../markdown-spellcheck-lsp {};
-    })
+  # One built package "spellchecker" that bundles both the markdown and typst servers as equals
+  # (markdown-spellchecker + typst-spellchecker). The bundle is what environments track as
+  # language-servers.spellchecker, so hydration keys line up; enabling it gives both servers.
+  config = mkIf cfg.enable {
+    builtLanguageServers.spellchecker =
+      let
+        typstSettingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 3; } options.language-servers.spellchecker.typst;
 
-    (mkIf cfg.typst.enable {
-      builtLanguageServers.typst-spellchecker = pkgsToUse.callPackage ../typst-spellcheck-lsp {
-        settings = cfg.typst;
-        settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 3; } options.language-servers.spellchecker.typst;
-      };
-    })
-  ]);
+        markdown = pkgsToUse.callPackage ../markdown-spellcheck-lsp {};
+        typst = pkgsToUse.callPackage ../typst-spellcheck-lsp {
+          settings = cfg.typst;
+          settingsSchema = typstSettingsSchema;
+        };
+
+        parts = (optional cfg.markdown.enable markdown)
+             ++ (optional cfg.typst.enable typst);
+      in
+        pkgsToUse.symlinkJoin {
+          name = "codedown-spellchecker";
+          paths = parts;
+          meta = markdown.meta;
+          passthru = {
+            languageServerNames = concatMap (p: p.languageServerNames) parts;
+            settings = cfg.typst;
+            settingsSchema = typstSettingsSchema;
+          };
+        };
+  };
 }

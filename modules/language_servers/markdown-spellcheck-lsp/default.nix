@@ -72,7 +72,7 @@ let
 in
 
 (common.writeTextDirWithMeta meta "lib/codedown/language-servers/codedown-markdown-spellchecker.yaml" (lib.generators.toYAML {} [{
-  name = "spellchecker";
+  name = "markdown-spellchecker";
   inherit version;
   extensions = ["md" "ipynb"];
   attrs = ["markdown"];
@@ -90,6 +90,6 @@ in
   ];
 }])).overrideAttrs (old: {
   passthru = {
-    languageServerNames = ["spellchecker"];
+    languageServerNames = ["markdown-spellchecker"];
   };
 })

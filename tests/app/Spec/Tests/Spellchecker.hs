@@ -30,8 +30,8 @@ otherConfig = [
 tests :: TopSpec
 tests = describe "Spellchecker" $ introduceNixEnvironment [] otherConfig "Spellchecker env" $ introduceJustBubblewrap $ do
   it "Gets diagnostics and a working code action" $ do
-    doSession'' "test.md" "spellchecker" [i|\# This is mispelled|] [] $ \(Helpers.LspSessionInfo {..}) -> do
-      ident <- openDoc "test.md" "spellchecker"
+    doSession'' "test.md" "markdown-spellchecker" [i|\# This is mispelled|] [] $ \(Helpers.LspSessionInfo {..}) -> do
+      ident <- openDoc "test.md" "markdown-spellchecker"
       waitUntil 300.0 $ do
         diagnostics <- waitForDiagnostics
         lift $ assertDiagnosticRanges diagnostics [(Range (Position 0 10) (Position 0 19), Nothing)]
@@ -51,13 +51,13 @@ tests = describe "Spellchecker" $ introduceNixEnvironment [] otherConfig "Spellc
 
   it "Uses a personal dictionary on startup" $ do
     let extraFiles = [(".codedown/personal-dictionary.dat", "mispelled\n")]
-    doSession'' "test.md" "spellchecker" [i|\# This is mispelled|] extraFiles $ \_homeDir -> do
-      _ident <- openDoc "test.md" "spellchecker"
+    doSession'' "test.md" "markdown-spellchecker" [i|\# This is mispelled|] extraFiles $ \_homeDir -> do
+      _ident <- openDoc "test.md" "markdown-spellchecker"
       waitUntil 300.0 $ do
         diagnostics <- waitForDiagnostics
         lift $ assertDiagnosticRanges diagnostics []
 
-  testDiagnostics "spellchecker" "test.md" LanguageKind_Markdown [i|I've done a thing.|] $ \diagnostics -> do
+  testDiagnostics "markdown-spellchecker" "test.md" LanguageKind_Markdown [i|I've done a thing.|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
 
 
