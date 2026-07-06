@@ -1,0 +1,7 @@
+[package]
+name = "codedown"
+version = "0.1.0"
+entrypoint = "lib.typ"
+authors = ["CodeDown"]
+license = "MIT"
+description = "CodeDown Typst prelude: notebook code cells and annotations."

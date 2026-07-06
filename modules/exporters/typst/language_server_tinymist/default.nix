@@ -6,6 +6,11 @@
 # TODO: how to make the typstToUse (i.e. Typst with some packages) available to tinymist?
 , typstToUse
 
+# The CodeDown Typst prelude package dir (see ../default.nix). tinymist's LSP has no --package-path
+# CLI flag, so we hand it the path through initializationOptions.typstExtraArgs instead — verified to
+# make @local/codedown resolve in tinymist's live preview.
+, codedownPackagePath
+
 , kernelName
 }:
 
@@ -33,4 +38,7 @@ common.writeTextDirWithMetaAndPassthru tinymist.meta passthru "lib/codedown/lang
   args = [
     "${tinymist}/bin/tinymist"
   ];
+  initialization_options = {
+    typstExtraArgs = [ "--package-path=${codedownPackagePath}" ];
+  };
 }])

@@ -1,6 +1,7 @@
 { callPackage
 , lib
 , pandoc
+, runCommand
 , symlinkJoin
 , typst
 
@@ -16,19 +17,31 @@ let
 
   common = callPackage ../../kernels/common.nix {};
 
+  # The @local package providing CodeDown's Typst prelude (#codedown, #codedown_annotation). Both the
+  # export compile and tinymist are pointed at this dir with `--package-path`, so documents just
+  # `#import "@local/codedown:0.1.0": *` rather than defining the helpers inline. Note the layout the
+  # flag expects: <package-path>/<namespace>/<name>/<version>/ (here local/codedown/0.1.0).
+  codedownPackageVersion = "0.1.0";
+  codedownPackagePath = runCommand "codedown-typst-package" {} ''
+    dir="$out/local/codedown/${codedownPackageVersion}"
+    mkdir -p "$dir"
+    cp ${./codedown-lib/typst.toml} "$dir/typst.toml"
+    cp ${./codedown-lib/lib.typ} "$dir/lib.typ"
+  '';
+
   # Also writes a dependency file at "<output>.deps" (typst's native JSON
   # {"inputs": [...]}, paths relative to cwd) so the runner can watch imported
   # files and re-render when any of them changes. See exporterInfoDeps below.
   script = common.writeShellScriptBinWithAttrs {} "typst-export" ''
     echo_and_run() { echo "$*" ; "$@" ; }
     echo_and_run export PATH="''${PATH:+''${PATH}:}"
-    echo_and_run ${typst}/bin/typst compile --deps "$2.deps" "$1" "$2"
+    echo_and_run ${typst}/bin/typst compile --package-path ${codedownPackagePath} --deps "$2.deps" "$1" "$2"
   '';
 
   typstToUse = typst.withPackages (ps: (map (x: ps.${x}) packages));
 
   languageServers = lib.optionals settings.lsp.tinymist.enable
-    [(callPackage ./language_server_tinymist { inherit kernelName typstToUse; })];
+    [(callPackage ./language_server_tinymist { inherit kernelName typstToUse codedownPackagePath; })];
 
   packageOptions = typst.packages;
   packageSearch = common.searcher packageOptions;
