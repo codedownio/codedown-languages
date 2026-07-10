@@ -5,9 +5,10 @@
 // `typst compile` (export) and tinymist (live preview).
 
 // A notebook code cell. Renders the cell's output (an image, raw block, etc.); the source code
-// itself is not shown in the compiled document. (Matches the historical inline
-// `#let codedown(code, output: none) = output`.)
-#let codedown(code, output: none) = output
+// itself is not shown in the compiled document. The `..rest` sink absorbs editor-only cell
+// attributes (e.g. `folded: true`) that are data for CodeDown, not for rendering — like
+// `codedown_annotation`'s `..args` — so new attributes never require changing this signature.
+#let codedown(code, output: none, ..rest) = output
 
 // An annotation anchor. Renders the wrapped span unchanged (transparent), so the anchor travels
 // with the text through edits. CodeDown recovers the (id, span) by reading the source, not by
