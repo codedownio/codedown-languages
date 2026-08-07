@@ -82,7 +82,9 @@
             rustCrateProbe = codedown.makeEnvironment {
               name = "rust-crate-probe";
               kernels.rust.enable = true;
-              kernels.rust.packages = builtins.fromJSON (builtins.getEnv "CODEDOWN_RUST_PROBE_PACKAGES");
+              kernels.rust.packages =
+                let env = builtins.getEnv "CODEDOWN_RUST_PROBE_PACKAGES";
+                in if env == "" then [] else builtins.fromJSON env;
             };
 
             searcher = codedown.searcher pkgsStable;
