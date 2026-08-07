@@ -66,12 +66,10 @@ tests = describe "Rust" $ do
     introduceJupyterRunner $ describe "Data science kernel" $
       testKernelSucceeds "rust" dataScienceImports
 
--- We need a sleep to make this test reliable. It seems the kernel has a problem where
--- it can exit before flushing stdout?
--- See TODO: file issue on evcxr
+-- rand 0.9+ dropped the `random` re-export from `rand::prelude`, so call it by full path
+-- instead of `use rand::prelude::*; let x: u8 = random();`. See issue #49.
 randCode :: T.Text
-randCode = [__i|use rand::prelude::*;
-                let x: u8 = random();
+randCode = [__i|let x: u8 = rand::random();
                 println!("{}", x);|]
 
 kernelSpec :: NixKernelSpec
