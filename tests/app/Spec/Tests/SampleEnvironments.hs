@@ -12,6 +12,7 @@ import qualified Data.Map as M
 import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Yaml as Yaml
+import GHC.Stack
 import System.FilePath
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
@@ -96,7 +97,7 @@ validateLanguageServerConfig path obj = do
     Just A.Null -> expectationFailure [i|Language server config has null 'icon_monochrome': #{path}|]
     Just _ -> return ()
 
-validatePackage :: (MonadLoggerIO m, MonadFail m) => FilePath -> Text -> NixPackage -> m ()
+validatePackage :: (HasCallStack, MonadLoggerIO m, MonadFail m) => FilePath -> Text -> NixPackage -> m ()
 validatePackage envRoot attr (NixPackage {nixPackageMeta=(NixMeta {..}), ..}) = do
   when ("shells." `T.isPrefixOf` attr) $ do
     info [i|(#{nixPackageName}) Shell detected; checking it has a mainProgram|]
