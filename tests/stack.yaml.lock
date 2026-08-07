@@ -63,7 +63,7 @@ packages:
     hackage: ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293
 snapshots:
 - completed:
-    sha256: 671a94f04c2cb37457b71c66134242d4b12ab703597c19fad769df2d5e1e5659
-    size: 715416
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2025/12/25.yaml
-  original: nightly-2025-12-25
+    sha256: 9ac6804da42223bcaf4acffbd82b30768d255885d290ece0379bee7318e53083
+    size: 769874
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2026/8/6.yaml
+  original: nightly-2026-08-06

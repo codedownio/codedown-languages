@@ -1,6 +1,6 @@
 {
   inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-25.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-26.05";
 
   outputs = { self, flake-utils, nixpkgs }:
     flake-utils.lib.eachSystem ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"] (system:
@@ -18,7 +18,7 @@
                 postgresql.pg_config
                 zlib
 
-                haskell.compiler.ghc9122
+                haskell.compiler.ghc9124
               ];
 
               NIX_PATH = "nixpkgs=${pkgs.path}";

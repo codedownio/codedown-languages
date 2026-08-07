@@ -182,7 +182,8 @@ getBasicPath = do
     (T.unpack . T.strip . T.pack) <$> readCreateProcess ((proc "nix" ["run", ".#print-basic-path"]) { std_err = UseHandle devNullHandle }) ""
 
 getPathAndNixEnvironmentClosure :: (
-  MonadUnliftIO m, MonadLogger m, MonadReader context m, Sandwich.HasLabel context "nixEnvironment" FilePath
+  MonadUnliftIO m, MonadLogger m
+  , MonadReader context m, HasBaseContext context, Sandwich.HasLabel context "nixEnvironment" FilePath
   ) => m (FilePath, [FilePath])
 getPathAndNixEnvironmentClosure = do
   pathToUse <- getBasicPath

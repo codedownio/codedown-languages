@@ -41,7 +41,7 @@ introduceJupyterRunner = introduceWith [i|Jupyter runner|] jupyterRunner $ \acti
   let runnerPath = currentDir </> "jupyter-runner"
 
   let cp = ((proc "nix" ["build", ".#jupyter-runner", "-o", runnerPath]) { cwd = Just rootDir })
-  createProcessWithLogging cp >>= waitForProcess >>= (`shouldBe` ExitSuccess)
+  createProcessWithLogging cp >>= waitForProcess . fst >>= (`shouldBe` ExitSuccess)
   void $ action runnerPath
 
 introduceBootstrapNixpkgs :: (
@@ -323,7 +323,7 @@ runKernelCode kernel code cb = do
         , cwd = Just outerRunDir
         }
 
-  createProcessWithLogging cp >>= waitForProcess >>= (`shouldBe` ExitSuccess)
+  createProcessWithLogging cp >>= waitForProcess . fst >>= (`shouldBe` ExitSuccess)
 
   cb notebook (relativeToOuterRunDir "out.ipynb") (relativeToOuterRunDir outFile) (relativeToOuterRunDir errFile)
 

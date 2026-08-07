@@ -86,7 +86,7 @@ introduceNixEnvironment kernels otherConfig label = introduceWith' (defaultNodeO
                ]
     info [i|nix #{L.unwords args}|]
     createProcessWithLogging (proc "nix" args)
-      >>= waitForProcess >>= (`shouldBe` ExitSuccess)
+      >>= waitForProcess . fst >>= (`shouldBe` ExitSuccess)
     liftIO $ SD.getSymbolicLinkTarget linkPath
 
   info [i|Built Nix environment: #{built}|]

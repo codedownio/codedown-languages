@@ -66,7 +66,7 @@ testEval expr = do
   rootDir <- findFirstParentMatching (\x -> doesPathExist (x </> ".git"))
   env <- getEnvWithNixPath
 
-  p <- createProcessWithLogging $ (proc "nix-instantiate" ["--eval", "--strict", ".", "-A", expr, "--json"]) {
+  (p, _asy) <- createProcessWithLogging $ (proc "nix-instantiate" ["--eval", "--strict", ".", "-A", expr, "--json"]) {
     cwd = Just rootDir
     , env = Just env
     }
