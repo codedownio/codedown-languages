@@ -72,6 +72,11 @@ let
       type = types.bool;
       default = true;
     };
+    lsp.jedi.preIndex = mkOption {
+      title = "Pre-index packages for Jedi at build time, so first completions are fast";
+      type = types.bool;
+      default = true;
+    };
     lsp.pyright.enable = mkOption {
       title = "Enable Pyright language server";
       type = types.bool;

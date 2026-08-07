@@ -1,9 +1,12 @@
 { callPackage
 , lib
+, runCommand
+, writeScript
 
 , pythonWithPackages
 , kernelName
 , attrs
+, preIndex
 }:
 
 let
@@ -14,6 +17,44 @@ let
   jls = pythonEnv.pkgs.jedi-language-server;
 
   languageServerName = "jedi";
+
+  # Jedi parses library sources lazily on the first completion that touches them, which
+  # makes cold completions slow for big packages. Parse everything at build time instead:
+  # the pickled parse trees are keyed by absolute path and invalidated by mtime, and nix
+  # store paths are immutable with fixed mtimes, so this cache stays valid for every
+  # sandbox using this environment.
+  jediCache = runCommand "jedi-preindex-cache" {} ''
+    export HOME=$(mktemp -d)
+    export XDG_CACHE_HOME=$out
+    ${pythonEnv}/bin/python ${./preindex.py}
+  '';
+
+  # Point Jedi's cache directory at the baked cache in the store. parso would try to write
+  # pickles for anything it parses afresh (e.g. notebook cells) into that same directory,
+  # and its save path only handles PermissionError (a read-only store raises plain OSError),
+  # so disable pickling instead: try_to_save_module populates the in-process cache before
+  # pickling, which is all a long-lived server needs for non-store files. It has to be
+  # patched on parso.grammar, which binds it by name at import.
+  launcher = writeScript "jedi-language-server-preindexed" ''
+    #!${pythonEnv}/bin/python
+    import sys
+
+    import jedi.settings
+    jedi.settings.cache_directory = "${jediCache}/jedi"
+
+    import parso.grammar
+    from parso.cache import try_to_save_module
+
+    def try_to_save_module_no_pickling(*args, **kwargs):
+        kwargs["pickling"] = False
+        return try_to_save_module(*args, **kwargs)
+
+    parso.grammar.try_to_save_module = try_to_save_module_no_pickling
+
+    from jedi_language_server.cli import cli
+
+    sys.exit(cli())
+  '';
 
   passthru = {
     inherit languageServerName;
@@ -33,7 +74,7 @@ common.writeTextDirWithMetaAndPassthru jls.meta passthru "lib/codedown/language-
   kernel_name = kernelName;
   inherit attrs;
   type = "stream";
-  args = ["${pythonEnv}/bin/jedi-language-server"];
+  args = if preIndex then ["${launcher}"] else ["${pythonEnv}/bin/jedi-language-server"];
 
   # Force Markdown hover/completion docs. jedi-language-server's _choose_markup() picks the
   # markup kind from the client's completion.documentation_format capability (not hover.contentFormat),
