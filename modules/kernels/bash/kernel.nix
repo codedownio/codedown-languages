@@ -1,7 +1,8 @@
-{ lib
+{ bashInteractive
 , callPackage
+, lib
 , python3
-, bashInteractive
+, stdenv
 , writeText
 
 , enableVariableInspector
@@ -17,6 +18,9 @@ let
   # doesn't sleep ~50ms before sending each line of a cell over the PTY.
   bash-kernel = python3.pkgs.bash-kernel.overrideAttrs (oldAttrs: {
     patches = (oldAttrs.patches or []) ++ [ ./bash_kernel_delaybeforesend.patch ];
+  } // lib.optionalAttrs stdenv.hostPlatform.isAarch64 {
+    # Checks hang under QEMU emulation when we build aarch64-linux from an x86_64-linux
+    doInstallCheck = false;
   });
 
   python = python3.withPackages (ps: [bash-kernel]);
