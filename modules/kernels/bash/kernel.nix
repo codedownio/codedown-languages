@@ -2,6 +2,7 @@
 , callPackage
 , python3
 , bashInteractive
+, writeText
 
 , enableVariableInspector
 
@@ -17,8 +18,15 @@ let
   # Checks failed on macOS on release-25.05. Disabling them is one option:
   # python = python3.withPackages (ps: [(ps.bash-kernel.overrideAttrs (_oldAttrs: { doCheck = false; }))]);
 
+  # bash_kernel submits a cell to bash one line at a time over a PTY (~50ms/line),
+  # so inlining the ~150-line inspector made the first run take ~10s. Source the
+  # script from a one-line loader instead
+  variableInspectorLoader = writeText "variable_inspector_loader.sh" ''
+    source ${./variable_inspector.sh}
+  '';
+
   variableInspector = {
-    initial_code_path = ./variable_inspector.sh;
+    initial_code_path = variableInspectorLoader;
     list_variables_command = "__codedown_variable_inspector_list";
     inspect_variable_command = "__codedown_variable_inspector_inspect '{{VARIABLE_NAME}}'";
   };
