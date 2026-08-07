@@ -13,7 +13,13 @@
 let
   common = callPackage ../common.nix {};
 
-  python = python3.withPackages (ps: [ps.bash-kernel]);
+  # Backport takluyver/bash_kernel#160: set delaybeforesend = 0 so bash_kernel
+  # doesn't sleep ~50ms before sending each line of a cell over the PTY.
+  bash-kernel = python3.pkgs.bash-kernel.overrideAttrs (oldAttrs: {
+    patches = (oldAttrs.patches or []) ++ [ ./bash_kernel_delaybeforesend.patch ];
+  });
+
+  python = python3.withPackages (ps: [bash-kernel]);
 
   # Checks failed on macOS on release-25.05. Disabling them is one option:
   # python = python3.withPackages (ps: [(ps.bash-kernel.overrideAttrs (_oldAttrs: { doCheck = false; }))]);
