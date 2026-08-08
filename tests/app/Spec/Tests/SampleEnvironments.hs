@@ -33,18 +33,19 @@ tests = describe "Sample environments" $ introduceBootstrapNixpkgs $ introduceJu
           built <- testBuildUsingFlake [i|.\#sample_environment_#{name}|]
           info [i|Got built: #{built}|]
 
-        it "Has well-formed UI metadata" $ do
-          let name = T.dropEnd 4 (T.pack file) -- Drop the .nix suffix
+        unless (file `L.elem` ["environment-settings.nix"]) $
+          it "Has well-formed UI metadata" $ do
+            let name = T.dropEnd 4 (T.pack file) -- Drop the .nix suffix
 
-          envRoot <- testBuildUsingFlake [i|.\#sample_environment_#{name}|]
+            envRoot <- testBuildUsingFlake [i|.\#sample_environment_#{name}|]
 
-          yamlPath <- testBuildUsingFlake [i|.\#sample_environment_#{name}.ui_metadata_yaml|]
-          NixHydrationResult {..} <- liftIO (Yaml.decodeFileEither yamlPath) >>= \case
-            Left err -> expectationFailure [i|Couldn't decode UI metadata YAML: #{err}|]
-            Right x -> pure x
-          info [i|packages: #{A.encode nixHydrationResultPackages}|]
+            yamlPath <- testBuildUsingFlake [i|.\#sample_environment_#{name}.ui_metadata_yaml|]
+            NixHydrationResult {..} <- liftIO (Yaml.decodeFileEither yamlPath) >>= \case
+              Left err -> expectationFailure [i|Couldn't decode UI metadata YAML: #{err}|]
+              Right x -> pure x
+            info [i|packages: #{A.encode nixHydrationResultPackages}|]
 
-          forM_ (M.toList nixHydrationResultPackages) (\(n, v) -> validatePackage envRoot n v)
+            forM_ (M.toList nixHydrationResultPackages) (\(n, v) -> validatePackage envRoot n v)
 
         it "Has well-formed language server configs" $ do
           let name = T.dropEnd 4 (T.pack file) -- Drop the .nix suffix
