@@ -1,7 +1,7 @@
 { lib
 , callPackage
 , coreutils
-, runCommand
+, writeTextDir
 
 , rust
 , rust-analyzer
@@ -13,9 +13,10 @@
 , settings
 }:
 
-with lib;
-
 let
+  # Seems good to always do this
+  preIndex = true;
+
   common = callPackage ../../common.nix {};
 
   rnls = callPackage ./rnls.nix {};
@@ -23,6 +24,19 @@ let
   rustAnalyzerToUse = rust-analyzer.override {
     rustPlatform = rust.packages.stable.rustPlatform;
   };
+
+  sysrootCargoHome = writeTextDir "config.toml" ''
+    [source.crates-io]
+    replace-with = "vendored-sources"
+
+    [source.vendored-sources]
+    directory = "${rust.packages.stable.rustPlatform.importCargoLock {
+                     lockFile = "${rust.packages.stable.rustPlatform.rustLibSrc}/Cargo.lock";
+                  }}"
+
+    [net]
+    offline = true
+  '';
 
   shadowDirTemplate = cargoHome;
 
@@ -174,6 +188,8 @@ let
       ];
 
       # "RA_LOG" = "rust_analyzer=info";
+    } // lib.optionalAttrs preIndex {
+      "CARGO_HOME" = "${sysrootCargoHome}";
     };
 
     language_id = "rust";
