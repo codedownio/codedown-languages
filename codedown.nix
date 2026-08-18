@@ -63,6 +63,18 @@ rec {
     inherit pkgsStable pkgsMaster;
   };
 
+  # Which languages support which features, derived from the module evaluation.
+  # Plain import rather than callPackage: these return data, and callPackage would
+  # graft `override`/`overrideDerivation` functions onto it that don't survive toJSON.
+  featureMatrix = import ./nix/feature-matrix.nix {
+    inherit lib everythingEnv kernels;
+  };
+
+  lspProbeEnvs = import ./nix/single-kernel-env.nix {
+    inherit lib makeEnvironment;
+    kernelNames = builtins.attrNames kernels;
+  };
+
   validateEnvironment = callPackage ./nix/validateEnvironment.nix {};
 
   # Exposed for consumers to pin and use to gather metadata from other channels like Nixpkgs

@@ -1,0 +1,370 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i python3 -p python3 nix jq
+
+"""Regenerate nix/lsp-capabilities.json.
+
+For each kernel, builds a single-kernel environment, starts every language server that
+kernel ships with at its default settings, performs the LSP `initialize` handshake, and
+records the server's advertised capabilities.
+
+This is the only part of the feature matrix that can't be answered by evaluating Nix: a
+server's capabilities are whatever it says at runtime. Run this after upgrading nixpkgs
+or changing which language servers a kernel enables.
+
+Usage:
+    scripts/probe-lsp-capabilities              # all kernels
+    scripts/probe-lsp-capabilities python3 go   # just these
+"""
+
+import json
+import os
+import select
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+OUTPUT = REPO / "nix" / "lsp-capabilities.json"
+
+# initialize can be slow on servers that index up front (rust-analyzer, hls).
+INITIALIZE_TIMEOUT_SECONDS = 300
+
+# How long to wait after `initialized` for a server that registers capabilities dynamically.
+REGISTRATION_WINDOW_SECONDS = 8
+
+# LSP request -> the field of ServerCapabilities that means the same thing, for servers
+# that register dynamically instead of declaring in the initialize result.
+REGISTRATION_TO_CAPABILITY = {
+    "textDocument/completion": "completionProvider",
+    "textDocument/hover": "hoverProvider",
+    "textDocument/signatureHelp": "signatureHelpProvider",
+    "textDocument/declaration": "declarationProvider",
+    "textDocument/definition": "definitionProvider",
+    "textDocument/typeDefinition": "typeDefinitionProvider",
+    "textDocument/implementation": "implementationProvider",
+    "textDocument/references": "referencesProvider",
+    "textDocument/documentHighlight": "documentHighlightProvider",
+    "textDocument/documentSymbol": "documentSymbolProvider",
+    "workspace/symbol": "workspaceSymbolProvider",
+    "textDocument/codeAction": "codeActionProvider",
+    "textDocument/codeLens": "codeLensProvider",
+    "textDocument/formatting": "documentFormattingProvider",
+    "textDocument/rangeFormatting": "documentRangeFormattingProvider",
+    "textDocument/onTypeFormatting": "documentOnTypeFormattingProvider",
+    "textDocument/rename": "renameProvider",
+    "textDocument/foldingRange": "foldingRangeProvider",
+    "textDocument/selectionRange": "selectionRangeProvider",
+    "textDocument/semanticTokens": "semanticTokensProvider",
+    "textDocument/inlayHint": "inlayHintProvider",
+    "textDocument/diagnostic": "diagnosticProvider",
+}
+
+# Ask for everything, so a server doesn't withhold a capability just because we didn't
+# claim to support it. Servers only advertise what they can do *and* what we asked about.
+CLIENT_CAPABILITIES = {
+    "workspace": {
+        "applyEdit": True,
+        "workspaceEdit": {"documentChanges": True},
+        "didChangeConfiguration": {"dynamicRegistration": False},
+        "didChangeWatchedFiles": {"dynamicRegistration": False},
+        "symbol": {"dynamicRegistration": False},
+        "executeCommand": {"dynamicRegistration": False},
+        "configuration": True,
+        "workspaceFolders": True,
+    },
+    "textDocument": {
+        "synchronization": {"dynamicRegistration": False, "willSave": True, "didSave": True},
+        "completion": {
+            "dynamicRegistration": False,
+            "completionItem": {
+                "snippetSupport": True,
+                "documentationFormat": ["markdown", "plaintext"],
+                "resolveSupport": {"properties": ["documentation", "detail"]},
+            },
+            "contextSupport": True,
+        },
+        "hover": {"dynamicRegistration": False, "contentFormat": ["markdown", "plaintext"]},
+        "signatureHelp": {
+            "dynamicRegistration": False,
+            "signatureInformation": {"documentationFormat": ["markdown", "plaintext"]},
+        },
+        "declaration": {"dynamicRegistration": False, "linkSupport": True},
+        "definition": {"dynamicRegistration": False, "linkSupport": True},
+        "typeDefinition": {"dynamicRegistration": False, "linkSupport": True},
+        "implementation": {"dynamicRegistration": False, "linkSupport": True},
+        "references": {"dynamicRegistration": False},
+        "documentHighlight": {"dynamicRegistration": False},
+        "documentSymbol": {"dynamicRegistration": False, "hierarchicalDocumentSymbolSupport": True},
+        "codeAction": {
+            "dynamicRegistration": False,
+            "codeActionLiteralSupport": {
+                "codeActionKind": {
+                    "valueSet": [
+                        "", "quickfix", "refactor", "refactor.extract", "refactor.inline",
+                        "refactor.rewrite", "source", "source.organizeImports",
+                    ]
+                }
+            },
+        },
+        "codeLens": {"dynamicRegistration": False},
+        "formatting": {"dynamicRegistration": False},
+        "rangeFormatting": {"dynamicRegistration": False},
+        "onTypeFormatting": {"dynamicRegistration": False},
+        "rename": {"dynamicRegistration": False, "prepareSupport": True},
+        "documentLink": {"dynamicRegistration": False},
+        "colorProvider": {"dynamicRegistration": False},
+        "foldingRange": {"dynamicRegistration": False, "lineFoldingOnly": True},
+        "selectionRange": {"dynamicRegistration": False},
+        "callHierarchy": {"dynamicRegistration": False},
+        "typeHierarchy": {"dynamicRegistration": False},
+        "semanticTokens": {
+            "dynamicRegistration": False,
+            "requests": {"range": True, "full": {"delta": True}},
+            "tokenTypes": [
+                "namespace", "type", "class", "enum", "interface", "struct", "typeParameter",
+                "parameter", "variable", "property", "enumMember", "event", "function",
+                "method", "macro", "keyword", "modifier", "comment", "string", "number",
+                "regexp", "operator", "decorator",
+            ],
+            "tokenModifiers": [
+                "declaration", "definition", "readonly", "static", "deprecated", "abstract",
+                "async", "modification", "documentation", "defaultLibrary",
+            ],
+            "formats": ["relative"],
+        },
+        "inlayHint": {"dynamicRegistration": False, "resolveSupport": {"properties": ["tooltip"]}},
+        "inlineValue": {"dynamicRegistration": False},
+        "publishDiagnostics": {"relatedInformation": True},
+        "diagnostic": {"dynamicRegistration": False, "relatedDocumentSupport": True},
+        "linkedEditingRange": {"dynamicRegistration": False},
+        "moniker": {"dynamicRegistration": False},
+    },
+    "window": {"workDoneProgress": True, "showMessage": {}, "showDocument": {"support": True}},
+    "general": {
+        "positionEncodings": ["utf-16"],
+        "markdown": {"parser": "marked"},
+    },
+}
+
+
+def run(cmd, **kwargs):
+    return subprocess.run(cmd, cwd=REPO, check=True, capture_output=True, text=True, **kwargs).stdout
+
+
+def kernel_names():
+    out = run(["nix", "eval", "--json", ".#lspProbeEnvs.kernelNames"])
+    return json.loads(out)
+
+
+def build_env(kernel):
+    out = run(["nix", "build", "--no-link", "--json", f".#lspProbeEnvs.{kernel}"])
+    return Path(json.loads(out)[0]["outputs"]["out"])
+
+
+def language_server_configs(env_path):
+    """Every language server config in a built environment. The yaml files are JSON."""
+    directory = env_path / "lib" / "codedown" / "language-servers"
+    if not directory.is_dir():
+        return []
+
+    configs = []
+    for f in sorted(directory.iterdir()):
+        with open(f) as handle:
+            configs.extend(json.load(handle))
+    return configs
+
+
+class LspError(Exception):
+    pass
+
+
+def read_message(stream):
+    """Read one LSP message (Content-Length framed) off a binary stream."""
+    length = None
+    while True:
+        line = stream.readline()
+        if not line:
+            raise LspError("server closed the connection")
+        line = line.strip()
+        if not line:
+            break
+        if line.lower().startswith(b"content-length:"):
+            length = int(line.split(b":", 1)[1])
+    if length is None:
+        raise LspError("no Content-Length header")
+    return json.loads(stream.read(length))
+
+
+def write_message(stream, message):
+    body = json.dumps(message).encode()
+    stream.write(b"Content-Length: %d\r\n\r\n" % len(body))
+    stream.write(body)
+    stream.flush()
+
+
+def collect_registrations(process, seconds):
+    """Method names the server registers dynamically in the first few seconds after startup."""
+    methods = []
+    deadline = time.monotonic() + seconds
+    while True:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            return methods
+        if not select.select([process.stdout], [], [], remaining)[0]:
+            return methods
+        try:
+            message = read_message(process.stdout)
+        except LspError:
+            return methods
+
+        if message.get("method") == "client/registerCapability":
+            for registration in message.get("params", {}).get("registrations", []):
+                methods.append(registration.get("method"))
+        if "method" in message and "id" in message:
+            write_message(process.stdin, {"jsonrpc": "2.0", "id": message["id"], "result": None})
+
+
+def probe(config, workspace):
+    """Start a language server, initialize it, and return its advertised capabilities."""
+    env = dict(os.environ)
+    env.update(config.get("env") or {})
+    # The configs' PATH is deliberately minimal; keep ours on the end so the server can
+    # still find basic tools.
+    if (config.get("env") or {}).get("PATH"):
+        env["PATH"] = config["env"]["PATH"] + ":" + os.environ.get("PATH", "")
+
+    process = subprocess.Popen(
+        config["args"],
+        cwd=workspace,
+        env=env,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+    )
+
+    try:
+        write_message(process.stdin, {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "initialize",
+            "params": {
+                "processId": os.getpid(),
+                "clientInfo": {"name": "codedown-lsp-capability-probe", "version": "1"},
+                "rootUri": workspace.as_uri(),
+                "rootPath": str(workspace),
+                "workspaceFolders": [{"uri": workspace.as_uri(), "name": "probe"}],
+                "capabilities": CLIENT_CAPABILITIES,
+                "initializationOptions": config.get("initialization_options"),
+                "trace": "off",
+            },
+        })
+
+        # Skip over anything the server sends before answering (log messages, progress).
+        capabilities = None
+        deadline = time.monotonic() + INITIALIZE_TIMEOUT_SECONDS
+        while capabilities is None:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0 or not select.select([process.stdout], [], [], remaining)[0]:
+                raise LspError(f"no initialize response within {INITIALIZE_TIMEOUT_SECONDS}s")
+            message = read_message(process.stdout)
+            if message.get("id") == 1 and "result" in message:
+                capabilities = message["result"].get("capabilities", {})
+            elif message.get("id") == 1 and "error" in message:
+                raise LspError(f"initialize failed: {message['error']}")
+            # Some servers block until we answer their requests (e.g. workspace/configuration).
+            elif "method" in message and "id" in message:
+                write_message(process.stdin, {"jsonrpc": "2.0", "id": message["id"], "result": None})
+
+        # We ask for dynamicRegistration: false above so servers declare everything up
+        # front, but a few register regardless. Give them a moment after `initialized` and
+        # fold anything they register into the same shape.
+        write_message(process.stdin, {"jsonrpc": "2.0", "method": "initialized", "params": {}})
+        for method in collect_registrations(process, REGISTRATION_WINDOW_SECONDS):
+            field = REGISTRATION_TO_CAPABILITY.get(method)
+            if field and not capabilities.get(field):
+                capabilities[field] = True
+
+        return capabilities
+    finally:
+        process.stdin.close()
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+
+
+def main():
+    requested = sys.argv[1:]
+    kernels = requested or kernel_names()
+
+    result = {}
+    failures = []
+
+    for kernel in kernels:
+        print(f"=== {kernel}", flush=True)
+        try:
+            env_path = build_env(kernel)
+        except subprocess.CalledProcessError as e:
+            print(f"  build failed:\n{e.stderr}", flush=True)
+            failures.append((kernel, None, "build failed"))
+            continue
+
+        configs = language_server_configs(env_path)
+        if not configs:
+            print("  no language servers", flush=True)
+            result[kernel] = {}
+            continue
+
+        servers = {}
+        for config in configs:
+            name = config["name"]
+            print(f"  probing {name}...", end=" ", flush=True)
+            workspace = Path(tempfile.mkdtemp(prefix=f"lsp-probe-{kernel}-{name}-"))
+            try:
+                capabilities = probe(config, workspace)
+            except Exception as e:  # noqa: BLE001 - a broken server shouldn't stop the run
+                print(f"FAILED ({e})", flush=True)
+                failures.append((kernel, name, str(e)))
+                continue
+            finally:
+                shutil.rmtree(workspace, ignore_errors=True)
+
+            print(f"ok ({len(capabilities)} capabilities)", flush=True)
+            servers[name] = {
+                "displayName": config.get("display_name", name),
+                "version": config.get("version"),
+                "capabilities": capabilities,
+            }
+
+        result[kernel] = servers
+
+    # A partial run (specific kernels requested) updates in place rather than clobbering.
+    existing = {}
+    if requested and OUTPUT.exists():
+        existing = json.loads(OUTPUT.read_text()).get("kernels", {})
+    existing.update(result)
+
+    OUTPUT.write_text(json.dumps(
+        {
+            "comment": "Generated by scripts/probe-lsp-capabilities. Do not edit by hand.",
+            "kernels": dict(sorted(existing.items())),
+        },
+        indent=2,
+        sort_keys=True,
+    ) + "\n")
+    print(f"\nWrote {OUTPUT}", flush=True)
+
+    if failures:
+        print("\nFailures:", flush=True)
+        for kernel, server, message in failures:
+            print(f"  {kernel}/{server}: {message}", flush=True)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

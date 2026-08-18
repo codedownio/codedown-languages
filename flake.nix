@@ -22,8 +22,12 @@
 
         sampleOutputs = pkgsStable.callPackage ./nix/sample-outputs.nix { inherit codedown pkgsStable; };
 
-        linkFarmWithPassthru = name: attrs: pkgsStable.runCommand name {
-          passthru = attrs;
+        featureMatrixJson = pkgsStable.writeText "feature-matrix.json"
+          (builtins.toJSON codedown.featureMatrix);
+
+        linkFarmWithPassthru = name: attrs: linkFarmWithPassthru' name attrs {};
+        linkFarmWithPassthru' = name: attrs: extraPassthru: pkgsStable.runCommand name {
+          passthru = attrs // extraPassthru;
         } ''
           mkdir -p $out
           ${pkgsStable.lib.concatStringsSep "\n" (pkgsStable.lib.mapAttrsToList (n: v: ''
@@ -105,6 +109,19 @@
 
             # Documentation generation
             inherit (optionsDoc) optionsCommonMark optionsJSON;
+
+            # Feature matrix: machine-readable data plus the rendered forms we embed in
+            # the README and the website. See nix/feature-matrix.nix.
+            inherit featureMatrixJson;
+
+            featureMatrix = pkgsStable.callPackage ./nix/render-feature-matrix.nix {
+              inherit featureMatrixJson;
+            };
+
+            # One env per kernel, for scripts/probe-lsp-capabilities.
+            lspProbeEnvs = linkFarmWithPassthru' "lsp-probe-envs" codedown.lspProbeEnvs {
+              kernelNames = builtins.attrNames codedown.lspProbeEnvs;
+            };
 
             # optionsHtml = pkgsStable.runCommand "options-html" {
             #   buildInputs = [ pkgsStable.nixos-render-docs pkgsStable.which ];

@@ -1,0 +1,79 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i python3 -p python3 nix
+
+"""Regenerate the feature matrix and splice it into README.md.
+
+Writes docs/feature-matrix.json (the machine-readable source of truth for anything
+downstream, like the website) and docs/feature-matrix{,-dark}.svg, then replaces the
+block between the FEATURE MATRIX markers in README.md.
+
+The language server columns come from nix/lsp-capabilities.json; run
+scripts/probe-lsp-capabilities first if that's stale.
+"""
+
+import json
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+DOCS = REPO / "docs"
+README = REPO / "README.md"
+
+BEGIN = "<!-- BEGIN FEATURE MATRIX -->"
+END = "<!-- END FEATURE MATRIX -->"
+
+
+def main():
+    print("Building .#featureMatrix...", flush=True)
+    out = subprocess.run(
+        ["nix", "build", "--no-link", "--json", ".#featureMatrix"],
+        cwd=REPO, check=True, capture_output=True, text=True,
+    ).stdout
+    built = Path(json.loads(out)[0]["outputs"]["out"])
+
+    DOCS.mkdir(exist_ok=True)
+    for name in ["feature-matrix.json", "feature-matrix.svg", "feature-matrix-dark.svg"]:
+        shutil.copyfile(built / name, DOCS / name)
+        (DOCS / name).chmod(0o644)
+        print(f"  wrote docs/{name}", flush=True)
+
+    matrix = json.loads((DOCS / "feature-matrix.json").read_text())
+    tables = (built / "feature-matrix.md").read_text().strip()
+
+    section = "\n".join([
+        BEGIN,
+        "",
+        "<picture>",
+        '  <source media="(prefers-color-scheme: dark)" srcset="docs/feature-matrix-dark.svg">',
+        '  <img alt="Feature support by language" src="docs/feature-matrix.svg" width="100%">',
+        "</picture>",
+        "",
+        "<details>",
+        "<summary>The same data as tables</summary>",
+        "",
+        tables,
+        "",
+        "</details>",
+        "",
+        f"_{len(matrix['languages'])} languages, {len(matrix['features'])} features. "
+        "Regenerate with `scripts/update-feature-matrix`._",
+        "",
+        END,
+    ])
+
+    text = README.read_text()
+    if BEGIN not in text or END not in text:
+        print(f"README.md is missing the {BEGIN} / {END} markers", file=sys.stderr)
+        return 1
+
+    before = text.split(BEGIN)[0]
+    after = text.split(END, 1)[1]
+    README.write_text(before + section + after)
+    print("  updated README.md", flush=True)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
