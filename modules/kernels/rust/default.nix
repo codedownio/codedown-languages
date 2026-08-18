@@ -99,6 +99,7 @@ symlinkJoin {
     meta = rustPackages.rustc.meta // {
       baseName = "rust";
       inherit displayName;
+      version = rustPackages.rustc.version;
       icon = ./rust-logo-64x64.png;
       iconMonochrome = ./rust-logo-monochrome.svg;
       inherit settingsSchema;
