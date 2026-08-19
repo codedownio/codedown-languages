@@ -239,7 +239,7 @@ def render_markdown(matrix):
         if not group_features:
             continue
 
-        out.append(f"#### {group['name']}")
+        out.append(f"### {group['name']}")
         out.append("")
         out.append("| Language | " + " | ".join(f["name"] for f in group_features) + " |")
         out.append("| --- | " + " | ".join("---" for _ in group_features) + " |")

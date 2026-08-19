@@ -1,11 +1,12 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i python3 -p python3 nix
 
-"""Regenerate the feature matrix and splice it into README.md.
+"""Regenerate the feature matrix and splice it into the docs.
 
 Writes docs/feature-matrix.json (the machine-readable source of truth for anything
-downstream, like the website) and docs/feature-matrix{,-dark}.svg, then replaces the
-block between the FEATURE MATRIX markers in README.md.
+downstream, like the website) and docs/feature-matrix{,-dark}.svg, then replaces the block
+between the FEATURE MATRIX markers in README.md (the graphic) and in FEATURE-MATRIX.md
+(the same data as tables).
 
 The language server columns come from nix/lsp-capabilities.json; run
 scripts/probe-lsp-capabilities first if that's stale.
@@ -19,10 +20,23 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 DOCS = REPO / "docs"
-README = REPO / "README.md"
 
 BEGIN = "<!-- BEGIN FEATURE MATRIX -->"
 END = "<!-- END FEATURE MATRIX -->"
+
+
+def splice(path, section):
+    """Replace everything between the markers in `path`."""
+    text = path.read_text()
+    if BEGIN not in text or END not in text:
+        print(f"{path.name} is missing the {BEGIN} / {END} markers", file=sys.stderr)
+        return False
+
+    before = text.split(BEGIN)[0]
+    after = text.split(END, 1)[1]
+    path.write_text(before + BEGIN + "\n\n" + section.strip() + "\n\n" + END + after)
+    print(f"  updated {path.name}", flush=True)
+    return True
 
 
 def main():
@@ -40,39 +54,23 @@ def main():
         print(f"  wrote docs/{name}", flush=True)
 
     matrix = json.loads((DOCS / "feature-matrix.json").read_text())
-    tables = (built / "feature-matrix.md").read_text().strip()
+    counts = f"{len(matrix['languages'])} languages, {len(matrix['features'])} features"
 
-    section = "\n".join([
-        BEGIN,
-        "",
+    graphic = "\n".join([
         "<picture>",
         '  <source media="(prefers-color-scheme: dark)" srcset="docs/feature-matrix-dark.svg">',
         '  <img alt="Feature support by language" src="docs/feature-matrix.svg" width="100%">',
         "</picture>",
         "",
-        "<details>",
-        "<summary>The same data as tables</summary>",
-        "",
-        tables,
-        "",
-        "</details>",
-        "",
-        f"_{len(matrix['languages'])} languages, {len(matrix['features'])} features. "
-        "Regenerate with `scripts/update-feature-matrix`._",
-        "",
-        END,
+        f"_{counts}. See [FEATURE-MATRIX.md](./FEATURE-MATRIX.md) for the same data as "
+        "tables, and for how it's generated._",
     ])
 
-    text = README.read_text()
-    if BEGIN not in text or END not in text:
-        print(f"README.md is missing the {BEGIN} / {END} markers", file=sys.stderr)
-        return 1
+    tables = (built / "feature-matrix.md").read_text().strip()
 
-    before = text.split(BEGIN)[0]
-    after = text.split(END, 1)[1]
-    README.write_text(before + section + after)
-    print("  updated README.md", flush=True)
-    return 0
+    ok = splice(REPO / "README.md", graphic)
+    ok = splice(REPO / "FEATURE-MATRIX.md", tables) and ok
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":
