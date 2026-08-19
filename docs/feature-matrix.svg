@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="935" height="677" viewBox="0 0 935 677" role="img" aria-label="Language feature support matrix">
+<svg xmlns="http://www.w3.org/2000/svg" width="926" height="677" viewBox="0 0 926 677" role="img" aria-label="Language feature support matrix">
   <title>codedown language feature matrix</title>
-  <rect width="935" height="677" fill="#fcfcfb"/>
+  <rect width="926" height="677" fill="#fcfcfb"/>
   <g font-family='system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif'>
     <text x="16" y="36" font-size="16" font-weight="600" fill="#0b0b0b">Language feature support</text>
     <text x="16" y="54" font-size="11" fill="#52514e">Generated from the codedown-languages Nix modules and live language server capabilities</text>
@@ -12,8 +12,8 @@
     <text x="628.0" y="75" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">Navigation</text>
     <rect x="716" y="62" width="85" height="18" rx="3" fill="#f0efec"/>
     <text x="758.5" y="75" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">Editing</text>
-    <rect x="803" y="62" width="56" height="18" rx="3" fill="#f0efec"/>
-    <text x="831.0" y="75" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">Packages</text>
+    <rect x="803" y="62" width="27" height="18" rx="3" fill="#f0efec"/>
+    <text x="816.5" y="75" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">Packages</text>
     <text x="211.5" y="188" font-size="11" fill="#52514e" text-anchor="start" transform="rotate(-45 211.5 188)">Jupyter kernel</text>
     <text x="240.5" y="188" font-size="11" fill="#52514e" text-anchor="start" transform="rotate(-45 240.5 188)">REPL</text>
     <text x="269.5" y="188" font-size="11" fill="#52514e" text-anchor="start" transform="rotate(-45 269.5 188)">Variable inspector</text>
@@ -35,9 +35,8 @@
     <text x="733.5" y="188" font-size="11" fill="#52514e" text-anchor="start" transform="rotate(-45 733.5 188)">Formatting</text>
     <text x="762.5" y="188" font-size="11" fill="#52514e" text-anchor="start" transform="rotate(-45 762.5 188)">Rename symbol</text>
     <text x="791.5" y="188" font-size="11" fill="#52514e" text-anchor="start" transform="rotate(-45 791.5 188)">Code actions</text>
-    <text x="820.5" y="188" font-size="11" fill="#52514e" text-anchor="start" transform="rotate(-45 820.5 188)">Package management</text>
-    <text x="849.5" y="188" font-size="11" fill="#52514e" text-anchor="start" transform="rotate(-45 849.5 188)">Package search</text>
-    <rect x="16" y="196" width="845" height="29" fill="#f6f5f2"/>
+    <text x="820.5" y="188" font-size="11" fill="#52514e" text-anchor="start" transform="rotate(-45 820.5 188)">Subpackage management</text>
+    <rect x="16" y="196" width="816" height="29" fill="#f6f5f2"/>
     <text x="20" y="214.5" font-size="12.5" fill="#0b0b0b">Bash</text>
     <text x="186" y="214.5" font-size="10" text-anchor="end" fill="#898781">5.3p9</text>
     <g><title>Bash - Jupyter kernel: yes</title>
@@ -118,11 +117,8 @@
       <rect x="778.0" y="200.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 783.9 210.6 L 787.1 213.9 L 793.3 206.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Bash - Package management: no</title>
+    <g><title>Bash - Subpackage management: no</title>
       <circle cx="817.5" cy="210.5" r="2.2" fill="#c3c2b7"/>
-    </g>
-    <g><title>Bash - Package search: no</title>
-      <circle cx="846.5" cy="210.5" r="2.2" fill="#c3c2b7"/>
     </g>
     <text x="20" y="243.5" font-size="12.5" fill="#0b0b0b">C++ 23</text>
     <text x="186" y="243.5" font-size="10" text-anchor="end" fill="#898781">21.1.7</text>
@@ -208,13 +204,10 @@
       <rect x="778.0" y="229.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 783.9 239.6 L 787.1 242.9 L 793.3 235.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>C++ 23 - Package management: no</title>
+    <g><title>C++ 23 - Subpackage management: no</title>
       <circle cx="817.5" cy="239.5" r="2.2" fill="#c3c2b7"/>
     </g>
-    <g><title>C++ 23 - Package search: no</title>
-      <circle cx="846.5" cy="239.5" r="2.2" fill="#c3c2b7"/>
-    </g>
-    <rect x="16" y="254" width="845" height="29" fill="#f6f5f2"/>
+    <rect x="16" y="254" width="816" height="29" fill="#f6f5f2"/>
     <text x="20" y="272.5" font-size="12.5" fill="#0b0b0b">Clojure</text>
     <text x="186" y="272.5" font-size="10" text-anchor="end" fill="#898781">1.12.3.1577</text>
     <g><title>Clojure - Jupyter kernel: yes</title>
@@ -298,11 +291,8 @@
       <rect x="778.0" y="258.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 783.9 268.6 L 787.1 271.9 L 793.3 264.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Clojure - Package management: no</title>
+    <g><title>Clojure - Subpackage management: no</title>
       <circle cx="817.5" cy="268.5" r="2.2" fill="#c3c2b7"/>
-    </g>
-    <g><title>Clojure - Package search: no</title>
-      <circle cx="846.5" cy="268.5" r="2.2" fill="#c3c2b7"/>
     </g>
     <text x="20" y="301.5" font-size="12.5" fill="#0b0b0b">Coq</text>
     <text x="186" y="301.5" font-size="10" text-anchor="end" fill="#898781">9.1.1</text>
@@ -371,15 +361,11 @@
     <g><title>Coq - Code actions: no</title>
       <circle cx="788.5" cy="297.5" r="2.2" fill="#c3c2b7"/>
     </g>
-    <g><title>Coq - Package management: yes</title>
+    <g><title>Coq - Subpackage management: yes</title>
       <rect x="807.0" y="287.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 812.9 297.6 L 816.1 300.9 L 822.3 293.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Coq - Package search: yes</title>
-      <rect x="836.0" y="287.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
-      <path d="M 841.9 297.6 L 845.1 300.9 L 851.3 293.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <rect x="16" y="312" width="845" height="29" fill="#f6f5f2"/>
+    <rect x="16" y="312" width="816" height="29" fill="#f6f5f2"/>
     <text x="20" y="330.5" font-size="12.5" fill="#0b0b0b">Go</text>
     <text x="186" y="330.5" font-size="10" text-anchor="end" fill="#898781">1.25.9</text>
     <g><title>Go - Jupyter kernel: yes</title>
@@ -463,11 +449,8 @@
       <rect x="778.0" y="316.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 783.9 326.6 L 787.1 329.9 L 793.3 322.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Go - Package management: no</title>
+    <g><title>Go - Subpackage management: no</title>
       <circle cx="817.5" cy="326.5" r="2.2" fill="#c3c2b7"/>
-    </g>
-    <g><title>Go - Package search: no</title>
-      <circle cx="846.5" cy="326.5" r="2.2" fill="#c3c2b7"/>
     </g>
     <text x="20" y="359.5" font-size="12.5" fill="#0b0b0b">Haskell</text>
     <text x="186" y="359.5" font-size="10" text-anchor="end" fill="#898781">9.10.3</text>
@@ -553,15 +536,11 @@
       <rect x="778.0" y="345.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 783.9 355.6 L 787.1 358.9 L 793.3 351.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Haskell - Package management: yes</title>
+    <g><title>Haskell - Subpackage management: yes</title>
       <rect x="807.0" y="345.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 812.9 355.6 L 816.1 358.9 L 822.3 351.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Haskell - Package search: yes</title>
-      <rect x="836.0" y="345.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
-      <path d="M 841.9 355.6 L 845.1 358.9 L 851.3 351.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <rect x="16" y="370" width="845" height="29" fill="#f6f5f2"/>
+    <rect x="16" y="370" width="816" height="29" fill="#f6f5f2"/>
     <text x="20" y="388.5" font-size="12.5" fill="#0b0b0b">Julia</text>
     <text x="186" y="388.5" font-size="10" text-anchor="end" fill="#898781">1.12.6</text>
     <g><title>Julia - Jupyter kernel: yes</title>
@@ -644,13 +623,9 @@
       <rect x="778.0" y="374.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 783.9 384.6 L 787.1 387.9 L 793.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Julia - Package management: yes</title>
+    <g><title>Julia - Subpackage management: yes</title>
       <rect x="807.0" y="374.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 812.9 384.6 L 816.1 387.9 L 822.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <g><title>Julia - Package search: yes</title>
-      <rect x="836.0" y="374.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
-      <path d="M 841.9 384.6 L 845.1 387.9 L 851.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <text x="20" y="417.5" font-size="12.5" fill="#0b0b0b">Octave</text>
     <text x="186" y="417.5" font-size="10" text-anchor="end" fill="#898781">11.1.0</text>
@@ -721,15 +696,11 @@
     <g><title>Octave - Code actions: no</title>
       <circle cx="788.5" cy="413.5" r="2.2" fill="#c3c2b7"/>
     </g>
-    <g><title>Octave - Package management: yes</title>
+    <g><title>Octave - Subpackage management: yes</title>
       <rect x="807.0" y="403.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 812.9 413.6 L 816.1 416.9 L 822.3 409.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Octave - Package search: yes</title>
-      <rect x="836.0" y="403.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
-      <path d="M 841.9 413.6 L 845.1 416.9 L 851.3 409.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <rect x="16" y="428" width="845" height="29" fill="#f6f5f2"/>
+    <rect x="16" y="428" width="816" height="29" fill="#f6f5f2"/>
     <text x="20" y="446.5" font-size="12.5" fill="#0b0b0b">PostgreSQL</text>
     <text x="186" y="446.5" font-size="10" text-anchor="end" fill="#898781">0.1</text>
     <g><title>PostgreSQL - Jupyter kernel: yes</title>
@@ -797,11 +768,8 @@
     <g><title>PostgreSQL - Code actions: no</title>
       <circle cx="788.5" cy="442.5" r="2.2" fill="#c3c2b7"/>
     </g>
-    <g><title>PostgreSQL - Package management: no</title>
+    <g><title>PostgreSQL - Subpackage management: no</title>
       <circle cx="817.5" cy="442.5" r="2.2" fill="#c3c2b7"/>
-    </g>
-    <g><title>PostgreSQL - Package search: no</title>
-      <circle cx="846.5" cy="442.5" r="2.2" fill="#c3c2b7"/>
     </g>
     <text x="20" y="475.5" font-size="12.5" fill="#0b0b0b">PyPy</text>
     <text x="186" y="475.5" font-size="10" text-anchor="end" fill="#898781">7.3.20</text>
@@ -874,15 +842,11 @@
     <g><title>PyPy - Code actions: unknown</title>
       <text x="788.5" y="475.5" font-size="11" text-anchor="middle" fill="#898781">?</text>
     </g>
-    <g><title>PyPy - Package management: yes</title>
+    <g><title>PyPy - Subpackage management: yes</title>
       <rect x="807.0" y="461.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 812.9 471.6 L 816.1 474.9 L 822.3 467.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>PyPy - Package search: yes</title>
-      <rect x="836.0" y="461.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
-      <path d="M 841.9 471.6 L 845.1 474.9 L 851.3 467.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <rect x="16" y="486" width="845" height="29" fill="#f6f5f2"/>
+    <rect x="16" y="486" width="816" height="29" fill="#f6f5f2"/>
     <text x="20" y="504.5" font-size="12.5" fill="#0b0b0b">Python</text>
     <text x="186" y="504.5" font-size="10" text-anchor="end" fill="#898781">3.13.12</text>
     <g><title>Python - Jupyter kernel: yes</title>
@@ -966,13 +930,9 @@
       <rect x="778.0" y="490.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 783.9 500.6 L 787.1 503.9 L 793.3 496.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Package management: yes</title>
+    <g><title>Python - Subpackage management: yes</title>
       <rect x="807.0" y="490.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 812.9 500.6 L 816.1 503.9 L 822.3 496.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <g><title>Python - Package search: yes</title>
-      <rect x="836.0" y="490.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
-      <path d="M 841.9 500.6 L 845.1 503.9 L 851.3 496.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <text x="20" y="533.5" font-size="12.5" fill="#0b0b0b">R</text>
     <text x="186" y="533.5" font-size="10" text-anchor="end" fill="#898781">4.5.1</text>
@@ -1056,15 +1016,11 @@
       <rect x="778.0" y="519.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 783.9 529.6 L 787.1 532.9 L 793.3 525.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>R - Package management: yes</title>
+    <g><title>R - Subpackage management: yes</title>
       <rect x="807.0" y="519.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 812.9 529.6 L 816.1 532.9 L 822.3 525.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>R - Package search: yes</title>
-      <rect x="836.0" y="519.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
-      <path d="M 841.9 529.6 L 845.1 532.9 L 851.3 525.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <rect x="16" y="544" width="845" height="29" fill="#f6f5f2"/>
+    <rect x="16" y="544" width="816" height="29" fill="#f6f5f2"/>
     <text x="20" y="562.5" font-size="12.5" fill="#0b0b0b">R (Ark)</text>
     <text x="186" y="562.5" font-size="10" text-anchor="end" fill="#898781">4.5.3</text>
     <g><title>R (Ark) - Jupyter kernel: yes</title>
@@ -1135,13 +1091,9 @@
     <g><title>R (Ark) - Code actions: no</title>
       <circle cx="788.5" cy="558.5" r="2.2" fill="#c3c2b7"/>
     </g>
-    <g><title>R (Ark) - Package management: yes</title>
+    <g><title>R (Ark) - Subpackage management: yes</title>
       <rect x="807.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 812.9 558.6 L 816.1 561.9 L 822.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <g><title>R (Ark) - Package search: yes</title>
-      <rect x="836.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
-      <path d="M 841.9 558.6 L 845.1 561.9 L 851.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <text x="20" y="591.5" font-size="12.5" fill="#0b0b0b">Ruby</text>
     <text x="186" y="591.5" font-size="10" text-anchor="end" fill="#898781">3.4.9</text>
@@ -1223,15 +1175,11 @@
     <g><title>Ruby - Code actions: no</title>
       <circle cx="788.5" cy="587.5" r="2.2" fill="#c3c2b7"/>
     </g>
-    <g><title>Ruby - Package management: yes</title>
+    <g><title>Ruby - Subpackage management: yes</title>
       <rect x="807.0" y="577.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 812.9 587.6 L 816.1 590.9 L 822.3 583.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Ruby - Package search: yes</title>
-      <rect x="836.0" y="577.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
-      <path d="M 841.9 587.6 L 845.1 590.9 L 851.3 583.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <rect x="16" y="602" width="845" height="29" fill="#f6f5f2"/>
+    <rect x="16" y="602" width="816" height="29" fill="#f6f5f2"/>
     <text x="20" y="620.5" font-size="12.5" fill="#0b0b0b">Rust</text>
     <text x="186" y="620.5" font-size="10" text-anchor="end" fill="#898781">1.95.0</text>
     <g><title>Rust - Jupyter kernel: yes</title>
@@ -1316,13 +1264,9 @@
       <rect x="778.0" y="606.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 783.9 616.6 L 787.1 619.9 L 793.3 612.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Rust - Package management: yes</title>
+    <g><title>Rust - Subpackage management: yes</title>
       <rect x="807.0" y="606.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 812.9 616.6 L 816.1 619.9 L 822.3 612.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
-    <g><title>Rust - Package search: yes</title>
-      <rect x="836.0" y="606.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
-      <path d="M 841.9 616.6 L 845.1 619.9 L 851.3 612.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <line x1="339" y1="196" x2="339" y2="631" stroke="#e1e0d9" stroke-width="1"/>
     <line x1="542" y1="196" x2="542" y2="631" stroke="#e1e0d9" stroke-width="1"/>

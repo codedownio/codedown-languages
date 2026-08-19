@@ -89,23 +89,23 @@ Which languages support which notebook and editor features. The graphic version 
 
 ### Packages
 
-| Language | Package management | Package search |
-| --- | --- | --- |
-| Bash | – | – |
-| C++ 23 | – | – |
-| Clojure | – | – |
-| Coq | ✅ | ✅ |
-| Go | – | – |
-| Haskell | ✅ | ✅ |
-| Julia | ✅ | ✅ |
-| Octave | ✅ | ✅ |
-| PostgreSQL | – | – |
-| PyPy | ✅ | ✅ |
-| Python | ✅ | ✅ |
-| R | ✅ | ✅ |
-| R (Ark) | ✅ | ✅ |
-| Ruby | ✅ | ✅ |
-| Rust | ✅ | ✅ |
+| Language | Subpackage management |
+| --- | --- |
+| Bash | – |
+| C++ 23 | – |
+| Clojure | – |
+| Coq | ✅ |
+| Go | – |
+| Haskell | ✅ |
+| Julia | ✅ |
+| Octave | ✅ |
+| PostgreSQL | – |
+| PyPy | ✅ |
+| Python | ✅ |
+| R | ✅ |
+| R (Ark) | ✅ |
+| Ruby | ✅ |
+| Rust | ✅ |
 
 <!-- END FEATURE MATRIX -->
 

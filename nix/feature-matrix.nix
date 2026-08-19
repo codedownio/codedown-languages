@@ -83,10 +83,9 @@ let
     { id = "codeActions"; name = "Code actions"; group = "editing";
       description = "Quick fixes and refactorings offered on a range."; source = "lsp"; }
 
-    { id = "packageManagement"; name = "Package management"; group = "packages";
-      description = "Add libraries to the environment declaratively."; source = "nix"; }
-    { id = "packageSearch"; name = "Package search"; group = "packages";
-      description = "Searchable index of the packages available for this language."; source = "nix"; }
+    { id = "subPackageManagement"; name = "Subpackage management"; group = "packages";
+      description = "A searchable set of language packages you can add to the environment "
+                    + "declaratively."; source = "nix"; }
   ];
 
   # ---------------------------------------------------------------------------
@@ -181,8 +180,7 @@ let
         languageServer = if enabledLanguageServers == []
                          then { level = "none"; detail = null; }
                          else { level = "full"; detail = lib.concatStringsSep ", " enabledLanguageServers; };
-        packageManagement = { level = if hasPackages then "full" else "none"; detail = null; };
-        packageSearch = { level = if hasPackages then "full" else "none"; detail = null; };
+        subPackageManagement = { level = if hasPackages then "full" else "none"; detail = null; };
       };
 
       supportFor = feature:

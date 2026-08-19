@@ -95,18 +95,22 @@ def render_svg(matrix, mode):
     for group in groups:
         ordered.extend([f for f in features if f["group"] == group["id"]])
 
-    longest_label = max(len(f["name"]) for f in ordered)
-    # Rotated 45 degrees, a label's vertical extent is its length times cos(45).
-    header_height = int(longest_label * 6.05 * 0.707) + 14
+    # Rotated 45 degrees, a label's extent along each axis is its length times cos(45).
+    def diagonal_extent(name):
+        return len(name) * 6.05 * 0.707
+
+    header_height = int(max(diagonal_extent(f["name"]) for f in ordered)) + 14
 
     grid_left = PAD + LABEL_WIDTH
     grid_top = PAD + TITLE_HEIGHT + GROUP_BAND_HEIGHT + header_height
     grid_width = COL_WIDTH * len(ordered)
     grid_height = ROW_HEIGHT * len(languages)
 
-    # The rotated labels lean up and to the right, so the last few overhang the grid.
-    width = grid_left + grid_width + PAD + int(longest_label * 6.05 * 0.707) - 40
-    width = max(width, grid_left + grid_width + PAD)
+    # The rotated labels lean up and to the right, so the rightmost one overhangs the grid.
+    # Whichever column's label reaches furthest right sets the canvas width.
+    rightmost = max(grid_left + i * COL_WIDTH + COL_WIDTH / 2 + 3 + diagonal_extent(f["name"])
+                    for i, f in enumerate(ordered))
+    width = int(max(rightmost, grid_left + grid_width)) + PAD
     height = grid_top + grid_height + LEGEND_HEIGHT + PAD
 
     out = []
