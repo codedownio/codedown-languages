@@ -4,6 +4,7 @@
 , symlinkJoin
 
 , bash
+, bashInteractive
 , bash-language-server
 
 , settings
@@ -23,6 +24,16 @@ let
   packageOptions = {};
   packageSearch = common.searcher packageOptions;
 
+  repls = {
+    bash = {
+      display_name = "Bash " + bashInteractive.version;
+      attr = "bash";
+      args = ["${bashInteractive}/bin/bash"];
+      icon = ./bash-logo-128x128.png;
+      iconMonochrome = ./gnubash-monochrome.svg;
+    };
+  };
+
 in
 
 symlinkJoin {
@@ -30,7 +41,7 @@ symlinkJoin {
 
   paths = [
     (callPackage ./kernel.nix {
-      inherit attrs extensions;
+      inherit attrs extensions repls;
       enableVariableInspector = settings.misc.enableVariableInspector;
     })
     (callPackage ./man-with-pages.nix {})
@@ -55,6 +66,7 @@ symlinkJoin {
     };
     inherit packageOptions packageSearch;
     inherit settingsSchema settings;
+    inherit repls;
     modes = {
       inherit attrs extensions;
       code_mirror_mode = "shell";

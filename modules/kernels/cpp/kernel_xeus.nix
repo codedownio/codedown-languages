@@ -9,6 +9,7 @@
 , displayName
 , extensions
 , std
+, repls ? {}
 }:
 
 with lib;
@@ -42,6 +43,7 @@ common.makeJupyterKernel (
         codedown = {
           inherit attrs extensions;
           language_version = std;
+          repls = common.replsToMetadata kernelName repls;
           priority = 1;
         };
       };

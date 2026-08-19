@@ -10,6 +10,7 @@
 , extensions
 , version
 , language ? lib.head attrs
+, repls ? {}
 }:
 
 with lib;
@@ -51,6 +52,7 @@ common.makeJupyterKernel (
             evcxr = evcxr.version;
           };
           variable_inspector = if enableVariableInspector then variableInspector else null;
+          repls = common.replsToMetadata "rust" repls;
           priority = 1;
         };
       };

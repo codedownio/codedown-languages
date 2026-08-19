@@ -34,16 +34,27 @@ let
 
   pythonWithApp = python3.withPackages (ps: [app]);
 
+  argv = [
+    "${pythonWithApp}/bin/python"
+    "-m" "postgres_kernel"
+    "-f" "{connection_file}"
+  ];
+
+  # The kernel is the interactive interface here; there's no psql session to attach to.
+  repls.console = common.jupyterConsoleRepl {
+    displayName = "PostgreSQL";
+    language = "postgres";
+    inherit argv;
+    icon = ./postgres-logo-64x64.png;
+    iconMonochrome = ./postgresql-monochrome.svg;
+  };
+
 in
 
-common.makeJupyterKernel {
+(common.makeJupyterKernel {
   postgres = {
     displayName = "PostgreSQL";
-    argv = [
-      "${pythonWithApp}/bin/python"
-      "-m" "postgres_kernel"
-      "-f" "{connection_file}"
-    ];
+    inherit argv;
     language = "postgres";
     logo32 = ./postgres-logo-32x32.png;
     logo64 = ./postgres-logo-64x64.png;
@@ -53,8 +64,12 @@ common.makeJupyterKernel {
 
         language_version = app.version;
 
+        repls = common.replsToMetadata "postgres" repls;
+
         priority = 10;
       };
     };
   };
-}
+}).overrideAttrs (old: {
+  passthru = (old.passthru or {}) // { inherit repls; };
+})

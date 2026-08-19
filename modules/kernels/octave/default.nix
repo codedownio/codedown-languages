@@ -35,13 +35,24 @@ let
   # perfect for including in binaries and passing to the kernel
   octaveToUse = callPackage ./octave.nix { octaveComplete = octaveWithPackages; };
 
+  repls = {
+    octave = {
+      display_name = "Octave " + octave.version;
+      attr = "octave";
+      args = ["${octaveWithPackages}/bin/octave"];
+      icon = ./octave-logo-64x64.png;
+      iconMonochrome = ./octave-monochrome.svg;
+    };
+  };
+
+
 in
 
 symlinkJoin {
   name = "octave";
   paths = [
     (callPackage ./kernel.nix {
-      inherit attrs extensions;
+      inherit attrs extensions repls;
       inherit (settings) extraJupyterConfig;
       octave = octaveToUse;
       version = octave.version;
@@ -63,15 +74,7 @@ symlinkJoin {
       octave = octave.version;
     };
     inherit packageOptions packageSearch;
-    repls = {
-      octave = {
-        display_name = "Octave " + octave.version;
-        attr = "octave";
-        args = ["${octaveWithPackages}/bin/octave"];
-        icon = ./octave-logo-64x64.png;
-        iconMonochrome = ./octave.svg;
-      };
-    };
+    inherit repls;
     inherit settingsSchema settings;
     modes = {
       inherit attrs extensions;

@@ -18,7 +18,7 @@ let
       display_name = "Clojure " + clojure.version;
       attr = "clojure";
       args = ["${clojure}/bin/clojure"];
-      icon = ./clojure.svg;
+      icon = ./clojure-logo-64x64.png;
       iconMonochrome = ./clojure-monochrome.svg;
     };
   };
@@ -39,6 +39,7 @@ symlinkJoin {
   paths = [
     (callPackage ./kernel.nix {
       inherit attrs extensions;
+      repls = repls clojure;
       version = clojure.version;
       enableVariableInspector = settings.misc.enableVariableInspector;
     })

@@ -3,6 +3,7 @@
 , extensions
 , version
 , clojupyter
+, repls ? {}
 
 , enableVariableInspector
 }:
@@ -33,6 +34,7 @@ common.makeJupyterKernel {
         inherit attrs extensions;
         language_version = version;
         variable_inspector = if enableVariableInspector then variableInspector else null;
+        repls = common.replsToMetadata "clojure" repls;
         priority = 1;
       };
     };

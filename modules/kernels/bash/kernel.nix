@@ -9,6 +9,7 @@
 
 , attrs
 , extensions
+, repls ? {}
 }:
 
 let
@@ -61,6 +62,7 @@ common.makeJupyterKernel {
         inherit attrs extensions;
         language_version = bashInteractive.version;
         variable_inspector = if enableVariableInspector then variableInspector else null;
+        repls = common.replsToMetadata "bash" repls;
         priority = 10;
       };
     };

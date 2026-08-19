@@ -43,6 +43,17 @@ let
     packages = basePackages;
   };
 
+  repls = {
+    r = {
+      display_name = "R";
+      attr = "r";
+      args = ["${rWithPackages}/bin/R"];
+      icon = ./r-logo-64x64.png;
+      iconMonochrome = ./r-monochrome.svg;
+    };
+  };
+
+
 in
 
 symlinkJoin {
@@ -50,7 +61,7 @@ symlinkJoin {
 
   paths = [
     (callPackage ./kernel.nix {
-      inherit rWithPackages attrs extensions;
+      inherit rWithPackages attrs extensions repls;
       version = R.version;
       enableVariableInspector = settings.misc.enableVariableInspector;
     })
@@ -70,15 +81,7 @@ symlinkJoin {
     };
     inherit packageOptions packageSearch versions;
     inherit settingsSchema settings;
-    repls = {
-      r = {
-        display_name = "R";
-        attr = "r";
-        args = ["${rWithPackages}/bin/R"];
-        icon = ./r-logo-64x64.png;
-        iconMonochrome = ./r.svg;
-      };
-    };
+    inherit repls;
     modes = {
       inherit attrs extensions;
       code_mirror_mode = "r";

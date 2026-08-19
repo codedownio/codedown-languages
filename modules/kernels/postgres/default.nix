@@ -51,6 +51,7 @@ symlinkJoin {
       postgres-kernel = version;
     };
     inherit settingsSchema settings;
+    inherit (kernel) repls;
     modes = {
       inherit attrs extensions;
       code_mirror_mode = "sql";

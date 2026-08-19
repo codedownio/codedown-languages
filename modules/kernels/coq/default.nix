@@ -24,19 +24,21 @@ let
   packageOptions = coqPackages;
   packageSearch = common.searcher packageOptions;
 
+  kernel = callPackage ./kernel.nix {
+    inherit coq displayName attrs extensions isRocq;
+    # enableVariableInspector = settings.enableVariableInspector;
+    chosenPackages = (
+      map (x: builtins.getAttr x packageOptions) packages
+    ) ++ lib.optionals isRocq [ packageOptions.stdlib ];
+  };
+
 in
 
 symlinkJoin {
   name = coq.name;
 
   paths = [
-    (callPackage ./kernel.nix {
-      inherit coq displayName attrs extensions isRocq;
-      # enableVariableInspector = settings.enableVariableInspector;
-      chosenPackages = (
-        map (x: builtins.getAttr x packageOptions) packages
-      ) ++ lib.optionals isRocq [ packageOptions.stdlib ];
-    })
+    kernel
 
     coq
   ]
@@ -56,7 +58,7 @@ symlinkJoin {
       coq = coq.version;
     };
     inherit settings settingsSchema;
-    repls = {};
+    inherit (kernel) repls;
     modes = {
       inherit attrs extensions;
       code_mirror_mode = "coq";

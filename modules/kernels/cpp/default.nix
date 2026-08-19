@@ -81,13 +81,24 @@ let
   packageOptions = {};
   packageSearch = common.searcher packageOptions;
 
+  repls = {
+    cling = {
+      display_name = "Cling " + cling.unwrapped.version;
+      attr = "cling";
+      args = ["${cling}/bin/cling"];
+      icon = iconsSvg.${flavor};
+      iconMonochrome = iconsSvgMonochrome.${flavor};
+    };
+  };
+
+
 in
 
 symlinkJoin {
   name = "cpp";
   paths = [
     (callPackage ./kernel_xeus.nix {
-      inherit attrs displayName extensions;
+      inherit attrs displayName extensions repls;
       std = flavor;
       inherit kernelName;
     })
@@ -115,15 +126,7 @@ symlinkJoin {
       std = flavor;
     };
     inherit settings settingsSchema;
-    repls = {
-      cling = {
-        display_name = "Cling " + cling.unwrapped.version;
-        attr = "cling";
-        args = ["${cling}/bin/cling"];
-        icon = iconsSvg.${flavor};
-        iconMonochrome = iconsSvgMonochrome.${flavor};
-      };
-    };
+    inherit repls;
     modes = {
       inherit attrs extensions;
       code_mirror_mode = "clike";

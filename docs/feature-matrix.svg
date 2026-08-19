@@ -43,8 +43,9 @@
       <rect x="198.0" y="200.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 203.9 210.6 L 207.1 213.9 L 213.3 206.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Bash - REPL: no</title>
-      <circle cx="237.5" cy="210.5" r="2.2" fill="#c3c2b7"/>
+    <g><title>Bash - REPL: yes (bash)</title>
+      <rect x="227.0" y="200.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
+      <path d="M 232.9 210.6 L 236.1 213.9 L 242.3 206.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Bash - Variable inspector: yes</title>
       <rect x="256.0" y="200.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
@@ -300,8 +301,9 @@
       <rect x="198.0" y="287.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 203.9 297.6 L 207.1 300.9 L 213.3 293.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Coq - REPL: no</title>
-      <circle cx="237.5" cy="297.5" r="2.2" fill="#c3c2b7"/>
+    <g><title>Coq - REPL: yes (console)</title>
+      <rect x="227.0" y="287.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
+      <path d="M 232.9 297.6 L 236.1 300.9 L 242.3 293.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Coq - Variable inspector: no</title>
       <circle cx="266.5" cy="297.5" r="2.2" fill="#c3c2b7"/>
@@ -372,8 +374,9 @@
       <rect x="198.0" y="316.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 203.9 326.6 L 207.1 329.9 L 213.3 322.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Go - REPL: no</title>
-      <circle cx="237.5" cy="326.5" r="2.2" fill="#c3c2b7"/>
+    <g><title>Go - REPL: yes (console)</title>
+      <rect x="227.0" y="316.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
+      <path d="M 232.9 326.6 L 236.1 329.9 L 242.3 322.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Go - Variable inspector: no</title>
       <circle cx="266.5" cy="326.5" r="2.2" fill="#c3c2b7"/>
@@ -547,8 +550,9 @@
       <rect x="198.0" y="374.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 203.9 384.6 L 207.1 387.9 L 213.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Julia - REPL: no</title>
-      <circle cx="237.5" cy="384.5" r="2.2" fill="#c3c2b7"/>
+    <g><title>Julia - REPL: yes (julia)</title>
+      <rect x="227.0" y="374.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
+      <path d="M 232.9 384.6 L 236.1 387.9 L 242.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Julia - Variable inspector: yes</title>
       <rect x="256.0" y="374.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
@@ -707,8 +711,9 @@
       <rect x="198.0" y="432.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 203.9 442.6 L 207.1 445.9 L 213.3 438.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>PostgreSQL - REPL: no</title>
-      <circle cx="237.5" cy="442.5" r="2.2" fill="#c3c2b7"/>
+    <g><title>PostgreSQL - REPL: yes (console)</title>
+      <rect x="227.0" y="432.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
+      <path d="M 232.9 442.6 L 236.1 445.9 L 242.3 438.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>PostgreSQL - Variable inspector: no</title>
       <circle cx="266.5" cy="442.5" r="2.2" fill="#c3c2b7"/>
@@ -1101,8 +1106,9 @@
       <rect x="198.0" y="577.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 203.9 587.6 L 207.1 590.9 L 213.3 583.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Ruby - REPL: no</title>
-      <circle cx="237.5" cy="587.5" r="2.2" fill="#c3c2b7"/>
+    <g><title>Ruby - REPL: yes (irb)</title>
+      <rect x="227.0" y="577.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
+      <path d="M 232.9 587.6 L 236.1 590.9 L 242.3 583.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Ruby - Variable inspector: yes</title>
       <rect x="256.0" y="577.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
@@ -1186,8 +1192,9 @@
       <rect x="198.0" y="606.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 203.9 616.6 L 207.1 619.9 L 213.3 612.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Rust - REPL: no</title>
-      <circle cx="237.5" cy="616.5" r="2.2" fill="#c3c2b7"/>
+    <g><title>Rust - REPL: yes (evcxr)</title>
+      <rect x="227.0" y="606.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
+      <path d="M 232.9 616.6 L 236.1 619.9 L 242.3 612.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Rust - Variable inspector: yes</title>
       <rect x="256.0" y="606.0" width="21" height="21" rx="5" fill="#e4f4e4"/>

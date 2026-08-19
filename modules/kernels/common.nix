@@ -1,8 +1,11 @@
 { lib
 , runCommand
+, writeText
 , writeTextDir
 , writeShellScriptBin
 , callPackage
+
+, jupyter-console
 }:
 
 with lib;
@@ -42,6 +45,45 @@ rec {
         mkdir $out
         cp -r lib $out
     '';
+
+  # `passthru.repls` is the rich description of a kernel's REPLs (icons, argv). What the
+  # runtime actually reads is the list in kernel.json under metadata.codedown.repls, where
+  # a REPL is just an attr, a label, and a single executable to run in a PTY -- so anything
+  # that needs arguments gets a wrapper script here.
+  replsToMetadata = kernelName: repls: mapAttrsToList (name: repl: {
+    inherit (repl) attr display_name;
+    proc =
+      if length repl.args == 1
+      then head repl.args
+      else
+        let wrapper = writeShellScriptBin "codedown-repl-${kernelName}-${name}"
+                        ''exec ${escapeShellArgs repl.args} "$@"'';
+        in "${wrapper}/bin/codedown-repl-${kernelName}-${name}";
+  }) repls;
+
+  # A REPL for languages with no interactive interpreter of their own: run the kernel
+  # itself under jupyter-console. It gets its own bare kernelspec -- no codedown metadata --
+  # so it doesn't have to refer back to the kernel derivation being built, which would be
+  # a cycle.
+  jupyterConsoleRepl = { displayName, language, argv, env ? {}
+                       , icon ? null, iconMonochrome ? null }:
+    let
+      # withSingleKernel writes its own kernelspec and wraps jupyter-console with a
+      # JUPYTER_PATH pointing at it, so the console doesn't depend on the surrounding
+      # codedown environment being installed.
+      console = jupyter-console.withSingleKernel {
+        inherit displayName language argv env;
+        logo32 = null;
+        logo64 = null;
+      };
+    in
+      {
+        display_name = "Jupyter Console";
+        attr = "console";
+        args = ["${console}/bin/jupyter-console"];
+      }
+      // optionalAttrs (icon != null) { inherit icon; }
+      // optionalAttrs (iconMonochrome != null) { inherit iconMonochrome; };
 
   writeTextDirWithMeta = meta: path: text: (writeTextDir path text).overrideAttrs (old: {
     inherit meta;

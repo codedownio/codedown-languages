@@ -8,6 +8,7 @@
 , attrs
 , displayName
 , extensions
+, repls ? {}
 , language ? lib.head attrs
 
 # Needed for ihaskell's PATH
@@ -21,11 +22,7 @@ let
 
   util = import ./util.nix;
 
-  repls = [{
-    display_name = "GHCi";
-    attr = "ghci";
-    proc = "${ghc.out}/bin/ghci";
-  }];
+  replsMetadata = common.replsToMetadata (head attrs) repls;
 
 in
 
@@ -47,13 +44,14 @@ common.makeJupyterKernel (
       inherit language;
       logo32 = ./haskell-logo-32x32.png;
       logo64 = ./haskell-logo-64x64.png;
-      inherit repls;
+      repls = replsMetadata;
       env = {
         PATH = lib.makeBinPath [ghc.out gcc.out];
       };
       metadata = {
         codedown = {
-          inherit attrs extensions repls;
+          inherit attrs extensions;
+          repls = replsMetadata;
           language_version = "GHC " + ghc.version;
           priority = 1;
         };

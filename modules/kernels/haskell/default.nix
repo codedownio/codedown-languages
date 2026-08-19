@@ -42,6 +42,17 @@ let
                      [((callPackage ./language-server-hls {}) snapshot ghc kernelName settings.lsp.haskell-language-server)]
   ;
 
+  repls = {
+    ghci = {
+      display_name = "GHCi " + ghc.version;
+      attr = "ghci";
+      args = ["${ghc}/bin/ghci"];
+      icon = ./haskell-logo-64x64.png;
+      iconMonochrome = ./haskell-monochrome.svg;
+    };
+  };
+
+
 in
 
 symlinkJoin {
@@ -49,7 +60,7 @@ symlinkJoin {
 
   paths = [
     (callPackage ./kernel.nix {
-      inherit displayName attrs extensions snapshot;
+      inherit displayName attrs extensions snapshot repls;
 
       language = "haskell";
 
@@ -82,15 +93,7 @@ symlinkJoin {
       haskell-language-server = snapshot.haskell-language-server.version;
     };
     inherit settingsSchema settings;
-    repls = {
-      ghci = {
-        display_name = "GHCi " + ghc.version;
-        attr = "ghci";
-        args = ["${ghc}/bin/ghci"];
-        icon = ./haskell-logo-64x64.png;
-        iconMonochrome = ./haskell.svg;
-      };
-    };
+    inherit repls;
     modes = {
       inherit attrs extensions;
       code_mirror_mode = "haskell";

@@ -26,19 +26,43 @@ let
     inherit coq;
   };
 
+  argv = [
+    "${coqKernelToUse}/bin/coq-kernel"
+    "-f"
+    "{connection_file}"
+  ];
+
+  env = lib.listToAttrs [
+    {
+      name = if isRocq then "ROCQPATH" else "COQPATH";
+      value = lib.concatStringsSep ":" (
+        map (x: "${x}/lib/coq/${coq.coq-version}/user-contrib/") chosenPackages
+      );
+    }
+    {
+      name = "OCAMLPATH";
+      value = lib.concatStringsSep ":" (
+        map (x: "${x}/lib/ocaml/${coq.ocaml.version}/site-lib/") ([ coq.ocamlPackages.findlib ] ++ chosenPackages)
+      );
+    }
+  ];
+
+  # coqtop exists, but the kernel is what knows about the selected packages, so run that.
+  repls.console = common.jupyterConsoleRepl {
+    inherit displayName env argv;
+    language = lib.head attrs;
+    iconMonochrome = ./coq-monochrome.svg;
+  };
+
 in
 
-common.makeJupyterKernel (
+(common.makeJupyterKernel (
   lib.listToAttrs [{
     name = lib.head attrs;
     value = {
       displayName = displayName;
       language = lib.head attrs;
-      argv = [
-        "${coqKernelToUse}/bin/coq-kernel"
-        "-f"
-        "{connection_file}"
-      ];
+      inherit argv;
       logo32 = "${coqKernelToUse.logos}/logo-32x32.png";
       logo64 = "${coqKernelToUse.logos}/logo-64x64.png";
       metadata = {
@@ -48,23 +72,14 @@ common.makeJupyterKernel (
 
           # variable_inspector = if enableVariableInspector then variableInspector else null;
 
+          repls = common.replsToMetadata (lib.head attrs) repls;
+
           priority = 1;
         };
       };
-      env = lib.listToAttrs [
-        {
-          name = if isRocq then "ROCQPATH" else "COQPATH";
-          value = lib.concatStringsSep ":" (
-            map (x: "${x}/lib/coq/${coq.coq-version}/user-contrib/") chosenPackages
-          );
-        }
-        {
-          name = "OCAMLPATH";
-          value = lib.concatStringsSep ":" (
-            map (x: "${x}/lib/ocaml/${coq.ocaml.version}/site-lib/") ([ coq.ocamlPackages.findlib ] ++ chosenPackages)
-          );
-        }
-      ];
+      inherit env;
     };
   }]
-)
+)).overrideAttrs (old: {
+  passthru = (old.passthru or {}) // { inherit repls; };
+})

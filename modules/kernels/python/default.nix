@@ -67,6 +67,17 @@ let
 
   pythonToUse = python3.withPackages (_: allPackages);
 
+  repls = {
+    ipython = {
+      display_name = "IPython " + pythonToUse.pkgs.ipython.version;
+      attr = "ipython";
+      args = ["${pythonToUse}/bin/ipython"];
+      icon = ./python-logo-64x64.png;
+      iconMonochrome = ./python-monochrome.svg;
+    };
+  };
+
+
 in
 
 symlinkJoin {
@@ -75,7 +86,7 @@ symlinkJoin {
   paths = [
     (callPackage ./kernel.nix {
       python = pythonToUse;
-      inherit displayName kernelName attrs extensions;
+      inherit displayName kernelName attrs extensions repls;
       enableVariableInspector = settings.misc.enableVariableInspector;
     })
 
@@ -108,15 +119,7 @@ symlinkJoin {
     // lib.optionalAttrs (hasPythonLspServer python3) { python-lsp-server = python3.pkgs.python-lsp-server.version; }
     ;
     inherit settingsSchema settings;
-    repls = {
-      ipython = {
-        display_name = "IPython " + pythonToUse.pkgs.ipython.version;
-        attr = "ipython";
-        args = ["${pythonToUse}/bin/ipython"];
-        icon = ./python-logo-64x64.png;
-        iconMonochrome = ./python.svg;
-      };
-    };
+    inherit repls;
     modes = {
       inherit attrs extensions;
       code_mirror_mode = "python";

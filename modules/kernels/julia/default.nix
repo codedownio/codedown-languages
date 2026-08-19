@@ -61,6 +61,16 @@ let
     })]
   ;
 
+  repls = {
+    julia = {
+      display_name = "Julia " + julia.version;
+      attr = "julia";
+      args = ["${juliaToUse}/bin/julia"];
+      icon = ./julia-logo-64x64.png;
+      iconMonochrome = ./julia-monochrome.svg;
+    };
+  };
+
 in
 
 symlinkJoin {
@@ -68,7 +78,7 @@ symlinkJoin {
 
   paths = [
     (callPackage ./kernel.nix {
-      inherit attrs extensions displayName;
+      inherit attrs extensions displayName repls;
       julia = juliaToUse;
       python = python3;
       enableVariableInspector = settings.misc.enableVariableInspector;
@@ -92,6 +102,7 @@ symlinkJoin {
       julia = julia.version;
     };
     inherit settingsSchema settings;
+    inherit repls;
     modes = {
       inherit attrs extensions;
       code_mirror_mode = "julia";

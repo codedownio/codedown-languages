@@ -34,6 +34,16 @@ let
 
   iruby = (callPackage ./iruby { inherit ruby; }).iruby;
 
+  repls = {
+    irb = {
+      display_name = "IRB " + (builtins.toString ruby.version);
+      attr = "irb";
+      args = ["${ruby}/bin/irb"];
+      icon = ./iruby-64x64.png;
+      iconMonochrome = ./ruby-monochrome.svg;
+    };
+  };
+
 in
 
 symlinkJoin {
@@ -41,7 +51,7 @@ symlinkJoin {
   paths = [
     (callPackage ./kernel.nix {
       inherit iruby;
-      inherit attrs extensions version;
+      inherit attrs extensions version repls;
       enableVariableInspector = settings.misc.enableVariableInspector;
     })
     ruby
@@ -65,6 +75,7 @@ symlinkJoin {
     };
     inherit packageOptions packageSearch;
     inherit settingsSchema settings;
+    inherit repls;
     modes = {
       inherit attrs extensions;
       code_mirror_mode = "ruby";

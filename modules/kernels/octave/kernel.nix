@@ -14,6 +14,7 @@
 , attrs
 , extensions
 , version
+, repls ? {}
 }:
 
 let
@@ -119,6 +120,8 @@ common.makeJupyterKernel {
         language_version = version;
 
         variable_inspector = if enableVariableInspector then variableInspector else null;
+
+        repls = common.replsToMetadata "octave" repls;
 
         priority = 1;
       };

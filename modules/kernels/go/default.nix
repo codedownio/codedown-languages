@@ -30,15 +30,17 @@ let
   packageOptions = {};
   packageSearch = common.searcher packageOptions;
 
+  kernel = callPackage ./kernel.nix {
+    inherit attrs extensions;
+    version = go.version;
+  };
+
 in
 
 symlinkJoin {
   name = "go";
   paths = [
-    (callPackage ./kernel.nix {
-      inherit attrs extensions;
-      version = go.version;
-    })
+    kernel
     go
   ]
   ++ languageServers
@@ -60,7 +62,7 @@ symlinkJoin {
       gopls = gopls.version;
     };
     inherit settingsSchema settings;
-    repls = {};
+    inherit (kernel) repls;
     modes = {
       inherit attrs extensions;
       code_mirror_mode = "go";

@@ -11,21 +11,21 @@ Which languages support which notebook and editor features. The graphic version 
 
 | Language | Jupyter kernel | REPL | Variable inspector | Debugger | Syntax highlighting |
 | --- | --- | --- | --- | --- | --- |
-| Bash | ✅ | – | ✅ | – | ✅ |
+| Bash | ✅ | ✅ | ✅ | – | ✅ |
 | C++ 23 | ✅ | ✅ | – | – | ✅ |
 | Clojure | ✅ | ✅ | ✅ | – | ✅ |
-| Coq | ✅ | – | – | – | ✅ |
-| Go | ✅ | – | – | – | ✅ |
+| Coq | ✅ | ✅ | – | – | ✅ |
+| Go | ✅ | ✅ | – | – | ✅ |
 | Haskell | ✅ | ✅ | – | – | ✅ |
-| Julia | ✅ | – | ✅ | – | ✅ |
+| Julia | ✅ | ✅ | ✅ | – | ✅ |
 | Octave | ✅ | ✅ | ✅ | – | ✅ |
-| PostgreSQL | ✅ | – | – | – | ✅ |
+| PostgreSQL | ✅ | ✅ | – | – | ✅ |
 | PyPy | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Python | ✅ | ✅ | ✅ | ✅ | ✅ |
 | R | ✅ | ✅ | ✅ | – | ✅ |
 | R (Ark) | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Ruby | ✅ | – | ✅ | – | ✅ |
-| Rust | ✅ | – | ✅ | – | ✅ |
+| Ruby | ✅ | ✅ | ✅ | – | ✅ |
+| Rust | ✅ | ✅ | ✅ | – | ✅ |
 
 ### Code intelligence
 
@@ -169,3 +169,14 @@ which language server or REPL is behind it.
   the default, can't resolve a package closure through julia-modules.
 - Ark's language server is spoken over a Jupyter comm rather than published as a language
   server config, so R (Ark) shows no LSP features even though the kernel embeds one.
+
+## REPLs
+
+A kernel's REPLs are declared as `repls` in its `default.nix` and reach the runtime through
+`metadata.codedown.repls` in `kernel.json`, where each entry is an `attr`, a `display_name`,
+and a `proc` to run in a PTY. `modules/kernels/common.nix` converts between the two.
+
+Most languages get their own interpreter (`ghci`, `irb`, `evcxr`, `ipython`, …). Go, Coq and
+PostgreSQL have no interpreter worth attaching to, so they run the kernel itself under
+`jupyter-console` via nixpkgs' `jupyter-console.withSingleKernel`, which builds a standalone
+kernelspec — the console works without the surrounding codedown environment being installed.

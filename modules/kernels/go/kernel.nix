@@ -24,15 +24,26 @@ let
     vendorHash = "sha256-bGaXnd0E6dRNiwvGIn7Ptddrt7dRzPfkPThgHPuL2Vo=";
   });
 
+  argv = [
+    "${gophernotesPatched}/bin/gophernotes"
+    "{connection_file}"
+  ];
+
+  # Go has no standard REPL, so the kernel itself is the interactive interpreter.
+  repls.console = common.jupyterConsoleRepl {
+    displayName = "Go";
+    language = head attrs;
+    inherit argv;
+    icon = ./go-logo-64x64.png;
+    iconMonochrome = ./go-monochrome.svg;
+  };
+
 in
 
-common.makeJupyterKernel {
+(common.makeJupyterKernel {
   go = {
     displayName = "Go";
-    argv = [
-      "${gophernotesPatched}/bin/gophernotes"
-      "{connection_file}"
-    ];
+    inherit argv;
     language = head attrs;
     logo32 = ./go-logo-32x32.png;
     logo64 = ./go-logo-64x64.png;
@@ -42,8 +53,12 @@ common.makeJupyterKernel {
 
         language_version = version;
 
+        repls = common.replsToMetadata "go" repls;
+
         priority = 1;
       };
     };
   };
-}
+}).overrideAttrs (old: {
+  passthru = (old.passthru or {}) // { inherit repls; };
+})

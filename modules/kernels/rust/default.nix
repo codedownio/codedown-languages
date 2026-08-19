@@ -75,6 +75,16 @@ let
     packages = packageOptions;
   };
 
+  repls = {
+    evcxr = {
+      display_name = "Evcxr " + evcxr.version;
+      attr = "evcxr";
+      args = ["${evcxr}/bin/evcxr"];
+      icon = ./rust-logo-64x64.png;
+      iconMonochrome = ./rust-logo-monochrome.svg;
+    };
+  };
+
 in
 
 symlinkJoin {
@@ -83,7 +93,7 @@ symlinkJoin {
   paths = [
     (callPackage ./kernel.nix {
       inherit evcxr;
-      inherit displayName attrs extensions;
+      inherit displayName attrs extensions repls;
       version = rustPackages.rustc.version;
       enableVariableInspector = settings.misc.enableVariableInspector;
     })
@@ -113,6 +123,7 @@ symlinkJoin {
       rust-analyzer = rust-analyzer.version;
     };
     inherit settingsSchema settings;
+    inherit repls;
     inherit (evcxrBase) cratesIndex;
     modes = {
       inherit attrs extensions;

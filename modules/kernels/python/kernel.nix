@@ -9,6 +9,7 @@
 
 , attrs
 , extensions
+, repls ? {}
 }:
 
 with lib;
@@ -44,6 +45,7 @@ common.makeJupyterKernel (
         codedown = {
           inherit attrs extensions;
           variable_inspector = if enableVariableInspector then variableInspector else null;
+          repls = common.replsToMetadata kernelName repls;
           priority = 1;
         };
       };

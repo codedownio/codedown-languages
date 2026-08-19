@@ -9,6 +9,7 @@
 
 , attrs
 , extensions
+, repls ? {}
 }:
 
 with lib;
@@ -60,6 +61,7 @@ common.makeJupyterKernel (
           inherit attrs extensions;
           language_version = julia.version;
           variable_inspector = if enableVariableInspector then variableInspector else null;
+          repls = common.replsToMetadata "julia" repls;
           priority = 1;
         };
       };

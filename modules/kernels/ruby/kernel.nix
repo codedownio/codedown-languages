@@ -8,6 +8,7 @@
 , attrs
 , extensions
 , version
+, repls ? {}
 }:
 
 with lib;
@@ -42,6 +43,8 @@ common.makeJupyterKernel (
           language_version = version;
 
           variable_inspector = if enableVariableInspector then variableInspector else null;
+
+          repls = common.replsToMetadata "ruby" repls;
 
           priority = 1;
         };
