@@ -3,9 +3,11 @@
 
 module Spec.Tests.Python (tests) where
 
+import Control.Monad (when)
 import Data.String.Interpolate
 import Data.Text
 import Language.LSP.Protocol.Types
+import System.Info (os)
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -26,7 +28,8 @@ tests = describe "Python" $ parallel $ do
   tests' ("python3", "python313")
   -- tests' ("python3", "python314")
 
-  pypyTests
+  -- PyPy's bootstrap interpreter doesn't build on Darwin, so there's no kernel to test there.
+  when (os /= "darwin") pypyTests
 
 tests' :: (Text, Text) -> LanguageSpec
 tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelName pythonPackage] [] [i|Python (#{pythonPackage})|] $ introduceJupyterRunner $ do
