@@ -11,6 +11,7 @@ import Language.LSP.Test hiding (message)
 import qualified Language.LSP.Test.Helpers as Helpers
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
+import Test.Sandwich.Waits
 import TestLib.LSP
 import TestLib.Types
 
@@ -23,12 +24,15 @@ tests = describe "Hover" $ do
     allHoverText hover `textShouldContain` [i|foo|]
     allHoverText hover `textShouldContain` [i|main.ipynb.hs:1:1|]
 
+  -- Unlike foo, putStrLn comes from base, so there's no hover until HLS has indexed
+  -- the dependencies.
   it "hovers putStrLn" $ doNotebookSession lsName hoverCode $ \(Helpers.LspSessionInfo {..}) -> do
     ident <- openDoc lspSessionInfoFileName "haskell"
-    hover <- getHoverOrException ident (Position 1 1)
-    (hover ^. range) `shouldBe` Just (Range (Position 1 0) (Position 1 8))
-    let InL (MarkupContent {..}) = hover ^. contents
-    _value `textShouldContain` "putStrLn :: String -> IO ()"
+    waitUntil 120 $ do
+      hover <- getHoverOrException ident (Position 1 1)
+      (hover ^. range) `shouldBe` Just (Range (Position 1 0) (Position 1 8))
+      let InL (MarkupContent {..}) = hover ^. contents
+      _value `textShouldContain` "putStrLn :: String -> IO ()"
 
 hoverCode :: Text
 hoverCode = [__i|foo = "hello"
