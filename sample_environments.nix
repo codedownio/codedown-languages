@@ -21,7 +21,6 @@
   go = import ./sample_environments/go.nix args;
   octave = import ./sample_environments/octave.nix args;
   postgres = import ./sample_environments/postgres.nix args;
-  pypy3 = import ./sample_environments/pypy3.nix args;
   r = import ./sample_environments/r.nix args;
   r-ark = import ./sample_environments/r-ark.nix args;
   ruby_3_3 = import ./sample_environments/ruby_3_3.nix args;
@@ -42,4 +41,8 @@
   python312 = import ./sample_environments/python312.nix args;
   python313 = import ./sample_environments/python313.nix args;
   python3 = import ./sample_environments/python3.nix args;
+} // pkgsStable.lib.optionalAttrs pkgsStable.stdenv.targetPlatform.isLinux {
+  # PyPy's bootstrap interpreter doesn't build on Darwin: its libffi calls are guarded by
+  # -Wunguarded-availability-new against a deployment target older than macOS 10.15.
+  pypy3 = import ./sample_environments/pypy3.nix args;
 }

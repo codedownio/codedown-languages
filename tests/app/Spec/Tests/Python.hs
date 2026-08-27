@@ -3,9 +3,11 @@
 
 module Spec.Tests.Python (tests) where
 
+import Control.Monad (when)
 import Data.String.Interpolate
 import Data.Text
 import Language.LSP.Protocol.Types
+import System.Info (os)
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -26,7 +28,8 @@ tests = describe "Python" $ parallel $ do
   tests' ("python3", "python313")
   -- tests' ("python3", "python314")
 
-  pypyTests
+  -- PyPy's bootstrap interpreter doesn't build on Darwin, so there's no kernel to test there.
+  when (os /= "darwin") pypyTests
 
 tests' :: (Text, Text) -> LanguageSpec
 tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelName pythonPackage] [] [i|Python (#{pythonPackage})|] $ introduceJupyterRunner $ do
@@ -76,10 +79,12 @@ tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelN
 -- rather than the package and language server stack the CPython tests exercise.
 pypyTests :: LanguageSpec
 pypyTests = introduceNixEnvironment [pypyKernelSpec] [] "Python (pypy3)" $ introduceJupyterRunner $ do
+  -- The Nix attribute is kernels.pypy3, but the kernel it installs is named python3, the
+  -- same as the CPython ones.
   testHasExpectedFields "pypy3"
 
-  testKernelStdout "pypy3" [i|print("hi")|] "hi\n"
-  testKernelStdout "pypy3" [i|import platform; print(platform.python_implementation())|] "PyPy\n"
+  testKernelStdout "python3" [i|print("hi")|] "hi\n"
+  testKernelStdout "python3" [i|import platform; print(platform.python_implementation())|] "PyPy\n"
 
 pypyKernelSpec :: NixKernelSpec
 pypyKernelSpec = NixKernelSpec {
