@@ -192,7 +192,15 @@ in
         config.pkgs.callPackage ./. {
           name = "PyPy";
 
-          python3 = lib.getAttr config.kernels.pypy3.python3Package config.pkgs;
+          # A package that isn't supported on PyPy throws when its outPath is evaluated, even
+          # when it's only ever a check input. Drop the two that the kernel's closure reaches:
+          # typeguard -> mypy (via stack-data and ipython), and debugpy -> django -> objgraph.
+          python3 = (lib.getAttr config.kernels.pypy3.python3Package config.pkgs).override {
+            packageOverrides = _pyFinal: pyPrev: {
+              typeguard = pyPrev.typeguard.override { mypy = null; };
+              debugpy = pyPrev.debugpy.override { django = null; };
+            };
+          };
 
           settings = config.kernels.pypy3;
           settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.pypy3;
