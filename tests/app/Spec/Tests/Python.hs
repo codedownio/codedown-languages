@@ -26,7 +26,7 @@ tests = describe "Python" $ parallel $ do
   tests' ("python3", "python313")
   -- tests' ("python3", "python314")
 
-  -- tests' ("pypy3", "pypy3")
+  pypyTests
 
 tests' :: (Text, Text) -> LanguageSpec
 tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelName pythonPackage] [] [i|Python (#{pythonPackage})|] $ introduceJupyterRunner $ do
@@ -71,6 +71,26 @@ tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelN
                                                                   |] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
 
+
+-- | Nixpkgs carries far less for PyPy than for CPython, so this covers the kernel itself
+-- rather than the package and language server stack the CPython tests exercise.
+pypyTests :: LanguageSpec
+pypyTests = introduceNixEnvironment [pypyKernelSpec] [] "Python (pypy3)" $ introduceJupyterRunner $ do
+  testHasExpectedFields "pypy3"
+
+  testKernelStdout "pypy3" [i|print("hi")|] "hi\n"
+  testKernelStdout "pypy3" [i|import platform; print(platform.python_implementation())|] "PyPy\n"
+
+pypyKernelSpec :: NixKernelSpec
+pypyKernelSpec = NixKernelSpec {
+  nixKernelName = "pypy3"
+  , nixKernelChannel = "codedown"
+  , nixKernelDisplayName = Just "PyPy"
+  , nixKernelPackages = []
+  , nixKernelMeta = Nothing
+  , nixKernelIcon = Nothing
+  , nixKernelExtraConfig = Nothing
+  }
 
 kernelSpec :: Text -> Text -> NixKernelSpec
 kernelSpec kernelName pythonPackage = NixKernelSpec {

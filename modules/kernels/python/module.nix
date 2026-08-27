@@ -204,7 +204,27 @@ in
         config.pkgs.callPackage ./. {
           name = "PyPy";
 
-          python3 = lib.getAttr config.kernels.pypy3.python3Package config.pkgs;
+          python3 = (lib.getAttr config.kernels.pypy3.python3Package config.pkgs).override {
+            packageOverrides = pyFinal: pyPrev:
+              # Test suites are the main thing standing between PyPy and a working kernel: a
+              # package unsupported on PyPy throws when its outPath is evaluated even as a mere
+              # check input, and several check inputs are C extensions that don't compile here.
+              (lib.mapAttrs (_name: value:
+                let isPythonPackage = builtins.tryEval (lib.isDerivation value && value ? overridePythonAttrs);
+                in if isPythonPackage.success && isPythonPackage.value
+                   then value.overridePythonAttrs (_: { doCheck = false; })
+                   else value
+              ) pyPrev)
+              // {
+                # On PyPy, pyzmq builds and runs against cffi rather than Cython, but nixpkgs
+                # only wires up the Cython path.
+                pyzmq = pyPrev.pyzmq.overridePythonAttrs (old: {
+                  doCheck = false;
+                  build-system = (old.build-system or []) ++ [ pyFinal.cffi pyFinal.pycparser ];
+                  dependencies = (old.dependencies or []) ++ [ pyFinal.cffi pyFinal.pycparser ];
+                });
+              };
+          };
 
           settings = config.kernels.pypy3;
           settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.pypy3;
