@@ -26,9 +26,6 @@ let
 
   python = python3.withPackages (ps: [bash-kernel]);
 
-  # Checks failed on macOS on release-25.05. Disabling them is one option:
-  # python = python3.withPackages (ps: [(ps.bash-kernel.overrideAttrs (_oldAttrs: { doCheck = false; }))]);
-
   # bash_kernel submits a cell to bash one line at a time over a PTY (~50ms/line),
   # so inlining the ~150-line inspector made the first run take ~10s. Source the
   # script from a one-line loader instead

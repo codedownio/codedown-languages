@@ -3,7 +3,7 @@
 with lib;
 
 let
-  pkgsToUse = config.pkgsMaster;
+  pkgsToUse = config.pkgs;
 
   cfg = config.language-servers.spellchecker;
 
