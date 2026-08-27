@@ -32,7 +32,8 @@ common.makeJupyterKernel (
       displayName = displayName;
       language = kernelName;
       argv = [
-        "${python}/bin/python"
+        # PyPy environments name the binary pypy3, so take the path the environment reports.
+        python.interpreter
         "-m"
         "ipykernel"
         "-f"
