@@ -16,7 +16,7 @@ let
 in
 
 rec {
-  spellchecker = pkgsMaster.callPackage ./modules/language_servers/markdown-spellcheck-lsp {};
+  spellchecker = callPackage ./modules/language_servers/markdown-spellcheck-lsp {};
 
   testing = {
     builds-forever = callPackage ./modules/testing/builds-forever/default.nix {};
