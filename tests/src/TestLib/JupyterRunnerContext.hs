@@ -83,6 +83,10 @@ type HasJupyterRunnerContext context = (
   , HasBaseContext context
   )
 
+-- | Seconds papermill waits for a kernel to come up.
+defaultStartTimeout :: Int
+defaultStartTimeout = 120
+
 type JupyterRunnerMonad m = (
   MonadBaseControl IO m
   , MonadUnliftIO m
@@ -112,7 +116,7 @@ testKernelStdout'' :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> (Maybe Text -> ExampleT context m ()) -> ExampleT context m ()
 testKernelStdout'' kernel code cb = do
-  runKernelCode kernel code $ \_notebookFile _outputNotebookFile outFile _errFile -> do
+  runKernelCode defaultStartTimeout kernel code $ \_notebookFile _outputNotebookFile outFile _errFile -> do
     doesFileExist outFile >>= \case
       True -> liftIO (T.readFile outFile) >>= cb . Just
       False -> cb Nothing
@@ -123,8 +127,15 @@ testKernelStdout'' kernel code cb = do
 testKernelSucceeds :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> SpecFree context m ()
-testKernelSucceeds kernel code = it [i|#{kernel} -- #{summarizeCode code} (no errors)|] $
-  notebookShouldSatisfy kernel code $ \(JupyterNotebook {..}) ->
+testKernelSucceeds = testKernelSucceeds' defaultStartTimeout
+
+-- | 'testKernelSucceeds' with an explicit kernel start timeout, in seconds. Kernels that
+-- compile their dependencies on startup can need far longer than the default.
+testKernelSucceeds' :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Int -> Text -> Text -> SpecFree context m ()
+testKernelSucceeds' startTimeout kernel code = it [i|#{kernel} -- #{summarizeCode code} (no errors)|] $
+  notebookShouldSatisfy startTimeout kernel code $ \(JupyterNotebook {..}) ->
     case [(errorOutputEname, errorOutputEvalue) | CodeCell {..} <- notebookCells, ErrorOutput {..} <- codeOutputs] of
       [] -> return ()
       ((ename, evalue) : _) -> expectationFailure [i|Kernel produced an error output: #{ename}: #{evalue}|]
@@ -154,7 +165,7 @@ displayTextsShouldBe kernel code desired = displayDatasShouldSatisfy kernel code
 displayDatasShouldSatisfy :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> ([Map MimeType A.Value] -> ExampleT context m ()) -> ExampleT context m ()
-displayDatasShouldSatisfy kernel code cb = notebookShouldSatisfy kernel code $ \(JupyterNotebook {..}) -> do
+displayDatasShouldSatisfy kernel code cb = notebookShouldSatisfy defaultStartTimeout kernel code $ \(JupyterNotebook {..}) -> do
   let outputs = mconcat [codeOutputs | CodeCell {..} <- notebookCells]
   cb ([displayDataData | DisplayDataOutput {..} <- outputs])
 
@@ -185,7 +196,7 @@ executeTextsShouldBe kernel code desired = executeResultsShouldSatisfy kernel co
 executeResultsShouldSatisfy :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> ([Map MimeType A.Value] -> ExampleT context m ()) -> ExampleT context m ()
-executeResultsShouldSatisfy kernel code cb = notebookShouldSatisfy kernel code $ \(JupyterNotebook {..}) -> do
+executeResultsShouldSatisfy kernel code cb = notebookShouldSatisfy defaultStartTimeout kernel code $ \(JupyterNotebook {..}) -> do
   let outputs = mconcat [codeOutputs | CodeCell {..} <- notebookCells]
   cb ([executeResultData | ExecuteResultOutput {..} <- outputs])
 
@@ -211,9 +222,9 @@ summarizeCode code = code
 
 notebookShouldSatisfy :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
-  ) => Text -> Text -> (JupyterNotebook -> ExampleT context m ()) -> ExampleT context m ()
-notebookShouldSatisfy kernel code cb = do
-  runKernelCode kernel code $ \notebookFile outputNotebookFile _outFile _errFile -> do
+  ) => Int -> Text -> Text -> (JupyterNotebook -> ExampleT context m ()) -> ExampleT context m ()
+notebookShouldSatisfy startTimeout kernel code cb = do
+  runKernelCode startTimeout kernel code $ \notebookFile outputNotebookFile _outFile _errFile -> do
     liftIO (A.eitherDecodeFileStrict outputNotebookFile) >>= \case
       Left err -> expectationFailure [i|Failed to decode notebook '#{notebookFile}': #{err}|]
       Right nb -> cb nb
@@ -223,8 +234,8 @@ runKernelCode :: (
   , JupyterRunnerMonad m
   , MonadReader context m
   , MonadLoggerIO m
-  ) => Text -> Text -> (FilePath -> FilePath -> FilePath -> FilePath -> m b) -> m b
-runKernelCode kernel code cb = do
+  ) => Int -> Text -> Text -> (FilePath -> FilePath -> FilePath -> FilePath -> m b) -> m b
+runKernelCode startTimeout kernel code cb = do
   nixEnv <- getContext nixEnvironment
   let jupyterPath = nixEnv </> "lib" </> "codedown"
   debug [i|Got jupyterPath: #{jupyterPath}|]
@@ -261,7 +272,7 @@ runKernelCode kernel code cb = do
         "notebook.ipynb", "out.ipynb"
         , "--stdout-file", relativeToInnerRunDir outFile
         , "--stderr-file", relativeToInnerRunDir errFile
-        , "--start-timeout", "120"
+        , "--start-timeout", Prelude.show startTimeout
         , "--cwd", innerRunDir
         , "--log-level", "DEBUG"
         , "-k", T.unpack kernel
