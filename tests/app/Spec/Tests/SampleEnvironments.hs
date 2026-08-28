@@ -14,6 +14,7 @@ import Data.Text as T
 import qualified Data.Yaml as Yaml
 import GHC.Stack
 import System.FilePath
+import System.Info (os)
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.NixTypes
@@ -26,7 +27,7 @@ import UnliftIO.Directory
 tests :: TopSpec
 tests = describe "Sample environments" $ introduceBootstrapNixpkgs $ introduceJustBubblewrap $ do
   parallelN 4 $
-    forM_ (L.sort fileList) $ \file -> do
+    forM_ (L.sort (L.filter (`notElem` unavailableHere) fileList)) $ \file -> do
       describe [i|#{file}|] $ do
         it "Builds" $ do
           let name = T.dropEnd 4 (T.pack file) -- Drop the .nix suffix
@@ -112,6 +113,13 @@ validatePackage envRoot attr (NixPackage {nixPackageMeta=(NixMeta {..}), ..}) = 
 
 fileList :: [String]
 fileList = $(getFileListRelativeToRoot "sample_environments")
+
+-- | Sample environments this platform doesn't provide, so we don't ask the flake for an
+-- attribute that isn't there. Keep in sync with the platform gating in sample_environments.nix.
+unavailableHere :: [String]
+unavailableHere
+  | os == "darwin" = ["pypy3.nix"]
+  | otherwise = []
 
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions tests
