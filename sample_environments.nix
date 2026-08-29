@@ -37,9 +37,9 @@
   julia110 = import ./sample_environments/julia110.nix args;
   julia111 = import ./sample_environments/julia111.nix args;
   mega = import ./sample_environments/mega.nix args;
-  python311 = import ./sample_environments/python311.nix args;
   python312 = import ./sample_environments/python312.nix args;
   python313 = import ./sample_environments/python313.nix args;
+  python314 = import ./sample_environments/python314.nix args;
   python3 = import ./sample_environments/python3.nix args;
 } // pkgsStable.lib.optionalAttrs pkgsStable.stdenv.targetPlatform.isLinux {
   # PyPy's bootstrap interpreter doesn't build on Darwin: its libffi calls are guarded by

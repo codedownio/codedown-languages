@@ -3,9 +3,9 @@
 }:
 
 codedown.makeEnvironment {
-  name = "python311";
+  name = "python314";
 
-  kernels.python3.python3Package = "python311";
+  kernels.python3.python3Package = "python314";
 
   kernels.python3.enable = true;
   kernels.python3.packages = [

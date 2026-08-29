@@ -13,4 +13,6 @@ See the available options in [OPTIONS.md](./OPTIONS.md).
   <img alt="Feature support by language" src="docs/feature-matrix.svg" width="100%">
 </picture>
 
+_15 languages, 22 features. See [FEATURE-MATRIX.md](./FEATURE-MATRIX.md) for the same data as tables, and for how it's generated._
+
 <!-- END FEATURE MATRIX -->

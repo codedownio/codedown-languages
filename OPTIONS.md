@@ -748,7 +748,7 @@ string
 
 
 *Type:*
-one of “go”, “go_1_23”, “go_1_24”, “go_1_25”, “go_1_26”, “go_latest”
+one of “go”, “go_1_23”, “go_1_25”, “go_1_26”, “go_1_27”, “go_latest”
 
 
 
@@ -1936,7 +1936,7 @@ false
 
 
 *Type:*
-one of “python3”, “python311”, “python312”, “python313”
+one of “python3”, “python312”, “python313”, “python314”
 
 
 
@@ -2254,11 +2254,80 @@ one of “rust”, “rust_1_95”
 
 
 
-## language-servers\.spellchecker\.enable
+## language-servers\.spellchecker\.markdown\.enable
 
 
 
-Enable the Markdown spellchecker\.
+**Check Markdown**
+
+Include the Markdown spellchecker (\.md, \.ipynb)\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## language-servers\.spellchecker\.typst\.enable
+
+
+
+**Check Typst**
+
+Include the Typst spellchecker (\.typ)\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## language-servers\.spellchecker\.typst\.checkBlockComments
+
+
+
+**Check Typst block comments**
+
+Spellcheck the prose inside Typst block comments (/\* … \*/)\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+## language-servers\.spellchecker\.typst\.checkLineComments
+
+**Check Typst line comments**
+
+Spellcheck the prose inside Typst line comments (// …)\.
 
 
 
@@ -2297,6 +2366,8 @@ string
 
 
 ## shells\.bash\.enable
+
+
 
 Enable the Bash shell\.
 

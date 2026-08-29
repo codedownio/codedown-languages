@@ -122,7 +122,7 @@
       <circle cx="817.5" cy="210.5" r="2.2" fill="#c3c2b7"/>
     </g>
     <text x="20" y="243.5" font-size="12.5" fill="#0b0b0b">C++ 23</text>
-    <text x="186" y="243.5" font-size="10" text-anchor="end" fill="#898781">21.1.7</text>
+    <text x="186" y="243.5" font-size="10" text-anchor="end" fill="#898781">21.1.8</text>
     <g><title>C++ 23 - Jupyter kernel: yes</title>
       <rect x="198.0" y="229.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 203.9 239.6 L 207.1 242.9 L 213.3 235.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -210,7 +210,7 @@
     </g>
     <rect x="16" y="254" width="816" height="29" fill="#f6f5f2"/>
     <text x="20" y="272.5" font-size="12.5" fill="#0b0b0b">Clojure</text>
-    <text x="186" y="272.5" font-size="10" text-anchor="end" fill="#898781">1.12.3.1577</text>
+    <text x="186" y="272.5" font-size="10" text-anchor="end" fill="#898781">1.12.5.1645</text>
     <g><title>Clojure - Jupyter kernel: yes</title>
       <rect x="198.0" y="258.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 203.9 268.6 L 207.1 271.9 L 213.3 264.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -369,7 +369,7 @@
     </g>
     <rect x="16" y="312" width="816" height="29" fill="#f6f5f2"/>
     <text x="20" y="330.5" font-size="12.5" fill="#0b0b0b">Go</text>
-    <text x="186" y="330.5" font-size="10" text-anchor="end" fill="#898781">1.25.9</text>
+    <text x="186" y="330.5" font-size="10" text-anchor="end" fill="#898781">1.26.6</text>
     <g><title>Go - Jupyter kernel: yes</title>
       <rect x="198.0" y="316.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 203.9 326.6 L 207.1 329.9 L 213.3 322.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -853,7 +853,7 @@
     </g>
     <rect x="16" y="486" width="816" height="29" fill="#f6f5f2"/>
     <text x="20" y="504.5" font-size="12.5" fill="#0b0b0b">Python</text>
-    <text x="186" y="504.5" font-size="10" text-anchor="end" fill="#898781">3.13.12</text>
+    <text x="186" y="504.5" font-size="10" text-anchor="end" fill="#898781">3.13.15</text>
     <g><title>Python - Jupyter kernel: yes</title>
       <rect x="198.0" y="490.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 203.9 500.6 L 207.1 503.9 L 213.3 496.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -940,7 +940,7 @@
       <path d="M 812.9 500.6 L 816.1 503.9 L 822.3 496.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <text x="20" y="533.5" font-size="12.5" fill="#0b0b0b">R</text>
-    <text x="186" y="533.5" font-size="10" text-anchor="end" fill="#898781">4.5.1</text>
+    <text x="186" y="533.5" font-size="10" text-anchor="end" fill="#898781">4.5.3</text>
     <g><title>R - Jupyter kernel: yes</title>
       <rect x="198.0" y="519.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 203.9 529.6 L 207.1 532.9 L 213.3 525.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
