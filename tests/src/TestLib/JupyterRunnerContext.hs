@@ -129,8 +129,6 @@ testKernelSucceeds :: (
   ) => Text -> Text -> SpecFree context m ()
 testKernelSucceeds = testKernelSucceeds' defaultStartTimeout
 
--- | 'testKernelSucceeds' with an explicit kernel start timeout, in seconds. Kernels that
--- compile their dependencies on startup can need far longer than the default.
 testKernelSucceeds' :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Int -> Text -> Text -> SpecFree context m ()
