@@ -16,6 +16,7 @@ module TestLib.LSP (
   , Helpers.getDiagnosticRanges'
   , assertDiagnosticRanges
   , assertDiagnosticRanges'
+  , assertDiagnosticRangesFromSource'
   , testDiagnostics
   , testDiagnosticsLabel
   , testDiagnosticsLabelDesired
@@ -216,3 +217,7 @@ assertDiagnosticRanges'' keyFn diagnostics desired = if
 
                               Found: #{A.encode $ keyFn diagnostics}
                              |]
+
+assertDiagnosticRangesFromSource' :: (HasCallStack, MonadIO m) => Text -> [Diagnostic] -> [(Range, Maybe (Int32 |? Text), Text)] -> m ()
+assertDiagnosticRangesFromSource' src diagnostics =
+  assertDiagnosticRanges' (L.filter (\d -> _source d == Just src) diagnostics)

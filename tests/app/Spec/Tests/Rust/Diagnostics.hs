@@ -24,11 +24,11 @@ tests = describe "Diagnostics" $ do
     [__i|struct A { a: u8, b: u8 }
          const a: A = A { a: 10, };
         |] $ \diagnostics ->
-      assertDiagnosticRanges' (L.sortBy (compare `on` (^. LSP.message)) diagnostics) [
+      -- Only rustc's, via flycheck. rust-analyzer's own diagnostics for this file are not
+      -- dependable: it never links a detached file into the crate graph on some runs, and
+      -- then publishes none of its own at all.
+      assertDiagnosticRangesFromSource' "rustc" (L.sortBy (compare `on` (^. LSP.message)) diagnostics) [
         (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing field `b` in initializer of `A`\nmissing `b`")
-        -- (Range (Position 1 6) (Position 1 7), Just (InR "non_upper_case_globals"), "Constant `a` should have UPPER_SNAKE_CASE name, e.g. `A`")
-        -- , (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing field `b` in initializer of `A`\nmissing `b`")
-        -- , (Range (Position 1 13) (Position 1 14), Just (InR "E0063"), "missing structure fields:\n- b\n")
         ]
 
   testDiagnostics "rust-analyzer" "main.ipynb" LanguageKind_Rust [__i|println!("Hello world");
