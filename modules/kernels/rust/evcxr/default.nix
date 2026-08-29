@@ -1,4 +1,6 @@
 { callPackage
+, coreutils
+, gnutar
 , lib
 , libiconv
 , makeWrapper
@@ -128,11 +130,6 @@ evcxr.overrideAttrs (oldAttrs: {
         # env-var overrides (LIBCLANG_PATH, ...). Values are store paths / flags
         # with no spaces, so they pass through $makeWrapperArgs word-splitting.
         envArgs = lib.concatLists (lib.mapAttrsToList (n: v: ["--set" n v]) env);
-      in
-      runCommand "evcxr" {
-        version = evcxr.version;
-
-        buildInputs = [makeWrapper];
 
         # evcxr links user code at *runtime* outside any Nix derivation, so the
         # native deps that stdenv would normally provide during a build are
@@ -140,7 +137,7 @@ evcxr.overrideAttrs (oldAttrs: {
         #   - the override-derived tools (pkg-config, cmake, ...) on PATH
         #   - pkg-config search paths for the override-derived libraries
         #   - libiconv on Darwin (rustc emits `-liconv` with no `-L` otherwise)
-        makeWrapperArgs = [
+        baseWrapperArgs = [
           "--set" "CARGO_HOME" "${cargoHome packages}"
           "--set" "EVCXR_CONFIG_DIR" "${evcxrConfigDir packages}"
           "--prefix" "PATH" ":" "${lib.makeBinPath ([rustc cargo] ++ nativeBuildInputs)}"
@@ -151,13 +148,82 @@ evcxr.overrideAttrs (oldAttrs: {
           "--set" "NIX_LDFLAGS_${stdenv.cc.suffixSalt}" "-L${lib.getLib libiconv}/lib"
         ];
 
+        # Compiles the dependencies itself, to produce the prebuilt directory.
+        unseeded = runCommand "evcxr-unseeded" {
+          buildInputs = [makeWrapper];
+          makeWrapperArgs = baseWrapperArgs;
+        } ''
+          mkdir -p $out/bin
+          makeWrapper ${evcxr}/bin/evcxr $out/bin/evcxr $makeWrapperArgs
+        '';
+
+        # Compile the crates once here rather than on every kernel start.
+        # EVCXR_TMPDIR makes the build directory outlive the process; a tarball
+        # keeps the mtimes cargo compares against, which the store would flatten.
+        prebuiltBuildDir = runCommand "evcxr-build-dir" {
+          nativeBuildInputs = [gnutar];
+        } ''
+          buildDir=$(mktemp -d)
+
+          # Cleared, so the rerun-if-env-changed variables match what a kernel
+          # sees; otherwise cargo reruns every build script.
+          echo '1+1' | env -i \
+            HOME=$(mktemp -d) \
+            TMPDIR=$TMPDIR \
+            EVCXR_TMPDIR=$buildDir \
+            ${unseeded}/bin/evcxr > evcxr.log 2>&1
+
+          # evcxr exits 0 even when the build fails; the expression can only have
+          # evaluated if the crates compiled.
+          if ! grep -qx '2' evcxr.log; then
+            echo "evcxr failed while prebuilding the dependencies:"
+            grep -v '"reason":"compiler-artifact"' evcxr.log | tail -50
+            exit 1
+          fi
+
+          mkdir -p $out
+          tar -cf $out/build-dir.tar -C "$buildDir" .
+        '';
+      in
+      runCommand "evcxr" {
+        version = evcxr.version;
+
+        buildInputs = [makeWrapper];
+
+        makeWrapperArgs = baseWrapperArgs;
+
         passthru = {
           cargoHome = cargoHome packages;
+          inherit prebuiltBuildDir;
         };
       } ''
         mkdir -p $out/bin
-        makeWrapper ${evcxr}/bin/evcxr $out/bin/evcxr $makeWrapperArgs
-        makeWrapper ${evcxr}/bin/evcxr_jupyter $out/bin/evcxr_jupyter $makeWrapperArgs
+
+        # Separate from $makeWrapperArgs, which is word-split. Absolute paths
+        # because the wrapper's PATH has the Rust toolchain, not coreutils.
+        seed=${lib.escapeShellArg ''
+          # Skipped when already set: evcxr re-execs itself through this wrapper,
+          # and a second build directory would deadlock the two on cargo's lock.
+          if [ -z "''${EVCXR_TMPDIR:-}" ]; then
+            EVCXR_TMPDIR=$(${coreutils}/bin/mktemp -d "''${TMPDIR:-/tmp}/evcxr-build-XXXXXX")
+            export EVCXR_TMPDIR
+
+            # Unpacking restores the mtimes cargo compares against.
+            ${gnutar}/bin/tar -xf ${prebuiltBuildDir}/build-dir.tar -C "$EVCXR_TMPDIR"
+            ${coreutils}/bin/chmod -R u+w "$EVCXR_TMPDIR"
+
+            # This config wins over CARGO_HOME's, and evcxr leaves it saying
+            # offline = false, sending cargo after an index we already vendor.
+            printf '[net]\noffline = true\n' > "$EVCXR_TMPDIR/.cargo/config.toml"
+
+            # Both are empty, so tar stores them as one hardlinked inode and cargo
+            # deadlocks locking it twice. It recreates them.
+            ${coreutils}/bin/rm -f "$EVCXR_TMPDIR"/target/*/.cargo-lock "$EVCXR_TMPDIR"/target/*/*/.cargo-lock
+          fi
+        ''}
+
+        makeWrapper ${evcxr}/bin/evcxr $out/bin/evcxr $makeWrapperArgs --run "$seed"
+        makeWrapper ${evcxr}/bin/evcxr_jupyter $out/bin/evcxr_jupyter $makeWrapperArgs --run "$seed"
       '';
   };
 })

@@ -2,11 +2,15 @@
 
 module Spec.Tests.Rust (tests) where
 
+import Control.Monad (unless)
+import Control.Monad.IO.Class (liftIO)
 import Data.Aeson as A
 import Data.String.Interpolate
+import qualified Data.List as L
 import qualified Data.Text as T
 import qualified Data.Vector as V
 import Safe
+import System.FilePath ((</>))
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.NixEnvironmentContext
@@ -64,9 +68,26 @@ tests = describe "Rust" $ do
   -- dependencies that evcxr must compile at runtime. plotters in particular
   -- needs pkg-config + fontconfig/freetype, which the evcxr wrapper bakes in.
   -- This guards against regressions where the import block fails to compile.
+  --
+  -- It also covers the prebuilt crate artifacts: without them evcxr compiles
+  -- this set on startup, which takes longer than the kernel start timeout, so
+  -- this test fails outright rather than merely getting slower.
   introduceNixEnvironment [dataScienceKernelSpec] [] "Rust data science" $
-    introduceJupyterRunner $ describe "Data science kernel" $
+    introduceJupyterRunner $ describe "Data science kernel" $ do
       testKernelSucceeds "rust" dataScienceImports
+
+      -- The test above only notices a missing prebuild through the timeout, so
+      -- check the wiring directly too.
+      it "seeds a prebuilt build directory" $ do
+        nixEnv <- getContext nixEnvironment
+        Just (kernel :: A.Object) <- liftIO $ A.decodeFileStrict
+          (nixEnv </> "lib" </> "codedown" </> "kernels" </> "rust" </> "kernel.json")
+        case aesonLookup "argv" kernel of
+          Just (A.Array (V.toList -> (A.String evcxr : _))) -> do
+            wrapper <- liftIO $ readFile (T.unpack evcxr)
+            unless ("evcxr-build-dir" `L.isInfixOf` wrapper) $
+              expectationFailure [i|#{evcxr} doesn't seed a prebuilt build directory, so the kernel compiles its crates on every start|]
+          x -> expectationFailure [i|Expected an argv in the kernel spec, got: #{x}|]
 
 -- rand 0.9+ dropped the `random` re-export from `rand::prelude`, so call it by full path
 -- instead of `use rand::prelude::*; let x: u8 = random();`. See issue #49.
