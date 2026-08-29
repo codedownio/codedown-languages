@@ -76,10 +76,7 @@ in
         sha256 = "sha256-2SeTakYt/DPQ7S+uHVOVbL/xAcil7g5OGPIx+ZSKYCA=";
       };
 
-      compilers =
-        config.pkgs.callPackage ./compilers-stable.nix { inherit ihaskell-source; }
-        // config.pkgsMaster.callPackage ./compilers-unstable.nix { inherit ihaskell-source; }
-      ;
+      compilers = config.pkgs.callPackage ./compilers.nix { inherit ihaskell-source; };
 
       compilerName = config.kernels.haskell.ghcPackage;
 

@@ -5,7 +5,7 @@ with lib;
 let
   # Ark requires rustc >= 1.94, which is newer than the stable nixpkgs pin
   # ships, so build it (and its R) from the master pin like the Rust kernel.
-  pkgsToUse = config.pkgsMaster;
+  pkgsToUse = config.pkgs;
 
 in
 
