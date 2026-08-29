@@ -170,7 +170,7 @@ runInspectorCommand :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m, FromJSON a
   ) => Text -> Text -> Text -> (a -> ExampleT context m ()) -> ExampleT context m ()
 runInspectorCommand kernel code what cb =
-  runKernelCode kernel code $ \notebookFile outputNotebook outFile _errFile -> do
+  runKernelCode defaultStartTimeout kernel code $ \notebookFile outputNotebook outFile _errFile -> do
     stdoutContents <- doesFileExist outFile >>= \case
       True -> liftIO (TIO.readFile outFile)
       False -> return ""
