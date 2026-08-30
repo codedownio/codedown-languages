@@ -11,6 +11,13 @@ nix:
 system-ghc: true
 
 extra-deps:
+- git: https://github.com/codedownio/sandwich.git
+  # master branch
+  commit: 71f7ac9754fe6bf6a6856cb0b774c356bb8ed02d
+  subdirs:
+  - sandwich
+  - sandwich-contexts
+
 - git: https://github.com/codedownio/lsp.git
   # upgrade-monads-newest-jan2026 branch
   commit: c723f4a4fb99661c76b1356f8a839a0e266b0f32
