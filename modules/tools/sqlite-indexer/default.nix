@@ -51,7 +51,7 @@ in
 
 rec {
   index = runCommand "search-index.db" { buildInputs = [nodejs sqlite]; inherit json; } ''
-    echo | sqlite3 $out <<- EOF
+    sqlite3 $out <<- EOF
     CREATE VIRTUAL TABLE main using fts5(attr, name, version, category, meta UNINDEXED);
 
     INSERT INTO main SELECT
