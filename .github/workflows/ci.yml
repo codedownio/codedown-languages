@@ -166,8 +166,10 @@ jobs:
 
         export NIX_PATH=nixpkgs=$(nix run .#nixpkgsPath)
         export PATH=$(nix build --no-link .#stack --json | jq -r '.[0].outputs.out')/bin:$PATH
+        export PATH=$(nix build --no-link .#direnv --json | jq -r '.[0].outputs.out')/bin:$PATH
 
-        stack run --nix --no-nix-pure -- \
+        direnv allow
+        direnv exec . stack run --nix --no-nix-pure -- \
           --print \
           --fixed-root "$TEST_ROOT" \
           --markdown-summary "$GITHUB_STEP_SUMMARY" \
