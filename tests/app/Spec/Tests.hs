@@ -5,7 +5,6 @@
 
 module Spec.Tests where
 
-import Control.Concurrent.QSem
 import Control.Monad
 import Control.Monad.Catch
 import Control.Monad.IO.Class
@@ -28,13 +27,11 @@ tests =
   introduceJupyterRunner $
   introduceJustBubblewrap $
   introduceBootstrapNixpkgs $
-    introduce' (defaultNodeOptions { nodeOptionsCreateFolder = False }) "Introduce parallel semaphore" parallelSemaphore getQSem (const $ return ()) $
+    withParallelLanesFromArgs getParallelism $
       $(getSpecFromFolder $ defaultGetSpecFromFolderOptions {
            getSpecCombiner = 'describeParallel
-           , getSpecIndividualSpecHooks = 'withParallelSemaphore
+           , getSpecIndividualSpecHooks = 'takeParallelLane
            })
-  where
-    getQSem = getCommandLineOptions >>= liftIO . newQSem . getParallelism
 
 
 -- * Parallelism stuff
@@ -43,7 +40,7 @@ getParallelism :: CommandLineOptions SpecialOptions -> Int
 getParallelism = optTestParallelism . optUserOptions
 
 describeParallel :: (
-  MonadBaseControl IO m, MonadIO m, MonadMask m, HasParallelSemaphore context
+  MonadBaseControl IO m, MonadIO m, MonadMask m
   ) => String -> SpecFree context m () -> SpecFree context m ()
 describeParallel s = (describe' (defaultNodeOptions { nodeOptionsRecordTime = False
                                                     , nodeOptionsVisibilityThreshold = 50 })) s
@@ -51,11 +48,4 @@ describeParallel s = (describe' (defaultNodeOptions { nodeOptionsRecordTime = Fa
                                                     , nodeOptionsVisibilityThreshold = 125
                                                     , nodeOptionsCreateFolder = False }))
 
-withParallelSemaphore :: forall context m. (
-  MonadBaseControl IO m, MonadIO m, MonadMask m, HasParallelSemaphore context
-  ) => FilePath -> SpecFree context m () -> SpecFree context m ()
-withParallelSemaphore _ = around' (defaultNodeOptions { nodeOptionsRecordTime = False
-                                                      , nodeOptionsVisibilityThreshold = 125
-                                                      , nodeOptionsCreateFolder = False }) "claim semaphore" $ \action -> do
-  s <- getContext parallelSemaphore
-  bracket_ (liftIO $ waitQSem s) (liftIO $ signalQSem s) (void action)
+

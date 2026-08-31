@@ -11,8 +11,10 @@ import UnliftIO.Exception
 
 findGitRoot :: FilePath -> IO (Maybe FilePath)
 findGitRoot dir = do
-  let gitDir = dir </> ".git"
-  doesDirectoryExist gitDir >>= \case
+  let gitPath = dir </> ".git"
+  -- In a worktree or submodule checkout, .git is a file pointing at the real gitdir.
+  isRoot <- (||) <$> doesDirectoryExist gitPath <*> doesFileExist gitPath
+  case isRoot of
     True -> return (Just dir)
     False -> do
       let parent = takeDirectory dir
