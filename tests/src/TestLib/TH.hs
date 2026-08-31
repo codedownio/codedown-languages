@@ -9,28 +9,22 @@ import UnliftIO.Directory
 import UnliftIO.Exception
 
 
-findGitRoot :: FilePath -> IO (Maybe FilePath)
-findGitRoot dir = do
-  let gitPath = dir </> ".git"
-  -- In a worktree or submodule checkout, .git is a file pointing at the real gitdir.
-  isRoot <- (||) <$> doesDirectoryExist gitPath <*> doesFileExist gitPath
-  case isRoot of
-    True -> return (Just dir)
-    False -> do
-      let parent = takeDirectory dir
-      if parent == dir  -- We've reached the root directory
-        then return Nothing
-        else findGitRoot parent
+-- | Walk up looking for the directory itself, rather than for a .git. Under Nix the source is a
+-- store path with no repository in it.
+findDirAbove :: FilePath -> FilePath -> IO (Maybe FilePath)
+findDirAbove subDir dir = doesDirectoryExist (dir </> subDir) >>= \case
+  True -> return (Just dir)
+  False -> case takeDirectory dir of
+    parent | parent == dir -> return Nothing
+           | otherwise -> findDirAbove subDir parent
 
 getFileListRelativeToRoot :: FilePath -> Q Exp
 getFileListRelativeToRoot subDir = do
-  gitRoot <- runIO (getCurrentDirectory >>= findGitRoot >>= \case
-                       Nothing -> throwIO $ userError "Couldn't find git root"
-                       Just x -> pure x
-                   )
+  root <- runIO (getCurrentDirectory >>= findDirAbove subDir >>= \case
+                    Nothing -> throwIO $ userError ("Couldn't find " <> subDir <> " in any parent")
+                    Just x -> pure x
+                )
 
-  let path = gitRoot </> subDir
-
-  contents <- runIO $ getDirectoryContents path
+  contents <- runIO $ getDirectoryContents (root </> subDir)
   let files = Prelude.filter (`notElem` [".", ".."]) contents
   listE $ fmap (litE . stringL) files
