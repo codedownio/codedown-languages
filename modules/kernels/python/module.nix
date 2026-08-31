@@ -167,7 +167,20 @@ in
 
         x = config.kernels.python3.python3Package;
 
-        basePython = lib.getAttr x config.pkgs;
+        basePython = (lib.getAttr x config.pkgs).override {
+          packageOverrides = _pyFinal: pyPrev: {
+            # Every pylint primer test drives one shared PRIMER_DIRECTORY and reads back the
+            # comment.txt it writes there, so the pytest-xdist workers overwrite each other's
+            # output and one of them reads an empty file. They only run on the single
+            # interpreter pylint pins them to (PRIMER_CURRENT_INTERPRETER, currently 3.13), and
+            # they cover pylint's own CI tooling rather than anything we ship.
+            pylint = pyPrev.pylint.overridePythonAttrs (old: {
+              disabledTestPaths = (old.disabledTestPaths or []) ++ [
+                "tests/testutils/_primer/test_primer.py"
+              ];
+            });
+          };
+        };
           # if lib.hasAttr x specialEnvPythons then (config.pkgs.poetry2nix.mkPoetryEnv {
           #   projectDir = ./envs/${x};
           #   python = specialEnvPythons.${x};
