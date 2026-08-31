@@ -1,7 +1,5 @@
 { pkgsStableSrc
 , pkgsStable
-, pkgsMasterSrc
-, pkgsMaster
 , requiredPackages ? []
 , system ? "x86_64-linux"
 }:
@@ -29,7 +27,7 @@ rec {
   settingsSchemas = lib.mapAttrs (attr: value: value.meta.settingsSchema or []) kernels;
 
   evaluateConfig = callPackage ./nix/evaluate-config.nix {
-    inherit pkgsStable pkgsMaster;
+    inherit pkgsStable;
   };
 
   everythingConfig = let
@@ -60,7 +58,7 @@ rec {
   exporters = everythingEnv.config.builtExporters;
 
   makeEnvironment = callPackage ./nix/makeEnvironment.nix {
-    inherit pkgsStable pkgsMaster;
+    inherit pkgsStable;
   };
 
   # Which languages support which features, derived from the module evaluation.
@@ -101,5 +99,5 @@ rec {
   ;
 
   # Exposed so it's easier to compute build dependencies in the presence of IFD
-  inherit pkgsStableSrc pkgsStable pkgsMasterSrc pkgsMaster requiredPackages;
+  inherit pkgsStableSrc pkgsStable requiredPackages;
 }

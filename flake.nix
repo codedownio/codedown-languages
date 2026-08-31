@@ -2,8 +2,6 @@
   description = "CodeDown languages";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-26.05";
-  # See the pkgsMaster comment below.
-  # inputs.nixpkgs-master.url = "github:NixOS/nixpkgs/master";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -11,20 +9,11 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgsStable = import nixpkgs { inherit system; };
-        # Nothing builds from master. Importing it makes everyone realizing an environment
-        # fetch a second Nixpkgs, so it's off. To re-enable, uncomment the nixpkgs-master input
-        # and these lines, the block in default.nix, and the nixpkgs-master check in
-        # .aliases/dev-verify-default-nix.
-        # pkgsMaster = import nixpkgs-master { inherit system; };
-        pkgsMaster = throw "pkgsMaster is disabled; see the comment in flake.nix";
 
         codedown = import ./codedown.nix {
           pkgsStableSrc = nixpkgs;
           inherit pkgsStable;
 
-          # pkgsMasterSrc = nixpkgs-master;
-          pkgsMasterSrc = pkgsMaster;
-          inherit pkgsMaster;
         };
 
         sampleOutputs = pkgsStable.callPackage ./nix/sample-outputs.nix { inherit codedown pkgsStable; };
@@ -46,7 +35,7 @@
         optionsDoc = pkgsStable.nixosOptionsDoc {
           # Fold each option's "title" into its description so it survives into the docs.
           options = (import ./nix/fold-option-titles.nix { lib = pkgsStable.lib; }) (((pkgsStable.callPackage ./nix/evaluate-config.nix {
-            inherit pkgsStable pkgsMaster;
+            inherit pkgsStable;
             extraSpecialArgs = {
               pkgs = {};
             };
