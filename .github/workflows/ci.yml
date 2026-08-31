@@ -146,36 +146,22 @@ jobs:
       run: |
         cd tests
 
-        # The two macOS runners share a home, and two stack builds recaching one snapshot's
-        # package db deadlock against each other.
-        export STACK_ROOT="$HOME/.stack-$RUNNER_NAME"
-        export NIX_PATH=nixpkgs=$(nix run .#nixpkgsPath)
-
-        export PATH=$(nix build --no-link .#stack --json | jq -r '.[0].outputs.out')/bin:$PATH
-        export PATH=$(nix build --no-link .#direnv --json | jq -r '.[0].outputs.out')/bin:$PATH
-        echo "Got path: $PATH"
-
-        direnv allow
-        direnv exec . stack build --nix --no-nix-pure
+        nix build .#tests
 
     - name: Run tests
       if: "!contains(github.event.head_commit.message, 'noci')"
       run: |
         cd tests
 
+        TESTS=$(nix build --no-link .#tests --json | jq -r '.[0].outputs.out')/bin/tests
+
         export TEST_ROOT=$(pwd)/test_root
         echo "Got TEST_ROOT: $TEST_ROOT"
         echo TEST_ROOT="$TEST_ROOT" >> $GITHUB_ENV
 
-        # The two macOS runners share a home, and two stack builds recaching one snapshot's
-        # package db deadlock against each other.
-        export STACK_ROOT="$HOME/.stack-$RUNNER_NAME"
         export NIX_PATH=nixpkgs=$(nix run .#nixpkgsPath)
-        export PATH=$(nix build --no-link .#stack --json | jq -r '.[0].outputs.out')/bin:$PATH
-        export PATH=$(nix build --no-link .#direnv --json | jq -r '.[0].outputs.out')/bin:$PATH
 
-        direnv allow
-        direnv exec . stack run --nix --no-nix-pure -- \
+        "$TESTS" \
           --print \
           --fixed-root "$TEST_ROOT" \
           --markdown-summary "$GITHUB_STEP_SUMMARY" \
