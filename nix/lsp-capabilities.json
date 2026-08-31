@@ -801,6 +801,64 @@
     },
     "octave": {},
     "postgres": {},
+    "pypy3": {
+      "jedi": {
+        "capabilities": {
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "refactor.inline",
+              "refactor.extract"
+            ]
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              ".",
+              "'",
+              "\""
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "executeCommandProvider": {
+            "commands": []
+          },
+          "hoverProvider": true,
+          "positionEncoding": "utf-16",
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": false
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              "(",
+              ","
+            ]
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": true,
+            "willSave": false
+          },
+          "typeDefinitionProvider": true,
+          "workspace": {
+            "fileOperations": {},
+            "workspaceFolders": {
+              "changeNotifications": true,
+              "supported": true
+            }
+          },
+          "workspaceSymbolProvider": {
+            "resolveProvider": false
+          }
+        },
+        "displayName": "Jedi",
+        "version": "0.46.0"
+      }
+    },
     "python3": {
       "jedi": {
         "capabilities": {
