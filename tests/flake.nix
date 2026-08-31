@@ -3,10 +3,8 @@
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-26.05";
 
   inputs.haskellNix.url = "github:input-output-hk/haskell.nix";
-  # A Nixpkgs haskell.nix has built GHC against, so we fetch the compiler rather than build it.
   inputs.nixpkgsHaskellNix.follows = "haskellNix/nixpkgs-2605";
 
-  # The suite lists sample_environments at compile time, and it lives a directory up.
   inputs.repo = { url = "path:.."; flake = false; };
 
   outputs = { self, flake-utils, nixpkgs, haskellNix, nixpkgsHaskellNix, repo }:
@@ -14,8 +12,6 @@
       let
         pkgs = import nixpkgs { inherit system; };
 
-        # hackage.nix has a package whose Cabal flag is literally named "3d", which it emits
-        # unquoted, so importing it is a Nix syntax error.
         haskellNixOverlay = (import (haskellNix + "/overlays") {
           sources = haskellNix.inputs // {
             hackage-for-stackage = (import nixpkgsHaskellNix { inherit system; }).applyPatches {
@@ -32,8 +28,6 @@
           inherit (haskellNix) config;
         };
 
-        # Narrowed to the one directory, so the suite doesn't rebuild when anything else in the
-        # repo changes.
         sampleEnvironments = builtins.path {
           name = "sample_environments";
           path = repo + "/sample_environments";
@@ -45,14 +39,11 @@
           cp -r ${sampleEnvironments} $out/sample_environments
         '';
 
-        # compiler-nix-name must be the GHC stack.yaml's resolver targets, or haskell.nix
-        # rebuilds the compiler's boot libs and configure fails on missing dependencies.
         testsFlake = (pkgsHaskellNix.haskell-nix.hix.project {
           inherit src;
           projectFileName = "stack.yaml";
           compiler-nix-name = "ghc9124";
           modules = [
-            (import ./nix/fix-ghc-pkgs-module.nix)
             (import ./nix/os-string-module.nix)
           ];
         }).flake {};
