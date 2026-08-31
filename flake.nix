@@ -2,21 +2,28 @@
   description = "CodeDown languages";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-26.05";
-  inputs.nixpkgs-master.url = "github:NixOS/nixpkgs/master";
+  # See the pkgsMaster comment below.
+  # inputs.nixpkgs-master.url = "github:NixOS/nixpkgs/master";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs, nixpkgs-master, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgsStable = import nixpkgs { inherit system; };
-        pkgsMaster = import nixpkgs-master { inherit system; };
+        # Nothing builds from master. Importing it makes everyone realizing an environment
+        # fetch a second Nixpkgs, so it's off. To re-enable, uncomment the nixpkgs-master input
+        # and these lines, the block in default.nix, and the nixpkgs-master check in
+        # .aliases/dev-verify-default-nix.
+        # pkgsMaster = import nixpkgs-master { inherit system; };
+        pkgsMaster = throw "pkgsMaster is disabled; see the comment in flake.nix";
 
         codedown = import ./codedown.nix {
           pkgsStableSrc = nixpkgs;
           inherit pkgsStable;
 
-          pkgsMasterSrc = nixpkgs-master;
+          # pkgsMasterSrc = nixpkgs-master;
+          pkgsMasterSrc = pkgsMaster;
           inherit pkgsMaster;
         };
 
@@ -36,9 +43,9 @@
           '') attrs)}
         '';
 
-        optionsDoc = pkgsMaster.nixosOptionsDoc {
+        optionsDoc = pkgsStable.nixosOptionsDoc {
           # Fold each option's "title" into its description so it survives into the docs.
-          options = (import ./nix/fold-option-titles.nix { lib = pkgsMaster.lib; }) (((pkgsMaster.callPackage ./nix/evaluate-config.nix {
+          options = (import ./nix/fold-option-titles.nix { lib = pkgsStable.lib; }) (((pkgsStable.callPackage ./nix/evaluate-config.nix {
             inherit pkgsStable pkgsMaster;
             extraSpecialArgs = {
               pkgs = {};
@@ -47,7 +54,7 @@
           transformOptions = opt: opt // {
             # Remove declarations to hide "Declared by" lines
             declarations = [];
-          } // (pkgsMaster.lib.optionalAttrs (pkgsMaster.lib.head (opt.loc or []) == "_module") {
+          } // (pkgsStable.lib.optionalAttrs (pkgsStable.lib.head (opt.loc or []) == "_module") {
             visible = false;
             internal = true;
           });
@@ -99,7 +106,7 @@
             inherit (codedown) packageSearch;
             allSettingsSchemas = pkgsStable.callPackage ./nix/all-settings-schemas.nix { inherit (sampleOutputs) sample_environments; };
 
-            jupyter-runner = pkgsMaster.callPackage ./nix/jupyter-runner.nix {};
+            jupyter-runner = pkgsStable.callPackage ./nix/jupyter-runner.nix {};
 
             notebook = with pkgsStable; python3.pkgs.toPythonModule (
               python3.pkgs.notebook.overridePythonAttrs (oldAttrs: {
