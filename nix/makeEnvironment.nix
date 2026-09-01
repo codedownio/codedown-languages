@@ -9,6 +9,7 @@
 , writeText
 
 , pkgsStable
+# , pkgsMaster
 }:
 
 config:
@@ -18,6 +19,7 @@ with lib;
 let
   chooseMeta = callPackage ./choose-meta.nix {};
   evaluated = (callPackage ./evaluate-config.nix { inherit pkgsStable; }) config;
+  # evaluated = (callPackage ./evaluate-config.nix { inherit pkgsStable pkgsMaster; }) config;
   removeNonDefaultSettings = callPackage ./remove-non-default-settings.nix {};
   # Only used for the channel-level environment settings_schema, which is currently exposed on the
   # Nixpkgs-channel overlay makeEnvironment only (see nix/nixpkgs-overlay.nix), not here.

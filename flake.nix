@@ -2,6 +2,7 @@
   description = "CodeDown languages";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-26.05";
+  # inputs.nixpkgs-master.url = "github:NixOS/nixpkgs/master";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -9,11 +10,14 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgsStable = import nixpkgs { inherit system; };
+        # pkgsMaster = import nixpkgs-master { inherit system; };
 
         codedown = import ./codedown.nix {
           pkgsStableSrc = nixpkgs;
           inherit pkgsStable;
 
+          # pkgsMasterSrc = nixpkgs-master;
+          # inherit pkgsMaster;
         };
 
         sampleOutputs = pkgsStable.callPackage ./nix/sample-outputs.nix { inherit codedown pkgsStable; };

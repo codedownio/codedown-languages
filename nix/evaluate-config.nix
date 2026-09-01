@@ -1,5 +1,6 @@
 { lib
 , pkgsStable
+# , pkgsMaster
 
 , extraSpecialArgs ? {}
 }:
@@ -60,6 +61,7 @@ extendedLib.evalModules {
     {
       config = {
         pkgs = pkgsStable;
+        # inherit pkgsMaster;
       };
     }
     {

@@ -16,6 +16,7 @@ escape_for_sed() {
     echo "$string"
 }
 
+# for input in nixpkgs nixpkgs-master; do
 for input in nixpkgs; do
     echo "Processing input: $input"
 
