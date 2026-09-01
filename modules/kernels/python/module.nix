@@ -133,10 +133,9 @@ in
           "python3"
 
           # "python310"
-          "python311"
           "python312"
           "python313"
-          # "python314"
+          "python314"
         ]
         # ++ (builtins.filter (n: builtins.match "^python3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
       ));
@@ -172,7 +171,8 @@ in
           packageOverrides = _pyFinal: pyPrev: {
             # Every pylint primer test drives one shared PRIMER_DIRECTORY and reads back the
             # comment.txt it writes there, so the pytest-xdist workers overwrite each other's
-            # output and one of them reads an empty file. They only run on Python 3.11, and
+            # output and one of them reads an empty file. They only run on the single
+            # interpreter pylint pins them to (PRIMER_CURRENT_INTERPRETER, currently 3.13), and
             # they cover pylint's own CI tooling rather than anything we ship.
             pylint = pyPrev.pylint.overridePythonAttrs (old: {
               disabledTestPaths = (old.disabledTestPaths or []) ++ [

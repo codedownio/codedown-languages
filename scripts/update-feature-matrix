@@ -53,17 +53,11 @@ def main():
         (DOCS / name).chmod(0o644)
         print(f"  wrote docs/{name}", flush=True)
 
-    matrix = json.loads((DOCS / "feature-matrix.json").read_text())
-    counts = f"{len(matrix['languages'])} languages, {len(matrix['features'])} features"
-
     graphic = "\n".join([
         "<picture>",
         '  <source media="(prefers-color-scheme: dark)" srcset="docs/feature-matrix-dark.svg">',
         '  <img alt="Feature support by language" src="docs/feature-matrix.svg" width="100%">',
         "</picture>",
-        "",
-        f"_{counts}. See [FEATURE-MATRIX.md](./FEATURE-MATRIX.md) for the same data as "
-        "tables, and for how it's generated._",
     ])
 
     tables = (built / "feature-matrix.md").read_text().strip()

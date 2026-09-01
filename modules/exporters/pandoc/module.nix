@@ -43,7 +43,7 @@ with lib;
   };
 
   config = mkIf config.exporters.pandoc.enable {
-    builtExporters.pandoc = config.pkgsMaster.callPackage ./default.nix {
+    builtExporters.pandoc = config.pkgs.callPackage ./default.nix {
       texliveScheme = config.pkgs.texlive.combined.${config.exporters.pandoc.texliveScheme};
 
       settings = config.exporters.pandoc;

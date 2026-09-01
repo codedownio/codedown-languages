@@ -16,12 +16,12 @@ with lib;
       internal = true;
     };
 
-    pkgsMaster = mkOption {
-      type = types.attrs;
-      default = pkgs;
-      visible = false;
-      internal = true;
-    };
+    # pkgsMaster = mkOption {
+    #   type = types.attrs;
+    #   default = pkgs;
+    #   visible = false;
+    #   internal = true;
+    # };
 
     builtExporters = mkOption {
       type = types.attrsOf types.package;

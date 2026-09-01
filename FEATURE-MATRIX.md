@@ -40,7 +40,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Julia | ✅ | ✅ | ✅ | ✅ | ✅ | – | ✅ |
 | Octave | – | – | – | – | – | – | – |
 | PostgreSQL | – | – | – | – | – | – | – |
-| PyPy | ✅ | ? | ? | ? | ? | ? | ? |
+| PyPy | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
 | Python | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
 | R | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
 | R (Ark) | – | – | – | – | – | – | – |
@@ -60,7 +60,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Julia | ✅ | – | ✅ | ✅ | ✅ | ✅ |
 | Octave | – | – | – | – | – | – |
 | PostgreSQL | – | – | – | – | – | – |
-| PyPy | ? | ? | ? | ? | ? | ? |
+| PyPy | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Python | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | R | ✅ | – | ✅ | ✅ | ✅ | ✅ |
 | R (Ark) | – | – | – | – | – | – |
@@ -80,7 +80,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Julia | ✅ | ✅ | ✅ |
 | Octave | – | – | – |
 | PostgreSQL | – | – | – |
-| PyPy | ? | ? | ? |
+| PyPy | – | ✅ | ✅ |
 | Python | – | ✅ | ✅ |
 | R | ✅ | ✅ | ✅ |
 | R (Ark) | – | – | – |

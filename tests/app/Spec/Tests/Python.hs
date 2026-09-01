@@ -23,10 +23,9 @@ tests :: LanguageSpec
 tests = describe "Python" $ parallel $ do
   tests' ("python3", "python3")
   -- tests' ("python3", "python310")
-  tests' ("python3", "python311")
   tests' ("python3", "python312")
   tests' ("python3", "python313")
-  -- tests' ("python3", "python314")
+  tests' ("python3", "python314")
 
   -- PyPy's bootstrap interpreter doesn't build on Darwin, so there's no kernel to test there.
   when (os /= "darwin") pypyTests

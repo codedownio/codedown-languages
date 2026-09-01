@@ -3,7 +3,7 @@
 with lib;
 
 let
-  pkgs = config.pkgsMaster;
+  pkgs = config.pkgs;
 
 in
 

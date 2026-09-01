@@ -58,7 +58,7 @@ in
   };
 
   config = mkIf config.exporters.typst.enable {
-    builtExporters.typst = config.pkgsMaster.callPackage ./default.nix {
+    builtExporters.typst = config.pkgs.callPackage ./default.nix {
       settings = config.exporters.typst;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.exporters.typst;
     };
