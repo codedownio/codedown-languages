@@ -1,5 +1,6 @@
 { lib
 , callPackage
+, stdenv
 , gophernotes
 
 , attrs
@@ -12,11 +13,13 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  gophernotes' = gophernotes.overrideAttrs (_oldAttrs: {
-    # The upstream tests give the kernel a fixed retry budget to come up on a ZMQ port, which
-    # isn't long enough on an emulated or loaded builder. The go suite covers the kernel anyway.
-    doCheck = false;
-  });
+  # The upstream tests give the kernel a fixed one second to come up on a ZMQ port, which isn't
+  # long enough under the QEMU emulation our aarch64-linux builds run in; the connect fails with
+  # ECONNREFUSED. Everywhere else leave the derivation exactly as nixpkgs ships it, so it can be
+  # substituted from cache.nixos.org rather than rebuilt. The go suite covers the kernel anyway.
+  gophernotes' = if stdenv.hostPlatform.system == "aarch64-linux"
+                 then gophernotes.overrideAttrs (_oldAttrs: { doCheck = false; })
+                 else gophernotes;
 
   argv = [
     "${gophernotes'}/bin/gophernotes"
