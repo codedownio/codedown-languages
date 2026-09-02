@@ -1,6 +1,6 @@
 { lib
 , callPackage
-, fetchFromGitHub
+, stdenv
 , gophernotes
 
 , attrs
@@ -13,23 +13,16 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  gophernotesPatched = gophernotes.overrideAttrs (_oldAttrs: {
-    src = fetchFromGitHub {
-      owner = "codedownio";
-      repo = "gophernotes";
-      rev = "6b18077f97aa913b73093beeb2152b2d51ee64af";
-      hash = "sha256-gSD2zUWka3cur5jkv4siYp2gJdxD+00bmJi6BZd0c+c="; # nixpkgs-hash
-    };
-
-    vendorHash = "sha256-bGaXnd0E6dRNiwvGIn7Ptddrt7dRzPfkPThgHPuL2Vo=";
-
-    # The upstream tests give the kernel a fixed retry budget to come up on a ZMQ port, which
-    # isn't long enough on an emulated or loaded builder. The go suite covers the kernel anyway.
-    doCheck = false;
-  });
+  # The upstream tests give the kernel a fixed one second to come up on a ZMQ port, which isn't
+  # long enough under the QEMU emulation our aarch64-linux builds run in; the connect fails with
+  # ECONNREFUSED. Everywhere else leave the derivation exactly as nixpkgs ships it, so it can be
+  # substituted from cache.nixos.org rather than rebuilt. The go suite covers the kernel anyway.
+  gophernotes' = if stdenv.hostPlatform.system == "aarch64-linux"
+                 then gophernotes.overrideAttrs (_oldAttrs: { doCheck = false; })
+                 else gophernotes;
 
   argv = [
-    "${gophernotesPatched}/bin/gophernotes"
+    "${gophernotes'}/bin/gophernotes"
     "{connection_file}"
   ];
 
