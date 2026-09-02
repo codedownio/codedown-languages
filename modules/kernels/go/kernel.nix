@@ -1,6 +1,5 @@
 { lib
 , callPackage
-, fetchFromGitHub
 , gophernotes
 
 , attrs
@@ -13,23 +12,14 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  gophernotesPatched = gophernotes.overrideAttrs (_oldAttrs: {
-    src = fetchFromGitHub {
-      owner = "codedownio";
-      repo = "gophernotes";
-      rev = "6b18077f97aa913b73093beeb2152b2d51ee64af";
-      hash = "sha256-gSD2zUWka3cur5jkv4siYp2gJdxD+00bmJi6BZd0c+c="; # nixpkgs-hash
-    };
-
-    vendorHash = "sha256-bGaXnd0E6dRNiwvGIn7Ptddrt7dRzPfkPThgHPuL2Vo=";
-
+  gophernotes' = gophernotes.overrideAttrs (_oldAttrs: {
     # The upstream tests give the kernel a fixed retry budget to come up on a ZMQ port, which
     # isn't long enough on an emulated or loaded builder. The go suite covers the kernel anyway.
     doCheck = false;
   });
 
   argv = [
-    "${gophernotesPatched}/bin/gophernotes"
+    "${gophernotes'}/bin/gophernotes"
     "{connection_file}"
   ];
 
