@@ -1,0 +1,138 @@
+Backport of ipython/ipykernel#1529 (merged upstream after v7.3.0; no release carries it yet).
+
+A reply sent straight on the shell ROUTER socket, bypassing the ZMQStream that reads it, processes
+the socket's pending commands and drains its edge-triggered descriptor. A request that arrived in
+that window is never dispatched, and because the pipe stays active no later request re-signals
+the descriptor either, so the kernel's shell channel is wedged for good.
+
+diff --git a/ipykernel/kernelapp.py b/ipykernel/kernelapp.py
+index 9413b86d6..911ba3048 100644
+--- a/ipykernel/kernelapp.py
++++ b/ipykernel/kernelapp.py
+@@ -412,11 +412,7 @@ def init_control(self, context):
+             self.control_socket.router_handover = 1
+ 
+         self.control_thread = ControlThread(daemon=True)
+-        self.shell_channel_thread = ShellChannelThread(
+-            context,
+-            self.shell_socket,
+-            daemon=True,
+-        )
++        self.shell_channel_thread = ShellChannelThread(context, daemon=True)
+ 
+     def init_iopub(self, context):
+         """Initialize the iopub channel."""
+@@ -608,6 +604,9 @@ def init_kernel(self):
+         """Create the Kernel object itself"""
+         if self.shell_channel_thread:
+             shell_stream = ZMQStream(self.shell_socket, self.shell_channel_thread.io_loop)
++            # Hand the stream to the shell-channel thread so SubshellManager can send the
++            # out-of-band reply through the stream rather than raw on the socket (the wedge fix).
++            self.shell_channel_thread.shell_stream = shell_stream
+         else:
+             shell_stream = ZMQStream(self.shell_socket)
+         control_stream = ZMQStream(self.control_socket, self.control_thread.io_loop)
+diff --git a/ipykernel/shellchannel.py b/ipykernel/shellchannel.py
+index 8205840d1..ff2cdee6e 100644
+--- a/ipykernel/shellchannel.py
++++ b/ipykernel/shellchannel.py
+@@ -7,6 +7,7 @@
+ from typing import Any
+ 
+ import zmq
++from zmq.eventloop.zmqstream import ZMQStream
+ 
+ from .subshell_manager import SubshellManager
+ from .thread import SHELL_CHANNEL_THREAD_NAME, BaseThread
+@@ -21,14 +22,15 @@ class ShellChannelThread(BaseThread):
+     def __init__(
+         self,
+         context: zmq.Context[Any],
+-        shell_socket: zmq.Socket[Any],
+         **kwargs,
+     ):
+         """Initialize the thread."""
+         super().__init__(name=SHELL_CHANNEL_THREAD_NAME, **kwargs)
+         self._manager: SubshellManager | None = None
+         self._zmq_context = context  # Avoid use of self._context
+-        self._shell_socket = shell_socket
++        # Set by kernelapp.init_kernel after it builds the shell ZMQStream, since this
++        # thread is created before the stream exists.
++        self.shell_stream: ZMQStream | None = None
+         # Record the parent thread - the thread that started the app (usually the main thread)
+         self.parent_thread = current_thread()
+ 
+@@ -39,10 +41,12 @@ def manager(self) -> SubshellManager:
+         # Lazy initialisation.
+         if self._manager is None:
+             assert current_thread() == self.parent_thread
++            # Also narrows the type for the manager, which takes a non-optional stream.
++            assert self.shell_stream is not None
+             self._manager = SubshellManager(
+                 self._zmq_context,
+                 self.io_loop,
+-                self._shell_socket,
++                self.shell_stream,
+             )
+         return self._manager
+ 
+diff --git a/ipykernel/subshell_manager.py b/ipykernel/subshell_manager.py
+index 3305bc67e..1f23085ae 100644
+--- a/ipykernel/subshell_manager.py
++++ b/ipykernel/subshell_manager.py
+@@ -11,6 +11,7 @@
+ 
+ import zmq
+ from tornado.ioloop import IOLoop
++from zmq.eventloop.zmqstream import ZMQStream
+ 
+ from .socket_pair import SocketPair
+ from .subshell import SubshellThread
+@@ -29,8 +30,8 @@ class SubshellManager:
+     Reading of cache information can be performed by other threads, so all reads are
+     protected by a lock so that they are atomic.
+ 
+-    Sending reply messages via the shell_socket is wrapped by another lock to protect
+-    against multiple subshells attempting to send at the same time.
++    Reply messages are sent on the shell channel through `shell_stream`, which is the
++    only user of the shell socket; all such sends occur in the shell channel thread.
+ 
+     .. versionadded:: 7
+     """
+@@ -39,14 +40,17 @@ def __init__(
+         self,
+         context: zmq.Context[t.Any],
+         shell_channel_io_loop: IOLoop,
+-        shell_socket: zmq.Socket[t.Any],
++        shell_stream: ZMQStream,
+     ):
+         """Initialize the subshell manager."""
+         self._parent_thread = current_thread()
+ 
+         self._context: zmq.Context[t.Any] = context
+         self._shell_channel_io_loop = shell_channel_io_loop
+-        self._shell_socket = shell_socket
++        # ZMQStream reading the shell socket. The manager deliberately holds no reference
++        # to that socket: sends must go through the stream, never raw on the socket.
++        assert shell_stream is not None
++        self._shell_stream = shell_stream
+         self._cache: dict[str, SubshellThread] = {}
+         self._lock_cache = Lock()  # Sync lock across threads when accessing cache.
+ 
+@@ -225,7 +229,15 @@ def _process_control_request(
+ 
+     def _send_on_shell_channel(self, msg) -> None:
+         assert current_thread().name == SHELL_CHANNEL_THREAD_NAME
+-        self._shell_socket.send_multipart(msg)
++        # Send the reply through the shell ZMQStream rather than raw on its socket. A raw
++        # send_multipart on the dual-use shell ROUTER drains its edge-triggered ZMQ_FD read
++        # edge; because the stream never sees that send, it is never re-armed, so a request
++        # that arrived concurrently can strand unread on a registered-but-non-readable fd
++        # (the wedge). Routing the send through the stream keeps the stream the sole user of
++        # the socket: the send is serviced by the stream's own _handle_events, which recvs
++        # any pending request first and then re-arms POLLIN via _rebuild_io_state, so the
++        # request cannot strand.
++        self._shell_stream.send_multipart(msg)
+ 
+     def _stop_subshell(self, subshell_thread: SubshellThread) -> None:
+         """Stop a subshell thread and close all of its resources."""

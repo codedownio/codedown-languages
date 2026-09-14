@@ -169,6 +169,12 @@ in
 
         basePython = (lib.getAttr x config.pkgs).override {
           packageOverrides = _pyFinal: pyPrev: {
+            # A reply written raw on the shell socket drains its descriptor edge, so a request
+            # arriving at that moment is never dispatched and the shell channel wedges for good.
+            ipykernel = pyPrev.ipykernel.overridePythonAttrs (old: {
+              patches = (old.patches or []) ++ [ ./ipykernel-reply-through-shell-stream.patch ];
+            });
+
             # Every pylint primer test drives one shared PRIMER_DIRECTORY and reads back the
             # comment.txt it writes there, so the pytest-xdist workers overwrite each other's
             # output and one of them reads an empty file. They only run on the single
