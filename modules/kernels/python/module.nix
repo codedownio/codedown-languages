@@ -222,6 +222,11 @@ in
                    else value
               ) pyPrev)
               // {
+                ipykernel = pyPrev.ipykernel.overridePythonAttrs (old: {
+                  doCheck = false;
+                  patches = (old.patches or []) ++ [ ./ipykernel-reply-through-shell-stream.patch ];
+                });
+
                 # On PyPy, pyzmq builds and runs against cffi rather than Cython, but nixpkgs
                 # only wires up the Cython path.
                 pyzmq = pyPrev.pyzmq.overridePythonAttrs (old: {
