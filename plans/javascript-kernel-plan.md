@@ -367,9 +367,18 @@ referring to its own output path.
 
 ## TypeScript kernel
 
-Cheap with tslab: the same binary without `--js`, a second kernelspec (`attrs = ["typescript" "ts"]`,
-`extensions = ["ts"]`), its own icons, feature-matrix rows and tests. Plan it as a follow-on
-commit in the same PR, behind `kernels.typescript.enable`, once the JS kernel's tests are green.
+Done. tslab is one binary that registers both kernels -- `--js` for JavaScript, nothing for
+TypeScript -- so `modules/kernels/typescript/module.nix` calls the same package with
+`variant = "typescript"`, and the package set, `node_modules` and language server are shared.
+What differs: the kernelspec's argv, `attrs = ["typescript" "ts"]`, `extensions = ["ts" "tsx"]`,
+its own icons, and an LSP config with `language_id = "typescript"`, a `.ts` notebook suffix and
+a seeded `tsconfig.json` instead of `jsconfig.json`.
+
+The two configs carry the same `paths`/`typeRoots`, and the seeder only skips a file it would
+have written itself, so both kernels can share a workspace: whichever config tsserver picks for
+a given file, the environment's packages resolve. `checkJs` stays off, but `.ts` cells are type
+checked regardless -- `const n: number = "x"` reports
+`Type 'string' is not assignable to type 'number'` before the cell runs.
 
 ## Files
 
@@ -383,14 +392,15 @@ modules/kernels/javascript/
   language_server_typescript/config.nix
   javascript-logo-{32x32,64x64}.png    # from old_languages/javascript
   javascript-monochrome.svg (+ .license)
-sample_environments/javascript.nix
+modules/kernels/typescript/{module.nix, typescript-logo-*.png, typescript-monochrome.svg}
+sample_environments/{javascript,typescript}.nix
+tests/app/Spec/Tests/{Javascript,Typescript}.hs (+ their subdirectories)
 ```
 
 Edited: `nix/evaluate-config.nix` (register the module), `sample_environments.nix`.
 
-Still to do: `tests/app/Spec/Tests/Javascript.hs` (+ `Tests.hs`), regenerate
-`docs/feature-matrix*`, `FEATURE-MATRIX.md`, `nix/lsp-capabilities.json` and `OPTIONS.md`, and
-remove `old_languages/javascript`.
+Still to do: regenerate `docs/feature-matrix*`, `FEATURE-MATRIX.md`,
+`nix/lsp-capabilities.json` and `OPTIONS.md`, and remove `old_languages/javascript`.
 
 ## Tests
 
@@ -406,7 +416,9 @@ picked up automatically by sandwich-discover. The environment under test selects
 - **LSP** — completions for local variables, completions for `d3.` (`scaleLinear`, `scaleBand`),
   a hover on a local function, and a hover on `d3.scaleLinear` that mentions `ScaleLinear`
 
-All 14 pass (`nix build .#tests` in `tests/`, then `tests --javascript`), in ~33 s.
+All 14 pass (`nix build .#tests` in `tests/`, then `tests --javascript`), in ~33 s. The
+TypeScript kernel has 10 of its own (`tests --typescript`): typed arrow functions, interfaces,
+generics against `@types/d3`, and LSP completions/hovers on `.ts` cells.
 The LSP ones are what caught the bug described below.
 
 ### What the language server needed
