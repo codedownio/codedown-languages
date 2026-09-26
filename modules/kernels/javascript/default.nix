@@ -8,6 +8,10 @@
 
 , settings
 , settingsSchema
+
+# tslab registers two kernels from one binary: JavaScript with --js, TypeScript without.
+# Everything else -- the package set, the node_modules, the language server -- is shared.
+, variant ? "javascript"
 }:
 
 with { inherit (settings) packages; };
@@ -20,8 +24,13 @@ let
 
   npm = callPackage ./npm { inherit nodejs; };
 
-  kernelName = "javascript";
-  displayName = "JavaScript";
+  isTypescript = variant == "typescript";
+
+  kernelName = variant;
+  displayName = if isTypescript then "TypeScript" else "JavaScript";
+
+  icon = if isTypescript then ../typescript/typescript-logo-64x64.png else ./javascript-logo-64x64.png;
+  iconMonochrome = if isTypescript then ../typescript/typescript-monochrome.svg else ./javascript-monochrome.svg;
 
   nodeModules = npm.mkNodeModules { inherit packages; };
 
@@ -59,15 +68,14 @@ let
       display_name = "Node.js " + nodejs.version;
       attr = "node";
       args = ["${nodeRepl}/bin/codedown-node"];
-      icon = ./javascript-logo-64x64.png;
-      iconMonochrome = ./javascript-monochrome.svg;
+      inherit icon iconMonochrome;
     };
   };
 
   languageServers =
     []
     ++ optionals settings.lsp.typescript-language-server.enable [(callPackage ./language_server_typescript/config.nix {
-      inherit attrs kernelName nodeModules;
+      inherit attrs kernelName nodeModules isTypescript icon iconMonochrome;
       settings = settings.lsp.typescript-language-server;
     })]
   ;
@@ -75,11 +83,12 @@ let
 in
 
 symlinkJoin {
-  name = "javascript";
+  name = kernelName;
 
   paths = [
     (callPackage ./kernel.nix {
       inherit tslab nodeModules attrs extensions repls;
+      inherit kernelName displayName isTypescript;
       version = nodejs.version;
     })
 
@@ -93,9 +102,7 @@ symlinkJoin {
       baseName = kernelName;
       inherit displayName;
       version = nodejs.version;
-      icon = ./javascript-logo-64x64.png;
-      iconMonochrome = ./javascript-monochrome.svg;
-      inherit settingsSchema;
+      inherit icon iconMonochrome settingsSchema;
       hasPackages = packageOptions != {};
     };
     inherit packageOptions packageSearch;

@@ -8,16 +8,17 @@
 // about the environment's node_modules, so without help every import is `any` -- hovering
 // `d3.scaleLinear` gives "any" and completion falls back to 4 text matches instead of d3's 577.
 //
-// The one thing that fixes it is a jsconfig.json next to the file. So this proxy watches for the
-// `initialize` request, and drops the environment's jsconfig.json into each workspace root that
-// doesn't already have a TypeScript configuration of its own. Everything else is passed through
-// byte for byte.
+// The one thing that fixes it is a jsconfig.json (or tsconfig.json, for the TypeScript kernel)
+// next to the file. So this proxy watches for the `initialize` request and drops the
+// environment's config into each workspace root that doesn't already have one. Everything else
+// is passed through byte for byte.
 
 const { spawn } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
-const jsconfigPath = process.env.CODEDOWN_JSCONFIG;
+const configPath = process.env.CODEDOWN_WORKSPACE_CONFIG;
+const configName = process.env.CODEDOWN_WORKSPACE_CONFIG_NAME || "jsconfig.json";
 const serverArgs = process.argv.slice(2);
 
 const child = spawn(serverArgs[0], serverArgs.slice(1), {
@@ -36,14 +37,14 @@ function uriToPath(uri) {
 }
 
 function seed(dir) {
-  if (!jsconfigPath || !dir) return;
+  if (!configPath || !dir) return;
   try {
-    // Never overwrite a project's own configuration.
-    for (const name of ["jsconfig.json", "tsconfig.json"]) {
-      if (fs.existsSync(path.join(dir, name))) return;
-    }
-    fs.copyFileSync(jsconfigPath, path.join(dir, "jsconfig.json"));
-    fs.chmodSync(path.join(dir, "jsconfig.json"), 0o644);
+    // Never overwrite a configuration that is already there -- the user's own, or the one the
+    // other kernel's server seeded.
+    const target = path.join(dir, configName);
+    if (fs.existsSync(target)) return;
+    fs.copyFileSync(configPath, target);
+    fs.chmodSync(target, 0o644);
   } catch (e) {
     // A read-only or missing workspace is not fatal; the server still works, just untyped.
   }

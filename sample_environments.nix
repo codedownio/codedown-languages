@@ -32,6 +32,7 @@
   shells-fish = import ./sample_environments/shells-fish.nix args;
   shells-zsh = import ./sample_environments/shells-zsh.nix args;
   spellchecker = import ./sample_environments/spellchecker.nix args;
+  typescript = import ./sample_environments/typescript.nix args;
 } // pkgsStable.lib.optionalAttrs (pkgsStable.stdenv.targetPlatform.system != "aarch64-linux") {
   # Disable these in aarch 64 builds; see
   # https://github.com/codedownio/codedown-languages/issues/96

@@ -11,6 +11,10 @@
 , kernelName
 , nodeModules
 , settings
+
+, isTypescript
+, icon
+, iconMonochrome
 }:
 
 let
@@ -18,10 +22,14 @@ let
 
   languageServerName = "typescript-language-server";
 
-  # `checkJs` stays off: notebook cells are fragments, and a half-typed cell shouldn't fill the
-  # gutter with errors. The point of this file is resolution -- `paths` and `typeRoots` are what
-  # let the server see the environment's packages and their @types.
-  jsconfig = writeText "jsconfig.json" (builtins.toJSON {
+  # The JavaScript kernel seeds a jsconfig.json and the TypeScript kernel a tsconfig.json, so
+  # the two can share a workspace without fighting over one file. Both set the same `paths` and
+  # `typeRoots`, so whichever tsserver picks for a given file, the environment's packages
+  # resolve. `checkJs` stays off -- .ts cells are checked regardless, and a half-written .js
+  # cell shouldn't fill the gutter with errors.
+  configName = if isTypescript then "tsconfig.json" else "jsconfig.json";
+
+  workspaceConfig = writeText configName (builtins.toJSON {
     compilerOptions = {
       allowJs = true;
       checkJs = false;
@@ -30,6 +38,7 @@ let
       moduleResolution = "node";
       esModuleInterop = true;
       baseUrl = ".";
+      skipLibCheck = true;
       typeRoots = ["${nodeModules}/node_modules/@types"];
       paths = {
         "*" = ["${nodeModules}/node_modules/*"];
@@ -47,26 +56,27 @@ let
       --add-flags $out/libexec/seed-workspace.js \
       --add-flags ${typescript-language-server}/bin/typescript-language-server \
       --set NODE_PATH ${nodeModules}/node_modules \
-      --set CODEDOWN_JSCONFIG ${jsconfig}
+      --set CODEDOWN_WORKSPACE_CONFIG ${workspaceConfig} \
+      --set CODEDOWN_WORKSPACE_CONFIG_NAME ${configName}
   '';
 
   passthru = {
-    inherit languageServerName jsconfig;
+    inherit languageServerName workspaceConfig;
   };
 
 in
 
 common.writeTextDirWithMetaAndPassthru typescript-language-server.meta passthru
-  "lib/codedown/language-servers/javascript-${kernelName}-typescript-language-server.yaml"
+  "lib/codedown/language-servers/${kernelName}-typescript-language-server.yaml"
   (lib.generators.toYAML {} [{
     name = languageServerName;
     version = typescript-language-server.version;
     display_name = "TypeScript language server";
     description = typescript-language-server.meta.description;
-    icon = ../javascript-logo-64x64.png;
-    icon_monochrome = ../javascript-monochrome.svg;
-    extensions = ["js" "mjs" "cjs" "jsx"];
-    notebook_suffix = ".js";
+    inherit icon;
+    icon_monochrome = iconMonochrome;
+    extensions = if isTypescript then ["ts" "tsx"] else ["js" "mjs" "cjs" "jsx"];
+    notebook_suffix = if isTypescript then ".ts" else ".js";
     kernel_name = kernelName;
     header_lines = [];
     inherit attrs;
@@ -81,5 +91,5 @@ common.writeTextDirWithMetaAndPassthru typescript-language-server.meta passthru
     env = {
       NODE_PATH = "${nodeModules}/node_modules";
     };
-    language_id = "javascript";
+    language_id = if isTypescript then "typescript" else "javascript";
   }])

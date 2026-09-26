@@ -48,6 +48,7 @@ extendedLib.evalModules {
     ../modules/kernels/r/module.nix
     ../modules/kernels/r-ark/module.nix
     ../modules/kernels/ruby/module.nix
+    ../modules/kernels/typescript/module.nix
     ../modules/kernels/rust/module.nix
 
     ../modules/language_servers/spellchecker/module.nix

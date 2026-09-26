@@ -8,6 +8,10 @@
 , extensions
 , version
 , repls ? {}
+
+, kernelName
+, displayName
+, isTypescript
 }:
 
 with lib;
@@ -21,17 +25,17 @@ common.makeJupyterKernel (
   listToAttrs [{
     name = head attrs;
     value = {
-      displayName = "JavaScript";
+      inherit displayName;
       language = head attrs;
       argv = [
         "${tslab}/bin/tslab"
         "kernel"
         "--config-path"
         "{connection_file}"
-        "--js"
-      ];
-      logo32 = ./javascript-logo-32x32.png;
-      logo64 = ./javascript-logo-64x64.png;
+      ]
+      ++ optional (!isTypescript) "--js";
+      logo32 = if isTypescript then ../typescript/typescript-logo-32x32.png else ./javascript-logo-32x32.png;
+      logo64 = if isTypescript then ../typescript/typescript-logo-64x64.png else ./javascript-logo-64x64.png;
 
       # The kernel's working directory is the user's notebook directory, so the environment's
       # packages have to come in through the environment rather than through cwd.
@@ -48,7 +52,7 @@ common.makeJupyterKernel (
           # nothing to drive an inspector with yet.
           variable_inspector = null;
 
-          repls = common.replsToMetadata "javascript" repls;
+          repls = common.replsToMetadata kernelName repls;
 
           priority = 1;
         };
