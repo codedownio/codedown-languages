@@ -111,6 +111,12 @@ executable tests
       Spec.Tests.Haskell.Info
       Spec.Tests.Haskell.Statements
       Spec.Tests.Haskell.Symbols
+      Spec.Tests.Javascript
+      Spec.Tests.Javascript.Common
+      Spec.Tests.Javascript.Completion
+      Spec.Tests.Javascript.Display
+      Spec.Tests.Javascript.Hovers
+      Spec.Tests.Javascript.Packages
       Spec.Tests.Julia
       Spec.Tests.Julia.Diagnostics
       Spec.Tests.Julia.VariableInspector
