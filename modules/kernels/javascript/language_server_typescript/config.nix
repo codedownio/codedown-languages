@@ -25,14 +25,17 @@ let
   # The JavaScript kernel seeds a jsconfig.json and the TypeScript kernel a tsconfig.json, so
   # the two can share a workspace without fighting over one file. Both set the same `paths` and
   # `typeRoots`, so whichever tsserver picks for a given file, the environment's packages
-  # resolve. `checkJs` stays off -- .ts cells are checked regardless, and a half-written .js
-  # cell shouldn't fill the gutter with errors.
+  # resolve.
+  #
+  # `checkJs` is on by default because tslab type checks JavaScript cells too -- it refuses to
+  # run `undefinedFn()` -- so with it off the editor stays silent about an error the kernel is
+  # about to raise. (.ts cells are checked either way.)
   configName = if isTypescript then "tsconfig.json" else "jsconfig.json";
 
   workspaceConfig = writeText configName (builtins.toJSON {
     compilerOptions = {
       allowJs = true;
-      checkJs = false;
+      checkJs = settings.checkJs;
       module = "commonjs";
       target = "es2022";
       moduleResolution = "node";

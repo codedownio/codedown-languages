@@ -12,6 +12,7 @@ import TestLib.TestSearchers
 import TestLib.Types
 
 import qualified Spec.Tests.Javascript.Completion as Completion
+import qualified Spec.Tests.Javascript.Diagnostics as Diagnostics
 import qualified Spec.Tests.Javascript.Display as Display
 import qualified Spec.Tests.Javascript.Hovers as Hovers
 import qualified Spec.Tests.Javascript.Packages as Packages
@@ -37,6 +38,8 @@ tests = describe "JavaScript" $ do
     Display.tests
 
     describe "LSP" $ do
+      Diagnostics.tests
+
       Completion.tests
 
       Hovers.tests

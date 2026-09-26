@@ -48,6 +48,12 @@ in
         type = types.bool;
         default = true;
       };
+      lsp.typescript-language-server.checkJs = mkOption {
+        title = "Report type errors in JavaScript cells";
+        description = "The kernel type checks JavaScript as well as TypeScript, so this keeps the editor's diagnostics in step with what the kernel will accept.";
+        type = types.bool;
+        default = true;
+      };
       lsp.typescript-language-server.debug = mkOption {
         title = "TypeScript language server: debug output";
         type = types.bool;
