@@ -340,8 +340,8 @@ the expected `<circle>` elements, and `renderStatic` produces the SVG directly i
   monochrome SVG.
 - **REPL** — `node` with `NODE_PATH` set, via a wrapper (every kernel has one since 59f03b4).
 - **LSP** — `typescript-language-server` 5.3.0 from the pin, wrapped with `NODE_PATH` and a
-  generated `jsconfig.json` (`allowJs`, `checkJs: false`, `typeRoots` and `paths` pointing at
-  the environment's `node_modules`). `notebook_suffix = ".js"`; no notebook-LSP wrapper needed
+  generated `jsconfig.json` (`allowJs`, `checkJs`, `typeRoots` and `paths` pointing at the
+  environment's `node_modules`). `notebook_suffix = ".js"`; no notebook-LSP wrapper needed
   to start, since JS cells concatenate cleanly (unlike Go/Rust/C++).
 - **Variable inspector** — deferred. tslab keeps cell state inside its executor with no listing
   command, so `variable_inspector` is null for now.
@@ -376,9 +376,28 @@ a seeded `tsconfig.json` instead of `jsconfig.json`.
 
 The two configs carry the same `paths`/`typeRoots`, and the seeder only skips a file it would
 have written itself, so both kernels can share a workspace: whichever config tsserver picks for
-a given file, the environment's packages resolve. `checkJs` stays off, but `.ts` cells are type
-checked regardless -- `const n: number = "x"` reports
-`Type 'string' is not assignable to type 'number'` before the cell runs.
+a given file, the environment's packages resolve. `.ts` cells are type checked either way --
+`const n: number = "x"` reports `Type 'string' is not assignable to type 'number'` before the
+cell runs.
+
+### checkJs
+
+`allowJs` is what includes `.js` in the program at all; `checkJs` only controls whether type
+*diagnostics* are reported in those files. Completions and hovers work either way, so it's
+purely about whether the editor flags errors.
+
+It defaults to **on**, because tslab type checks JavaScript cells too: `undefinedFn()` in a .js
+cell is rejected by the kernel before it runs. With `checkJs` off the editor said nothing about
+it, so the first sign of the problem was a failed cell. Measured on a .js cell with two real
+mistakes:
+
+| | diagnostics |
+| --- | --- |
+| `checkJs: false` | 1, a hint suggesting conversion to an ES module |
+| `checkJs: true` | 2 errors (`Cannot find name 'undefinedFn'`, `Property 'toUpperCase' does not exist on type '5'`) plus 2 hints |
+
+The extra noise is hint-severity only. `kernels.javascript.lsp.typescript-language-server.checkJs`
+turns it off.
 
 ## Files
 
@@ -413,8 +432,10 @@ picked up automatically by sandwich-discover. The environment under test selects
   arrive through `NODE_PATH`), and `lodash` — curated but *not* selected here — does not
 - **D3 display** — `renderStatic` emits `text/html` containing `<svg>`/`<circle>`; `render`
   emits the container id, a `<script>`, and the inlined d3 bundle
-- **LSP** — completions for local variables, completions for `d3.` (`scaleLinear`, `scaleBand`),
-  a hover on a local function, and a hover on `d3.scaleLinear` that mentions `ScaleLinear`
+- **LSP** — diagnostics (`Cannot find name 'undefinedFn'`, `Property 'toUpperCase' does not
+  exist on type '5'`), completions for local variables and for `d3.` (`scaleLinear`,
+  `scaleBand`), a hover on a local function, and a hover on `d3.scaleLinear` mentioning
+  `ScaleLinear`
 
 All 14 pass (`nix build .#tests` in `tests/`, then `tests --javascript`), in ~33 s. The
 TypeScript kernel has 10 of its own (`tests --typescript`): typed arrow functions, interfaces,
