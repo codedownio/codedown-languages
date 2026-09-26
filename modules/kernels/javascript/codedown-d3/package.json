@@ -1,0 +1,8 @@
+{
+  "name": "codedown-d3",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Render D3 charts from CodeDown notebook cells",
+  "main": "index.js",
+  "types": "index.d.ts"
+}

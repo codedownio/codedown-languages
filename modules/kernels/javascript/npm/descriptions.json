@@ -1,0 +1,274 @@
+{
+  "@napi-rs/canvas": {
+    "description": "Canvas for Node.js with skia backend",
+    "homepage": "https://github.com/Brooooooklyn/canvas#readme",
+    "license": "MIT"
+  },
+  "@observablehq/plot": {
+    "description": "A JavaScript library for exploratory data visualization.",
+    "homepage": "https://github.com/observablehq/plot#readme",
+    "license": "ISC"
+  },
+  "@tensorflow/tfjs": {
+    "description": "An open-source machine learning framework.",
+    "homepage": "https://github.com/tensorflow/tfjs#readme",
+    "license": "Apache-2.0"
+  },
+  "@turf/turf": {
+    "description": "a JavaScript library for performing geospatial operations with GeoJSON",
+    "homepage": "https://github.com/Turfjs/turf",
+    "license": "MIT"
+  },
+  "@types/d3": {
+    "description": "TypeScript definitions for d3",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/d3",
+    "license": "MIT"
+  },
+  "@types/jsdom": {
+    "description": "TypeScript definitions for jsdom",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/jsdom",
+    "license": "MIT"
+  },
+  "@types/lodash": {
+    "description": "TypeScript definitions for lodash",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/lodash",
+    "license": "MIT"
+  },
+  "@types/papaparse": {
+    "description": "TypeScript definitions for papaparse",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/papaparse",
+    "license": "MIT"
+  },
+  "@types/topojson-client": {
+    "description": "TypeScript definitions for topojson-client",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/topojson-client",
+    "license": "MIT"
+  },
+  "apache-arrow": {
+    "description": "Apache Arrow columnar in-memory format",
+    "homepage": "https://arrow.apache.org/js/",
+    "license": "Apache-2.0"
+  },
+  "arquero": {
+    "description": "Query processing and transformation of array-backed data tables.",
+    "homepage": "https://github.com/uwdata/arquero#readme",
+    "license": "BSD-3-Clause"
+  },
+  "axios": {
+    "description": "Promise based HTTP client for the browser and node.js",
+    "homepage": "https://axios-http.com",
+    "license": "MIT"
+  },
+  "chart.js": {
+    "description": "Simple HTML5 charts using the canvas element.",
+    "homepage": "https://www.chartjs.org",
+    "license": "MIT"
+  },
+  "cheerio": {
+    "description": "The fast, flexible & elegant library for parsing and manipulating HTML and XML.",
+    "homepage": "https://cheerio.js.org/",
+    "license": "MIT"
+  },
+  "chroma-js": {
+    "description": "JavaScript library for color conversions",
+    "homepage": "https://github.com/gka/chroma.js",
+    "license": "(BSD-3-Clause AND Apache-2.0)"
+  },
+  "compromise": {
+    "description": "modest natural language processing",
+    "homepage": "https://github.com/spencermountain/compromise",
+    "license": "MIT"
+  },
+  "cytoscape": {
+    "description": "Graph theory (a.k.a. network) library for analysis and visualisation",
+    "homepage": "http://js.cytoscape.org",
+    "license": "MIT"
+  },
+  "d3": {
+    "description": "Data-Driven Documents",
+    "homepage": "https://d3js.org",
+    "license": "ISC"
+  },
+  "d3-cloud": {
+    "description": "Generate word clouds in JavaScript.",
+    "homepage": "https://www.jasondavies.com/wordcloud/",
+    "license": "BSD-3-Clause"
+  },
+  "d3-sankey": {
+    "description": "Visualize flow between nodes in a directed acyclic network.",
+    "homepage": "https://github.com/d3/d3-sankey",
+    "license": "BSD-3-Clause"
+  },
+  "date-fns": {
+    "description": "Modern JavaScript date utility library",
+    "license": "MIT"
+  },
+  "dayjs": {
+    "description": "2KB immutable date time library alternative to Moment.js with the same modern API ",
+    "homepage": "https://day.js.org",
+    "license": "MIT"
+  },
+  "echarts": {
+    "description": "Apache ECharts is a powerful, interactive charting and data visualization library for browser",
+    "homepage": "https://echarts.apache.org",
+    "license": "Apache-2.0"
+  },
+  "exceljs": {
+    "description": "Excel Workbook Manager - Read and Write xlsx and csv Files.",
+    "homepage": "https://github.com/exceljs/exceljs#readme",
+    "license": "MIT"
+  },
+  "fast-xml-parser": {
+    "description": "Validate XML, Parse XML, Build XML without C/C++ based libraries",
+    "homepage": "https://github.com/NaturalIntelligence/fast-xml-parser#readme",
+    "license": "MIT"
+  },
+  "franc": {
+    "description": "Detect the language of text",
+    "homepage": "https://github.com/wooorm/franc/tree/main#readme",
+    "license": "MIT"
+  },
+  "graphology": {
+    "description": "A robust and multipurpose Graph object for JavaScript.",
+    "homepage": "https://github.com/graphology/graphology#readme",
+    "license": "MIT"
+  },
+  "graphology-layout-forceatlas2": {
+    "description": "ForceAtlas 2 layout algorithm for graphology.",
+    "homepage": "https://github.com/graphology/graphology#readme",
+    "license": "MIT"
+  },
+  "graphology-metrics": {
+    "description": "Miscellaneous graph metrics for graphology.",
+    "homepage": "https://github.com/graphology/graphology#readme",
+    "license": "MIT"
+  },
+  "highcharts": {
+    "description": "JavaScript charting framework",
+    "homepage": "http://www.highcharts.com",
+    "license": "https://www.highcharts.com/license"
+  },
+  "js-yaml": {
+    "description": "YAML 1.2 parser and serializer",
+    "homepage": "https://github.com/nodeca/js-yaml#readme",
+    "license": "MIT"
+  },
+  "jsdom": {
+    "description": "A JavaScript implementation of many web standards",
+    "homepage": "https://github.com/jsdom/jsdom#readme",
+    "license": "MIT"
+  },
+  "jstat": {
+    "description": "Statistical Library for JavaScript",
+    "homepage": "http://github.com/jstat/jstat"
+  },
+  "lodash": {
+    "description": "Lodash modular utilities.",
+    "homepage": "https://lodash.com/",
+    "license": "MIT"
+  },
+  "markdown-it": {
+    "description": "Markdown-it - modern pluggable markdown parser.",
+    "homepage": "https://github.com/markdown-it/markdown-it#readme",
+    "license": "MIT"
+  },
+  "mathjs": {
+    "description": "Math.js is an extensive math library for JavaScript and Node.js. It features a flexible expression parser with support for symbolic computation, comes with a large set of built-in functions and constants, and offers an integrated solution to work with dif",
+    "homepage": "https://mathjs.org",
+    "license": "Apache-2.0"
+  },
+  "ml-distance": {
+    "description": "Distance and similarity functions to compare vectors",
+    "homepage": "https://github.com/mljs/distance",
+    "license": "MIT"
+  },
+  "ml-kmeans": {
+    "description": "K-Means clustering",
+    "homepage": "https://github.com/mljs/kmeans",
+    "license": "MIT"
+  },
+  "ml-matrix": {
+    "description": "Matrix manipulation and computation library",
+    "homepage": "https://github.com/mljs/matrix",
+    "license": "MIT"
+  },
+  "ml-pca": {
+    "description": "Principal component analysis",
+    "homepage": "https://github.com/mljs/pca",
+    "license": "MIT"
+  },
+  "ml-random-forest": {
+    "description": "Random forest for classification and regression",
+    "homepage": "https://github.com/mljs/random-forest#readme",
+    "license": "MIT"
+  },
+  "ml-regression": {
+    "description": "Regression algorithms",
+    "homepage": "https://github.com/mljs/regression",
+    "license": "MIT"
+  },
+  "nerdamer": {
+    "description": "javascript light-weight symbolic math expression evaluator",
+    "homepage": "http://nerdamer.com/",
+    "license": "MIT"
+  },
+  "papaparse": {
+    "description": "Fast and powerful CSV parser for the browser that supports web workers and streaming large files. Converts CSV to JSON and JSON to CSV.",
+    "homepage": "https://www.papaparse.com/",
+    "license": "MIT"
+  },
+  "pdf-lib": {
+    "description": "Create and modify PDF files with JavaScript",
+    "homepage": "https://pdf-lib.js.org/",
+    "license": "MIT"
+  },
+  "plotly.js-dist-min": {
+    "description": "Ready-to-use minified plotly.js distributed bundle.",
+    "homepage": "https://github.com/plotly/plotly.js#readme",
+    "license": "MIT"
+  },
+  "probability-distributions": {
+    "description": "Generate random variables from a variety of probability distributions. Includes tools to shuffle an array or sample from it.",
+    "homepage": "https://github.com/Mattasher/probability-distributions#readme",
+    "license": "MIT"
+  },
+  "seedrandom": {
+    "description": "Seeded random number generator for Javascript.",
+    "homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+    "license": "MIT"
+  },
+  "simple-statistics": {
+    "description": "Simple Statistics",
+    "license": "ISC"
+  },
+  "sql.js": {
+    "description": "SQLite library with support for opening and writing databases, prepared statements, and more. This SQLite library is in pure javascript (compiled with emscripten).",
+    "homepage": "http://github.com/sql-js/sql.js",
+    "license": "MIT"
+  },
+  "topojson-client": {
+    "description": "Manipulate TopoJSON and convert it to GeoJSON.",
+    "homepage": "https://github.com/topojson/topojson-client",
+    "license": "ISC"
+  },
+  "uuid": {
+    "description": "RFC9562 UUIDs",
+    "homepage": "https://github.com/uuidjs/uuid#readme",
+    "license": "MIT"
+  },
+  "vega": {
+    "description": "The Vega visualization grammar.",
+    "homepage": "https://github.com/vega/vega#readme",
+    "license": "BSD-3-Clause"
+  },
+  "vega-lite": {
+    "description": "Vega-Lite is a concise high-level language for interactive visualization.",
+    "homepage": "https://vega.github.io/vega-lite/",
+    "license": "BSD-3-Clause"
+  },
+  "vega-statistics": {
+    "description": "Statistical routines and probability distributions.",
+    "homepage": "https://github.com/vega/vega#readme",
+    "license": "BSD-3-Clause"
+  }
+}

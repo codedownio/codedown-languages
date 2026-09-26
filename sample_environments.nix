@@ -19,6 +19,7 @@
   ghc96 = import ./sample_environments/ghc96.nix args;
   ghc98 = import ./sample_environments/ghc98.nix args;
   go = import ./sample_environments/go.nix args;
+  javascript = import ./sample_environments/javascript.nix args;
   octave = import ./sample_environments/octave.nix args;
   postgres = import ./sample_environments/postgres.nix args;
   r = import ./sample_environments/r.nix args;
