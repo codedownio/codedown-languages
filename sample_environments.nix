@@ -19,6 +19,7 @@
   ghc96 = import ./sample_environments/ghc96.nix args;
   ghc98 = import ./sample_environments/ghc98.nix args;
   go = import ./sample_environments/go.nix args;
+  javascript = import ./sample_environments/javascript.nix args;
   octave = import ./sample_environments/octave.nix args;
   postgres = import ./sample_environments/postgres.nix args;
   r = import ./sample_environments/r.nix args;
@@ -31,6 +32,7 @@
   shells-fish = import ./sample_environments/shells-fish.nix args;
   shells-zsh = import ./sample_environments/shells-zsh.nix args;
   spellchecker = import ./sample_environments/spellchecker.nix args;
+  typescript = import ./sample_environments/typescript.nix args;
 } // pkgsStable.lib.optionalAttrs (pkgsStable.stdenv.targetPlatform.system != "aarch64-linux") {
   # Disable these in aarch 64 builds; see
   # https://github.com/codedownio/codedown-languages/issues/96

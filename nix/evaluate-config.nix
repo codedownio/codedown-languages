@@ -40,6 +40,7 @@ extendedLib.evalModules {
     ../modules/kernels/cpp/module.nix
     ../modules/kernels/go/module.nix
     ../modules/kernels/haskell/module.nix
+    ../modules/kernels/javascript/module.nix
     ../modules/kernels/julia/module.nix
     ../modules/kernels/octave/module.nix
     ../modules/kernels/postgres/module.nix
@@ -47,6 +48,7 @@ extendedLib.evalModules {
     ../modules/kernels/r/module.nix
     ../modules/kernels/r-ark/module.nix
     ../modules/kernels/ruby/module.nix
+    ../modules/kernels/typescript/module.nix
     ../modules/kernels/rust/module.nix
 
     ../modules/language_servers/spellchecker/module.nix
