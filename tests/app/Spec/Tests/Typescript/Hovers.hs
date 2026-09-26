@@ -20,7 +20,7 @@ tests = describe "Hovers" $ do
     ident <- openDoc lspSessionInfoFileName LanguageKind_TypeScript
 
     waitUntil 60 $ do
-      hover <- getHoverOrException ident (Position 1 8)
+      hover <- getHoverOrException ident (Position 1 11)
       allHoverText hover `textShouldContain` [i|number|]
 
   it "hovers a function from an environment package" $ doSession' "test.ts" lsName d3Code $ \(Helpers.LspSessionInfo {..}) -> do
