@@ -14,11 +14,7 @@
 let
   # Settings a kernel needs on top of its defaults just to build here. Keep this as small
   # as possible: anything in it means the probe isn't measuring the default configuration.
-  overrides = {
-    # julia-modules can't resolve a package closure under the default Julia (1.12); the
-    # `mega` environment pins the same version for the same reason.
-    julia.juliaPackage = "julia_110";
-  };
+  overrides = { };
 
 in
 

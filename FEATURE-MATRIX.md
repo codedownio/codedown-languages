@@ -165,8 +165,6 @@ which language server or REPL is behind it.
 - PyPy's language server columns read `unknown` because the PyPy environment doesn't
   currently build (`mypy-1.17.1 not supported for interpreter pypy3.11`), so there was
   nothing to probe. Its servers are the same ones the CPython kernel uses.
-- The Julia probe environment pins Julia 1.10 (see `nix/single-kernel-env.nix`); Julia 1.12,
-  the default, can't resolve a package closure through julia-modules.
 - Ark's language server is spoken over a Jupyter comm rather than published as a language
   server config, so R (Ark) shows no LSP features even though the kernel embeds one.
 
