@@ -38,6 +38,7 @@
   # https://github.com/codedownio/codedown-languages/issues/96
   julia110 = import ./sample_environments/julia110.nix args;
   julia111 = import ./sample_environments/julia111.nix args;
+  julia112 = import ./sample_environments/julia112.nix args;
   mega = import ./sample_environments/mega.nix args;
   python312 = import ./sample_environments/python312.nix args;
   python313 = import ./sample_environments/python313.nix args;
