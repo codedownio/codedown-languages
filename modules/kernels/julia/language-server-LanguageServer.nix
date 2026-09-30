@@ -23,7 +23,18 @@ let
     mkdir -p $out
     symbolServerDir="$(julia -e 'using SymbolServer; print(pkgdir(SymbolServer))')"
     echo "Got symbolServerDir: $symbolServerDir"
-    julia --project="${juliaWithPackages.projectAndDepot}/project" ''${symbolServerDir}/src/server.jl $out
+
+    # Run the indexer from a writable copy of SymbolServer's sources, so we can fix up its
+    # getfield calls. Julia 1.12 has stricter world age rules for global bindings, so reading
+    # the binding that the LoadingBay.eval just above it created fails with UndefVarError.
+    cp -r "$symbolServerDir/src" ./symbol-server-src
+    chmod -R u+w ./symbol-server-src
+    substituteInPlace ./symbol-server-src/utils.jl \
+      --replace-quiet \
+        'm = getfield(loadingbay, Symbol(pe_name))' \
+        'm = Base.invokelatest(getfield, loadingbay, Symbol(pe_name))'
+
+    julia --project="${juliaWithPackages.projectAndDepot}/project" ./symbol-server-src/server.jl $out
   '';
 
   languageServerName = "LanguageServer";
