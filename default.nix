@@ -26,4 +26,5 @@ in
 
 pkgsStable.callPackage ./codedown.nix {
   inherit pkgsStableSrc pkgsStable;
+  system = pkgsStable.stdenv.hostPlatform.system;
 }
