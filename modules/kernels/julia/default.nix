@@ -17,7 +17,13 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  juliaWithPackages = julia.withPackages.override {
+  # Vendored copy of nixpkgs' julia.withPackages, carrying two build-speed patches that
+  # aren't upstream yet. Switch back to "julia.withPackages" once they land.
+  # juliaWithPackagesBase = julia.withPackages # To use upstream
+  juliaWithPackagesBase = callPackage ./julia-modules {};
+
+  juliaWithPackages = juliaWithPackagesBase.override {
+    inherit julia;
     inherit (settings) precompile;
     juliaCpuTarget = "generic";
   };
