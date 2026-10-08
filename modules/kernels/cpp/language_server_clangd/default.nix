@@ -32,6 +32,8 @@ let
 
   passthru = {
     inherit languageServerName;
+    # clangd links libFormat, so clang-format needs nothing extra on our side.
+    formatters = ["clang-format"];
   };
 
 in

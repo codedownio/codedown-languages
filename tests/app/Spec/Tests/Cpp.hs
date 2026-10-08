@@ -52,6 +52,10 @@ tests' flavor = describe [i|C++ (#{flavor})|] $ introduceNixEnvironment [kernelS
 
     Hovers.tests
 
+    itFormatsAs lsName "test.cpp" LanguageKind_CPP
+      "int main(){int x=1+2;return x;}\n"
+      "int main() {\n  int x = 1 + 2;\n  return x;\n}\n"
+
 lsName :: Text
 lsName = "clangd"
 

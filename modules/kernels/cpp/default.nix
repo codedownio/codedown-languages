@@ -133,5 +133,6 @@ symlinkJoin {
       code_mirror_mime_type = "text/x-c++src";
     };
     languageServerNames = map (x: x.languageServerName) languageServers;
+    formatters = lib.concatMap (x: x.formatters or []) languageServers;
   };
 }
