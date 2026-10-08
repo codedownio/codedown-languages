@@ -65,6 +65,8 @@ let
 
   passthru = {
     inherit languageServerName workspaceConfig;
+    # tsserver's own formatter; nothing extra to install.
+    formatters = ["tsserver"];
   };
 
 in

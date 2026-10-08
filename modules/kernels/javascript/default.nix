@@ -118,5 +118,6 @@ symlinkJoin {
       code_mirror_mode = "javascript";
     };
     languageServerNames = map (x: x.languageServerName) languageServers;
+    formatters = lib.concatMap (x: x.formatters or []) languageServers;
   };
 }

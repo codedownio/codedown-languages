@@ -4,8 +4,11 @@
 module Spec.Tests.Typescript (tests) where
 
 import Data.String.Interpolate
+import Language.LSP.Protocol.Types
+import Spec.Tests.Typescript.Common
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
+import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
@@ -44,6 +47,10 @@ tests = describe "TypeScript" $ do
       Completion.tests
 
       Hovers.tests
+
+      itFormatsAs lsName "test.ts" LanguageKind_TypeScript
+        "const x : number  =   1+2\nconsole.log( x )\n"
+        "const x: number = 1 + 2\nconsole.log(x)\n"
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
