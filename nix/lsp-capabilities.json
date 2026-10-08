@@ -415,9 +415,11 @@
               "refactor.extract.variable-all",
               "refactor.inline.call",
               "refactor.inline.variable",
+              "refactor.move.moveType",
               "refactor.rewrite.changeQuote",
               "refactor.rewrite.fillStruct",
               "refactor.rewrite.fillSwitch",
+              "refactor.rewrite.implementInterface",
               "refactor.rewrite.invertIf",
               "refactor.rewrite.joinLines",
               "refactor.rewrite.removeUnusedParam",
@@ -462,12 +464,15 @@
               "gopls.gc_details",
               "gopls.generate",
               "gopls.go_get_package",
+              "gopls.implement_interface",
               "gopls.list_imports",
               "gopls.list_known_packages",
+              "gopls.lsp",
               "gopls.maybe_prompt_for_telemetry",
               "gopls.mem_stats",
               "gopls.modify_tags",
               "gopls.modules",
+              "gopls.move_type",
               "gopls.package_symbols",
               "gopls.packages",
               "gopls.regenerate_cgo",
@@ -490,6 +495,11 @@
               "gopls.workspace_stats"
             ]
           },
+          "experimental": {
+            "interactiveResolveProvider": [
+              "command"
+            ]
+          },
           "foldingRangeProvider": true,
           "hoverProvider": true,
           "implementationProvider": true,
@@ -499,46 +509,10 @@
             "prepareProvider": true
           },
           "selectionRangeProvider": true,
-          "semanticTokensProvider": {
-            "full": true,
-            "legend": {
-              "tokenModifiers": [
-                "definition",
-                "readonly",
-                "defaultLibrary",
-                "array",
-                "bool",
-                "chan",
-                "format",
-                "interface",
-                "map",
-                "number",
-                "pointer",
-                "signature",
-                "slice",
-                "string",
-                "struct"
-              ],
-              "tokenTypes": [
-                "namespace",
-                "type",
-                "typeParameter",
-                "parameter",
-                "variable",
-                "function",
-                "method",
-                "macro",
-                "keyword",
-                "comment",
-                "string",
-                "number",
-                "operator",
-                "label"
-              ]
-            },
-            "range": true
-          },
           "signatureHelpProvider": {
+            "retriggerCharacters": [
+              ")"
+            ],
             "triggerCharacters": [
               "(",
               ","
@@ -572,7 +546,7 @@
           "workspaceSymbolProvider": true
         },
         "displayName": "gopls",
-        "version": "0.20.0"
+        "version": "0.22.0"
       }
     },
     "haskell": {
@@ -613,17 +587,17 @@
           },
           "executeCommandProvider": {
             "commands": [
-              "1622900:cabalHaskellIntegration:cabalAddDependency",
-              "1622900:cabalHaskellIntegration:cabalAddModule",
-              "1622900:ghcide-extend-import-action:extendImport",
-              "1622900:explicit-fields:codeActionResolve",
-              "1622900:eval:evalCommand",
-              "1622900:ghcide-type-lenses:typesignature.add",
-              "1622900:gadt:GADT.toGADT",
-              "1622900:importLens:ImportLensCommand",
-              "1622900:class:classplugin.codeaction",
-              "1622900:class:classplugin.typelens",
-              "1622900:moduleName:updateModuleName"
+              "429494:cabalHaskellIntegration:cabalAddDependency",
+              "429494:cabalHaskellIntegration:cabalAddModule",
+              "429494:ghcide-extend-import-action:extendImport",
+              "429494:explicit-fields:codeActionResolve",
+              "429494:eval:evalCommand",
+              "429494:ghcide-type-lenses:typesignature.add",
+              "429494:gadt:GADT.toGADT",
+              "429494:importLens:ImportLensCommand",
+              "429494:class:classplugin.codeaction",
+              "429494:class:classplugin.typelens",
+              "429494:moduleName:updateModuleName"
             ],
             "workDoneProgress": false
           },
@@ -720,6 +694,132 @@
         },
         "displayName": "Haskell Language Server",
         "version": "2.13.0.0"
+      }
+    },
+    "javascript": {
+      "typescript-language-server": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "source.fixAll.ts",
+              "source.removeUnused.ts",
+              "source.addMissingImports.ts",
+              "quickfix",
+              "source.organizeImports.ts",
+              "source.removeUnusedImports.ts",
+              "source.sortImports.ts",
+              "refactor"
+            ]
+          },
+          "codeLensProvider": {
+            "resolveProvider": true
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              ".",
+              "\"",
+              "'",
+              "/",
+              "@",
+              "<"
+            ]
+          },
+          "definitionProvider": true,
+          "documentFormattingProvider": true,
+          "documentHighlightProvider": true,
+          "documentRangeFormattingProvider": true,
+          "documentSymbolProvider": true,
+          "executeCommandProvider": {
+            "commands": [
+              "_typescript.applyRefactoring",
+              "_typescript.configurePlugin",
+              "_typescript.organizeImports",
+              "_typescript.applyRenameFile",
+              "_typescript.goToSourceDefinition",
+              "_typescript.applyCodeActionCommand",
+              "_typescript.applyFixAllCodeAction",
+              "typescript.tsserverRequest"
+            ]
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "implementationProvider": true,
+          "inlayHintProvider": true,
+          "linkedEditingRangeProvider": true,
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "selectionRangeProvider": true,
+          "semanticTokensProvider": {
+            "documentSelector": null,
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "static",
+                "async",
+                "readonly",
+                "defaultLibrary",
+                "local"
+              ],
+              "tokenTypes": [
+                "class",
+                "enum",
+                "interface",
+                "namespace",
+                "typeParameter",
+                "type",
+                "parameter",
+                "variable",
+                "enumMember",
+                "property",
+                "function",
+                "member"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "retriggerCharacters": [
+              ")"
+            ],
+            "triggerCharacters": [
+              "(",
+              ",",
+              "<"
+            ]
+          },
+          "textDocumentSync": 2,
+          "typeDefinitionProvider": true,
+          "workspace": {
+            "fileOperations": {
+              "willRename": {
+                "filters": [
+                  {
+                    "pattern": {
+                      "glob": "**/*.{ts,js,jsx,tsx,mjs,mts,cjs,cts}",
+                      "matches": "file"
+                    },
+                    "scheme": "file"
+                  },
+                  {
+                    "pattern": {
+                      "glob": "**",
+                      "matches": "folder"
+                    },
+                    "scheme": "file"
+                  }
+                ]
+              }
+            }
+          },
+          "workspaceSymbolProvider": true
+        },
+        "displayName": "TypeScript language server",
+        "version": "5.3.0"
       }
     },
     "julia": {
@@ -929,6 +1029,7 @@
             ]
           },
           "definitionProvider": true,
+          "documentFormattingProvider": true,
           "documentHighlightProvider": true,
           "documentSymbolProvider": true,
           "foldingRangeProvider": true,
@@ -1176,6 +1277,132 @@
         },
         "displayName": "rust-analyzer",
         "version": "2026-04-27"
+      }
+    },
+    "typescript": {
+      "typescript-language-server": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "source.fixAll.ts",
+              "source.removeUnused.ts",
+              "source.addMissingImports.ts",
+              "quickfix",
+              "source.organizeImports.ts",
+              "source.removeUnusedImports.ts",
+              "source.sortImports.ts",
+              "refactor"
+            ]
+          },
+          "codeLensProvider": {
+            "resolveProvider": true
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              ".",
+              "\"",
+              "'",
+              "/",
+              "@",
+              "<"
+            ]
+          },
+          "definitionProvider": true,
+          "documentFormattingProvider": true,
+          "documentHighlightProvider": true,
+          "documentRangeFormattingProvider": true,
+          "documentSymbolProvider": true,
+          "executeCommandProvider": {
+            "commands": [
+              "_typescript.applyRefactoring",
+              "_typescript.configurePlugin",
+              "_typescript.organizeImports",
+              "_typescript.applyRenameFile",
+              "_typescript.goToSourceDefinition",
+              "_typescript.applyCodeActionCommand",
+              "_typescript.applyFixAllCodeAction",
+              "typescript.tsserverRequest"
+            ]
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "implementationProvider": true,
+          "inlayHintProvider": true,
+          "linkedEditingRangeProvider": true,
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "selectionRangeProvider": true,
+          "semanticTokensProvider": {
+            "documentSelector": null,
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "static",
+                "async",
+                "readonly",
+                "defaultLibrary",
+                "local"
+              ],
+              "tokenTypes": [
+                "class",
+                "enum",
+                "interface",
+                "namespace",
+                "typeParameter",
+                "type",
+                "parameter",
+                "variable",
+                "enumMember",
+                "property",
+                "function",
+                "member"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "retriggerCharacters": [
+              ")"
+            ],
+            "triggerCharacters": [
+              "(",
+              ",",
+              "<"
+            ]
+          },
+          "textDocumentSync": 2,
+          "typeDefinitionProvider": true,
+          "workspace": {
+            "fileOperations": {
+              "willRename": {
+                "filters": [
+                  {
+                    "pattern": {
+                      "glob": "**/*.{ts,js,jsx,tsx,mjs,mts,cjs,cts}",
+                      "matches": "file"
+                    },
+                    "scheme": "file"
+                  },
+                  {
+                    "pattern": {
+                      "glob": "**",
+                      "matches": "folder"
+                    },
+                    "scheme": "file"
+                  }
+                ]
+              }
+            }
+          },
+          "workspaceSymbolProvider": true
+        },
+        "displayName": "TypeScript language server",
+        "version": "5.3.0"
       }
     }
   }

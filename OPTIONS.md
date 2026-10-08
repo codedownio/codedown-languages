@@ -150,6 +150,29 @@ true
 
 
 
+## exporters\.typst\.lsp\.tinymist\.formatter
+
+
+
+**Typst formatter**
+
+Which formatter tinymist uses\. Both are vendored into tinymist, so picking one costs nothing extra\. typstyle is also tinymist’s own default\.
+
+
+
+*Type:*
+one of “typstyle”, “typstfmt”, “none”
+
+
+
+*Default:*
+
+```nix
+"typstyle"
+```
+
+
+
 ## kernels\.R\.interface\.attrs
 
 
@@ -852,6 +875,29 @@ false
 
 
 
+## kernels\.go\.lsp\.gopls\.formatter
+
+
+
+**Go formatter**
+
+Which formatter gopls uses\. Both are built into gopls; gofumpt is gofmt plus a set of stricter rules\.
+
+
+
+*Type:*
+one of “gofmt”, “gofumpt”
+
+
+
+*Default:*
+
+```nix
+"gofmt"
+```
+
+
+
 ## kernels\.go\.lsp\.gopls\.super-debug
 
 
@@ -1007,6 +1053,29 @@ false
 
 
 
+## kernels\.haskell\.lsp\.haskell-language-server\.formattingProvider
+
+
+
+**Haskell formatter**
+
+Which formatter haskell-language-server uses\. All of these are compiled into it, so picking one costs nothing extra\.
+
+
+
+*Type:*
+one of “ormolu”, “fourmolu”, “stylish-haskell”, “none”
+
+
+
+*Default:*
+
+```nix
+"ormolu"
+```
+
+
+
 ## kernels\.haskell\.lsp\.haskell-language-server\.super-debug
 
 
@@ -1024,6 +1093,145 @@ boolean
 
 ```nix
 false
+```
+
+
+
+## kernels\.javascript\.interface\.attrs
+
+
+
+**Notebook attributes**
+
+Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "javascript"
+  "js"
+]
+```
+
+
+
+## kernels\.javascript\.interface\.extensions
+
+
+
+**File extensions**
+
+Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "js"
+  "mjs"
+  "cjs"
+]
+```
+
+
+
+## kernels\.javascript\.lsp\.typescript-language-server\.enable
+
+
+
+**Enable the TypeScript language server**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## kernels\.javascript\.lsp\.typescript-language-server\.checkJs
+
+
+
+**Report type errors in JavaScript cells**
+
+The kernel type checks JavaScript as well as TypeScript, so this keeps the editor’s diagnostics in step with what the kernel will accept\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## kernels\.javascript\.lsp\.typescript-language-server\.debug
+
+
+
+**TypeScript language server: debug output**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+## kernels\.javascript\.nodejsPackage
+
+
+
+**Node\.js version**
+
+
+
+*Type:*
+one of “nodejs”, “nodejs_22”, “nodejs_24”
+
+
+
+*Default:*
+
+```nix
+"nodejs"
 ```
 
 
@@ -1595,6 +1803,29 @@ false
 
 
 
+## kernels\.pypy3\.lsp\.python-lsp-server\.formatter
+
+
+
+**Python formatter**
+
+Which formatter python-lsp-server uses\. It ships with none of them, so this also decides what gets added to the environment\. autopep8 is the lightest and reuses the pycodestyle settings above; black and ruff reformat more aggressively\. Note that Jedi, the default language server, can’t format at all – this only applies when python-lsp-server is enabled\.
+
+
+
+*Type:*
+one of “autopep8”, “yapf”, “black”, “ruff”, “none”
+
+
+
+*Default:*
+
+```nix
+"autopep8"
+```
+
+
+
 ## kernels\.pypy3\.misc\.enableVariableInspector
 
 
@@ -1881,6 +2112,29 @@ false
 
 
 
+## kernels\.python3\.lsp\.python-lsp-server\.formatter
+
+
+
+**Python formatter**
+
+Which formatter python-lsp-server uses\. It ships with none of them, so this also decides what gets added to the environment\. autopep8 is the lightest and reuses the pycodestyle settings above; black and ruff reformat more aggressively\. Note that Jedi, the default language server, can’t format at all – this only applies when python-lsp-server is enabled\.
+
+
+
+*Type:*
+one of “autopep8”, “yapf”, “black”, “ruff”, “none”
+
+
+
+*Default:*
+
+```nix
+"autopep8"
+```
+
+
+
 ## kernels\.python3\.misc\.enableVariableInspector
 
 
@@ -2019,9 +2273,30 @@ true
 
 
 
+## kernels\.ruby\.lsp\.solargraph\.formatting
+
+
+
+**Format Ruby code with rubocop**
+
+Solargraph formats by running rubocop’s autocorrect over the cell, using the configuration below\. Turning this off also stops Solargraph from advertising formatting to the editor\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
 ## kernels\.ruby\.lsp\.solargraph\.rubocopYaml
-
-
 
 **YAML configuration for the rubocop reporter**
 
@@ -2242,7 +2517,7 @@ true
 
 
 *Type:*
-one of “rust”, “rust_1_95”
+one of “rust”, “rust_1_95”, “rust_1_97”
 
 
 
@@ -2250,6 +2525,144 @@ one of “rust”, “rust_1_95”
 
 ```nix
 "rust"
+```
+
+
+
+## kernels\.typescript\.interface\.attrs
+
+
+
+**Notebook attributes**
+
+Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "typescript"
+  "ts"
+]
+```
+
+
+
+## kernels\.typescript\.interface\.extensions
+
+
+
+**File extensions**
+
+Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "ts"
+  "tsx"
+]
+```
+
+
+
+## kernels\.typescript\.lsp\.typescript-language-server\.enable
+
+
+
+**Enable the TypeScript language server**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## kernels\.typescript\.lsp\.typescript-language-server\.checkJs
+
+
+
+**Report type errors in JavaScript cells**
+
+The kernel type checks JavaScript as well as TypeScript, so this keeps the editor’s diagnostics in step with what the kernel will accept\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## kernels\.typescript\.lsp\.typescript-language-server\.debug
+
+
+
+**TypeScript language server: debug output**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+## kernels\.typescript\.nodejsPackage
+
+
+
+**Node\.js version**
+
+
+
+*Type:*
+one of “nodejs”, “nodejs_22”, “nodejs_24”
+
+
+
+*Default:*
+
+```nix
+"nodejs"
 ```
 
 
@@ -2324,6 +2737,8 @@ false
 
 
 ## language-servers\.spellchecker\.typst\.checkLineComments
+
+
 
 **Check Typst line comments**
 
