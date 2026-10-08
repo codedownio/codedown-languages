@@ -5,6 +5,7 @@
 
 , bash-language-server
 , shellcheck
+, shfmt
 , unixtools
 
 , kernelName
@@ -29,7 +30,9 @@ let
       makeWrapper ${bashLanguageServer}/bin/bash-language-server $out/bin/bash-language-server \
                   --suffix PATH ':' ${unixtools.col}/bin \
                   --suffix PATH ':' ${shellcheck}/bin \
-                  --set SHELLCHECK_PATH ${shellcheck}/bin/shellcheck
+                  --suffix PATH ':' ${shfmt}/bin \
+                  --set SHELLCHECK_PATH ${shellcheck}/bin/shellcheck \
+                  --set SHFMT_PATH ${shfmt}/bin/shfmt
     '';
 
   languageServerName = "bash-language-server";
