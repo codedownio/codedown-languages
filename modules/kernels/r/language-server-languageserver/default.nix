@@ -21,6 +21,8 @@ let
 
   passthru = {
     inherit languageServerName;
+    # styler is already one of languageserver's R dependencies (see ./languageserver.nix).
+    formatters = ["styler"];
   };
 
 in
