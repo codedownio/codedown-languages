@@ -47,6 +47,12 @@ with lib;
         type = types.bool;
         default = true;
       };
+      lsp.gopls.formatter = mkOption {
+        title = "Go formatter";
+        description = "Which formatter gopls uses. Both are built into gopls; gofumpt is gofmt plus a set of stricter rules.";
+        type = types.enum ["gofmt" "gofumpt"];
+        default = "gofmt";
+      };
       lsp.gopls.debug = mkOption {
         title = "Gopls: enable debug output";
         type = types.bool;

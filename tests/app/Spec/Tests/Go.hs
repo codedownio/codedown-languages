@@ -35,6 +35,8 @@ tests = describe "Go" $ do
 
       Hovers.tests
 
+      itFormatsAs lsName "test.go" LanguageKind_Go badlyFormattedCode formattedCode
+
 lsName :: Text
 lsName = "gopls"
 
@@ -51,6 +53,12 @@ kernelSpecWithLsp = NixKernelSpec {
       , "lsp.gopls.debug = true"
       ]
   }
+
+badlyFormattedCode :: Text
+badlyFormattedCode = "package main\nimport (\"fmt\")\nfunc main() {\nx:=1+2\nfmt.Println(x)\n}\n"
+
+formattedCode :: Text
+formattedCode = "package main\n\nimport (\n\t\"fmt\"\n)\n\nfunc main() {\n\tx := 1 + 2\n\tfmt.Println(x)\n}\n"
 
 printUnknownCode :: Text
 printUnknownCode = [__i|package main
