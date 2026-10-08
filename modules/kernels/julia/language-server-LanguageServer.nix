@@ -41,6 +41,10 @@ let
 
   passthru = {
     inherit languageServerName;
+    # LanguageServer.jl formats with JuliaFormatter, which comes in as one of its
+    # dependencies. Note that it's configured from a .JuliaFormatter.toml in the workspace,
+    # not from the julia.format.* initialization options below.
+    formatters = ["JuliaFormatter"];
   };
 
 in
