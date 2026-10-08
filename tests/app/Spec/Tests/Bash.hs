@@ -46,5 +46,9 @@ tests = describe "Bash" $ introduceNixEnvironment [kernelSpec] [] "Bash" $ intro
       (Range (Position 0 0) (Position 0 3), Just (InR "SC2034"))
       ]
 
+  itFormatsAs "bash-language-server" "test.sh" LanguageKind_ShellScript
+    "if [ 1 = 1 ]; then\necho   hi\n   fi\n"
+    "if [ 1 = 1 ]; then\n  echo hi\nfi\n"
+
 main :: IO ()
 main = jupyterMain tests
