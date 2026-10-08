@@ -3,6 +3,7 @@
 , pythonWithPackages
 , kernelName
 , attrs
+, settings
 }:
 
 let
@@ -22,7 +23,9 @@ let
 
   # manylinux1 = callPackage ./manylinux1.nix { inherit python; };
 
-  python = (pythonWithPackages (ps: [ps.python-lsp-server]));
+  formatter = callPackage ../pylsp_formatter.nix { inherit (settings) formatter; };
+
+  python = (pythonWithPackages (ps: [ps.python-lsp-server] ++ formatter.packages ps));
   # python = (pythonWithPackages (ps: [ps.python-lsp-server])).buildEnv.override {
   #   permitUserSite = false;
   #   makeWrapperArgs = [
@@ -41,6 +44,7 @@ let
 
   passthru = {
     inherit languageServerName;
+    inherit (formatter) formatters;
   };
 
 in
@@ -59,6 +63,8 @@ common.writeTextDirWithMetaAndPassthru python.pkgs.python-lsp-server.meta passth
     inherit attrs;
     type = "stream";
     args = ["${python}/bin/python" "-m" "pylsp"];
-    initialization_options = import ../pylsp_initialization_options.nix "pylsp";
+    initialization_options = lib.recursiveUpdate
+      (import ../pylsp_initialization_options.nix "pylsp")
+      { pylsp.plugins = formatter.pluginSettings; };
     language_id = "python";
   }])

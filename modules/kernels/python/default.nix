@@ -61,7 +61,7 @@ let
     ++ lib.optionals settings.lsp.flake8.enable [(callPackage ./language_servers/language_server_flake8/config.nix { inherit pythonWithPackages kernelName attrs; })]
     ++ lib.optionals settings.lsp.pycodestyle.enable [(callPackage ./language_servers/language_server_pycodestyle/config.nix { inherit pythonWithPackages kernelName attrs; })]
     ++ lib.optionals settings.lsp.microsoft.enable [(callPackage ./language_servers/language_server_microsoft/config.nix { inherit pythonWithPackages kernelName attrs; })]
-    ++ lib.optionals (settings.lsp.python-lsp-server.enable && (hasPythonLspServer (pythonWithPackages (ps: [])))) [(callPackage ./language_servers/language_server_pythonlsp/config.nix { inherit pythonWithPackages kernelName attrs; })]
+    ++ lib.optionals (settings.lsp.python-lsp-server.enable && (hasPythonLspServer (pythonWithPackages (ps: [])))) [(callPackage ./language_servers/language_server_pythonlsp/config.nix { inherit pythonWithPackages kernelName attrs; settings = settings.lsp.python-lsp-server; })]
     ++ lib.optionals (settings.lsp.python-language-server.enable && (hasPythonLanguageServer (pythonWithPackages (ps: [])))) [(callPackage ./language_servers/language_server_palantir/config.nix { inherit pythonWithPackages kernelName attrs; })]
   ;
 
@@ -125,5 +125,6 @@ symlinkJoin {
       code_mirror_mode = "python";
     };
     languageServerNames = map (x: x.languageServerName) languageServers;
+    formatters = lib.concatMap (x: x.formatters or []) languageServers;
   };
 }
