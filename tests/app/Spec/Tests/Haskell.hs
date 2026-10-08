@@ -20,6 +20,7 @@ import TestLib.Types
 import qualified Spec.Tests.Haskell.CodeActions as CodeActions
 import qualified Spec.Tests.Haskell.Diagnostics as Diagnostics
 import qualified Spec.Tests.Haskell.DocumentHighlight as DocumentHighlight
+import qualified Spec.Tests.Haskell.Formatting as Formatting
 import qualified Spec.Tests.Haskell.Hover as Hover
 import qualified Spec.Tests.Haskell.Statements as Statements
 import qualified Spec.Tests.Haskell.Symbols as Symbols
@@ -72,6 +73,7 @@ haskellCommonTests ghcPackage = do
       CodeActions.tests ghcPackage
       Diagnostics.tests ghcPackage lsName
       DocumentHighlight.tests
+      Formatting.tests
       Hover.tests
       Statements.tests ghcPackage
       Symbols.tests
