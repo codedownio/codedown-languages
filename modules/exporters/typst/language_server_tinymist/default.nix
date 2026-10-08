@@ -12,6 +12,7 @@
 , codedownPackagePath
 
 , kernelName
+, settings
 }:
 
 let
@@ -21,6 +22,7 @@ let
 
   passthru = {
     inherit languageServerName;
+    formatters = lib.optional (settings.formatter != "none") settings.formatter;
   };
 
 in
@@ -40,5 +42,9 @@ common.writeTextDirWithMetaAndPassthru tinymist.meta passthru "lib/codedown/lang
   ];
   initialization_options = {
     typstExtraArgs = [ "--package-path=${codedownPackagePath}" ];
+    # tinymist has both typstyle and typstfmt vendored and defaults to typstyle, so this only
+    # picks between them (or turns formatting off). Note that tinymist advertises
+    # documentFormattingProvider either way and just answers null when it's off.
+    formatterMode = if settings.formatter == "none" then "disable" else settings.formatter;
   };
 }])

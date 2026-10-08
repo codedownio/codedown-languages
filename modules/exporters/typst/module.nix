@@ -54,6 +54,13 @@ in
         type = types.bool;
         default = true;
       };
+
+      lsp.tinymist.formatter = mkOption {
+        title = "Typst formatter";
+        description = "Which formatter tinymist uses. Both are vendored into tinymist, so picking one costs nothing extra. typstyle is also tinymist's own default.";
+        type = types.enum ["typstyle" "typstfmt" "none"];
+        default = "typstyle";
+      };
     };
   };
 
