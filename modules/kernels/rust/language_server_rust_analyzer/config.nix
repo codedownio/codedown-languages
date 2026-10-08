@@ -46,6 +46,7 @@ let
 
   passthru = {
     inherit languageServerName;
+    formatters = ["rustfmt"];
   };
 
   config = {
@@ -184,6 +185,9 @@ let
       "PATH" = lib.makeBinPath [
         coreutils
         rust.packages.stable.cargo
+        # rust-analyzer shells out to rustfmt for textDocument/formatting, finding it on
+        # PATH. Without this, formatting is advertised but every request fails.
+        rust.packages.stable.rustfmt
         gcc.out
       ];
 

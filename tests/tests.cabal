@@ -136,6 +136,7 @@ executable tests
       Spec.Tests.Rust.Changes
       Spec.Tests.Rust.Completion
       Spec.Tests.Rust.Diagnostics
+      Spec.Tests.Rust.Formatting
       Spec.Tests.Rust.Hovers
       Spec.Tests.Rust.PreIndex
       Spec.Tests.Rust.VariableInspector
