@@ -24,6 +24,11 @@ module TestLib.LSP (
 
   , itHasHoverSatisfying
 
+  , itFormatsAs
+  , itFormatsAs'
+  , itReformats
+  , formatsAs
+
   , Helpers.getHoverOrException
   , Helpers.allHoverText
   , Helpers.containsAll
@@ -49,6 +54,7 @@ import Language.LSP.Test.Helpers (LanguageServerConfig(..), LspContext, LspSessi
 import qualified Language.LSP.Test.Helpers as Helpers
 import System.FilePath
 import Test.Sandwich as Sandwich
+import Test.Sandwich.Waits (waitUntil)
 import TestLib.Types
 import UnliftIO.Directory
 import UnliftIO.Exception
@@ -155,6 +161,69 @@ itHasHoverSatisfying name filename languageKind code pos cb = it [i|#{name}: #{s
     getHover ident pos >>= \case
       Nothing -> expectationFailure [i|Expected a hover.|]
       Just x -> lift $ cb x
+
+-- | Format a document and check the result, which is the only way to tell a working formatter
+-- from a server that advertises documentFormattingProvider and then can't find its formatter.
+itFormatsAs :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Text -> FilePath -> LanguageKind -> Text -> Text -> SpecFree ctx m ()
+itFormatsAs = itFormatsAs' 180
+
+-- | 'itFormatsAs' with an explicit timeout, for servers that need to load a project first.
+itFormatsAs' :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Double -> Text -> FilePath -> LanguageKind -> Text -> Text -> SpecFree ctx m ()
+itFormatsAs' timeoutSeconds name filename languageKind code expected =
+  itFormats' timeoutSeconds name filename languageKind code (`shouldBe` expected)
+
+-- | Weaker than 'itFormatsAs': only that formatting rewrote the document. For formatters whose
+-- exact output we haven't pinned down, this still catches a server that advertises formatting
+-- and can't deliver it.
+itReformats :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Text -> FilePath -> LanguageKind -> Text -> SpecFree ctx m ()
+itReformats name filename languageKind code =
+  itFormats' 180 name filename languageKind code (`shouldNotBe` code)
+
+itFormats' :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Double -> Text -> FilePath -> LanguageKind -> Text -> (Text -> ExampleT ctx m ()) -> SpecFree ctx m ()
+itFormats' timeoutSeconds name filename languageKind code cb =
+  it [i|#{name}: #{show code} (formatting)|] $
+    formats' timeoutSeconds name filename languageKind code cb
+
+-- | The body of 'itFormatsAs', for specs that need to wrap it (e.g. to mark it 'pending').
+formatsAs :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Double -> Text -> FilePath -> LanguageKind -> Text -> Text -> ExampleT ctx m ()
+formatsAs timeoutSeconds name filename languageKind code expected =
+  formats' timeoutSeconds name filename languageKind code (`shouldBe` expected)
+
+formats' :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Double -> Text -> FilePath -> LanguageKind -> Text -> (Text -> ExampleT ctx m ()) -> ExampleT ctx m ()
+formats' timeoutSeconds name filename languageKind code cb = do
+  lspConfig <- findLspConfig name
+  (pathToUse, closure) <- getPathAndNixEnvironmentClosure
+
+  let lspSessionOptions = (defaultLspSessionOptions lspConfig) {
+        lspSessionOptionsInitialFileName = filename
+        , lspSessionOptionsInitialLanguageKind = languageKind
+        , lspSessionOptionsInitialCode = code
+        , lspSessionOptionsReadOnlyBinds = closure
+        , lspSessionOptionsPathEnvVar = pathToUse
+        }
+
+  withLspSession lspSessionOptions $ \_ -> do
+    ident <- openDoc filename languageKind
+    -- formatDoc applies the edits to the session's copy of the document, so retrying after
+    -- the server has warmed up is harmless: a formatted document just comes back unchanged.
+    waitUntil timeoutSeconds $ do
+      formatDoc ident formattingOptions
+      documentContents ident >>= lift . cb
+
+formattingOptions :: FormattingOptions
+formattingOptions = FormattingOptions 2 True Nothing Nothing Nothing
 
 findLspConfig :: (
   MonadIO m, MonadLogger m, MonadReader context m, Sandwich.HasLabel context "nixEnvironment" FilePath
