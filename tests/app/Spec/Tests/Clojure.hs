@@ -38,6 +38,11 @@ tests = describe "Clojure" $ introduceNixEnvironment [kernelSpec] [] "Clojure" $
   testDiagnostics "clojure-lsp" "test.clj" LanguageKind_Clojure [__i|(foo 42)|] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics [(Range (Position 0 1) (Position 0 4), Just (InR "unresolved-symbol"))]
 
+  -- cljfmt reindents but deliberately leaves spacing within a line alone.
+  itFormatsAs "clojure-lsp" "test.clj" LanguageKind_Clojure
+    "(defn  foo [a   b]\n(+ a  b))\n"
+    "(defn  foo [a   b]\n  (+ a  b))\n"
+
 
 main :: IO ()
 main = jupyterMain tests
