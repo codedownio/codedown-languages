@@ -5,8 +5,8 @@
 , writeTextDir
 
 , rubyPackages
-, rubocopYaml
 , kernelName
+, settings
 }:
 
 let
@@ -23,11 +23,12 @@ let
   } ''
     mkdir -p $out/bin
     makeWrapper ${solargraphRaw}/bin/solargraph $out/bin/solargraph \
-      --set XDG_CONFIG_HOME "${writeTextDir "rubocop/config.yml" rubocopYaml}"
+      --set XDG_CONFIG_HOME "${writeTextDir "rubocop/config.yml" settings.rubocopYaml}"
   '';
 
   passthru = {
     inherit languageServerName;
+    formatters = lib.optional settings.formatting "rubocop";
   };
 
 in
@@ -45,5 +46,10 @@ common.writeTextDirWithMetaAndPassthru solargraph.meta passthru "lib/codedown/la
   attrs = ["ruby"];
   type = "stream";
   args = ["${solargraph}/bin/solargraph" "stdio"];
+  # Solargraph only advertises documentFormattingProvider when this is on; it formats with
+  # rubocop, which is already a dependency of the gem and reads the rubocopYaml above.
+  initialization_options = {
+    formatting = settings.formatting;
+  };
   language_id = "ruby";
 }])

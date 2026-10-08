@@ -27,7 +27,7 @@ let
     []
     ++ lib.optionals settings.lsp.solargraph.enable [(callPackage ./solargraph.nix {
       rubyPackages = packageOptions;
-      rubocopYaml = settings.lsp.solargraph.rubocopYaml;
+      settings = settings.lsp.solargraph;
       inherit kernelName;
     })]
   ;
@@ -81,5 +81,6 @@ symlinkJoin {
       code_mirror_mode = "ruby";
     };
     languageServerNames = map (x: x.languageServerName) languageServers;
+    formatters = lib.concatMap (x: x.formatters or []) languageServers;
   };
 }
