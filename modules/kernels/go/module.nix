@@ -49,7 +49,7 @@ with lib;
       };
       lsp.gopls.formatter = mkOption {
         title = "Go formatter";
-        description = "Which formatter gopls uses. Both are built into gopls; gofumpt is gofmt plus a set of stricter rules.";
+        description = "Which formatter gopls uses.";
         type = types.enum ["gofmt" "gofumpt"];
         default = "gofmt";
       };
