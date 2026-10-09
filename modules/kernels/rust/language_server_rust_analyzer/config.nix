@@ -149,7 +149,7 @@ let
         "reborrowHints" = "never";
         "renderColons" = true;
         "typeHints" = {
-          "enable" = false;
+          "enable" = settings.typeHints;
           "hideClosureInitialization" = false;
           "hideNamedConstructor" = false;
         };

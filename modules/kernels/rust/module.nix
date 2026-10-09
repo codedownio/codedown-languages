@@ -73,6 +73,12 @@ in
         type = types.bool;
         default = true;
       };
+      lsp.rust-analyzer.typeHints = mkOption {
+        title = "Rust-analyzer: show inferred types inline";
+        description = "Draw the inferred type next to a `let` binding or a closure parameter. rust-analyzer ships this off and expects the editor to ask for it, which is why it produces no hints by default.";
+        type = types.bool;
+        default = true;
+      };
       lsp.rust-analyzer.debug = mkOption {
         title = "Rust-analyzer: debug output";
         type = types.bool;
