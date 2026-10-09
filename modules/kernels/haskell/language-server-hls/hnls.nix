@@ -1,11 +1,8 @@
-{ fetchFromGitHub
-, fetchurl
-, fetchzip
+{ fetchzip
 , lib
 , stdenv
 
 , ghc
-, snapshot
 }:
 
 let

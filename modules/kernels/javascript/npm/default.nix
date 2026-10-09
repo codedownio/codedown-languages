@@ -11,11 +11,9 @@
 { lib
 , callPackage
 , importNpmLock
-, runCommand
 , stdenv
 
 , nodejs
-, zeromq
 }:
 
 let

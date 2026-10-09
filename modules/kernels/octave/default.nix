@@ -28,7 +28,7 @@ let
   octaveWithPackages = if lib.hasAttr "withPackages" octaveComplete
                        then
                          let chosenPackages = map (x: lib.getAttr x octaveComplete.pkgs) packages; in
-                         if chosenPackages == [] then octaveComplete else octaveComplete.withPackages (ps: chosenPackages)
+                         if chosenPackages == [] then octaveComplete else octaveComplete.withPackages (_ps: chosenPackages)
                        else octaveComplete;
 
   # Wrapper derivation that only has "octave" and "octave-cli" binaries,

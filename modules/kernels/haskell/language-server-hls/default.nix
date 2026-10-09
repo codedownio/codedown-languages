@@ -14,7 +14,7 @@ in
 snapshot: ghc: kernelName: focusedSettings: callPackage ./config.nix {
   inherit kernelName;
 
-  inherit ghc snapshot;
+  inherit ghc;
 
   settings = focusedSettings;
 

@@ -1,8 +1,5 @@
 { lib
 , callPackage
-, makeWrapper
-, runCommand
-
 , pythonWithPackages
 , pyright
 
@@ -15,12 +12,6 @@ let
   common = callPackage ../../../common.nix {};
 
   pythonEnv = pythonWithPackages (_: []);
-
-  pyrightWrapped = runCommand "pyright-withenv" { inherit pythonEnv; buildInputs = [makeWrapper]; } ''
-    mkdir -p $out/bin
-    makeWrapper ${pyright}/bin/pyright-langserver $out/bin/pyright-langserver \
-      --set PYTHONPATH $pythonEnv/${pythonEnv.sitePackages}
-  '';
 
   languageServerName = "pyright";
 

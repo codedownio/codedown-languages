@@ -1,5 +1,4 @@
 { lib
-, writeShellScript
 , writeTextFile
 
 , sample_environments
@@ -14,7 +13,7 @@ let
     ;
 
     gatherSchemasFromEnvironment = prefix: env:
-      builtins.concatLists (lib.mapAttrsToList (n: v: gatherSchemas prefix v) env.ui_metadata.packages);
+      builtins.concatLists (lib.mapAttrsToList (_n: v: gatherSchemas prefix v) env.ui_metadata.packages);
 
   in
     lib.listToAttrs (

@@ -27,7 +27,7 @@ let
 
   # Grab the meta from the library component
   # Could also search over other components?
-  packageSearch = common.searcher (mapAttrs (name: value:
+  packageSearch = common.searcher (mapAttrs (_name: value:
     let meta = (attrByPath ["components" "library" "meta"] null value); in
     if meta == null then value else value // { inherit meta; }) packageOptions);
 
@@ -60,11 +60,11 @@ symlinkJoin {
 
   paths = [
     (callPackage ./kernel.nix {
-      inherit displayName attrs extensions snapshot repls;
+      inherit displayName attrs extensions repls;
 
       language = "haskell";
 
-      ihaskell = if settings.enableHlintOutput then snapshot.ihaskell else snapshot.ihaskell.overrideAttrs (oldAttrs: {
+      ihaskell = if settings.enableHlintOutput then snapshot.ihaskell else snapshot.ihaskell.overrideAttrs (_oldAttrs: {
         configureFlags = ["-f" "-use-hlint"];
       });
       inherit ghc;

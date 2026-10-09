@@ -1,7 +1,4 @@
-{ pkgs
-, lib
-, callPackage
-, writeTextDir
+{ callPackage
 , symlinkJoin
 
 , settings

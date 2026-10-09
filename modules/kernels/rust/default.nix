@@ -3,7 +3,6 @@
 , callPackage
 , symlinkJoin
 
-, darwin
 , rust-analyzer
 
 , rust
@@ -23,9 +22,7 @@ let
 
   rustPackages = rust.packages.stable;
 
-  evcxrBase = (callPackage ./evcxr {
-    inherit (darwin.apple_sdk.frameworks) CoreServices Security;
-  }).override {
+  evcxrBase = (callPackage ./evcxr {}).override {
     rustPlatform = rustPackages.rustPlatform;
     cargo = rustPackages.cargo;
   };

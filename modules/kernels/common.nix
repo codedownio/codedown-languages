@@ -1,6 +1,5 @@
 { lib
 , runCommand
-, writeText
 , writeTextDir
 , writeShellScriptBin
 , callPackage
@@ -23,7 +22,7 @@ rec {
           let
             allowedKernelKeys = ["argv" "display_name" "language" "codemirror_mode" "interrupt_mode" "env" "metadata" "logo32" "logo64"];
             config = builtins.toJSON (
-              (filterAttrs (n: v: (any (x: x == n) allowedKernelKeys)) kernel)
+              (filterAttrs (n: _v: (any (x: x == n) allowedKernelKeys)) kernel)
               // {display_name = if (kernel.displayName != "") then kernel.displayName else kernelName;}
               // (optionalAttrs (kernel ? interruptMode) { interrupt_mode = kernel.interruptMode; })
             );
@@ -85,15 +84,15 @@ rec {
       // optionalAttrs (icon != null) { inherit icon; }
       // optionalAttrs (iconMonochrome != null) { inherit iconMonochrome; };
 
-  writeTextDirWithMeta = meta: path: text: (writeTextDir path text).overrideAttrs (old: {
+  writeTextDirWithMeta = meta: path: text: (writeTextDir path text).overrideAttrs (_old: {
     inherit meta;
   });
 
-  writeTextDirWithMetaAndPassthru = meta: passthru: path: text: (writeTextDir path text).overrideAttrs (old: {
+  writeTextDirWithMetaAndPassthru = meta: passthru: path: text: (writeTextDir path text).overrideAttrs (_old: {
     inherit meta passthru;
   });
 
-  writeShellScriptBinWithAttrs = attrs: path: text: (writeShellScriptBin path text).overrideAttrs (old: attrs);
+  writeShellScriptBinWithAttrs = attrs: path: text: (writeShellScriptBin path text).overrideAttrs (_old: attrs);
 
   searcher = packages: (callPackage ../tools/sqlite-indexer { inherit packages; }).searcher;
   searcher' = args: (callPackage ../tools/sqlite-indexer args).searcher;

@@ -1,9 +1,6 @@
 { lib
 , bundlerApp
 
-, czmq
-, libtool
-, zeromq
 , writeTextDir
 
 , fetchFromGitHub

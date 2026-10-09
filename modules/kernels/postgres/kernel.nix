@@ -32,7 +32,7 @@ let
     };
   };
 
-  pythonWithApp = python3.withPackages (ps: [app]);
+  pythonWithApp = python3.withPackages (_ps: [app]);
 
   argv = [
     "${pythonWithApp}/bin/python"

@@ -24,7 +24,7 @@ let
     doInstallCheck = false;
   });
 
-  python = python3.withPackages (ps: [bash-kernel]);
+  python = python3.withPackages (_ps: [bash-kernel]);
 
   # bash_kernel submits a cell to bash one line at a time over a PTY (~50ms/line),
   # so inlining the ~150-line inspector made the first run take ~10s. Source the

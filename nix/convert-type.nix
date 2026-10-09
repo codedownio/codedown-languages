@@ -31,7 +31,7 @@ let
       type = "submodule";
       keys = lib.mapAttrsRecursiveCond
         (x: !(x ? _type))
-        (path: value: convertType target value.type)
+        (_path: value: convertType target value.type)
         (lib.removeAttrs (type.getSubOptions {}) ["_module"]);
     }
     # else if (type.name == "unknown") then {

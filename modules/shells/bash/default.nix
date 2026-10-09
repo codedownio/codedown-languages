@@ -2,7 +2,7 @@
 }:
 
 
-bashInteractive.overrideAttrs (oldAttrs: {
+bashInteractive.overrideAttrs (_oldAttrs: {
   meta = bashInteractive.meta // {
     displayName = "Bash " + bashInteractive.version;
     attr = "bash";

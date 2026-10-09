@@ -60,7 +60,7 @@ let
       }) packageNames));
     }
 
-    ({ config, options, ... }: {
+    ({ config, ... }: {
       options = {
         paths = mkOption {
           type = types.listOf types.package;
@@ -89,7 +89,7 @@ let
 
 in
 
-self: super: {
+self: _super: {
   packageSearch = searcher self;
 
   makeEnvironment = config:
@@ -117,7 +117,7 @@ self: super: {
 
         passthru = rec {
           ui_metadata = {
-            packages = mapAttrs (n: v: let
+            packages = mapAttrs (n: _v: let
               settings_schema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } (removeAttrs evaluated.options.${n} ["_module"]);
               in
                 {

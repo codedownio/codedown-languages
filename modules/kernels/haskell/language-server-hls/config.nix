@@ -1,5 +1,4 @@
 { lib
-, fetchFromGitHub
 , callPackage
 , runCommand
 , makeWrapper
@@ -15,7 +14,6 @@
 , kernelName
 
 , ghc
-, snapshot
 
 , settings
 }:
@@ -24,7 +22,7 @@ let
   common = callPackage ../../common.nix {};
   util = import ../util.nix;
 
-  hnls = callPackage ./hnls.nix { inherit ghc snapshot; };
+  hnls = callPackage ./hnls.nix { inherit ghc; };
 
   hlsWrapped = runCommand "haskell-language-server-${haskell-language-server.version}-wrapped" { buildInputs = [makeWrapper]; } ''
     mkdir -p $out/bin

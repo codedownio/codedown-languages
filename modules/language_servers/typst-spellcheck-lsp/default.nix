@@ -85,7 +85,7 @@ in
   ++ lib.optionals (settings.checkLineComments or false) ["--check-line-comments"]
   ++ lib.optionals (settings.checkBlockComments or false) ["--check-block-comments"]
   ++ ["--stdio"];
-}])).overrideAttrs (old: {
+}])).overrideAttrs (_old: {
   passthru = {
     languageServerNames = ["typst-spellchecker"];
     inherit settings settingsSchema;

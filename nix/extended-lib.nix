@@ -3,7 +3,7 @@
 #  - support for a human-readable "title" attribute on options
 { lib }:
 
-lib.extend (final: prev: {
+lib.extend (_final: prev: {
   types = prev.types // {
     codeMirrorLines = mode: prev.mkOptionType {
       name = "codeMirrorLines";

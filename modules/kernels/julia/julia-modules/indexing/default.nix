@@ -1,7 +1,4 @@
-{ callPackage
-, fetchFromGitHub
-, lib
-, python3
+{ python3
 , runCommand
 
 # , indexTransitiveDependencies ? true

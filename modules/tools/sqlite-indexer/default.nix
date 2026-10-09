@@ -1,5 +1,4 @@
 { callPackage
-, fetchFromGitHub
 , gnused
 , lib
 , linkFarm
@@ -8,11 +7,9 @@
 , runCommand
 , sqlite
 , stdenv
-, writeScript
 , writeShellScript
 , writeText
 
-, name ? ""
 , attrPrefix ? ""
 
 , packageMustBeDerivation ? true
@@ -32,7 +29,7 @@ let
   in
     if evaluated.success then evaluated.value else default;
 
-  filteredPackages = with lib; filterAttrs (name: value: safeEval' false (
+  filteredPackages = with lib; filterAttrs (_name: value: safeEval' false (
     (!packageMustBeDerivation || isDerivation value)
     &&
     (!packageMustHaveName || ((value.meta.name or "") != ""))
@@ -68,7 +65,7 @@ rec {
   '';
 
   allIcons = let
-    uniquePaths = lib.concatLists (lib.mapAttrsToList (k: v: [(v.meta.icon or null) (v.meta.iconMonochrome or null)]) filteredPackages);
+    uniquePaths = lib.concatLists (lib.mapAttrsToList (_k: v: [(v.meta.icon or null) (v.meta.iconMonochrome or null)]) filteredPackages);
   in
     linkFarm "all-searcher-icons" (map (path: {
       name = builtins.hashString "md5" (toString path);

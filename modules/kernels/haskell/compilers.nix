@@ -1,6 +1,4 @@
-{ fetchFromGitHub
-, lib
-, libsodium
+{ lib
 , runCommand
 , haskell
 
@@ -26,7 +24,7 @@
          }) {};
   in
     haskell.packages.ghc96.override {
-      overrides = self: super: {
+      overrides = self: _super: {
         ghc-parser = self.callCabal2nix "ghc-parser" (
           runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out"
         ) {};
@@ -59,7 +57,7 @@
          }) {};
   in
     haskell.packages.ghc98.override {
-      overrides = self: super: {
+      overrides = self: _super: {
         ghc-parser = self.callCabal2nix "ghc-parser" (
           runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out"
         ) {};
@@ -75,7 +73,7 @@
     };
 
   ghc910 = haskell.packages.ghc910.override {
-      overrides = self: super: {
+      overrides = self: _super: {
         ghc-parser = self.callCabal2nix "ghc-parser" (
           runCommand "ghc-parser-source" {} "cp -r ${ihaskell-source}/ghc-parser $out"
         ) {};
@@ -100,7 +98,7 @@
 
       ihaskell = self.callCabal2nixWithOptions "ihaskell" ihaskell-source "--no-check" {};
 
-      cryptonite = super.cryptonite.overrideAttrs (oldAttrs: {
+      cryptonite = super.cryptonite.overrideAttrs (_oldAttrs: {
         doCheck = false;
       });
     };

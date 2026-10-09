@@ -1,6 +1,7 @@
 { lib
 , callPackage
 , typst
+# deadnix: skip -- unused, but the TODO below is the reason to keep it
 , typstToUse # TODO: should this kernel actually do something?
 
 , attrs

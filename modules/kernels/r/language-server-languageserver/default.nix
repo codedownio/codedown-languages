@@ -2,7 +2,6 @@
 , callPackage
 
 , rWrapper
-, rPackages
 , basePackages
 
 , languageserver
