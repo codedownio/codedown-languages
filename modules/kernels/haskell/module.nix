@@ -50,7 +50,7 @@ in
       };
       lsp.haskell-language-server.formattingProvider = mkOption {
         title = "Haskell formatter";
-        description = "Which formatter haskell-language-server uses. All of these are compiled into it, so picking one costs nothing extra.";
+        description = "Which formatter haskell-language-server uses.";
         type = types.enum ["ormolu" "fourmolu" "stylish-haskell" "none"];
         default = "ormolu";
       };
