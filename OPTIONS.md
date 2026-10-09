@@ -156,7 +156,7 @@ true
 
 **Typst formatter**
 
-Which formatter tinymist uses\. Both are vendored into tinymist, so picking one costs nothing extra\. typstyle is also tinymist’s own default\.
+Which formatter tinymist uses\.
 
 
 
@@ -881,7 +881,7 @@ false
 
 **Go formatter**
 
-Which formatter gopls uses\. Both are built into gopls; gofumpt is gofmt plus a set of stricter rules\.
+Which formatter gopls uses\.
 
 
 
@@ -1059,7 +1059,7 @@ false
 
 **Haskell formatter**
 
-Which formatter haskell-language-server uses\. All of these are compiled into it, so picking one costs nothing extra\.
+Which formatter haskell-language-server uses\.
 
 
 
@@ -1809,7 +1809,7 @@ false
 
 **Python formatter**
 
-Which formatter python-lsp-server uses\. It ships with none of them, so this also decides what gets added to the environment\. autopep8 is the lightest and reuses the pycodestyle settings above; black and ruff reformat more aggressively\. Note that Jedi, the default language server, can’t format at all – this only applies when python-lsp-server is enabled\.
+Which formatter python-lsp-server uses\.
 
 
 
@@ -2118,7 +2118,7 @@ false
 
 **Python formatter**
 
-Which formatter python-lsp-server uses\. It ships with none of them, so this also decides what gets added to the environment\. autopep8 is the lightest and reuses the pycodestyle settings above; black and ruff reformat more aggressively\. Note that Jedi, the default language server, can’t format at all – this only applies when python-lsp-server is enabled\.
+Which formatter python-lsp-server uses\.
 
 
 
@@ -2278,8 +2278,6 @@ true
 
 
 **Format Ruby code with rubocop**
-
-Solargraph formats by running rubocop’s autocorrect over the cell, using the configuration below\. Turning this off also stops Solargraph from advertising formatting to the editor\.
 
 
 
