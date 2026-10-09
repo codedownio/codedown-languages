@@ -8,15 +8,15 @@
 }:
 
 let
+  # DESCRIPTION's Imports, minus the ones that ship with R (parallel, tools, utils).
   languageServerDeps = with rPackages; [
     R6
     callr
     collections
-    desc
+    digest
     fs
     jsonlite
     lintr
-    repr
     roxygen2
     stringi
     styler
@@ -32,23 +32,17 @@ in
 
 stdenv.mkDerivation {
   name = "r-custom-languageserver";
-  version = "0.3.16";
+  version = "0.3.20";
 
+  # Our fork of upstream master, carrying one commit: shutdown answers with a null result
+  # rather than `[]`, which clients that type the result strictly can't decode. That branch
+  # is the one to send upstream as a PR; point this back at REditorSupport once it lands.
   src = fetchFromGitHub {
-    owner = "REditorSupport";
+    owner = "codedownio";
     repo = "languageserver";
-    rev = "beed0f00563390b3e39a9bb47fc25bf852ec3734";
-    sha256 = "0sifrmkv6hn15nppjg4wjvs3l8an3lsa4rdp3xi3f4w006kdgx5w";
+    rev = "de6d8ba3b36f5da85f6398c53982c327c3fedacd";
+    sha256 = "16y7i1mwk97sq4yyca52v1hpm55aamdyf6yzm90qalh18g8av44g";
   };
-
-  # The LSP spec says a shutdown response carries a null result; languageserver passes
-  # `list()`, which jsonlite renders as `[]`. Strict clients reject it -- lsp-test fails to
-  # decode the response entirely, so it never sees the server acknowledge shutdown.
-  # Worth reporting upstream; drop this once it lands there.
-  postPatch = ''
-    substituteInPlace R/handlers-general.R \
-      --replace-fail 'Response$new(id = id, result = list())' 'Response$new(id = id, result = NULL)'
-  '';
 
   configurePhase = ''
     runHook preConfigure
