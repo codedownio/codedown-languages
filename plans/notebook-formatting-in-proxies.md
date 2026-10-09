@@ -8,10 +8,28 @@ Four languages reach their language server through a notebook proxy: Rust
 notebook's cells into a document the server will accept, registers it under a different URI,
 and rewrites requests and responses between the two coordinate spaces.
 
-None of them handled `textDocument/formatting`, so the request went to the server naming a
-document it had never opened and failed. rust-notebook-language-server#2 fixed it for Rust.
-The other three still can't format a cell, and the reason isn't the missing handler — it's that
-their projections can't be undone once a formatter has rewritten the document.
+rust-notebook-language-server#2 fixed formatting for Rust. The tests in
+`tests/app/Spec/Tests/` now cover a notebook cell for each of the four, which pins down where
+each one actually stands:
+
+| Proxy | Formatting a cell |
+| --- | --- |
+| rust | works |
+| go | works for a cell of plain statements; fails as soon as the cell has an import |
+| cpp | fails: clangd answers InvalidParams, "trying to format non-added document" |
+| haskell | fails: HLS gates its formatters on the extension, "ormolu does not support .ipynb filetypes" |
+
+cpp and haskell fail before the hard part: the request reaches the server naming a document it
+never opened (cpp), or one whose extension its formatter plugins reject (haskell). Those are
+plumbing bugs.
+
+Go is the interesting one, and it's what the rest of this document is about. gnls does handle
+the request, and for `x:=1+2` / `fmt.Println(x)` it maps gofmt's edits back into the cell
+correctly — because every edit stays inside a line that the projection left in place. Add an
+import and gofmt gets `import ("fmt")` in statement position and won't parse it
+(`expected statement, found 'import'`), because the formatting path doesn't apply the
+declaration sifter that the analysis path does. Making it sift would then run into the real
+problem: once lines move, the edits can't be mapped back one at a time.
 
 ## Why formatting is different from every other request
 
@@ -100,8 +118,11 @@ scratch URI which the proxy has to swallow.
 
 ## Effort
 
-- **cpp, go** — port `unproject` to their `Transformer` class, add the scratch-document path with
-  a minimal wrapper. No markers. Roughly a day each with tests. This is the one worth doing.
+- **cpp** — plumbing first: forward the request with the shadow URI. Then port `unproject` to
+  its `Transformer` class and add the scratch-document path with a minimal wrapper. No markers.
+- **go** — the per-edit mapping already works for the easy case, so the question is whether to
+  keep extending it or switch to the scratch document. The scratch document is the one that
+  makes the import case work. No markers either way.
 - **haskell** — the hard one. Even a minimal projection still needs `ExpressionToDeclaration` and
   `StatementToDeclaration` to make a cell parse, and those rewrite lines in place. They're
   invertible per line if the rewrite is recorded, but the attribution still has to survive ormolu,
@@ -117,9 +138,16 @@ this gets easier. Worth confirming on the codedown side before building anything
 
 ## Current state
 
-- Rust: works. rust-notebook-language-server#2, merged.
-- C++, Go, Haskell: formatting a cell fails with a server error. Inlay hints are fixed separately
-  (cpp-notebook-language-server#1, go-notebook-language-server#1,
-  haskell-notebook-language-server#2). Plain `.rs` / `.go` / `.cpp` / `.hs` files were never
-  affected — the proxies leave a non-notebook URI alone, so formatting already worked there, and
-  the tests in `tests/app/Spec/Tests/` cover that path.
+- Rust: works, both a plain file and a cell. rust-notebook-language-server#2, merged.
+- Go: a cell of plain statements works; a cell with an import is `pending` in `Go.hs`.
+- C++, Haskell: a cell is `pending` in `Cpp.hs` and `Haskell/Formatting.hs`, with the server
+  error each one returns.
+- Inlay hints are fixed separately (cpp-notebook-language-server#1,
+  go-notebook-language-server#1, haskell-notebook-language-server#2).
+- Plain `.rs` / `.go` / `.cpp` / `.hs` files were never affected — the proxies leave a
+  non-notebook URI alone, so formatting already worked there.
+
+The nine languages without a proxy don't need a notebook formatting test. Their configs set a
+non-empty `notebook_suffix`, so codedown hands the server a path like `main.ipynb.rb`; from the
+server's point of view that's the same case the `test.rb` test already covers. Only a proxy
+language (`notebook_suffix = ""`) sees a bare `.ipynb` URI.

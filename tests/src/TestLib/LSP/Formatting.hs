@@ -8,8 +8,10 @@
 module TestLib.LSP.Formatting (
   itFormatsAs
   , itFormatsAs'
+  , itFormatsAsLabel
   , itReformats
 
+  , defaultTimeout
   , formatsAs
   ) where
 
@@ -37,6 +39,14 @@ itFormatsAs' :: (
   ) => Double -> Text -> FilePath -> LanguageKind -> Text -> Text -> SpecFree ctx m ()
 itFormatsAs' timeoutSeconds name filename languageKind code expected =
   itFormats' timeoutSeconds name filename languageKind code (`shouldBe` expected)
+
+-- | 'itFormatsAs' with an explicit test name, for when one server formats the same filename
+-- more than once and the derived names would collide.
+itFormatsAsLabel :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => String -> Text -> FilePath -> LanguageKind -> Text -> Text -> SpecFree ctx m ()
+itFormatsAsLabel label name filename languageKind code expected =
+  it label $ formatsAs defaultTimeout name filename languageKind code expected
 
 -- | Weaker than 'itFormatsAs': only that formatting rewrote the document. For formatters whose
 -- exact output we haven't pinned down, this still catches a server that advertises formatting
