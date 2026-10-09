@@ -217,11 +217,11 @@ Caveats the table above can't show:
   the matrix. tinymist already formatted with typstyle by default; the setting exists to pick
   typstfmt or turn formatting off.
 - Rust formats correctly when rust-analyzer is driven directly, but
-  rust-notebook-language-server forwards `textDocument/formatting` with the notebook's URI
-  instead of the shadow file's, so rust-analyzer answers "file not found". Other requests
-  (`textDocument/documentSymbol`, …) are rewritten and work. That's a fix for the
-  [rust-notebook-language-server](https://github.com/codedownio/rust-notebook-language-server)
-  side, not this repo, so the Rust formatting test is marked pending.
+  rust-notebook-language-server forwarded `textDocument/formatting` with the notebook's URI
+  instead of the shadow file's, so rust-analyzer answered "file not found".
+  [rust-notebook-language-server#2](https://github.com/codedownio/rust-notebook-language-server/pull/2)
+  fixes it; the Rust formatting test stays pending until that's released and the pinned
+  version here moves up.
 - The R formatting test is pending too. styler produces the right answer — you can watch it
   come back over the wire in the session log — but the R language server then never answers
   lsp-test's `shutdown` and the session hangs rather than finishing.
