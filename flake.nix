@@ -6,6 +6,9 @@
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
+  # Nix always passes self, and this pattern has no `...`, so dropping the unused argument
+  # would make the flake fail to evaluate outright.
+  # deadnix: skip
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
@@ -55,6 +58,10 @@
         };
       in
         {
+          checks = {
+            lint-nix = pkgsStable.callPackage ./nix/lint.nix {};
+          };
+
           devShells = {
             default = pkgsStable.mkShell {
               NIX_PATH = "nixpkgs=${pkgsStable.path}";
@@ -102,7 +109,7 @@
             jupyter-runner = pkgsStable.callPackage ./nix/jupyter-runner.nix {};
 
             notebook = with pkgsStable; python3.pkgs.toPythonModule (
-              python3.pkgs.notebook.overridePythonAttrs (oldAttrs: {
+              python3.pkgs.notebook.overridePythonAttrs (_oldAttrs: {
                 makeWrapperArgs = ["--set JUPYTER_PATH ${sampleOutputs.sample_environments.mega}/lib/codedown"];
               })
             );
