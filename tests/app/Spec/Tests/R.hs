@@ -36,11 +36,13 @@ tests = describe "R" $ introduceNixEnvironment [kernelSpec] [] "R" $ introduceJu
 
   VariableInspector.tests "R"
 
-  it "languageserver formats with styler" $ do
-    -- The R language server can't start under the hermetic PATH these tests use: loading
-    -- processx runs system("which uname"), and R's system() goes through popen, which needs
-    -- a /bin/sh the sandbox doesn't have. styler itself works -- the capability probe, which
-    -- runs outside the sandbox, formats fine.
+  it "languageserver formats test.R" $ do
+    -- styler produces the right answer here -- you can watch it come back over the wire in the
+    -- session log -- but the R language server then never answers lsp-test's `shutdown`, and
+    -- the session hangs instead of finishing. Driving the same sequence against the same
+    -- server in the same sandbox by hand shuts down fine, so it's something about how
+    -- lsp-test ends the session. Pending until that's sorted out; a hanging test is worse
+    -- than no test.
     _ <- pending
     formatsAs 180 "languageserver" "test.R" LanguageKind_R
       "f <- function(a,b){\na+b\n}\n"

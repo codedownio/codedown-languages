@@ -222,10 +222,9 @@ Caveats the table above can't show:
   (`textDocument/documentSymbol`, …) are rewritten and work. That's a fix for the
   [rust-notebook-language-server](https://github.com/codedownio/rust-notebook-language-server)
   side, not this repo, so the Rust formatting test is marked pending.
-- The R formatting test is pending too, for an unrelated reason: the R language server won't
-  start under the hermetic PATH the test suite uses. Loading processx runs
-  `system("which uname")`, and R's `system()` goes through `popen`, which wants a `/bin/sh`
-  the sandbox doesn't provide. styler formats fine outside the sandbox.
+- The R formatting test is pending too. styler produces the right answer — you can watch it
+  come back over the wire in the session log — but the R language server then never answers
+  lsp-test's `shutdown` and the session hangs rather than finishing.
 
 ## Known gaps
 
