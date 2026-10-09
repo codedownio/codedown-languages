@@ -24,6 +24,8 @@ library
       TestLib.JupyterRunnerContext
       TestLib.JupyterTypes
       TestLib.LSP
+      TestLib.LSP.Formatting
+      TestLib.LSP.Session
       TestLib.NixEnvironmentContext
       TestLib.NixRendering
       TestLib.NixTypes
