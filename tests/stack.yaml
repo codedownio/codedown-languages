@@ -19,8 +19,8 @@ extra-deps:
   - sandwich-contexts
 
 - git: https://github.com/codedownio/lsp.git
-  # upgrade-monads-newest-jan2026 branch
-  commit: c723f4a4fb99661c76b1356f8a839a0e266b0f32
+  # shutdown-deadlock branch, off upgrade-monads-newest-jan2026, for the lsp-test teardown fix
+  commit: bbc76a97b72602858c0e663ab16d3db37efc3ec6
   subdirs:
   - lsp
   - lsp-test

@@ -221,15 +221,12 @@ Caveats the table above can't show:
   [rust-notebook-language-server#2](https://github.com/codedownio/rust-notebook-language-server/pull/2)
   fixes it; the Rust formatting test stays pending until that's released and the pinned
   version here moves up.
-- The R formatting test is pending too, and it isn't R's fault. styler produces the right
-  answer and the server delivers it: with `languageserver::run(debug = …)` turned on, its log
-  shows the shutdown response going out and a clean exit 0. lsp-test never reads that
-  response. A `publishDiagnostics` notification arrives in the window between the shutdown
-  request and its reply — 11 ms before it — and the session deadlocks in teardown. The 120s
-  timeout around the shutdown exchange never fires; the process sits idle for half an hour on
-  1.5 seconds of CPU. Replaying the identical byte sequence against the same server in the
-  same sandbox always gets the response, including pipelined sends and with stdin closed, so
-  the fix belongs in lsp-test's teardown path.
+- R formatted correctly all along, but the test used to hang. Three things stacked up:
+  languageserver answers `shutdown` with `"result": []` where the spec says `null`; lsp-test's
+  reader thread died decoding that, so the response went unread; and the shutdown wait ran
+  under `uninterruptibleMask` (unliftio runs `finally` cleanups that way), so no timeout could
+  fire. Fixed in codedownio/lsp#1, plus a `postPatch` here making languageserver's shutdown
+  response conformant.
 
 ## Known gaps
 

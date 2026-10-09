@@ -41,6 +41,15 @@ stdenv.mkDerivation {
     sha256 = "0sifrmkv6hn15nppjg4wjvs3l8an3lsa4rdp3xi3f4w006kdgx5w";
   };
 
+  # The LSP spec says a shutdown response carries a null result; languageserver passes
+  # `list()`, which jsonlite renders as `[]`. Strict clients reject it -- lsp-test fails to
+  # decode the response entirely, so it never sees the server acknowledge shutdown.
+  # Worth reporting upstream; drop this once it lands there.
+  postPatch = ''
+    substituteInPlace R/handlers-general.R \
+      --replace-fail 'Response$new(id = id, result = list())' 'Response$new(id = id, result = NULL)'
+  '';
+
   configurePhase = ''
     runHook preConfigure
     export R_LIBS_SITE="$R_LIBS_SITE''${R_LIBS_SITE:+:}$out/library"
