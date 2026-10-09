@@ -31,7 +31,7 @@ packages:
     git: https://github.com/codedownio/sandwich.git
     subdir: sandwich-contexts
 - completed:
-    commit: bbc76a97b72602858c0e663ab16d3db37efc3ec6
+    commit: 51b1a1b5a3760f88c58619f5eebb0201c00945f8
     git: https://github.com/codedownio/lsp.git
     name: lsp
     pantry-tree:
@@ -40,24 +40,24 @@ packages:
     subdir: lsp
     version: 2.7.0.1
   original:
-    commit: bbc76a97b72602858c0e663ab16d3db37efc3ec6
+    commit: 51b1a1b5a3760f88c58619f5eebb0201c00945f8
     git: https://github.com/codedownio/lsp.git
     subdir: lsp
 - completed:
-    commit: bbc76a97b72602858c0e663ab16d3db37efc3ec6
+    commit: 51b1a1b5a3760f88c58619f5eebb0201c00945f8
     git: https://github.com/codedownio/lsp.git
     name: lsp-test
     pantry-tree:
-      sha256: 794f872ace5e8f400451bb51e1698b6faed0b4389f473600b82491fdb9313dbb
-      size: 2305
+      sha256: db969ba51627f5d07fb4109e7b8e56ee68bb0021d39d1b96612a39a4c0dd67a2
+      size: 2304
     subdir: lsp-test
     version: 0.17.1.1
   original:
-    commit: bbc76a97b72602858c0e663ab16d3db37efc3ec6
+    commit: 51b1a1b5a3760f88c58619f5eebb0201c00945f8
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-test
 - completed:
-    commit: bbc76a97b72602858c0e663ab16d3db37efc3ec6
+    commit: 51b1a1b5a3760f88c58619f5eebb0201c00945f8
     git: https://github.com/codedownio/lsp.git
     name: lsp-types
     pantry-tree:
@@ -66,7 +66,7 @@ packages:
     subdir: lsp-types
     version: 2.3.0.1
   original:
-    commit: bbc76a97b72602858c0e663ab16d3db37efc3ec6
+    commit: 51b1a1b5a3760f88c58619f5eebb0201c00945f8
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-types
 - completed:
