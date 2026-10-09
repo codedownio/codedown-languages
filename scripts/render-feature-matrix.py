@@ -29,8 +29,6 @@ THEMES = {
         "rowStripe": "#f6f5f2",
         "yes": "#0ca30c",
         "yesFill": "#e4f4e4",
-        # Small text needs more contrast against yesFill than a check mark does.
-        "yesText": "#0a6e0a",
         "no": "#c3c2b7",
     },
     "dark": {
@@ -43,7 +41,6 @@ THEMES = {
         "rowStripe": "#201f1e",
         "yes": "#0ca30c",
         "yesFill": "#17301a",
-        "yesText": "#5fd45f",
         "no": "#4a4a47",
     },
 }
@@ -52,9 +49,6 @@ FONT = 'system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif'
 
 LABEL_WIDTH = 178
 COL_WIDTH = 29
-# Rough advance width of the label columns' 9.5px text, used to size those columns.
-LABEL_CHAR_WIDTH = 5.3
-LABEL_FONT_SIZE = 9.5
 ROW_HEIGHT = 29
 GROUP_BAND_HEIGHT = 22
 PAD = 16
@@ -76,18 +70,6 @@ def level_of(language, feature_id):
 
 def detail_of(language, feature_id):
     return language["support"].get(feature_id, {}).get("detail")
-
-
-def is_label_column(feature):
-    """Columns that print their detail (e.g. the formatter's name) instead of a check."""
-    return feature.get("render") == "label"
-
-
-def label_text(language, feature):
-    """What a label column shows for one language, or None for the not-supported dot."""
-    if level_of(language, feature["id"]) != "full":
-        return None
-    return detail_of(language, feature["id"])
 
 
 # ---------------------------------------------------------------------------
@@ -119,32 +101,14 @@ def render_svg(matrix, mode):
 
     header_height = int(max(diagonal_extent(f["name"]) for f in ordered)) + 14
 
-    # Check-mark columns are all one width; a label column has to be wide enough for its
-    # longest value.
-    def column_width(feature):
-        if not is_label_column(feature):
-            return COL_WIDTH
-        widest = max((len(label_text(l, feature) or "") for l in languages), default=0)
-        return max(COL_WIDTH, int(widest * LABEL_CHAR_WIDTH) + 14)
-
-    col_widths = [column_width(f) for f in ordered]
-    col_lefts = []
-    running = 0
-    for w in col_widths:
-        col_lefts.append(running)
-        running += w
-
     grid_left = PAD + LABEL_WIDTH
     grid_top = PAD + TITLE_HEIGHT + GROUP_BAND_HEIGHT + header_height
-    grid_width = running
+    grid_width = COL_WIDTH * len(ordered)
     grid_height = ROW_HEIGHT * len(languages)
-
-    def center_of(i):
-        return grid_left + col_lefts[i] + col_widths[i] / 2
 
     # The rotated labels lean up and to the right, so the rightmost one overhangs the grid.
     # Whichever column's label reaches furthest right sets the canvas width.
-    rightmost = max(center_of(i) + 3 + diagonal_extent(f["name"])
+    rightmost = max(grid_left + i * COL_WIDTH + COL_WIDTH / 2 + 3 + diagonal_extent(f["name"])
                     for i, f in enumerate(ordered))
     width = int(max(rightmost, grid_left + grid_width)) + PAD
     height = grid_top + grid_height + LEGEND_HEIGHT + PAD
@@ -171,8 +135,8 @@ def render_svg(matrix, mode):
     column = 0
     for group in groups:
         count = sum(1 for f in ordered if f["group"] == group["id"])
-        x = grid_left + col_lefts[column]
-        w = sum(col_widths[column:column + count])
+        x = grid_left + column * COL_WIDTH
+        w = count * COL_WIDTH
         add(f'    <rect x="{x}" y="{band_y}" width="{w - 2}" height="{GROUP_BAND_HEIGHT - 4}" '
             f'rx="3" fill="{theme["band"]}"/>')
         add(f'    <text x="{x + w / 2 - 1:.1f}" y="{band_y + 13}" font-size="10" '
@@ -183,7 +147,7 @@ def render_svg(matrix, mode):
     # Rotated column headers
     label_baseline = grid_top - 8
     for i, feature in enumerate(ordered):
-        x = center_of(i) + 3
+        x = grid_left + i * COL_WIDTH + COL_WIDTH / 2 + 3
         add(f'    <text x="{x:.1f}" y="{label_baseline}" font-size="11" '
             f'fill="{theme["textSecondary"]}" text-anchor="start" '
             f'transform="rotate(-45 {x:.1f} {label_baseline})">{escape(feature["name"])}</text>')
@@ -204,7 +168,7 @@ def render_svg(matrix, mode):
                 f'text-anchor="end" fill="{theme["muted"]}">{escape(version)}</text>')
 
         for i, feature in enumerate(ordered):
-            cx = center_of(i)
+            cx = grid_left + i * COL_WIDTH + COL_WIDTH / 2
             cy = y + ROW_HEIGHT / 2
             level = level_of(language, feature["id"])
             detail = detail_of(language, feature["id"])
@@ -215,14 +179,7 @@ def render_svg(matrix, mode):
                 tooltip += f" ({detail})"
 
             add(f'    <g><title>{escape(tooltip)}</title>')
-            if is_label_column(feature) and label_text(language, feature):
-                text = label_text(language, feature)
-                add(f'      <rect x="{cx - col_widths[i] / 2 + 3:.1f}" y="{cy - 10.5:.1f}" '
-                    f'width="{col_widths[i] - 6}" height="21" rx="5" fill="{theme["yesFill"]}"/>')
-                add(f'      <text x="{cx:.1f}" y="{cy + 3.5:.1f}" '
-                    f'font-size="{LABEL_FONT_SIZE}" text-anchor="middle" '
-                    f'fill="{theme["yesText"]}">{escape(text)}</text>')
-            elif level == "full":
+            if level == "full":
                 add(f'      <rect x="{cx - 10.5:.1f}" y="{cy - 10.5:.1f}" width="21" height="21" '
                     f'rx="5" fill="{theme["yesFill"]}"/>')
                 add(f'      <path d="{check_path(cx, cy)}" fill="none" stroke="{theme["yes"]}" '
@@ -238,7 +195,7 @@ def render_svg(matrix, mode):
     column = 0
     for group in groups[:-1]:
         column += sum(1 for f in ordered if f["group"] == group["id"])
-        x = grid_left + col_lefts[column]
+        x = grid_left + column * COL_WIDTH
         add(f'    <line x1="{x}" y1="{grid_top}" x2="{x}" y2="{grid_top + grid_height}" '
             f'stroke="{theme["gridline"]}" stroke-width="1"/>')
     add(f'    <line x1="{grid_left}" y1="{grid_top}" x2="{grid_left}" '
@@ -291,12 +248,7 @@ def render_markdown(matrix):
         out.append("| Language | " + " | ".join(f["name"] for f in group_features) + " |")
         out.append("| --- | " + " | ".join("---" for _ in group_features) + " |")
         for language in languages:
-            cells = []
-            for f in group_features:
-                cell = MARKDOWN_CELL.get(level_of(language, f["id"]), "?")
-                if is_label_column(f) and label_text(language, f):
-                    cell += f" {label_text(language, f)}"
-                cells.append(cell)
+            cells = [MARKDOWN_CELL.get(level_of(language, f["id"]), "?") for f in group_features]
             out.append(f"| {language['displayName']} | " + " | ".join(cells) + " |")
         out.append("")
 

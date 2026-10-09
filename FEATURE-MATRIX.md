@@ -77,23 +77,23 @@ Which languages support which notebook and editor features. The graphic version 
 
 | Language | Formatting | Rename symbol | Code actions |
 | --- | --- | --- | --- |
-| Bash | ✅ shfmt | ✅ | ✅ |
-| C++ 23 | ✅ clang-format | ✅ | ✅ |
-| Clojure | ✅ cljfmt | ✅ | ✅ |
+| Bash | ✅ | ✅ | ✅ |
+| C++ 23 | ✅ | ✅ | ✅ |
+| Clojure | ✅ | ✅ | ✅ |
 | Coq | – | – | – |
-| Go | ✅ gofmt | ✅ | ✅ |
-| Haskell | ✅ ormolu | ✅ | ✅ |
-| JavaScript | ✅ tsserver | ✅ | ✅ |
-| Julia | ✅ JuliaFormatter | ✅ | ✅ |
+| Go | ✅ | ✅ | ✅ |
+| Haskell | ✅ | ✅ | ✅ |
+| JavaScript | ✅ | ✅ | ✅ |
+| Julia | ✅ | ✅ | ✅ |
 | Octave | – | – | – |
 | PostgreSQL | – | – | – |
 | PyPy | – | ✅ | ✅ |
 | Python | – | ✅ | ✅ |
-| R | ✅ styler | ✅ | ✅ |
+| R | ✅ | ✅ | ✅ |
 | R (Ark) | – | – | – |
-| Ruby | ✅ rubocop | ✅ | – |
-| Rust | ✅ rustfmt | ✅ | ✅ |
-| TypeScript | ✅ tsserver | ✅ | ✅ |
+| Ruby | ✅ | ✅ | – |
+| Rust | ✅ | ✅ | ✅ |
+| TypeScript | ✅ | ✅ | ✅ |
 
 ### Packages
 
@@ -169,9 +169,8 @@ by anything that wants to render this data elsewhere. Its shape:
 ```
 
 `level` is `full`, `none`, or `unknown` (nothing probed that kernel yet), and `detail` says
-which language server or REPL is behind it. A feature can also carry `"render": "label"`,
-which asks the renderers to print `detail` in the cell rather than a check mark; `formatting`
-is the one that does, so its cell names the formatter.
+which language server or REPL is behind it — for `formatting`, the formatter. The SVG shows
+`detail` in a cell's tooltip.
 
 ## Formatting
 
@@ -181,7 +180,7 @@ tool behind it isn't installed — bash-language-server did exactly that until s
 to its wrapper. So the column is the conjunction of two things: the server advertises
 formatting, *and* the kernel names the formatter behind it in `passthru.formatters` (declared
 next to each language server's config and aggregated in the kernel's `default.nix`). That name
-is what the cell prints.
+is what the table below records, and what the SVG shows in the cell's tooltip.
 
 | Language | Formatter | Comes from | Setting |
 | --- | --- | --- | --- |

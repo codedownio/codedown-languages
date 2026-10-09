@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="985" height="735" viewBox="0 0 985 735" role="img" aria-label="Language feature support matrix">
+<svg xmlns="http://www.w3.org/2000/svg" width="926" height="735" viewBox="0 0 926 735" role="img" aria-label="Language feature support matrix">
   <title>codedown language feature matrix</title>
-  <rect width="985" height="735" fill="#1a1a19"/>
+  <rect width="926" height="735" fill="#1a1a19"/>
   <g font-family='system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif'>
     <text x="16" y="36" font-size="16" font-weight="600" fill="#ffffff">Language feature support</text>
     <text x="16" y="54" font-size="11" fill="#c3c2b7">Generated from the codedown-languages Nix modules and live language server capabilities</text>
@@ -10,10 +10,10 @@
     <text x="439.5" y="75" font-size="10" font-weight="600" text-anchor="middle" fill="#c3c2b7">Code intelligence</text>
     <rect x="542" y="62" width="172" height="18" rx="3" fill="#262624"/>
     <text x="628.0" y="75" font-size="10" font-weight="600" text-anchor="middle" fill="#c3c2b7">Navigation</text>
-    <rect x="716" y="62" width="144" height="18" rx="3" fill="#262624"/>
-    <text x="788.0" y="75" font-size="10" font-weight="600" text-anchor="middle" fill="#c3c2b7">Editing</text>
-    <rect x="862" y="62" width="27" height="18" rx="3" fill="#262624"/>
-    <text x="875.5" y="75" font-size="10" font-weight="600" text-anchor="middle" fill="#c3c2b7">Packages</text>
+    <rect x="716" y="62" width="85" height="18" rx="3" fill="#262624"/>
+    <text x="758.5" y="75" font-size="10" font-weight="600" text-anchor="middle" fill="#c3c2b7">Editing</text>
+    <rect x="803" y="62" width="27" height="18" rx="3" fill="#262624"/>
+    <text x="816.5" y="75" font-size="10" font-weight="600" text-anchor="middle" fill="#c3c2b7">Packages</text>
     <text x="211.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 211.5 188)">Jupyter kernel</text>
     <text x="240.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 240.5 188)">REPL</text>
     <text x="269.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 269.5 188)">Variable inspector</text>
@@ -32,11 +32,11 @@
     <text x="646.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 646.5 188)">Document outline</text>
     <text x="675.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 675.5 188)">Workspace symbol search</text>
     <text x="704.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 704.5 188)">Highlight occurrences</text>
-    <text x="763.0" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 763.0 188)">Formatting</text>
-    <text x="821.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 821.5 188)">Rename symbol</text>
-    <text x="850.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 850.5 188)">Code actions</text>
-    <text x="879.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 879.5 188)">Subpackage management</text>
-    <rect x="16" y="196" width="875" height="29" fill="#201f1e"/>
+    <text x="733.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 733.5 188)">Formatting</text>
+    <text x="762.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 762.5 188)">Rename symbol</text>
+    <text x="791.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 791.5 188)">Code actions</text>
+    <text x="820.5" y="188" font-size="11" fill="#c3c2b7" text-anchor="start" transform="rotate(-45 820.5 188)">Subpackage management</text>
+    <rect x="16" y="196" width="816" height="29" fill="#201f1e"/>
     <text x="20" y="214.5" font-size="12.5" fill="#ffffff">Bash</text>
     <text x="186" y="214.5" font-size="10" text-anchor="end" fill="#898781">5.3p9</text>
     <g><title>Bash - Jupyter kernel: yes</title>
@@ -107,19 +107,19 @@
       <path d="M 696.9 210.6 L 700.1 213.9 L 706.3 206.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Bash - Formatting: yes (shfmt)</title>
-      <rect x="719.0" y="200.0" width="82" height="21" rx="5" fill="#17301a"/>
-      <text x="760.0" y="214.0" font-size="9.5" text-anchor="middle" fill="#5fd45f">shfmt</text>
+      <rect x="720.0" y="200.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 725.9 210.6 L 729.1 213.9 L 735.3 206.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Bash - Rename symbol: yes (bash-language-server)</title>
-      <rect x="808.0" y="200.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 210.6 L 817.1 213.9 L 823.3 206.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="200.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 210.6 L 758.1 213.9 L 764.3 206.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Bash - Code actions: yes (bash-language-server)</title>
-      <rect x="837.0" y="200.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 842.9 210.6 L 846.1 213.9 L 852.3 206.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="778.0" y="200.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 783.9 210.6 L 787.1 213.9 L 793.3 206.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Bash - Subpackage management: no</title>
-      <circle cx="876.5" cy="210.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="817.5" cy="210.5" r="2.2" fill="#4a4a47"/>
     </g>
     <text x="20" y="243.5" font-size="12.5" fill="#ffffff">C++ 23</text>
     <text x="186" y="243.5" font-size="10" text-anchor="end" fill="#898781">21.1.8</text>
@@ -194,21 +194,21 @@
       <path d="M 696.9 239.6 L 700.1 242.9 L 706.3 235.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>C++ 23 - Formatting: yes (clang-format)</title>
-      <rect x="719.0" y="229.0" width="82" height="21" rx="5" fill="#17301a"/>
-      <text x="760.0" y="243.0" font-size="9.5" text-anchor="middle" fill="#5fd45f">clang-format</text>
+      <rect x="720.0" y="229.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 725.9 239.6 L 729.1 242.9 L 735.3 235.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>C++ 23 - Rename symbol: yes (clangd)</title>
-      <rect x="808.0" y="229.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 239.6 L 817.1 242.9 L 823.3 235.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="229.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 239.6 L 758.1 242.9 L 764.3 235.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>C++ 23 - Code actions: yes (clangd)</title>
-      <rect x="837.0" y="229.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 842.9 239.6 L 846.1 242.9 L 852.3 235.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="778.0" y="229.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 783.9 239.6 L 787.1 242.9 L 793.3 235.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>C++ 23 - Subpackage management: no</title>
-      <circle cx="876.5" cy="239.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="817.5" cy="239.5" r="2.2" fill="#4a4a47"/>
     </g>
-    <rect x="16" y="254" width="875" height="29" fill="#201f1e"/>
+    <rect x="16" y="254" width="816" height="29" fill="#201f1e"/>
     <text x="20" y="272.5" font-size="12.5" fill="#ffffff">Clojure</text>
     <text x="186" y="272.5" font-size="10" text-anchor="end" fill="#898781">1.12.5.1645</text>
     <g><title>Clojure - Jupyter kernel: yes</title>
@@ -281,19 +281,19 @@
       <path d="M 696.9 268.6 L 700.1 271.9 L 706.3 264.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Clojure - Formatting: yes (cljfmt)</title>
-      <rect x="719.0" y="258.0" width="82" height="21" rx="5" fill="#17301a"/>
-      <text x="760.0" y="272.0" font-size="9.5" text-anchor="middle" fill="#5fd45f">cljfmt</text>
+      <rect x="720.0" y="258.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 725.9 268.6 L 729.1 271.9 L 735.3 264.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Clojure - Rename symbol: yes (clojure-lsp)</title>
-      <rect x="808.0" y="258.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 268.6 L 817.1 271.9 L 823.3 264.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="258.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 268.6 L 758.1 271.9 L 764.3 264.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Clojure - Code actions: yes (clojure-lsp)</title>
-      <rect x="837.0" y="258.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 842.9 268.6 L 846.1 271.9 L 852.3 264.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="778.0" y="258.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 783.9 268.6 L 787.1 271.9 L 793.3 264.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Clojure - Subpackage management: no</title>
-      <circle cx="876.5" cy="268.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="817.5" cy="268.5" r="2.2" fill="#4a4a47"/>
     </g>
     <text x="20" y="301.5" font-size="12.5" fill="#ffffff">Coq</text>
     <text x="186" y="301.5" font-size="10" text-anchor="end" fill="#898781">9.1.1</text>
@@ -355,19 +355,19 @@
       <circle cx="701.5" cy="297.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>Coq - Formatting: no</title>
-      <circle cx="760.0" cy="297.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="730.5" cy="297.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>Coq - Rename symbol: no</title>
-      <circle cx="818.5" cy="297.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="759.5" cy="297.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>Coq - Code actions: no</title>
-      <circle cx="847.5" cy="297.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="788.5" cy="297.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>Coq - Subpackage management: yes</title>
-      <rect x="866.0" y="287.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 871.9 297.6 L 875.1 300.9 L 881.3 293.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="807.0" y="287.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 812.9 297.6 L 816.1 300.9 L 822.3 293.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <rect x="16" y="312" width="875" height="29" fill="#201f1e"/>
+    <rect x="16" y="312" width="816" height="29" fill="#201f1e"/>
     <text x="20" y="330.5" font-size="12.5" fill="#ffffff">Go</text>
     <text x="186" y="330.5" font-size="10" text-anchor="end" fill="#898781">1.26.6</text>
     <g><title>Go - Jupyter kernel: yes</title>
@@ -440,19 +440,19 @@
       <path d="M 696.9 326.6 L 700.1 329.9 L 706.3 322.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Go - Formatting: yes (gofmt)</title>
-      <rect x="719.0" y="316.0" width="82" height="21" rx="5" fill="#17301a"/>
-      <text x="760.0" y="330.0" font-size="9.5" text-anchor="middle" fill="#5fd45f">gofmt</text>
+      <rect x="720.0" y="316.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 725.9 326.6 L 729.1 329.9 L 735.3 322.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Go - Rename symbol: yes (gopls)</title>
-      <rect x="808.0" y="316.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 326.6 L 817.1 329.9 L 823.3 322.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="316.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 326.6 L 758.1 329.9 L 764.3 322.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Go - Code actions: yes (gopls)</title>
-      <rect x="837.0" y="316.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 842.9 326.6 L 846.1 329.9 L 852.3 322.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="778.0" y="316.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 783.9 326.6 L 787.1 329.9 L 793.3 322.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Go - Subpackage management: no</title>
-      <circle cx="876.5" cy="326.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="817.5" cy="326.5" r="2.2" fill="#4a4a47"/>
     </g>
     <text x="20" y="359.5" font-size="12.5" fill="#ffffff">Haskell</text>
     <text x="186" y="359.5" font-size="10" text-anchor="end" fill="#898781">9.10.3</text>
@@ -527,22 +527,22 @@
       <path d="M 696.9 355.6 L 700.1 358.9 L 706.3 351.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Haskell - Formatting: yes (ormolu)</title>
-      <rect x="719.0" y="345.0" width="82" height="21" rx="5" fill="#17301a"/>
-      <text x="760.0" y="359.0" font-size="9.5" text-anchor="middle" fill="#5fd45f">ormolu</text>
+      <rect x="720.0" y="345.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 725.9 355.6 L 729.1 358.9 L 735.3 351.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Haskell - Rename symbol: yes (haskell-language-server)</title>
-      <rect x="808.0" y="345.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 355.6 L 817.1 358.9 L 823.3 351.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="345.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 355.6 L 758.1 358.9 L 764.3 351.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Haskell - Code actions: yes (haskell-language-server)</title>
-      <rect x="837.0" y="345.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 842.9 355.6 L 846.1 358.9 L 852.3 351.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="778.0" y="345.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 783.9 355.6 L 787.1 358.9 L 793.3 351.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Haskell - Subpackage management: yes</title>
-      <rect x="866.0" y="345.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 871.9 355.6 L 875.1 358.9 L 881.3 351.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="807.0" y="345.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 812.9 355.6 L 816.1 358.9 L 822.3 351.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <rect x="16" y="370" width="875" height="29" fill="#201f1e"/>
+    <rect x="16" y="370" width="816" height="29" fill="#201f1e"/>
     <text x="20" y="388.5" font-size="12.5" fill="#ffffff">JavaScript</text>
     <text x="186" y="388.5" font-size="10" text-anchor="end" fill="#898781">24.19.0</text>
     <g><title>JavaScript - Jupyter kernel: yes</title>
@@ -616,20 +616,20 @@
       <path d="M 696.9 384.6 L 700.1 387.9 L 706.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>JavaScript - Formatting: yes (tsserver)</title>
-      <rect x="719.0" y="374.0" width="82" height="21" rx="5" fill="#17301a"/>
-      <text x="760.0" y="388.0" font-size="9.5" text-anchor="middle" fill="#5fd45f">tsserver</text>
+      <rect x="720.0" y="374.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 725.9 384.6 L 729.1 387.9 L 735.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>JavaScript - Rename symbol: yes (typescript-language-server)</title>
-      <rect x="808.0" y="374.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 384.6 L 817.1 387.9 L 823.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="374.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 384.6 L 758.1 387.9 L 764.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>JavaScript - Code actions: yes (typescript-language-server)</title>
-      <rect x="837.0" y="374.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 842.9 384.6 L 846.1 387.9 L 852.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="778.0" y="374.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 783.9 384.6 L 787.1 387.9 L 793.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>JavaScript - Subpackage management: yes</title>
-      <rect x="866.0" y="374.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 871.9 384.6 L 875.1 387.9 L 881.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="807.0" y="374.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 812.9 384.6 L 816.1 387.9 L 822.3 380.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <text x="20" y="417.5" font-size="12.5" fill="#ffffff">Julia</text>
     <text x="186" y="417.5" font-size="10" text-anchor="end" fill="#898781">1.12.6</text>
@@ -703,22 +703,22 @@
       <path d="M 696.9 413.6 L 700.1 416.9 L 706.3 409.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Julia - Formatting: yes (JuliaFormatter)</title>
-      <rect x="719.0" y="403.0" width="82" height="21" rx="5" fill="#17301a"/>
-      <text x="760.0" y="417.0" font-size="9.5" text-anchor="middle" fill="#5fd45f">JuliaFormatter</text>
+      <rect x="720.0" y="403.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 725.9 413.6 L 729.1 416.9 L 735.3 409.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Julia - Rename symbol: yes (LanguageServer)</title>
-      <rect x="808.0" y="403.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 413.6 L 817.1 416.9 L 823.3 409.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="403.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 413.6 L 758.1 416.9 L 764.3 409.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Julia - Code actions: yes (LanguageServer)</title>
-      <rect x="837.0" y="403.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 842.9 413.6 L 846.1 416.9 L 852.3 409.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="778.0" y="403.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 783.9 413.6 L 787.1 416.9 L 793.3 409.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Julia - Subpackage management: yes</title>
-      <rect x="866.0" y="403.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 871.9 413.6 L 875.1 416.9 L 881.3 409.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="807.0" y="403.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 812.9 413.6 L 816.1 416.9 L 822.3 409.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <rect x="16" y="428" width="875" height="29" fill="#201f1e"/>
+    <rect x="16" y="428" width="816" height="29" fill="#201f1e"/>
     <text x="20" y="446.5" font-size="12.5" fill="#ffffff">Octave</text>
     <text x="186" y="446.5" font-size="10" text-anchor="end" fill="#898781">11.1.0</text>
     <g><title>Octave - Jupyter kernel: yes</title>
@@ -780,17 +780,17 @@
       <circle cx="701.5" cy="442.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>Octave - Formatting: no</title>
-      <circle cx="760.0" cy="442.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="730.5" cy="442.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>Octave - Rename symbol: no</title>
-      <circle cx="818.5" cy="442.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="759.5" cy="442.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>Octave - Code actions: no</title>
-      <circle cx="847.5" cy="442.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="788.5" cy="442.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>Octave - Subpackage management: yes</title>
-      <rect x="866.0" y="432.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 871.9 442.6 L 875.1 445.9 L 881.3 438.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="807.0" y="432.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 812.9 442.6 L 816.1 445.9 L 822.3 438.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <text x="20" y="475.5" font-size="12.5" fill="#ffffff">PostgreSQL</text>
     <text x="186" y="475.5" font-size="10" text-anchor="end" fill="#898781">0.1</text>
@@ -852,18 +852,18 @@
       <circle cx="701.5" cy="471.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>PostgreSQL - Formatting: no</title>
-      <circle cx="760.0" cy="471.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="730.5" cy="471.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>PostgreSQL - Rename symbol: no</title>
-      <circle cx="818.5" cy="471.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="759.5" cy="471.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>PostgreSQL - Code actions: no</title>
-      <circle cx="847.5" cy="471.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="788.5" cy="471.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>PostgreSQL - Subpackage management: no</title>
-      <circle cx="876.5" cy="471.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="817.5" cy="471.5" r="2.2" fill="#4a4a47"/>
     </g>
-    <rect x="16" y="486" width="875" height="29" fill="#201f1e"/>
+    <rect x="16" y="486" width="816" height="29" fill="#201f1e"/>
     <text x="20" y="504.5" font-size="12.5" fill="#ffffff">PyPy</text>
     <text x="186" y="504.5" font-size="10" text-anchor="end" fill="#898781">7.3.20</text>
     <g><title>PyPy - Jupyter kernel: yes</title>
@@ -937,19 +937,19 @@
       <path d="M 696.9 500.6 L 700.1 503.9 L 706.3 496.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>PyPy - Formatting: no</title>
-      <circle cx="760.0" cy="500.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="730.5" cy="500.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>PyPy - Rename symbol: yes (jedi)</title>
-      <rect x="808.0" y="490.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 500.6 L 817.1 503.9 L 823.3 496.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="490.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 500.6 L 758.1 503.9 L 764.3 496.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>PyPy - Code actions: yes (jedi)</title>
-      <rect x="837.0" y="490.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 842.9 500.6 L 846.1 503.9 L 852.3 496.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="778.0" y="490.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 783.9 500.6 L 787.1 503.9 L 793.3 496.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>PyPy - Subpackage management: yes</title>
-      <rect x="866.0" y="490.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 871.9 500.6 L 875.1 503.9 L 881.3 496.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="807.0" y="490.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 812.9 500.6 L 816.1 503.9 L 822.3 496.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <text x="20" y="533.5" font-size="12.5" fill="#ffffff">Python</text>
     <text x="186" y="533.5" font-size="10" text-anchor="end" fill="#898781">3.13.15</text>
@@ -1024,21 +1024,21 @@
       <path d="M 696.9 529.6 L 700.1 532.9 L 706.3 525.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Python - Formatting: no</title>
-      <circle cx="760.0" cy="529.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="730.5" cy="529.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>Python - Rename symbol: yes (jedi)</title>
-      <rect x="808.0" y="519.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 529.6 L 817.1 532.9 L 823.3 525.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="519.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 529.6 L 758.1 532.9 L 764.3 525.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Python - Code actions: yes (jedi)</title>
-      <rect x="837.0" y="519.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 842.9 529.6 L 846.1 532.9 L 852.3 525.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="778.0" y="519.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 783.9 529.6 L 787.1 532.9 L 793.3 525.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Python - Subpackage management: yes</title>
-      <rect x="866.0" y="519.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 871.9 529.6 L 875.1 532.9 L 881.3 525.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="807.0" y="519.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 812.9 529.6 L 816.1 532.9 L 822.3 525.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <rect x="16" y="544" width="875" height="29" fill="#201f1e"/>
+    <rect x="16" y="544" width="816" height="29" fill="#201f1e"/>
     <text x="20" y="562.5" font-size="12.5" fill="#ffffff">R</text>
     <text x="186" y="562.5" font-size="10" text-anchor="end" fill="#898781">4.5.3</text>
     <g><title>R - Jupyter kernel: yes</title>
@@ -1110,20 +1110,20 @@
       <path d="M 696.9 558.6 L 700.1 561.9 L 706.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>R - Formatting: yes (styler)</title>
-      <rect x="719.0" y="548.0" width="82" height="21" rx="5" fill="#17301a"/>
-      <text x="760.0" y="562.0" font-size="9.5" text-anchor="middle" fill="#5fd45f">styler</text>
+      <rect x="720.0" y="548.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 725.9 558.6 L 729.1 561.9 L 735.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>R - Rename symbol: yes (languageserver)</title>
-      <rect x="808.0" y="548.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 558.6 L 817.1 561.9 L 823.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="548.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 558.6 L 758.1 561.9 L 764.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>R - Code actions: yes (languageserver)</title>
-      <rect x="837.0" y="548.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 842.9 558.6 L 846.1 561.9 L 852.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="778.0" y="548.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 783.9 558.6 L 787.1 561.9 L 793.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>R - Subpackage management: yes</title>
-      <rect x="866.0" y="548.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 871.9 558.6 L 875.1 561.9 L 881.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="807.0" y="548.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 812.9 558.6 L 816.1 561.9 L 822.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <text x="20" y="591.5" font-size="12.5" fill="#ffffff">R (Ark)</text>
     <text x="186" y="591.5" font-size="10" text-anchor="end" fill="#898781">4.5.3</text>
@@ -1187,19 +1187,19 @@
       <circle cx="701.5" cy="587.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>R (Ark) - Formatting: no</title>
-      <circle cx="760.0" cy="587.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="730.5" cy="587.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>R (Ark) - Rename symbol: no</title>
-      <circle cx="818.5" cy="587.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="759.5" cy="587.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>R (Ark) - Code actions: no</title>
-      <circle cx="847.5" cy="587.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="788.5" cy="587.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>R (Ark) - Subpackage management: yes</title>
-      <rect x="866.0" y="577.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 871.9 587.6 L 875.1 590.9 L 881.3 583.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="807.0" y="577.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 812.9 587.6 L 816.1 590.9 L 822.3 583.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <rect x="16" y="602" width="875" height="29" fill="#201f1e"/>
+    <rect x="16" y="602" width="816" height="29" fill="#201f1e"/>
     <text x="20" y="620.5" font-size="12.5" fill="#ffffff">Ruby</text>
     <text x="186" y="620.5" font-size="10" text-anchor="end" fill="#898781">3.4.9</text>
     <g><title>Ruby - Jupyter kernel: yes</title>
@@ -1272,19 +1272,19 @@
       <path d="M 696.9 616.6 L 700.1 619.9 L 706.3 612.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Ruby - Formatting: yes (rubocop)</title>
-      <rect x="719.0" y="606.0" width="82" height="21" rx="5" fill="#17301a"/>
-      <text x="760.0" y="620.0" font-size="9.5" text-anchor="middle" fill="#5fd45f">rubocop</text>
+      <rect x="720.0" y="606.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 725.9 616.6 L 729.1 619.9 L 735.3 612.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Ruby - Rename symbol: yes (solargraph)</title>
-      <rect x="808.0" y="606.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 616.6 L 817.1 619.9 L 823.3 612.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="606.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 616.6 L 758.1 619.9 L 764.3 612.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Ruby - Code actions: no</title>
-      <circle cx="847.5" cy="616.5" r="2.2" fill="#4a4a47"/>
+      <circle cx="788.5" cy="616.5" r="2.2" fill="#4a4a47"/>
     </g>
     <g><title>Ruby - Subpackage management: yes</title>
-      <rect x="866.0" y="606.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 871.9 616.6 L 875.1 619.9 L 881.3 612.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="807.0" y="606.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 812.9 616.6 L 816.1 619.9 L 822.3 612.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <text x="20" y="649.5" font-size="12.5" fill="#ffffff">Rust</text>
     <text x="186" y="649.5" font-size="10" text-anchor="end" fill="#898781">1.95.0</text>
@@ -1360,22 +1360,22 @@
       <path d="M 696.9 645.6 L 700.1 648.9 L 706.3 641.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Rust - Formatting: yes (rustfmt)</title>
-      <rect x="719.0" y="635.0" width="82" height="21" rx="5" fill="#17301a"/>
-      <text x="760.0" y="649.0" font-size="9.5" text-anchor="middle" fill="#5fd45f">rustfmt</text>
+      <rect x="720.0" y="635.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 725.9 645.6 L 729.1 648.9 L 735.3 641.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Rust - Rename symbol: yes (rust-analyzer)</title>
-      <rect x="808.0" y="635.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 645.6 L 817.1 648.9 L 823.3 641.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="635.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 645.6 L 758.1 648.9 L 764.3 641.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Rust - Code actions: yes (rust-analyzer)</title>
-      <rect x="837.0" y="635.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 842.9 645.6 L 846.1 648.9 L 852.3 641.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="778.0" y="635.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 783.9 645.6 L 787.1 648.9 L 793.3 641.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Rust - Subpackage management: yes</title>
-      <rect x="866.0" y="635.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 871.9 645.6 L 875.1 648.9 L 881.3 641.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="807.0" y="635.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 812.9 645.6 L 816.1 648.9 L 822.3 641.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <rect x="16" y="660" width="875" height="29" fill="#201f1e"/>
+    <rect x="16" y="660" width="816" height="29" fill="#201f1e"/>
     <text x="20" y="678.5" font-size="12.5" fill="#ffffff">TypeScript</text>
     <text x="186" y="678.5" font-size="10" text-anchor="end" fill="#898781">24.19.0</text>
     <g><title>TypeScript - Jupyter kernel: yes</title>
@@ -1449,25 +1449,25 @@
       <path d="M 696.9 674.6 L 700.1 677.9 L 706.3 670.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>TypeScript - Formatting: yes (tsserver)</title>
-      <rect x="719.0" y="664.0" width="82" height="21" rx="5" fill="#17301a"/>
-      <text x="760.0" y="678.0" font-size="9.5" text-anchor="middle" fill="#5fd45f">tsserver</text>
+      <rect x="720.0" y="664.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 725.9 674.6 L 729.1 677.9 L 735.3 670.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>TypeScript - Rename symbol: yes (typescript-language-server)</title>
-      <rect x="808.0" y="664.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 813.9 674.6 L 817.1 677.9 L 823.3 670.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="749.0" y="664.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 754.9 674.6 L 758.1 677.9 L 764.3 670.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>TypeScript - Code actions: yes (typescript-language-server)</title>
-      <rect x="837.0" y="664.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 842.9 674.6 L 846.1 677.9 L 852.3 670.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="778.0" y="664.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 783.9 674.6 L 787.1 677.9 L 793.3 670.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>TypeScript - Subpackage management: yes</title>
-      <rect x="866.0" y="664.0" width="21" height="21" rx="5" fill="#17301a"/>
-      <path d="M 871.9 674.6 L 875.1 677.9 L 881.3 670.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="807.0" y="664.0" width="21" height="21" rx="5" fill="#17301a"/>
+      <path d="M 812.9 674.6 L 816.1 677.9 L 822.3 670.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <line x1="339" y1="196" x2="339" y2="689" stroke="#2c2c2a" stroke-width="1"/>
     <line x1="542" y1="196" x2="542" y2="689" stroke="#2c2c2a" stroke-width="1"/>
     <line x1="716" y1="196" x2="716" y2="689" stroke="#2c2c2a" stroke-width="1"/>
-    <line x1="862" y1="196" x2="862" y2="689" stroke="#2c2c2a" stroke-width="1"/>
+    <line x1="803" y1="196" x2="803" y2="689" stroke="#2c2c2a" stroke-width="1"/>
     <line x1="194" y1="196" x2="194" y2="689" stroke="#2c2c2a" stroke-width="1"/>
     <rect x="16" y="699" width="16" height="16" rx="4" fill="#17301a"/>
     <path d="M 19.4 707.1 L 22.6 710.4 L 28.8 703.2" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

@@ -37,9 +37,6 @@ let
   # source = "nix":  computed from the module evaluation below.
   # source = "lsp":  read out of the language server's advertised capabilities.
   # source = "both": needs each (see `formatting` below).
-  #
-  # render = "label" asks the renderers to print the support detail in the cell rather than
-  # just a check mark.
   features = [
     { id = "jupyterKernel"; name = "Jupyter kernel"; group = "core";
       description = "Runs notebook cells through a Jupyter kernel."; source = "nix"; }
@@ -81,8 +78,7 @@ let
       description = "Highlights other occurrences of the symbol under the cursor."; source = "lsp"; }
 
     { id = "formatting"; name = "Formatting"; group = "editing";
-      description = "Format a document or a selection. The cell names the formatter behind it.";
-      source = "both"; render = "label"; }
+      description = "Format a document or a selection."; source = "both"; }
     { id = "rename"; name = "Rename symbol"; group = "editing";
       description = "Rename a symbol and every reference to it."; source = "lsp"; }
     { id = "codeActions"; name = "Code actions"; group = "editing";
