@@ -4,8 +4,8 @@ Context from implementing LSP inlay hints in codedown (codedownio/codedown#1388,
 part of codedownio/codedown#1366). The codedown side works: the request is
 allowed, routed to the right server, positions are translated back to notebook
 coordinates, and the hints are drawn in the editor. No language server the
-channel ships can currently produce a hint in a notebook, for two separate
-reasons.
+channel ships can currently produce a hint in a notebook. For rust-analyzer the
+reason is configuration; for clangd it is packaging.
 
 ## How codedown asks
 
@@ -37,47 +37,45 @@ no hints. Its reported configuration is:
 }
 ```
 
-`typeHints.enable` is false, so `let x = 5;` produces nothing. These are
-rust-analyzer's own server-side defaults; the editor extensions that people
-associate with rust-analyzer turn them on from the client side, which we don't.
+`typeHints.enable` is false, so `let x = 5;` produces nothing. This is not
+rust-analyzer defaulting them off: the whole `inlayHints` block is written out
+explicitly in
+`modules/kernels/rust/language_server_rust_analyzer/config.nix`, around line
+134, with every category disabled. What the server reports back is our own
+configuration.
 
-Fix: set them in the rust-analyzer language server's `initialization_options`,
-the same mechanism `pylsp_initialization_options.nix` already uses. Something
-like:
+Fix: flip the categories we want in that existing block. The smallest change
+that makes hints appear at all is
 
 ```nix
-initialization_options = {
-  inlayHints = {
-    typeHints.enable = true;
-    parameterHints = true;
-    chainingHints = true;
-  };
+"typeHints" = {
+  "enable" = true;
+  ...
 };
 ```
 
-Worth deciding which categories are wanted by default rather than enabling
-everything; parameter hints in particular are divisive.
+Worth deciding which of the others are wanted rather than enabling everything;
+parameter hints in particular are divisive.
 
-## Issue 2: rust-analyzer and clangd have no notebook_suffix
+## Issue 2: clangd has no notebook_suffix
 
-Neither language server sets `notebook_suffix`, so a notebook's sub-document is
-named exactly `main.ipynb`, with no extension telling the server what it is.
+A notebook's sub-document is named `<notebook><notebook_suffix>`. clangd sets no
+suffix, so it is handed a file called `main.ipynb`, refuses to build an AST for
+something it doesn't recognise, and answers `-32602: trying to get AST for
+non-added document` to every request that needs one. clangd in a notebook is
+effectively non-functional today, inlay hints included.
 
-- rust-analyzer tolerates this. It analyses the file from the `language_id` and
-  answers hovers, code actions and completions correctly.
-- clangd does not. It refuses to build an AST for a file it doesn't recognise
-  and answers `-32602: trying to get AST for non-added document` to every
-  request that needs one, including inlay hints. clangd in a notebook is
-  effectively non-functional today.
+Fix: `notebook_suffix = ".cpp"`, as jedi (`.py`), python-lsp-server (`.py`),
+bash-language-server (`.bash`) and tinymist (`.typ`) already do.
 
-Fix: give both a `notebook_suffix`, as jedi (`.py`), python-lsp-server (`.py`),
-bash-language-server (`.bash`) and tinymist (`.typ`) already do:
-
-- rust-analyzer: `notebook_suffix = ".rs"`
-- clangd: `notebook_suffix = ".cpp"`
+rust-analyzer also has an empty suffix, but that one is deliberate and should be
+left alone: `notebook_suffix = if raw then ".rs" else ""`, because the non-raw
+configuration wraps it in `rust-notebook-language-server`, which does its own
+projection. rust-analyzer answers hovers, code actions and completions in a
+notebook today, so nothing here is broken.
 
 Other servers advertising `inlayHintProvider` in `nix/lsp-capabilities.json`
-are worth the same check: gopls, haskell-language-server,
+are worth the same check as clangd: gopls, haskell-language-server,
 typescript-language-server and julia's LanguageServer.
 
 ## Related: formatters ship without their tools

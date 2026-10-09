@@ -37,12 +37,13 @@ tests = describe "R" $ introduceNixEnvironment [kernelSpec] [] "R" $ introduceJu
   VariableInspector.tests "R"
 
   it "languageserver formats test.R" $ do
-    -- styler produces the right answer here -- you can watch it come back over the wire in the
-    -- session log -- but the R language server then never answers lsp-test's `shutdown`, and
-    -- the session hangs instead of finishing. Driving the same sequence against the same
-    -- server in the same sandbox by hand shuts down fine, so it's something about how
-    -- lsp-test ends the session. Pending until that's sorted out; a hanging test is worse
-    -- than no test.
+    -- styler produces the right answer and the server delivers it -- its own debug log shows
+    -- the shutdown response going out and a clean exit 0. lsp-test never reads that response:
+    -- a publishDiagnostics notification lands in the window between the shutdown request and
+    -- its reply, and the session deadlocks in teardown. The 120s timeout around the shutdown
+    -- exchange doesn't fire; the process sits idle for half an hour on 1.5s of CPU.
+    -- Replaying the identical bytes against the same server in the same sandbox always gets
+    -- the response, so this is lsp-test's teardown, not R.
     _ <- pending
     formatsAs 180 "languageserver" "test.R" LanguageKind_R
       "f <- function(a,b){\na+b\n}\n"
