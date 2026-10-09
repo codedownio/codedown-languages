@@ -104,7 +104,7 @@ let
     };
     lsp.python-lsp-server.formatter = mkOption {
       title = "Python formatter";
-      description = "Which formatter python-lsp-server uses. It ships with none of them, so this also decides what gets added to the environment. autopep8 is the lightest and reuses the pycodestyle settings above; black and ruff reformat more aggressively. Note that Jedi, the default language server, can't format at all -- this only applies when python-lsp-server is enabled.";
+      description = "Which formatter python-lsp-server uses.";
       type = types.enum ["autopep8" "yapf" "black" "ruff" "none"];
       default = "autopep8";
     };
