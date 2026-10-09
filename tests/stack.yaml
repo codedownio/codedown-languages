@@ -27,7 +27,7 @@ extra-deps:
   - lsp-types
 
 - git: https://github.com/codedownio/lsp-test-helpers.git
-  # main branch
-  commit: 3aead859c272db11879cec58bef0f4e65244be45
+  # kernel-piggyback-and-binsh branch, for the /bin/sh the R language server needs at startup
+  commit: aef37ba837a82582e84ea06f6e6bb1d168b21b68
 
 - ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293

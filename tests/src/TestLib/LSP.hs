@@ -188,8 +188,11 @@ itReformats name filename languageKind code =
 itFormats' :: (
   LspContext ctx m, HasNixEnvironment ctx
   ) => Double -> Text -> FilePath -> LanguageKind -> Text -> (Text -> ExampleT ctx m ()) -> SpecFree ctx m ()
+-- Deliberately keeps the code out of the test name: Sandwich names the test's directory after
+-- it, and the escaped newlines turn into backslashes in a path, which R.cache rewrites to
+-- forward slashes and then can't write to.
 itFormats' timeoutSeconds name filename languageKind code cb =
-  it [i|#{name}: #{show code} (formatting)|] $
+  it [i|#{name} formats #{filename}|] $
     formats' timeoutSeconds name filename languageKind code cb
 
 -- | The body of 'itFormatsAs', for specs that need to wrap it (e.g. to mark it 'pending').
