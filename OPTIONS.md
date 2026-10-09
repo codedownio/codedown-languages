@@ -2483,6 +2483,29 @@ false
 
 
 
+## kernels\.rust\.lsp\.rust-analyzer\.typeHints
+
+
+
+**Rust-analyzer: show inferred types inline**
+
+Draw the inferred type next to a ` let ` binding or a closure parameter\. rust-analyzer ships this off and expects the editor to ask for it, which is why it produces no hints by default\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
 ## kernels\.rust\.misc\.enableVariableInspector
 
 
