@@ -75,6 +75,13 @@ kernelTests rubyPackage = do
         info [i|Got ranges: #{Helpers.getDiagnosticRanges diags}|]
         assertDiagnosticRanges diags [(Range (Position 0 5) (Position 0 12), Just (InR "Style/StringLiterals"))]
 
+    -- Only on a .rb file: Solargraph formats by handing the path to rubocop, which won't
+    -- take a .ipynb.
+    describe "Formatting" $
+      itFormatsAs "solargraph" "test.rb" LanguageKind_Ruby
+        "def   foo( a,b )\n  x=a+b\n    return x\nend\n"
+        "def foo(a, b)\n  a + b\nend\n"
+
 kernelSpec :: Text -> NixKernelSpec
 kernelSpec rubyPackage = NixKernelSpec {
   nixKernelName = kernelName rubyPackage

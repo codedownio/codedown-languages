@@ -102,6 +102,12 @@ let
       type = types.bool;
       default = false;
     };
+    lsp.python-lsp-server.formatter = mkOption {
+      title = "Python formatter";
+      description = "Which formatter python-lsp-server uses.";
+      type = types.enum ["autopep8" "yapf" "black" "ruff" "none"];
+      default = "autopep8";
+    };
     lsp.python-language-server.enable = mkOption {
       title = "Enable python-language-server language server";
       type = types.bool;

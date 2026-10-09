@@ -61,6 +61,12 @@ in
         default = true;
       };
 
+      lsp.solargraph.formatting = mkOption {
+        title = "Format Ruby code with rubocop";
+        type = types.bool;
+        default = true;
+      };
+
       lsp.solargraph.rubocopYaml = mkOption {
         title = "YAML configuration for the rubocop reporter";
         type = types.codeMirrorLines "yaml";

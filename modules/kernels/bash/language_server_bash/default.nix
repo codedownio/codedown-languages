@@ -39,6 +39,7 @@ let
 
   passthru = {
     inherit languageServerName;
+    formatters = ["shfmt"];
   };
 
 in

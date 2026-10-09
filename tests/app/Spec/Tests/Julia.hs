@@ -57,6 +57,11 @@ juliaTests juliaPackage = describe [i|Julia (#{juliaPackage})|] $ introduceNixEn
       ident <- openDoc lspSessionInfoFileName "julia"
       getHighlights ident (Position 0 1) >>= (`shouldBe` documentHighlightResults)
 
+    -- Weaker than the other languages' formatting tests: JuliaFormatter's exact output isn't
+    -- pinned here, only that LanguageServer.jl actually reformats.
+    itReformats lsName "test.jl" (LanguageKind_Custom "julia")
+      "function foo(a,b)\nx=a+b\nreturn x\nend\n"
+
 
 documentHighlightCode :: Text
 documentHighlightCode = [__i|foo = "hello"

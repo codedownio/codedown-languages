@@ -20,7 +20,7 @@ extra-deps:
 
 - git: https://github.com/codedownio/lsp.git
   # upgrade-monads-newest-jan2026 branch
-  commit: c723f4a4fb99661c76b1356f8a839a0e266b0f32
+  commit: 51b1a1b5a3760f88c58619f5eebb0201c00945f8
   subdirs:
   - lsp
   - lsp-test
@@ -28,6 +28,6 @@ extra-deps:
 
 - git: https://github.com/codedownio/lsp-test-helpers.git
   # main branch
-  commit: 3aead859c272db11879cec58bef0f4e65244be45
+  commit: 961dddec8eaf2ca4cba9d60426111d5230955bf7
 
 - ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293

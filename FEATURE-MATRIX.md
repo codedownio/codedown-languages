@@ -17,6 +17,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Coq | ✅ | ✅ | – | – | ✅ |
 | Go | ✅ | ✅ | – | – | ✅ |
 | Haskell | ✅ | ✅ | – | – | ✅ |
+| JavaScript | ✅ | ✅ | – | – | ✅ |
 | Julia | ✅ | ✅ | ✅ | – | ✅ |
 | Octave | ✅ | ✅ | ✅ | – | ✅ |
 | PostgreSQL | ✅ | ✅ | – | – | ✅ |
@@ -26,6 +27,7 @@ Which languages support which notebook and editor features. The graphic version 
 | R (Ark) | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Ruby | ✅ | ✅ | ✅ | – | ✅ |
 | Rust | ✅ | ✅ | ✅ | – | ✅ |
+| TypeScript | ✅ | ✅ | – | – | ✅ |
 
 ### Code intelligence
 
@@ -35,8 +37,9 @@ Which languages support which notebook and editor features. The graphic version 
 | C++ 23 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Clojure | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | – |
 | Coq | – | – | – | – | – | – | – |
-| Go | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Go | ✅ | ✅ | ✅ | ✅ | ✅ | – | ✅ |
 | Haskell | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| JavaScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Julia | ✅ | ✅ | ✅ | ✅ | ✅ | – | ✅ |
 | Octave | – | – | – | – | – | – | – |
 | PostgreSQL | – | – | – | – | – | – | – |
@@ -46,6 +49,7 @@ Which languages support which notebook and editor features. The graphic version 
 | R (Ark) | – | – | – | – | – | – | – |
 | Ruby | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
 | Rust | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| TypeScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ### Navigation
 
@@ -57,6 +61,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Coq | – | – | – | – | – | – |
 | Go | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Haskell | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| JavaScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Julia | ✅ | – | ✅ | ✅ | ✅ | ✅ |
 | Octave | – | – | – | – | – | – |
 | PostgreSQL | – | – | – | – | – | – |
@@ -66,6 +71,7 @@ Which languages support which notebook and editor features. The graphic version 
 | R (Ark) | – | – | – | – | – | – |
 | Ruby | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Rust | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| TypeScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ### Editing
 
@@ -77,6 +83,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Coq | – | – | – |
 | Go | ✅ | ✅ | ✅ |
 | Haskell | ✅ | ✅ | ✅ |
+| JavaScript | ✅ | ✅ | ✅ |
 | Julia | ✅ | ✅ | ✅ |
 | Octave | – | – | – |
 | PostgreSQL | – | – | – |
@@ -84,8 +91,9 @@ Which languages support which notebook and editor features. The graphic version 
 | Python | – | ✅ | ✅ |
 | R | ✅ | ✅ | ✅ |
 | R (Ark) | – | – | – |
-| Ruby | – | ✅ | – |
+| Ruby | ✅ | ✅ | – |
 | Rust | ✅ | ✅ | ✅ |
+| TypeScript | ✅ | ✅ | ✅ |
 
 ### Packages
 
@@ -97,6 +105,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Coq | ✅ |
 | Go | – |
 | Haskell | ✅ |
+| JavaScript | ✅ |
 | Julia | ✅ |
 | Octave | ✅ |
 | PostgreSQL | – |
@@ -106,6 +115,7 @@ Which languages support which notebook and editor features. The graphic version 
 | R (Ark) | ✅ |
 | Ruby | ✅ |
 | Rust | ✅ |
+| TypeScript | ✅ |
 
 <!-- END FEATURE MATRIX -->
 
@@ -122,6 +132,7 @@ The matrix is derived from the repo, not maintained by hand:
   builds a single-kernel environment per language, starts each language server, performs the
   LSP `initialize` handshake, and records the advertised capabilities into
   `nix/lsp-capabilities.json`.
+- The Formatting column needs both halves — see [Formatting](#formatting) below.
 - `scripts/render-feature-matrix.py` turns the resulting JSON into the SVG in the README and
   the Markdown tables above.
 
@@ -158,7 +169,64 @@ by anything that wants to render this data elsewhere. Its shape:
 ```
 
 `level` is `full`, `none`, or `unknown` (nothing probed that kernel yet), and `detail` says
-which language server or REPL is behind it.
+which language server or REPL is behind it — for `formatting`, the formatter. The SVG shows
+`detail` in a cell's tooltip.
+
+## Formatting
+
+Formatting is the one column that can't be read off the `initialize` response alone. A server
+will happily advertise `documentFormattingProvider` and then fail every request because the
+tool behind it isn't installed — bash-language-server did exactly that until shfmt was added
+to its wrapper. So the column is the conjunction of two things: the server advertises
+formatting, *and* the kernel names the formatter behind it in `passthru.formatters` (declared
+next to each language server's config and aggregated in the kernel's `default.nix`). That name
+is what the table below records, and what the SVG shows in the cell's tooltip.
+
+| Language | Formatter | Comes from | Setting |
+| --- | --- | --- | --- |
+| Bash | shfmt | separate binary on bash-language-server's PATH | — |
+| C++ | clang-format | built into clangd | — |
+| Clojure | cljfmt | built into clojure-lsp | — |
+| Go | gofmt, gofumpt | both vendored into gopls | `kernels.go.lsp.gopls.formatter` |
+| Haskell | ormolu, fourmolu, stylish-haskell | all compiled into haskell-language-server | `kernels.haskell.lsp.haskell-language-server.formattingProvider` |
+| JavaScript / TypeScript | tsserver | built into typescript-language-server | — |
+| Julia | JuliaFormatter | dependency of LanguageServer.jl | a `.JuliaFormatter.toml` in the workspace |
+| Python | autopep8, yapf, black, ruff | none ship with python-lsp-server | `kernels.python3.lsp.python-lsp-server.formatter` |
+| R | styler | already an R dependency of languageserver | — |
+| Ruby | rubocop | already a gem dependency of solargraph | `kernels.ruby.lsp.solargraph.formatting` |
+| Rust | rustfmt | separate binary on rust-analyzer's PATH | — |
+| Typst | typstyle, typstfmt | both vendored into tinymist | `exporters.typst.lsp.tinymist.formatter` |
+
+Where one formatter is listed and there's no setting, it costs nothing to ship (already in the
+server's closure, or a small binary) and is on unconditionally. Where several are listed, the
+setting picks between them; they're all built into the server, so the choice doesn't change
+what gets built — except for Python, where python-lsp-server ships with no formatter at all and
+the setting decides which one is added to the environment.
+
+Each of these has a test that formats a deliberately misformatted document over LSP and checks
+what comes back (`itFormatsAs` in `tests/src/TestLib/LSP.hs`), because advertising the
+capability proves nothing.
+
+Caveats the table above can't show:
+
+- Python's default language server is Jedi, which has no formatting support of any kind. The
+  `formatter` setting only applies when `python-lsp-server` is also enabled, which it isn't by
+  default — so Python's Formatting cell is empty.
+- Typst is an exporter rather than a kernel, so tinymist isn't probed and Typst has no row in
+  the matrix. tinymist already formatted with typstyle by default; the setting exists to pick
+  typstfmt or turn formatting off.
+- Rust formats correctly when rust-analyzer is driven directly, but
+  rust-notebook-language-server forwarded `textDocument/formatting` with the notebook's URI
+  instead of the shadow file's, so rust-analyzer answered "file not found".
+  [rust-notebook-language-server#2](https://github.com/codedownio/rust-notebook-language-server/pull/2)
+  fixes it; the Rust formatting test stays pending until that's released and the pinned
+  version here moves up.
+- R formatted correctly all along, but the test used to hang. Three things stacked up:
+  languageserver answers `shutdown` with `"result": []` where the spec says `null`; lsp-test's
+  reader thread died decoding that, so the response went unread; and the shutdown wait ran
+  under `uninterruptibleMask` (unliftio runs `finally` cleanups that way), so no timeout could
+  fire. Fixed in codedownio/lsp#1, plus a `postPatch` here making languageserver's shutdown
+  response conformant.
 
 ## Known gaps
 

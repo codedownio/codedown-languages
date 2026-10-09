@@ -5,10 +5,7 @@
 {-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 
 module TestLib.LSP (
-  findLspConfig
-  , getPathAndNixEnvironmentClosure
-
-  , doNotebookSession
+  doNotebookSession
   , doSession'
   , doSession''
 
@@ -24,6 +21,8 @@ module TestLib.LSP (
 
   , itHasHoverSatisfying
 
+  , module TestLib.LSP.Formatting
+
   , Helpers.getHoverOrException
   , Helpers.allHoverText
   , Helpers.containsAll
@@ -31,9 +30,7 @@ module TestLib.LSP (
   , LspContext
   ) where
 
-import Control.Monad
 import Control.Monad.IO.Unlift
-import Control.Monad.Logger (MonadLogger)
 import Control.Monad.Reader
 import Data.Aeson as A
 import qualified Data.ByteString as B
@@ -45,15 +42,12 @@ import GHC.Int
 import GHC.Stack
 import Language.LSP.Protocol.Types
 import Language.LSP.Test
-import Language.LSP.Test.Helpers (LanguageServerConfig(..), LspContext, LspSessionOptions(..), defaultLspSessionOptions, withLspSession)
+import Language.LSP.Test.Helpers (LspContext, LspSessionOptions(..), withLspSession)
 import qualified Language.LSP.Test.Helpers as Helpers
-import System.FilePath
 import Test.Sandwich as Sandwich
+import TestLib.LSP.Formatting
+import TestLib.LSP.Session
 import TestLib.Types
-import UnliftIO.Directory
-import UnliftIO.Exception
-import UnliftIO.IO
-import UnliftIO.Process
 
 
 doNotebookSession :: (
@@ -70,17 +64,8 @@ doSession'' :: (
   LspContext ctx m, HasNixEnvironment ctx
   ) => Text -> Text -> Text -> [(FilePath, B.ByteString)] -> (Helpers.LspSessionInfo -> Session (ExampleT ctx m) a) -> ExampleT ctx m a
 doSession'' filename lsName codeToUse extraFiles cb = do
-  lspConfig <- findLspConfig lsName
-  (pathToUse, closure) <- getPathAndNixEnvironmentClosure
-  let lspSessionOptions = (defaultLspSessionOptions lspConfig) {
-        lspSessionOptionsInitialFileName = T.unpack filename
-        , lspSessionOptionsInitialLanguageKind = LanguageKind_Python
-        , lspSessionOptionsInitialCode = codeToUse
-        , lspSessionOptionsExtraFiles = extraFiles
-        , lspSessionOptionsReadOnlyBinds = closure
-        , lspSessionOptionsPathEnvVar = pathToUse
-        }
-  withLspSession lspSessionOptions cb
+  lspSessionOptions <- lspSessionOptionsFor lsName (T.unpack filename) LanguageKind_Python codeToUse
+  withLspSession (lspSessionOptions { lspSessionOptionsExtraFiles = extraFiles }) cb
 
 testDiagnostics :: (
   LspContext ctx m, HasNixEnvironment ctx
@@ -101,16 +86,7 @@ testDiagnosticsLabelDesired :: (
   LspContext ctx m, HasNixEnvironment ctx
   ) => String -> Text -> FilePath -> LanguageKind -> Text -> ([Diagnostic] -> Bool) -> SpecFree ctx m ()
 testDiagnosticsLabelDesired label name filename languageKind code cb = it label $ do
-  lspConfig <- findLspConfig name
-  (pathToUse, closure) <- getPathAndNixEnvironmentClosure
-
-  let lspSessionOptions = (defaultLspSessionOptions lspConfig) {
-        lspSessionOptionsInitialFileName = filename
-        , lspSessionOptionsInitialLanguageKind = languageKind
-        , lspSessionOptionsInitialCode = code
-        , lspSessionOptionsReadOnlyBinds = closure
-        , lspSessionOptionsPathEnvVar = pathToUse
-        }
+  lspSessionOptions <- lspSessionOptionsFor name filename languageKind code
 
   Helpers.testDiagnostics lspSessionOptions languageKind $ \diags ->
     if | cb diags -> return ()
@@ -120,17 +96,8 @@ testDiagnostics'' :: (
   LspContext ctx m, HasNixEnvironment ctx
   ) => String -> Text -> FilePath -> LanguageKind -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnostics'' label name filename languageKind code extraFiles cb = it label $ do
-  lspConfig <- findLspConfig name
-  (pathToUse, closure) <- getPathAndNixEnvironmentClosure
-
-  let lspSessionOptions = (defaultLspSessionOptions lspConfig) {
-        lspSessionOptionsInitialFileName = filename
-        , lspSessionOptionsInitialLanguageKind = languageKind
-        , lspSessionOptionsInitialCode = code
-        , lspSessionOptionsReadOnlyBinds = closure
-        , lspSessionOptionsPathEnvVar = pathToUse
-        , lspSessionOptionsExtraFiles = extraFiles
-        }
+  lspSessionOptions <- (\o -> o { lspSessionOptionsExtraFiles = extraFiles })
+                         <$> lspSessionOptionsFor name filename languageKind code
 
   Helpers.testDiagnostics lspSessionOptions languageKind $ \diags -> do
     lift $ cb diags
@@ -139,67 +106,13 @@ itHasHoverSatisfying :: (
   LspContext ctx m, HasNixEnvironment ctx
   ) => Text -> FilePath -> LanguageKind -> Text -> Position -> (Hover -> ExampleT ctx m ()) -> SpecFree ctx m ()
 itHasHoverSatisfying name filename languageKind code pos cb = it [i|#{name}: #{show code} (hover)|] $ do
-  lspConfig <- findLspConfig name
-  (pathToUse, closure) <- getPathAndNixEnvironmentClosure
-
-  let lspSessionOptions = (defaultLspSessionOptions lspConfig) {
-        lspSessionOptionsInitialFileName = filename
-        , lspSessionOptionsInitialLanguageKind = languageKind
-        , lspSessionOptionsInitialCode = code
-        , lspSessionOptionsReadOnlyBinds = closure
-        , lspSessionOptionsPathEnvVar = pathToUse
-        }
+  lspSessionOptions <- lspSessionOptionsFor name filename languageKind code
 
   withLspSession lspSessionOptions $ \_ -> do
     ident <- openDoc filename languageKind
     getHover ident pos >>= \case
       Nothing -> expectationFailure [i|Expected a hover.|]
       Just x -> lift $ cb x
-
-findLspConfig :: (
-  MonadIO m, MonadLogger m, MonadReader context m, Sandwich.HasLabel context "nixEnvironment" FilePath
-  ) => Text -> m LanguageServerConfig
-findLspConfig name = do
-  languageServersPath <- (</> "lib" </> "codedown" </> "language-servers") <$> getContext nixEnvironment
-  languageServerFiles <- filter (\x -> ".yaml" `T.isSuffixOf` T.pack x) <$> listDirectory languageServersPath
-  lspConfigs :: [LanguageServerConfig] <- (mconcat <$>) $ forM languageServerFiles $ \((languageServersPath </>) -> path) -> do
-    liftIO (A.eitherDecodeFileStrict path) >>= \case
-      Left err -> expectationFailure [i|Failed to decode language server path '#{path}': #{err}|]
-      Right x -> return x
-
-  config <- case L.find (\x -> lspConfigName x == name) lspConfigs of
-    Nothing -> expectationFailure [i|Couldn't find LSP config: #{name}. Had: #{fmap lspConfigName lspConfigs}|]
-    Just x -> do
-      info [i|LSP config: #{A.encode x}|]
-      return x
-
-  return config
-
-getBasicPath :: (
-  MonadUnliftIO m, MonadLogger m, MonadReader context m, Sandwich.HasLabel context "nixEnvironment" FilePath
-  ) => m FilePath
-getBasicPath = do
-  bracket (openFile "/dev/null" WriteMode) hClose $ \devNullHandle ->
-    (T.unpack . T.strip . T.pack) <$> readCreateProcess ((proc "nix" ["run", ".#print-basic-path"]) { std_err = UseHandle devNullHandle }) ""
-
-getPathAndNixEnvironmentClosure :: (
-  MonadUnliftIO m, MonadLogger m
-  , MonadReader context m, HasBaseContext context, Sandwich.HasLabel context "nixEnvironment" FilePath
-  ) => m (FilePath, [FilePath])
-getPathAndNixEnvironmentClosure = do
-  pathToUse <- getBasicPath
-
-  -- Get the full closure of the Nix environment and jupyter runner
-  nixEnv <- getContext nixEnvironment
-  closure <- (fmap T.unpack . Prelude.filter (/= "") . T.splitOn "\n" . T.pack) <$> readCreateProcessWithLogging (
-    proc "nix" (["path-info", "-r"
-                , nixEnv
-                ]
-                <> (splitSearchPath pathToUse)
-               )
-    ) ""
-
-  return (pathToUse, closure)
 
 assertDiagnosticRanges :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges = assertDiagnosticRanges'' Helpers.getDiagnosticRanges

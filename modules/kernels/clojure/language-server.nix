@@ -13,6 +13,8 @@ let
 
   passthru = {
     inherit languageServerName;
+    # cljfmt is built into clojure-lsp.
+    formatters = ["cljfmt"];
   };
 
 in

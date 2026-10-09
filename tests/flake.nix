@@ -75,8 +75,13 @@
 
             # Print a trivial PATH that we can use to run kernel and LSP tests, to ensure
             # they aren't depending on anything on the test machine's PATH.
+            #
+            # grep is here because R's parallel::detectCores() shells out to
+            # `grep "^processor" /proc/cpuinfo | wc -l`. Without it the count comes back
+            # empty, detectCores() returns NA, and the R language server dies working out
+            # how big to make its session pool.
             print-basic-path = pkgs.writeShellScriptBin "basic-path.sh" ''
-              echo ${pkgs.lib.makeBinPath (with pkgs; [coreutils bash])}
+              echo ${pkgs.lib.makeBinPath (with pkgs; [coreutils bash gnugrep])}
             '';
 
             inherit (pkgs) direnv stack;

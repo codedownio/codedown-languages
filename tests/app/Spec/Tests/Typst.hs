@@ -39,6 +39,11 @@ tests = describe [i|Typst|] $ introduceNixEnvironment [] config [i|Typst|] $ int
       [__i|\#loremz(45)|]
       ((== [(Range (Position 0 1) (Position 0 7), Nothing, "unknown variable: loremz")]) . getDiagnosticRanges')
 
+    -- typstyle normalizes code mode but leaves markup's whitespace alone.
+    itFormatsAs lsName "test.typ" (LanguageKind_Custom "typst")
+      "#let   x  =  1\n= Heading\nsome   text\n"
+      "#let x = 1\n= Heading\nsome   text\n"
+
 
 documentHighlightCode :: Text
 documentHighlightCode = [__i|foo = "hello"

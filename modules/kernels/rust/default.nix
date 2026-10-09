@@ -130,5 +130,6 @@ symlinkJoin {
       code_mirror_mode = "rust";
     };
     languageServerNames = map (x: x.languageServerName) languageServers;
+    formatters = lib.concatMap (x: x.formatters or []) languageServers;
   };
 }

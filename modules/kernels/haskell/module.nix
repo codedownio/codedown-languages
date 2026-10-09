@@ -48,6 +48,12 @@ in
         type = types.bool;
         default = true;
       };
+      lsp.haskell-language-server.formattingProvider = mkOption {
+        title = "Haskell formatter";
+        description = "Which formatter haskell-language-server uses.";
+        type = types.enum ["ormolu" "fourmolu" "stylish-haskell" "none"];
+        default = "ormolu";
+      };
       lsp.haskell-language-server.debug = mkOption {
         title = "Haskell-language-server: enable debug output";
         type = types.bool;

@@ -34,8 +34,9 @@ let
     { id = "packages"; name = "Packages"; }
   ];
 
-  # source = "nix": computed from the module evaluation below.
-  # source = "lsp": read out of the language server's advertised capabilities.
+  # source = "nix":  computed from the module evaluation below.
+  # source = "lsp":  read out of the language server's advertised capabilities.
+  # source = "both": needs each (see `formatting` below).
   features = [
     { id = "jupyterKernel"; name = "Jupyter kernel"; group = "core";
       description = "Runs notebook cells through a Jupyter kernel."; source = "nix"; }
@@ -77,7 +78,7 @@ let
       description = "Highlights other occurrences of the symbol under the cursor."; source = "lsp"; }
 
     { id = "formatting"; name = "Formatting"; group = "editing";
-      description = "Format a document or a selection."; source = "lsp"; }
+      description = "Format a document or a selection."; source = "both"; }
     { id = "rename"; name = "Rename symbol"; group = "editing";
       description = "Rename a symbol and every reference to it."; source = "lsp"; }
     { id = "codeActions"; name = "Code actions"; group = "editing";
@@ -183,9 +184,24 @@ let
         subPackageManagement = { level = if hasPackages then "full" else "none"; detail = null; };
       };
 
+      # Advertising documentFormattingProvider isn't enough to format: a server can offer it and
+      # then fail every request because the tool behind it isn't installed, which is exactly what
+      # bash-language-server did before shfmt joined its wrapper. So formatting counts as
+      # supported only when a server advertises it *and* the kernel names the formatter behind
+      # it (`passthru.formatters`, declared next to each language server config).
+      formatters = kernel.formatters or [];
+      formattingSupport =
+        let
+          advertised = lspSupport name "formatting";
+          detail = if formatters == [] then null else lib.concatStringsSep ", " formatters;
+        in
+          if formatters == []
+          then { level = if advertised.level == "unknown" then "unknown" else "none"; detail = null; }
+          else { inherit (advertised) level; inherit detail; };
+
       supportFor = feature:
-        if feature.source == "lsp"
-        then lspSupport name feature.id
+        if feature.id == "formatting" then formattingSupport
+        else if feature.source == "lsp" then lspSupport name feature.id
         else nixSupport.${feature.id} or { level = "unknown"; detail = null; };
     in
       {

@@ -41,7 +41,10 @@ let
   typstToUse = typst.withPackages (ps: (map (x: ps.${x}) packages));
 
   languageServers = lib.optionals settings.lsp.tinymist.enable
-    [(callPackage ./language_server_tinymist { inherit kernelName typstToUse codedownPackagePath; })];
+    [(callPackage ./language_server_tinymist {
+      inherit kernelName typstToUse codedownPackagePath;
+      settings = settings.lsp.tinymist;
+    })];
 
   packageOptions = typst.packages;
   packageSearch = common.searcher packageOptions;
@@ -127,5 +130,6 @@ symlinkJoin {
     };
 
     languageServerNames = map (x: x.languageServerName) languageServers;
+    formatters = lib.concatMap (x: x.formatters or []) languageServers;
   };
 }

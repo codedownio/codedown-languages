@@ -41,6 +41,7 @@ let
 
   passthru = {
     inherit languageServerName;
+    formatters = [settings.formatter];
   };
 
 in
@@ -66,5 +67,10 @@ common.writeTextDirWithMetaAndPassthru gopls.meta passthru "lib/codedown/languag
   ++ lib.optionals settings.super-debug ["--debug-client-writes" "--debug-client-reads" "--debug-server-writes" "--debug-server-reads"]
   ;
   env = {};
+  # gopls formats with gofmt by default and has gofumpt vendored in, so switching between
+  # them is just this flag -- no extra tool in the closure either way.
+  initialization_options = {
+    gofumpt = settings.formatter == "gofumpt";
+  };
   language_id = "go";
 }])

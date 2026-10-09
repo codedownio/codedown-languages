@@ -38,6 +38,7 @@ let
 
   passthru = {
     inherit languageServerName;
+    formatters = lib.optional (settings.formattingProvider != "none") settings.formattingProvider;
   };
 
   config = {
@@ -74,7 +75,9 @@ let
       # TODO: expose some of these options, as needed
       # https://haskell-language-server.readthedocs.io/en/latest/configuration.html
       haskell = {
-        # formattingProvider = "ormolu"; # floskell, ormolu, fourmolu, stylish-haskell
+        # ormolu, fourmolu and stylish-haskell are all compiled into the haskell-language-server
+        # Nixpkgs builds, so picking one costs nothing extra.
+        formattingProvider = settings.formattingProvider;
         # maxCompletions = 40;
         # checkProject = true;
         # checkParents = "CheckOnSave";

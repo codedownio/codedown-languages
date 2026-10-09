@@ -73,6 +73,13 @@ tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelN
                                                                   |] $ \diagnostics -> do
     assertDiagnosticRanges diagnostics []
 
+  -- Jedi, the default language server, can't format at all; this is python-lsp-server with
+  -- its default formatter. The run of blank lines survives because autopep8 reuses the
+  -- pycodestyle `ignore` list, which has E303 in it (see pylsp_initialization_options.nix).
+  itFormatsAs "python-lsp-server" "test.py" LanguageKind_Python
+    "def f( x,y ):\n  return x+y\n\n\n\n\nz   =   f(1,2)\n"
+    "def f(x, y):\n    return x + y\n\n\n\n\nz = f(1, 2)\n"
+
 
 -- | Nixpkgs carries far less for PyPy than for CPython, so this covers the kernel itself
 -- rather than the package and language server stack the CPython tests exercise.
