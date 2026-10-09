@@ -63,7 +63,6 @@ in
 
       lsp.solargraph.formatting = mkOption {
         title = "Format Ruby code with rubocop";
-        description = "Solargraph formats by running rubocop's autocorrect over the cell, using the configuration below. Turning this off also stops Solargraph from advertising formatting to the editor.";
         type = types.bool;
         default = true;
       };
