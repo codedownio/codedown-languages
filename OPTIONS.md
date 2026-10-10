@@ -1635,6 +1635,27 @@ list of string
 
 
 
+## kernels\.pypy3\.lsp\.basedpyright\.enable
+
+
+
+**Enable basedpyright language server**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
 ## kernels\.pypy3\.lsp\.flake8\.enable
 
 
@@ -1940,6 +1961,27 @@ list of string
 [
   "py"
 ]
+```
+
+
+
+## kernels\.python3\.lsp\.basedpyright\.enable
+
+
+
+**Enable basedpyright language server**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
 ```
 
 
@@ -2254,8 +2296,6 @@ list of string
 
 ## kernels\.ruby\.lsp\.solargraph\.enable
 
-
-
 **Enable Solargraph language server**
 
 
@@ -2295,6 +2335,8 @@ true
 
 
 ## kernels\.ruby\.lsp\.solargraph\.rubocopYaml
+
+
 
 **YAML configuration for the rubocop reporter**
 
