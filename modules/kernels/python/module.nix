@@ -77,6 +77,11 @@ let
       type = types.bool;
       default = false;
     };
+    lsp.basedpyright.enable = mkOption {
+      title = "Enable basedpyright language server";
+      type = types.bool;
+      default = false;
+    };
     lsp.pylint.enable = mkOption {
       title = "Enable Pylint language server";
       type = types.bool;
