@@ -1887,6 +1887,27 @@ list of string
 
 
 
+## kernels\.python3\.lsp\.basedpyright\.enable
+
+
+
+**Enable basedpyright language server**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
 ## kernels\.python3\.lsp\.flake8\.enable
 
 
@@ -2295,8 +2316,6 @@ true
 
 ## kernels\.ruby\.rubyPackage
 
-
-
 **Ruby version**
 
 
@@ -2315,6 +2334,8 @@ one of “ruby”, “ruby_3_3”, “ruby_3_4”
 
 
 ## kernels\.rust\.interface\.attrs
+
+
 
 **Notebook attributes**
 
