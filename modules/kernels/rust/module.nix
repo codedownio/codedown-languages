@@ -78,6 +78,12 @@ in
         type = types.bool;
         default = false;
       };
+      lsp.rust-analyzer.typeHints = mkOption {
+        title = "Rust-analyzer: type hints";
+        description = "Show the inferred type of a let binding inline, after the variable name.";
+        type = types.bool;
+        default = false;
+      };
 
       misc.enableVariableInspector = mkOption {
         title = "Enable the variable inspector";
