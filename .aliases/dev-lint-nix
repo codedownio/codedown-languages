@@ -1,0 +1,9 @@
+#! /usr/bin/env bash
+
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPTDIR/.."
+
+set -e
+
+# Same derivation CI builds, so a green run here means a green run there.
+exec nix build --no-link -L ".#checks.$(nix eval --raw --impure --expr builtins.currentSystem).lint-nix" "$@"

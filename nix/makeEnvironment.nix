@@ -1,7 +1,5 @@
 { callPackage
 , lib
-, fetchgit
-, fetchFromGitHub
 , linkFarm
 , runCommand
 , symlinkJoin
@@ -91,10 +89,10 @@ let
       );
 
       allPaths =
-        concatLists (mapAttrsToList (n: v: getAllIcons v) builtExporters)
-        ++ concatLists (mapAttrsToList (n: v: getAllIcons v) builtKernels)
-        ++ concatLists (mapAttrsToList (n: v: getAllIcons v) builtLanguageServers)
-        ++ concatLists (mapAttrsToList (n: v: getAllIcons v) evaluated.config.packages)
+        concatLists (mapAttrsToList (_n: v: getAllIcons v) builtExporters)
+        ++ concatLists (mapAttrsToList (_n: v: getAllIcons v) builtKernels)
+        ++ concatLists (mapAttrsToList (_n: v: getAllIcons v) builtLanguageServers)
+        ++ concatLists (mapAttrsToList (_n: v: getAllIcons v) evaluated.config.packages)
         ;
     in
       linkFarm "all-icons" (map (path: {

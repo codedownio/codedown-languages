@@ -42,18 +42,6 @@ let
 
   displayName = "C++" + (displaySuffix.${flavor} or "");
 
-  iconsPng = {
-    "c++17" = ./cpp17-logo-64x64.png;
-    "c++20" = ./cpp20-logo-64x64.png;
-    "c++23" = ./cpp23-logo-64x64.png;
-    "c++2c" = ./cpp2c-logo-64x64.png;
-
-    "gnu++17" = ./cpp17-logo-64x64.png;
-    "gnu++20" = ./cpp20-logo-64x64.png;
-    "gnu++23" = ./cpp23-logo-64x64.png;
-    "gnu++2c" = ./cpp2c-logo-64x64.png;
-  };
-
   iconsSvg = {
     "c++17" = ./cpp17.svg;
     "c++20" = ./cpp20.svg;

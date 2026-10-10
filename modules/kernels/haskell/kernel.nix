@@ -1,6 +1,4 @@
 { lib
-, jupyter-kernel
-, snapshot
 , ihaskell
 , ghc
 , callPackage

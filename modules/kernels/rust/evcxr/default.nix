@@ -8,9 +8,6 @@
 , runCommand
 , stdenv
 
-, CoreServices
-, Security
-
 , cargo
 , defaultCrateOverrides
 , evcxr

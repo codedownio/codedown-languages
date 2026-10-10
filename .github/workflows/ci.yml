@@ -24,6 +24,19 @@ jobs:
       if: "!contains(github.event.head_commit.message, 'noci')"
       run: ./.aliases/dev-verify-default-nix
 
+  lint-nix:
+    name: "lint-nix"
+    runs-on:
+    - self-hosted
+    - Linux
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: nix build .#checks.x86_64-linux.lint-nix
+      if: "!contains(github.event.head_commit.message, 'noci')"
+      run: nix build --no-link -L .#checks.x86_64-linux.lint-nix
+
   nix-flake-check:
     name: "nix-flake-check (${{matrix.runs-on}})"
     runs-on:

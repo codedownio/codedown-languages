@@ -24,8 +24,6 @@ let
     # R kernel gets it transitively via IRkernel; ark embeds R directly, so add it.
     ++ lib.optionals settings.misc.enableVariableInspector [rPackages.jsonlite];
 
-  kernelName = "R (Ark)";
-
   # Ark embeds R via libR rather than running R as a subprocess, so the
   # `rWrapper` indirection (which sets `R_LIBS_SITE` then execs R) doesn't apply
   # to its embedded session. We replicate the one thing the wrapper does —

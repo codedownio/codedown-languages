@@ -1,5 +1,4 @@
-{pkgs
-, lib
+{ lib
 , callPackage
 , symlinkJoin
 
@@ -26,7 +25,7 @@ let
   languageServers = []
     ++ lib.optionals settings.lsp.languageserver.enable [(
       (callPackage ./language-server-languageserver {
-        inherit rPackages rWrapper basePackages kernelName;
+        inherit rWrapper basePackages kernelName;
         languageserver = callPackage ./language-server-languageserver/languageserver.nix { inherit rPackages rWrapper; };
       })
     )]

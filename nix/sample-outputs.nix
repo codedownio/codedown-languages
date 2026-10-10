@@ -34,10 +34,10 @@ in
 
     printVersions = let
       versionsMap = with lib;
-        mapAttrs (lang: value: if (hasAttr "versions" value) then value.versions else {})
+        mapAttrs (_lang: value: if (hasAttr "versions" value) then value.versions else {})
           (filterAttrs (k: _: !(hasPrefix "override") k) codedown.kernels);
       versionsMapExporters = with lib;
-        mapAttrs (lang: value: if (hasAttr "versions" value) then value.versions else {})
+        mapAttrs (_lang: value: if (hasAttr "versions" value) then value.versions else {})
           (filterAttrs (k: _: !(hasPrefix "override") k) codedown.exporters);
 
       file = writeTextFile {

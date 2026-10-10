@@ -32,7 +32,7 @@ rec {
 
   baseByName = name: lib.findSingle (x: x.name == name) null "multiple" baseOptions;
 
-  packageOptions = base@{...}: {};
+  packageOptions = {...}: {};
 
-  packageSearch = base@{...}: common.searcher {};
+  packageSearch = {...}: common.searcher {};
 }

@@ -88,7 +88,7 @@ in
     # "--log-level" "4"
     "--stdio"
   ];
-}])).overrideAttrs (old: {
+}])).overrideAttrs (_old: {
   passthru = {
     languageServerNames = ["markdown-spellchecker"];
   };

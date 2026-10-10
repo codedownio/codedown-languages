@@ -2,8 +2,6 @@
 , callPackage
 , runCommand
 , makeWrapper
-, pkgs
-
 , attrs
 , kernelName
 , settings

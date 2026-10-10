@@ -4,6 +4,7 @@
 , tinymist
 
 # TODO: how to make the typstToUse (i.e. Typst with some packages) available to tinymist?
+# deadnix: skip
 , typstToUse
 
 # The CodeDown Typst prelude package dir (see ../default.nix). tinymist's LSP has no --package-path

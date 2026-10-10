@@ -1,0 +1,36 @@
+# Read by `statix check` and by nix/lint.nix, which has statix gated off until someone runs
+# `statix fix`. The ignore list is mirrored by `excluded` in nix/lint.nix.
+
+ignore = [
+  # node2nix output, marked "Do not edit!".
+  "modules/language_servers/diagnostic-languageserver",
+
+  # cabal2nix output.
+  "**/lsp-types.nix",
+  "**/myers-diff.nix",
+
+  # Copied from nixpkgs; see julia-modules/VENDORED.md.
+  "modules/kernels/julia/julia-modules/default.nix",
+  "modules/kernels/julia/julia-modules/depot.nix",
+  "modules/kernels/julia/julia-modules/extra-libs.nix",
+  "modules/kernels/julia/julia-modules/extra-python-packages.nix",
+  "modules/kernels/julia/julia-modules/package-closure.nix",
+  "modules/kernels/julia/julia-modules/stdlib-infos.nix",
+  "modules/kernels/julia/julia-modules/util.nix",
+
+  # Dead trees, kept for reference.
+  "old_languages",
+  "modules/kernels/haskell/old",
+
+  # Not parseable Nix: commented out end to end.
+  "modules/kernels/python/envs/python314",
+
+  # Generated .nix expressions.
+  "tests/test_runs",
+]
+
+disabled = [
+  # Fires on the `kernels.python3.enable` / `kernels.python3.packages` style every sample
+  # environment uses.
+  "repeated_keys",
+]

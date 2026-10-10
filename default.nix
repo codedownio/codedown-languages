@@ -1,3 +1,7 @@
+# codedown.nix detects a codedown repo with
+# `builtins.hasAttr "isCodeDown" (builtins.functionArgs imported)`, so isCodeDown has to stay
+# in this header under exactly this name even though nothing in here reads it.
+# deadnix: skip
 { isCodeDown ? true # For introspection using builtins.functionArgs
 , overlays ? []
 , system ? null

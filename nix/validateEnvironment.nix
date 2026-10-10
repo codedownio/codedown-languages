@@ -1,9 +1,7 @@
 { lib
 }:
 
-args@{
-  channels
-  , kernels ? []
+{ kernels ? []
   , otherPackages ? []
   , ...
 }:
@@ -11,13 +9,12 @@ args@{
 with lib;
 
 let
-  shellsCommon = callPackage ../shells/common.nix {};
 
-  validateKernel = kernel: {
+  validateKernel = _kernel: {
 
   };
 
-  validateOtherPackage = kernel: {
+  validateOtherPackage = _kernel: {
 
   };
 

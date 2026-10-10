@@ -14,7 +14,7 @@
 
 {
   # plotters -> font-kit. (nixpkgs only has the unrelated servo-fontconfig-sys.)
-  yeslogic-fontconfig-sys = attrs: {
+  yeslogic-fontconfig-sys = _attrs: {
     nativeBuildInputs = [ pkg-config ];
     buildInputs = [ fontconfig freetype expat ];
   };
@@ -23,7 +23,7 @@
   # script binary needs it both as LIBCLANG_PATH and loadable at runtime (the
   # latter via the LD_LIBRARY_PATH baked from buildInputs in default.nix). This
   # unblocks the whole bindgen-via-clang-sys class, not just opencv.
-  clang-sys = attrs: {
+  clang-sys = _attrs: {
     buildInputs = [ llvmPackages.libclang ];
     LIBCLANG_PATH = "${lib.getLib llvmPackages.libclang}/lib";
   };
@@ -31,7 +31,7 @@
   # opencv (Rust bindings) parses the OpenCV headers with libclang and links
   # the system OpenCV libs found via pkg-config. clang-sys (above) supplies
   # libclang; opencv-binding-generator also shells out to the `clang` binary.
-  opencv = attrs: {
+  opencv = _attrs: {
     nativeBuildInputs = [ pkg-config llvmPackages.clang ];
     buildInputs = [ opencv llvmPackages.libclang ];
   };
@@ -42,7 +42,7 @@
   # crate's `dynamic-linking` feature -- i.e. request rdkafka as
   # `{ name = "rdkafka"; features = ["dynamic-linking"]; }`. We provide the
   # library + pkg-config so that path links.
-  rdkafka-sys = attrs: {
+  rdkafka-sys = _attrs: {
     nativeBuildInputs = [ pkg-config ];
     buildInputs = [ rdkafka ];
   };

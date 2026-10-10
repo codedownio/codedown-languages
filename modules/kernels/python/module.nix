@@ -163,14 +163,6 @@ in
   config = mkMerge [
     (mkIf config.kernels.python3.enable {
       builtKernels.python3 = let
-        # Pythons that don't work with the ipykernel, ipywidgets, etc. of the Nixpkgs Python package set,
-        # so we have a special package checked in under ./envs
-        specialEnvPythons = {
-          # "python38" = config.pkgs.python38;
-          # "python39" = config.pkgs.python39;
-          # "python312" = config.pkgs.python312;
-        };
-
         x = config.kernels.python3.python3Package;
 
         basePython = (lib.getAttr x config.pkgs).override {
