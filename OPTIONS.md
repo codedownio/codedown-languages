@@ -2483,6 +2483,29 @@ false
 
 
 
+## kernels\.rust\.lsp\.rust-analyzer\.typeHints
+
+
+
+**Rust-analyzer: type hints**
+
+Show the inferred type of a let binding inline, after the variable name\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
 ## kernels\.rust\.misc\.enableVariableInspector
 
 
