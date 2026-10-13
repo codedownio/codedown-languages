@@ -112,6 +112,7 @@ executable tests
       Spec.Tests.Haskell.Formatting
       Spec.Tests.Haskell.Hover
       Spec.Tests.Haskell.Info
+      Spec.Tests.Haskell.RawFiles
       Spec.Tests.Haskell.Statements
       Spec.Tests.Haskell.Symbols
       Spec.Tests.Javascript
