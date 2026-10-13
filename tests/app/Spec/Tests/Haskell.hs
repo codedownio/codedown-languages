@@ -22,6 +22,7 @@ import qualified Spec.Tests.Haskell.Diagnostics as Diagnostics
 import qualified Spec.Tests.Haskell.DocumentHighlight as DocumentHighlight
 import qualified Spec.Tests.Haskell.Formatting as Formatting
 import qualified Spec.Tests.Haskell.Hover as Hover
+import qualified Spec.Tests.Haskell.RawFiles as RawFiles
 import qualified Spec.Tests.Haskell.Statements as Statements
 import qualified Spec.Tests.Haskell.Symbols as Symbols
 
@@ -75,6 +76,7 @@ haskellCommonTests ghcPackage = do
       DocumentHighlight.tests
       Formatting.tests
       Hover.tests
+      RawFiles.tests
       Statements.tests ghcPackage
       Symbols.tests
 
