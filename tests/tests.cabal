@@ -106,6 +106,7 @@ executable tests
       Spec.Tests.Go.Hovers
       Spec.Tests.Haskell
       Spec.Tests.Haskell.CodeActions
+      Spec.Tests.Haskell.CodeLenses
       Spec.Tests.Haskell.Common
       Spec.Tests.Haskell.Diagnostics
       Spec.Tests.Haskell.DocumentHighlight

@@ -18,6 +18,7 @@ import TestLib.TestSearchers
 import TestLib.Types
 
 import qualified Spec.Tests.Haskell.CodeActions as CodeActions
+import qualified Spec.Tests.Haskell.CodeLenses as CodeLenses
 import qualified Spec.Tests.Haskell.Diagnostics as Diagnostics
 import qualified Spec.Tests.Haskell.DocumentHighlight as DocumentHighlight
 import qualified Spec.Tests.Haskell.Formatting as Formatting
@@ -72,6 +73,7 @@ haskellCommonTests ghcPackage = do
 
     describe "LSP" $ do
       CodeActions.tests ghcPackage
+      CodeLenses.tests
       Diagnostics.tests ghcPackage lsName
       DocumentHighlight.tests
       Formatting.tests
