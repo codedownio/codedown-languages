@@ -121,6 +121,7 @@ symlinkJoin {
     };
     inherit settingsSchema settings;
     inherit repls;
+    inherit (evcxr) evalTimeDerivations;
     inherit (evcxrBase) cratesIndex;
     modes = {
       inherit attrs extensions;
