@@ -121,6 +121,17 @@ symlinkJoin {
   passthru = rec {
     inherit evaluated;
 
+    # Derivations Nix had to realise before it could finish evaluating this environment
+    # (import-from-derivation). No output here refers to them, so they are absent from
+    # this derivation's closure, and a builder that can only substitute from a cache
+    # seeded with that closure cannot evaluate the environment at all.
+    evalTimeDerivations = lib.concatMap (p: p.evalTimeDerivations or []) (
+      attrValues evaluated.config.builtKernels
+      ++ attrValues evaluated.config.builtLanguageServers
+      ++ attrValues evaluated.config.builtExporters
+      ++ attrValues evaluated.config.packages
+    );
+
     ui_metadata = {
       packages =
         (mapAttrs' (n: v: nameValuePair "exporters.${n}" (mkPackageUiMetadata v)) builtExporters)

@@ -192,6 +192,12 @@ evcxr.overrideAttrs (oldAttrs: {
         passthru = {
           cargoHome = cargoHome packages;
           inherit prebuiltBuildDir;
+
+          # overrideInputs imports crate-names.nix out of this and vendorDependencies
+          # callPackages its default.nix, so Nix realises it to evaluate the kernel at
+          # all. Nothing the kernel produces refers to it, so a consumer that seeds a
+          # binary cache from the kernel's closure has to be told about it separately.
+          evalTimeDerivations = [(withPackages.cargoNix packages)];
         };
       } ''
         mkdir -p $out/bin
