@@ -15,7 +15,7 @@ each one actually stands:
 | Proxy | Formatting a cell |
 | --- | --- |
 | rust | works |
-| go | works for a cell of plain statements; fails as soon as the cell has an import |
+| go | fails: gnls forwards the request with the notebook's URI, so gopls has no content for it |
 | cpp | fails: clangd answers InvalidParams, "trying to format non-added document" |
 | haskell | fails: HLS gates its formatters on the extension, "ormolu does not support .ipynb filetypes" |
 
@@ -23,13 +23,19 @@ cpp and haskell fail before the hard part: the request reaches the server naming
 never opened (cpp), or one whose extension its formatter plugins reject (haskell). Those are
 plumbing bugs.
 
-Go is the interesting one, and it's what the rest of this document is about. gnls does handle
-the request, and for `x:=1+2` / `fmt.Println(x)` it maps gofmt's edits back into the cell
-correctly — because every edit stays inside a line that the projection left in place. Add an
+Go used to get further, and that's what the rest of this document is about. gnls handled the
+request, and for `x:=1+2` / `fmt.Println(x)` it mapped gofmt's edits back into the cell
+correctly — because every edit stayed inside a line that the projection left in place. Add an
 import and gofmt gets `import ("fmt")` in statement position and won't parse it
-(`expected statement, found 'import'`), because the formatting path doesn't apply the
+(`expected statement, found 'import'`), because the formatting path didn't apply the
 declaration sifter that the analysis path does. Making it sift would then run into the real
 problem: once lines move, the edits can't be mapped back one at a time.
+
+That per-edit mapping is gone now. When cpp and go moved onto notebook-language-server-core,
+core's single formatting path went through `unproject`, which neither `CppNotebookTransformer`
+nor `GoNotebookTransformer` implements, so it dropped every edit and formatting silently did
+nothing. cnls 0.2.3.1 and gnls 0.1.1.1 set `notebookConfigHandlesFormatting = False`, which
+leaves formatting alone — so go is in the same plumbing-first spot as cpp.
 
 ## Why formatting is different from every other request
 
@@ -120,9 +126,9 @@ scratch URI which the proxy has to swallow.
 
 - **cpp** — plumbing first: forward the request with the shadow URI. Then port `unproject` to
   its `Transformer` class and add the scratch-document path with a minimal wrapper. No markers.
-- **go** — the per-edit mapping already works for the easy case, so the question is whether to
-  keep extending it or switch to the scratch document. The scratch document is the one that
-  makes the import case work. No markers either way.
+- **go** — same plumbing step as cpp, then the scratch document. Reviving the old per-edit
+  mapping isn't worth it: it only ever handled a cell whose lines the projection left in place,
+  and the scratch document is what makes the import case work. No markers either way.
 - **haskell** — the hard one. Even a minimal projection still needs `ExpressionToDeclaration` and
   `StatementToDeclaration` to make a cell parse, and those rewrite lines in place. They're
   invertible per line if the rewrite is recorded, but the attribution still has to survive ormolu,
@@ -139,9 +145,8 @@ this gets easier. Worth confirming on the codedown side before building anything
 ## Current state
 
 - Rust: works, both a plain file and a cell. rust-notebook-language-server#2, merged.
-- Go: a cell of plain statements works; a cell with an import is `pending` in `Go.hs`.
-- C++, Haskell: a cell is `pending` in `Cpp.hs` and `Haskell/Formatting.hs`, with the server
-  error each one returns.
+- Go, C++, Haskell: a cell is `pending` in `Go.hs`, `Cpp.hs` and `Haskell/Formatting.hs`, with
+  the reason each one gives.
 - Inlay hints are fixed separately (cpp-notebook-language-server#1,
   go-notebook-language-server#1, haskell-notebook-language-server#2).
 - Plain `.rs` / `.go` / `.cpp` / `.hs` files were never affected — the proxies leave a
