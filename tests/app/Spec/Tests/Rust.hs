@@ -20,6 +20,7 @@ import TestLib.Types
 import TestLib.Util
 
 import qualified Spec.Tests.Rust.Changes as Changes
+import qualified Spec.Tests.Rust.CodeActions as CodeActions
 import qualified Spec.Tests.Rust.Completion as Completion
 import qualified Spec.Tests.Rust.Diagnostics as Diagnostics
 import qualified Spec.Tests.Rust.Formatting as Formatting
@@ -60,6 +61,7 @@ tests = describe "Rust" $ do
 
     describe "LSP" $ do
       Changes.tests
+      CodeActions.tests
       Completion.tests
       Diagnostics.tests
       Formatting.tests
