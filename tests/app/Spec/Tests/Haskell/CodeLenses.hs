@@ -6,7 +6,7 @@ import Control.Monad.Logger
 import Control.Monad.IO.Unlift
 import Data.String.Interpolate
 import Data.Text as T
-import Language.LSP.Protocol.Lens hiding (actions, to)
+import Language.LSP.Protocol.Lens hiding (actions, executeCommand, to)
 import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
 import qualified Language.LSP.Test.Helpers as Helpers
@@ -41,6 +41,22 @@ tests = describe "Code lenses" $ do
         -- add-signature lens has no notebook counterpart, so it should not come back at all.
         [t | (l, t) <- titled, l == 0] `shouldBe` []
         [t | (_, t) <- titled, "expr" `T.isPrefixOf` t] `shouldBe` []
+
+  -- getDocumentEdit throws if the applyEdit names anything but the notebook.
+  it "applies the lens's edit to the notebook, not the shadow document" $
+    doNotebookSession lsName lensCode $ \(Helpers.LspSessionInfo {..}) -> do
+      ident <- openDoc lspSessionInfoFileName "haskell"
+
+      cmd <- waitUntil 240 $ do
+        lenses <- getAndResolveCodeLenses ident
+        case [c | lens <- lenses, lens ^. range . start . line == 1, Just c <- [lens ^. command]] of
+          (c:_) -> return c
+          [] -> expectationFailure [i|No resolved lens on line 1: #{lenses}|]
+
+      executeCommand cmd
+      edited <- getDocumentEdit ident
+
+      T.lines edited `shouldBe` ["putStrLn \"HI\"", "x :: Integer", "x = 42", "", "foo = putStrLn \"HELLO\""]
 
 -- | Each resolved lens as (line, title), dropping any that resolved without one.
 resolvedTitles :: (MonadLoggerIO m, MonadUnliftIO m, Alternative m) => TextDocumentIdentifier -> Session m [(UInt, Text)]
