@@ -3,8 +3,6 @@
 module Spec.Tests.Javascript.Completion (tests) where
 
 import Control.Lens
-import Control.Monad.IO.Unlift
-import qualified Data.List as L
 import Data.String.Interpolate
 import Data.Text (Text)
 import Language.LSP.Protocol.Lens
@@ -16,6 +14,7 @@ import Test.Sandwich as Sandwich
 import Test.Sandwich.Waits (waitUntil)
 import TestLib.LSP
 import TestLib.Types
+import TestLib.Util
 
 
 tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
@@ -51,8 +50,3 @@ localVarCode = [__i|const myVariable = 42;
 d3Code :: Text
 d3Code = [__i|const d3 = require("d3");
               d3.|]
-
-listShouldContain :: (MonadIO m, Eq a, Show a) => [a] -> a -> m ()
-listShouldContain haystack needle = case L.elem needle haystack of
-  True -> return ()
-  False -> expectationFailure [i|Expected list to contain #{show needle}, but had: #{show haystack}|]
