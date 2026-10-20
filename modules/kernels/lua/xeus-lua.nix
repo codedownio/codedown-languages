@@ -28,15 +28,19 @@ stdenv.mkDerivation rec {
     hash = "sha256-HwYtcThbJd/jU0aQGZaef9qjryCiFr2iSiTXZBqDab0=";
   };
 
-  # main.cpp calls xeus::make_xserver_shell_main but only includes xserver_zmq_split.hpp,
-  # which re-exported it in the xeus-zmq that xeus-lua was developed against. In 1.3.0 it
-  # lives in its own header.
-  postPatch = ''
-    substituteInPlace src/main.cpp \
-      --replace-fail '#include "xeus-zmq/xserver_zmq_split.hpp"' \
-                     '#include "xeus-zmq/xserver_zmq_split.hpp"
-    #include "xeus-zmq/xserver_shell_main.hpp"'
-  '';
+  patches = [
+    # main.cpp calls xeus::make_xserver_shell_main but only includes
+    # xserver_zmq_split.hpp, which re-exported it in the xeus-zmq xeus-lua was developed
+    # against. In 1.3.0 it lives in its own header.
+    ./xeus-lua-xeus-zmq-1.3-header.patch
+
+    # 0.8.0 decides whether a cell is an expression by *running* `print(<cell>)` and
+    # falling back to a second, bare evaluation if that fails -- so a cell that has a
+    # side effect and then raises performs the side effect twice. Upstream fixed this in
+    # 0.9.0 (is_expression / has_valid_syntax, which compile rather than run); we can't
+    # take that release because it needs xeus 6, so the fix is backported here.
+    ./xeus-lua-no-double-execution.patch
+  ];
 
   nativeBuildInputs = [cmake];
 

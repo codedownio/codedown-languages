@@ -21,6 +21,7 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
+import qualified Spec.Tests.Lua.Display as Display
 import qualified Spec.Tests.Lua.VariableInspector as VariableInspector
 
 
@@ -79,6 +80,8 @@ tests = describe "Lua" $ do
 
         testKernelStdout "lua" [__i|local lfs = require("lfs")
                                     print(type(lfs.currentdir))|] "function \n"
+
+    Display.tests "lua"
 
     VariableInspector.tests "lua"
 
