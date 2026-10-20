@@ -1,8 +1,6 @@
 { lib
 , callPackage
 , formats
-, makeWrapper
-, runCommand
 
 , lua
 , luaEnv
@@ -27,17 +25,10 @@ let
   luarc = (formats.json {}).generate "luarc.json" {
     runtime = {
       version = "Lua ${v}";
-      # Mirrors LUA_PATH in the kernel, so `require "foo"` resolving in a cell and
-      # resolving in the editor are the same question.
-      path = [
-        "?.lua"
-        "?/init.lua"
-        "${luaEnv}/share/lua/${v}/?.lua"
-        "${luaEnv}/share/lua/${v}/?/init.lua"
-      ];
+      path = luaPaths.serverRuntimePath;
     };
     workspace = {
-      library = ["${luaEnv}/share/lua/${v}"];
+      library = luaPaths.serverLibrary;
       # Otherwise the server prompts the user about "third party" libraries it
       # recognizes in the store path, and there's no UI here to answer with.
       checkThirdParty = false;
@@ -72,18 +63,6 @@ let
     '' + (oldAttrs.postPatch or "");
   });
 
-  # The nixpkgs wrapper points --logpath and --metapath at $XDG_CACHE_HOME or
-  # $HOME/.cache. The server writes its generated standard-library metadata to the
-  # latter on every start, so it has to be writable; a sandboxed notebook may not
-  # have a writable HOME.
-  luaLanguageServerWrapped = runCommand "lua-language-server-wrapped" {
-    nativeBuildInputs = [makeWrapper];
-  } ''
-    mkdir -p $out/bin
-    makeWrapper ${luaLanguageServer}/bin/lua-language-server $out/bin/lua-language-server \
-      --set-default XDG_CACHE_HOME /tmp/lua-language-server-cache
-  '';
-
   languageServerName = "lua-language-server";
 
   passthru = {
@@ -112,7 +91,7 @@ common.writeTextDirWithMetaAndPassthru luaLanguageServer.meta passthru "lib/code
   type = "stream";
   primary = true;
   args = [
-    "${luaLanguageServerWrapped}/bin/lua-language-server"
+    "${luaLanguageServer}/bin/lua-language-server"
     "--configpath=${luarc}"
   ];
   env = {};
