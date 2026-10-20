@@ -88,11 +88,14 @@ getPathAndNixEnvironmentClosure = do
                )
     ) ""
 
+  -- Lean's server reads /etc/localtime at startup and exits if it's missing.
+  localtime <- filterM doesPathExist ["/etc/localtime"]
+
   case length closure > maxReadOnlyBinds of
-    False -> return (pathToUse, closure)
+    False -> return (pathToUse, closure <> localtime)
     True -> do
       info [i|Closure of #{length closure} paths is too big to bind one at a time; binding /nix|]
-      return (pathToUse, ["/nix"])
+      return (pathToUse, ["/nix"] <> localtime)
 
 -- | bwrap takes at most 9000 arguments and a bind is three of them, so an environment with a few
 -- thousand paths in its closure (anything carrying TeX Live) has to settle for the whole store.

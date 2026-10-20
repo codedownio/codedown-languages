@@ -26,6 +26,7 @@ module TestLib.LSP (
 
   , listShouldContain
   , symbolNames
+  , definitionRanges
 
   , module TestLib.LSP.Formatting
 
@@ -169,6 +170,16 @@ listShouldContain :: (HasCallStack, MonadIO m, Eq a, Show a) => [a] -> a -> m ()
 listShouldContain haystack needle = case L.elem needle haystack of
   True -> return ()
   False -> expectationFailure [i|Expected list to contain #{show needle}, but had: #{show haystack}|]
+
+-- | The ranges a textDocument/definition response points at, keeping only those in the
+-- given document. Flattens the four shapes the response can take.
+definitionRanges :: TextDocumentIdentifier -> (Definition |? [DefinitionLink] |? LSP.Null) -> [Range]
+definitionRanges (TextDocumentIdentifier wanted) = \case
+  InL (Definition (InL loc)) -> ranges [loc]
+  InL (Definition (InR locs)) -> ranges locs
+  InR (InL links) -> ranges [Location u r | DefinitionLink (LocationLink _ u r _) <- links]
+  InR (InR LSP.Null) -> []
+  where ranges locs = [r | Location u r <- locs, u == wanted]
 
 assertDiagnosticRanges :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges = assertDiagnosticRanges'' Helpers.getDiagnosticRanges
