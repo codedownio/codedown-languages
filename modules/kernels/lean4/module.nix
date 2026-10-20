@@ -25,11 +25,16 @@ with lib;
           Lean libraries to put on the kernel's and the language server's search paths,
           from nixpkgs' `leanPackages`.
 
-          All of them are prebuilt in the public binary cache except `mathlib`. Its build
-          succeeds, but the output is 8.7 GB and Hydra refuses to upload anything over
-          4 GiB, so it never reaches the cache -- NixOS/nixpkgs#510957, which the
-          maintainer has said will become a Hydra opt-out rather than a fix. Selecting it
-          means compiling Mathlib locally, which takes hours.
+          All of them are prebuilt in the public binary cache except `mathlib`, on this
+          nixpkgs. Mathlib is one Lake package of 7871 modules whose build output is
+          8.7 GB, over the 4 GiB that Hydra will upload, so it never reached the cache
+          (NixOS/nixpkgs#510957). Selecting it here means compiling Mathlib locally,
+          which takes hours.
+
+          Fixed upstream after our pin branched off: nixpkgs master builds a
+          `mathlib__archive` whose modules are packed into per-module `.ltar`s with
+          leantar, which comes to 1.7 GB and does get cached, and makes the user-facing
+          derivation an unpack of it. Worth deleting this caveat on the next nixpkgs bump.
         '';
         type = types.listOf types.str;
         default = [];
