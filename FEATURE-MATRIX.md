@@ -19,6 +19,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Haskell | ✅ | ✅ | – | – | ✅ |
 | JavaScript | ✅ | ✅ | – | – | ✅ |
 | Julia | ✅ | ✅ | ✅ | – | ✅ |
+| Lua | ✅ | ✅ | ✅ | – | ✅ |
 | Octave | ✅ | ✅ | ✅ | – | ✅ |
 | PostgreSQL | ✅ | ✅ | – | – | ✅ |
 | PyPy | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -41,6 +42,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Haskell | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | JavaScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Julia | ✅ | ✅ | ✅ | ✅ | ✅ | – | ✅ |
+| Lua | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Octave | – | – | – | – | – | – | – |
 | PostgreSQL | – | – | – | – | – | – | – |
 | PyPy | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
@@ -63,6 +65,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Haskell | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | JavaScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Julia | ✅ | – | ✅ | ✅ | ✅ | ✅ |
+| Lua | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Octave | – | – | – | – | – | – |
 | PostgreSQL | – | – | – | – | – | – |
 | PyPy | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -85,6 +88,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Haskell | ✅ | ✅ | ✅ |
 | JavaScript | ✅ | ✅ | ✅ |
 | Julia | ✅ | ✅ | ✅ |
+| Lua | ✅ | ✅ | ✅ |
 | Octave | – | – | – |
 | PostgreSQL | – | – | – |
 | PyPy | – | ✅ | ✅ |
@@ -107,6 +111,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Haskell | ✅ |
 | JavaScript | ✅ |
 | Julia | ✅ |
+| Lua | ✅ |
 | Octave | ✅ |
 | PostgreSQL | – |
 | PyPy | ✅ |
@@ -191,6 +196,7 @@ is what the table below records, and what the SVG shows in the cell's tooltip.
 | Haskell | ormolu, fourmolu, stylish-haskell | all compiled into haskell-language-server | `kernels.haskell.lsp.haskell-language-server.formattingProvider` |
 | JavaScript / TypeScript | tsserver | built into typescript-language-server | — |
 | Julia | JuliaFormatter | dependency of LanguageServer.jl | a `.JuliaFormatter.toml` in the workspace |
+| Lua | EmmyLuaCodeStyle | vendored into lua-language-server | `kernels.lua.lsp.lua-language-server.format` |
 | Python | autopep8, yapf, black, ruff | none ship with python-lsp-server | `kernels.python3.lsp.python-lsp-server.formatter` |
 | R | styler | already an R dependency of languageserver | — |
 | Ruby | rubocop | already a gem dependency of solargraph | `kernels.ruby.lsp.solargraph.formatting` |

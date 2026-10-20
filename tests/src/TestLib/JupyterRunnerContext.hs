@@ -138,6 +138,22 @@ testKernelSucceeds' startTimeout kernel code = it [i|#{kernel} -- #{summarizeCod
       [] -> return ()
       ((ename, evalue) : _) -> expectationFailure [i|Kernel produced an error output: #{ename}: #{evalue}|]
 
+-- | The other half of 'testKernelSucceeds': assert that failing code comes back as an
+-- error output whose message satisfies the callback. Worth testing per kernel, because
+-- the bad failure mode is a kernel that reports `status: ok` and no output for code that
+-- didn't run.
+testKernelErrors :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> (Text -> ExampleT context m ()) -> SpecFree context m ()
+testKernelErrors kernel code cb = it [i|#{kernel} -- #{summarizeCode code} (errors)|] $
+  runKernelCode' (ExitFailure 1) defaultStartTimeout kernel code $ \notebookFile outputNotebookFile _outFile _errFile ->
+    liftIO (A.eitherDecodeFileStrict outputNotebookFile) >>= \case
+      Left err -> expectationFailure [i|Failed to decode notebook '#{notebookFile}': #{err}|]
+      Right (JupyterNotebook {..}) ->
+        case [errorOutputEvalue | CodeCell {..} <- notebookCells, ErrorOutput {..} <- codeOutputs] of
+          [] -> expectationFailure [i|Expected an error output, but the kernel produced none|]
+          (evalue : _) -> cb evalue
+
 itHasDisplayDatas :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
@@ -233,7 +249,18 @@ runKernelCode :: (
   , MonadReader context m
   , MonadLoggerIO m
   ) => Int -> Text -> Text -> (FilePath -> FilePath -> FilePath -> FilePath -> m b) -> m b
-runKernelCode startTimeout kernel code cb = do
+runKernelCode = runKernelCode' ExitSuccess
+
+-- | 'runKernelCode' with the exit code papermill is expected to end with. Papermill
+-- re-raises a cell's exception and exits non-zero, so code that is *meant* to fail has
+-- to pass 'ExitFailure' 1 or the run itself is reported as the failure.
+runKernelCode' :: (
+  HasJupyterRunnerContext context
+  , JupyterRunnerMonad m
+  , MonadReader context m
+  , MonadLoggerIO m
+  ) => ExitCode -> Int -> Text -> Text -> (FilePath -> FilePath -> FilePath -> FilePath -> m b) -> m b
+runKernelCode' expectedExitCode startTimeout kernel code cb = do
   nixEnv <- getContext nixEnvironment
   let jupyterPath = nixEnv </> "lib" </> "codedown"
   debug [i|Got jupyterPath: #{jupyterPath}|]
@@ -332,7 +359,7 @@ runKernelCode startTimeout kernel code cb = do
         , cwd = Just outerRunDir
         }
 
-  createProcessWithLogging cp >>= waitForProcess . fst >>= (`shouldBe` ExitSuccess)
+  createProcessWithLogging cp >>= waitForProcess . fst >>= (`shouldBe` expectedExitCode)
 
   cb notebook (relativeToOuterRunDir "out.ipynb") (relativeToOuterRunDir outFile) (relativeToOuterRunDir errFile)
 

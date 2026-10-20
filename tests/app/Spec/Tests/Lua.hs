@@ -64,11 +64,10 @@ tests = describe "Lua" $ do
 
       -- A failing cell has to come back as an error output, not a silently
       -- successful empty one.
-      it "reports a runtime error as an error output" $
-        notebookShouldSatisfy defaultStartTimeout "lua" [__i|error("boom")|] $ \(JupyterNotebook {..}) ->
-          case [errorOutputEvalue | CodeCell {..} <- notebookCells, ErrorOutput {..} <- codeOutputs] of
-            [] -> expectationFailure [i|Expected an error output, got none|]
-            (evalue : _) -> evalue `textShouldContain` "boom"
+      testKernelErrors "lua" [__i|error("boom")|] (`textShouldContain` "boom")
+
+      testKernelErrors "lua" [__i|noSuchFunction()|]
+        (`textShouldContain` "attempt to call a nil value")
 
     describe "Packages" $
       introduceNixEnvironment [kernelSpecWithPackages] [] "Lua with packages" $ introduceJupyterRunner $ do
@@ -84,8 +83,16 @@ tests = describe "Lua" $ do
     VariableInspector.tests "lua"
 
     describe "LSP" $ forM_ ["test.lua", "main.ipynb"] $ \filename -> describe filename $ do
-      itHasHoverSatisfying lsName filename LanguageKind_Lua [__i|print("hi")|] (Position 0 2) $ \hover ->
-        Helpers.allHoverText hover `textShouldContain` "function print"
+      -- lua-language-server answers every request with a "Workspace loading: n / m"
+      -- placeholder until it has finished indexing its standard-library metadata, so
+      -- these retry rather than asserting on the first reply.
+      it [i|#{lsName}: hovers a standard library function (#{filename})|] $
+        doSession' (T.pack filename) lsName [i|print("hi")|] $ \(Helpers.LspSessionInfo {..}) -> do
+          ident <- openDoc lspSessionInfoFileName LanguageKind_Lua
+
+          waitUntil 60 $ do
+            hover <- Helpers.getHoverOrException ident (Position 0 2)
+            Helpers.allHoverText hover `textShouldContain` "function print"
 
       it [i|#{lsName}: "str" includes "string" completion (#{filename})|] $
         doSession' (T.pack filename) lsName [i|local x = str|] $ \(Helpers.LspSessionInfo {..}) -> do
@@ -99,7 +106,7 @@ tests = describe "Lua" $ do
       testDiagnosticsLabel [i|#{lsName}: Undefined global (#{filename})|] lsName filename LanguageKind_Lua
         undefinedGlobalCode $ \diagnostics ->
           assertDiagnosticRanges diagnostics [
-            (Range (Position 0 10) (Position 0 25), Just (InR "undefined-global"))
+            (Range (Position 0 10) (Position 0 29), Just (InR "undefined-global"))
             , (Range (Position 0 6) (Position 0 7), Just (InR "unused-local"))
             ]
 

@@ -899,6 +899,159 @@
         "version": null
       }
     },
+    "lua": {
+      "lua-language-server": {
+        "capabilities": {
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "",
+              "quickfix",
+              "refactor.rewrite",
+              "refactor.extract"
+            ],
+            "resolveProvider": false
+          },
+          "codeLensProvider": {
+            "resolveProvider": true
+          },
+          "colorProvider": true,
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "\t",
+              "\n",
+              ".",
+              ":",
+              "(",
+              "'",
+              "\"",
+              "[",
+              ",",
+              "#",
+              "*",
+              "@",
+              "|",
+              "=",
+              "-",
+              "{",
+              " ",
+              "+",
+              "?"
+            ]
+          },
+          "definitionProvider": true,
+          "documentFormattingProvider": true,
+          "documentHighlightProvider": true,
+          "documentOnTypeFormattingProvider": {
+            "firstTriggerCharacter": "\n"
+          },
+          "documentRangeFormattingProvider": true,
+          "documentSymbolProvider": true,
+          "executeCommandProvider": {
+            "commands": [
+              "lua.removeSpace",
+              "lua.solve",
+              "lua.jsonToLua",
+              "lua.setConfig",
+              "lua.getConfig",
+              "lua.autoRequire"
+            ]
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "implementationProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": true
+          },
+          "offsetEncoding": "utf-16",
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary",
+                "global"
+              ],
+              "tokenTypes": [
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "variable",
+                "property",
+                "enumMember",
+                "event",
+                "function",
+                "method",
+                "macro",
+                "keyword",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              "(",
+              ","
+            ]
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": false
+            }
+          },
+          "typeDefinitionProvider": true,
+          "workspace": {
+            "fileOperations": {
+              "didRename": {
+                "filters": [
+                  {
+                    "pattern": {
+                      "glob": "/tmp/nix-shell-2738644-3322735044/lsp-probe-lua-lua-language-server-o6v6703q/**",
+                      "options": {
+                        "ignoreCase": true
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "workspaceFolders": {
+              "changeNotifications": true,
+              "supported": true
+            }
+          },
+          "workspaceSymbolProvider": true
+        },
+        "displayName": "lua-language-server",
+        "version": "3.18.1"
+      }
+    },
     "octave": {},
     "postgres": {},
     "pypy3": {
