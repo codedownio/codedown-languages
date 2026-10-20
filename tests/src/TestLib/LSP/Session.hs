@@ -88,4 +88,11 @@ getPathAndNixEnvironmentClosure = do
                )
     ) ""
 
-  return (pathToUse, closure)
+  -- Lean's watchdog calls Std.Time.ZonedDateTime.now right after `initialize`, to build a
+  -- default LSP log filename -- it does this even when logging is off. That reads
+  -- /etc/localtime with no fallback and no TZ escape hatch (Std/Time/Zoned/Database/TZdb.lean
+  -- hardcodes the path), so in a sandbox with no /etc the server dies with
+  -- "Watchdog error: no such file or directory" and never publishes a diagnostic.
+  localtime <- filterM doesPathExist ["/etc/localtime"]
+
+  return (pathToUse, closure <> localtime)

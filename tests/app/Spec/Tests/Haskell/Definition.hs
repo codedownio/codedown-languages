@@ -16,7 +16,7 @@ tests = describe "Definition" $ do
   it "finds foo (.hs)" $ doSession' "Test.hs" lsName definitionCodeRegular $ \(Helpers.LspSessionInfo {..}) -> do
     ident <- openDoc lspSessionInfoFileName "haskell"
     defs <- getDefinitions ident (Position 2 11)
-    locations ident defs `shouldBe` [Range (Position 0 0) (Position 0 3)]
+    definitionRanges ident defs `shouldBe` [Range (Position 0 0) (Position 0 3)]
 
   it "finds foo (.ipynb)" $ do
     -- Core transforms the request but not the response, so the Location names the shadow
@@ -25,16 +25,7 @@ tests = describe "Definition" $ do
     doNotebookSession lsName definitionCode $ \(Helpers.LspSessionInfo {..}) -> do
       ident <- openDoc lspSessionInfoFileName "haskell"
       defs <- getDefinitions ident (Position 1 10)
-      locations ident defs `shouldBe` [Range (Position 0 0) (Position 0 3)]
-
--- | The ranges the response points at, keeping only those in @ident@.
-locations :: TextDocumentIdentifier -> (Definition |? [DefinitionLink] |? Null) -> [Range]
-locations (TextDocumentIdentifier wanted) = \case
-  InL (Definition (InL loc)) -> ranges [loc]
-  InL (Definition (InR locs)) -> ranges locs
-  InR (InL links) -> ranges [Location u r | DefinitionLink (LocationLink _ u r _) <- links]
-  InR (InR Null) -> []
-  where ranges locs = [r | Location u r <- locs, u == wanted]
+      definitionRanges ident defs `shouldBe` [Range (Position 0 0) (Position 0 3)]
 
 definitionCode :: Text
 definitionCode = [__i|foo = "hello"

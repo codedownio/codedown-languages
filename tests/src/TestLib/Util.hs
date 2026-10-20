@@ -19,6 +19,11 @@ import qualified Data.HashMap.Strict        as HM
 #endif
 
 
+listShouldContain :: (MonadIO m, Eq a, Show a) => [a] -> a -> m ()
+listShouldContain haystack needle
+  | needle `Prelude.elem` haystack = return ()
+  | otherwise = expectationFailure [i|Expected list to contain #{Prelude.show needle}, but had: #{Prelude.show haystack}|]
+
 findFirstParentMatching :: (MonadIO m) => (FilePath -> m Bool) -> m FilePath
 findFirstParentMatching cb = getCurrentDirectory >>= findFirstParentMatching' cb
 
