@@ -25,9 +25,11 @@ with lib;
           Lean libraries to put on the kernel's and the language server's search paths,
           from nixpkgs' `leanPackages`.
 
-          All of them are prebuilt in the public binary cache except `mathlib`, which
-          nixpkgs builds from source and which has never built successfully on Hydra.
-          Selecting it means compiling Mathlib locally, which takes hours.
+          All of them are prebuilt in the public binary cache except `mathlib`. Its build
+          succeeds, but the output is 8.7 GB and Hydra refuses to upload anything over
+          4 GiB, so it never reaches the cache -- NixOS/nixpkgs#510957, which the
+          maintainer has said will become a Hydra opt-out rather than a fix. Selecting it
+          means compiling Mathlib locally, which takes hours.
         '';
         type = types.listOf types.str;
         default = [];
