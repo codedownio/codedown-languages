@@ -113,9 +113,16 @@ tests = describe "Lua" $ do
       -- xeus-lua puts `ilua` and `pprint` in the global table before any cell runs,
       -- so the server's luarc lists them as known globals. Without that, every
       -- notebook that uses the kernel's own API is full of false positives.
+      --
+      -- The document ends with a genuinely undefined name on purpose: the diagnostics
+      -- helper only fires on a non-empty publish, so "ilua is fine" has to be asserted
+      -- as "these are the only diagnostics", not as "there are none".
       testDiagnosticsLabel [i|#{lsName}: the kernel's globals are not undefined (#{filename})|] lsName filename LanguageKind_Lua
         kernelGlobalsCode $ \diagnostics ->
-          assertDiagnosticRanges diagnostics []
+          assertDiagnosticRanges diagnostics [
+            (Range (Position 2 10) (Position 2 29), Just (InR "undefined-global"))
+            , (Range (Position 2 6) (Position 2 7), Just (InR "unused-local"))
+            ]
 
       itFormatsAsLabel [i|#{lsName} formats #{filename}|] lsName filename LanguageKind_Lua
         badlyFormattedCode formattedCode
@@ -145,7 +152,8 @@ undefinedGlobalCode = [__i|local y = someUndefinedGlobal|]
 
 kernelGlobalsCode :: Text
 kernelGlobalsCode = [__i|ilua.config.printer = "pprint"
-                         pprint({1, 2, 3})|]
+                         pprint({1, 2, 3})
+                         local y = someUndefinedGlobal|]
 
 badlyFormattedCode :: Text
 badlyFormattedCode = "local    x=1+2\nprint(  x )\n"
