@@ -22,6 +22,7 @@ module TestLib.LSP (
   , itHasHoverSatisfying
 
   , definitionRanges
+  , definitionUris
 
   , module TestLib.LSP.Formatting
 
@@ -32,6 +33,7 @@ module TestLib.LSP (
   , LspContext
   ) where
 
+import Control.Lens ((^.))
 import Control.Monad.IO.Unlift
 import Control.Monad.Reader
 import Data.Aeson as A
@@ -42,6 +44,7 @@ import qualified Data.Text as T hiding (filter)
 import Data.Text hiding (filter, show)
 import GHC.Int
 import GHC.Stack
+import Language.LSP.Protocol.Lens (uri)
 import Language.LSP.Protocol.Types
 import qualified Language.LSP.Protocol.Types as LSP
 import Language.LSP.Test
@@ -126,6 +129,16 @@ definitionRanges (TextDocumentIdentifier wanted) = \case
   InR (InL links) -> ranges [Location u r | DefinitionLink (LocationLink _ u r _) <- links]
   InR (InR LSP.Null) -> []
   where ranges locs = [r | Location u r <- locs, u == wanted]
+
+-- | Every document a textDocument/definition response points at. Unlike 'definitionRanges'
+-- this keeps targets outside the document asked about, which is what a jump into a library
+-- looks like.
+definitionUris :: (Definition |? [DefinitionLink] |? LSP.Null) -> [Uri]
+definitionUris = \case
+  InL (Definition (InL loc)) -> [loc ^. uri]
+  InL (Definition (InR locs)) -> [l ^. uri | l <- locs]
+  InR (InL links) -> [u | DefinitionLink (LocationLink _ u _ _) <- links]
+  InR (InR LSP.Null) -> []
 
 assertDiagnosticRanges :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges = assertDiagnosticRanges'' Helpers.getDiagnosticRanges

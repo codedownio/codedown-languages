@@ -802,8 +802,9 @@
       <rect x="778.0" y="432.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 783.9 442.6 L 787.1 445.9 L 793.3 438.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Lean - Subpackage management: no</title>
-      <circle cx="817.5" cy="442.5" r="2.2" fill="#c3c2b7"/>
+    <g><title>Lean - Subpackage management: yes</title>
+      <rect x="807.0" y="432.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
+      <path d="M 812.9 442.6 L 816.1 445.9 L 822.3 438.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <text x="20" y="475.5" font-size="12.5" fill="#0b0b0b">Octave</text>
     <text x="186" y="475.5" font-size="10" text-anchor="end" fill="#898781">11.1.0</text>

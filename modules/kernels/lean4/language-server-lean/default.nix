@@ -12,6 +12,7 @@
 , lean4
 
 , attrs
+, chosenPackages
 , extensions
 , kernelName
 }:
@@ -20,6 +21,12 @@ let
   common = callPackage ../../common.nix {};
 
   languageServerName = "lean";
+
+  # LEAN_PATH finds the .oleans, which is all elaboration needs. LEAN_SRC_PATH is separate
+  # and finds the .lean a module came from: without it textDocument/definition on a name
+  # from a package answers with an empty result rather than pointing into the library.
+  leanPath = lib.concatStringsSep ":" (map (p: "${p}/.lake/build/lib/lean") chosenPackages);
+  leanSrcPath = lib.concatStringsSep ":" (map toString chosenPackages);
 
   # The server execs `lean` and `lake` for elaboration and writes an elaboration cache under
   # HOME, which it refuses to start without. It runs fine with no Lake project in sight --
@@ -37,7 +44,10 @@ let
     makeWrapper ${lean4}/bin/lean $out/bin/lean-language-server \
       --add-flags --server \
       --suffix PATH : ${lean4}/bin \
-      --run 'export HOME=''${HOME:-$(mktemp -d)}'
+      ${lib.optionalString (chosenPackages != []) ''
+        --prefix LEAN_PATH : ${leanPath} \
+        --prefix LEAN_SRC_PATH : ${leanSrcPath} \
+      ''} --run 'export HOME=''${HOME:-$(mktemp -d)}'
   '';
 
   passthru = {

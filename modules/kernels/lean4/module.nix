@@ -22,7 +22,12 @@ with lib;
       packages = mkOption {
         title = "List of packages";
         description = ''
-          Not implemented for Lean; Lake/Reservoir packages aren't available here yet.
+          Lean libraries to put on the kernel's and the language server's search paths,
+          from nixpkgs' `leanPackages`.
+
+          All of them are prebuilt in the public binary cache except `mathlib`, which
+          nixpkgs builds from source and which has never built successfully on Hydra.
+          Selecting it means compiling Mathlib locally, which takes hours.
         '';
         type = types.listOf types.str;
         default = [];

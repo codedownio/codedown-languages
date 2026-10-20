@@ -111,7 +111,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Haskell | ✅ |
 | JavaScript | ✅ |
 | Julia | ✅ |
-| Lean | – |
+| Lean | ✅ |
 | Octave | ✅ |
 | PostgreSQL | – |
 | PyPy | ✅ |

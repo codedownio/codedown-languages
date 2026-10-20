@@ -1,13 +1,16 @@
 { callPackage
 , lib
+, runCommand
 , symlinkJoin
 
 , lean4
+, leanPackages
 
 , settings
 , settingsSchema
 }:
 
+with { inherit (settings) packages; };
 with { inherit (settings.interface) attrs extensions; };
 
 let
@@ -21,24 +24,48 @@ let
 
   lean4-jupyter = callPackage ./lean4-jupyter.nix { inherit repl; };
 
+  # nixpkgs' buildLakePackage installs the entire Lake tree, build artifacts and all:
+  # batteries ships a 272 MB `runLinter`, importGraph a 257 MB executable, proofwidgets a
+  # 316 MB npm tree for its TypeScript widgets, and each package carries its intermediate C
+  # under .lake/build/ir. None of that is reachable from a notebook. Dropping it takes the
+  # set from 1.2 GB to under 300 MB.
+  #
+  # The .lean sources stay. Jump to definition into a library resolves the module name
+  # through LEAN_SRC_PATH rather than through the .olean, and comes back empty if the
+  # sources aren't there -- see "jumps into a package's source" in the Lean 4 spec.
+  #
+  # Lake's .trace files go too. They're incrementality bookkeeping that nothing reads unless
+  # you `lake build` in the tree, and each one names the toolchain it was built by -- which
+  # drags leanPackages' own 4.29.0 (a 3.1 GB closure) into an environment that already has
+  # 4.29.1 and never runs it.
+  slimLakePackage = pkg: runCommand "${pkg.name}-slim" {
+    inherit (pkg) version;
+    meta = pkg.meta // { inherit (pkg) version; };
+  } ''
+    cp -r --no-preserve=mode,ownership ${pkg} $out
+    rm -rf "$out/.lake/build/bin" "$out/.lake/build/ir" "$out/bin" "$out/widget"
+    find "$out" -name '*.trace' -delete
+  '';
+
+  # leanPackages.lean4 is the package set's own toolchain (4.29.0), not a library, so it
+  # isn't something to offer. It doesn't have to match ours either: oleans are compatible
+  # across a Lean patch series, and 4.29.0's load fine under the 4.29.1 we run.
+  packageOptions = lib.mapAttrs (_: slimLakePackage) (
+    lib.filterAttrs (n: v: n != "lean4" && lib.isDerivation v) leanPackages
+  );
+  packageSearch = common.searcher packageOptions;
+
+  chosenPackages = map (x: lib.getAttr x packageOptions) packages;
+
   languageServers =
     []
     ++ lib.optionals settings.lsp.lean.enable [(callPackage ./language-server-lean/default.nix {
-      inherit attrs extensions kernelName lean4;
+      inherit attrs chosenPackages extensions kernelName lean4;
     })]
   ;
 
-  # Lean's package manager is Lake, resolving through Reservoir, and what anyone actually
-  # wants is Mathlib -- ~5000 files, hours to compile, normally distributed as prebuilt
-  # .olean tarballs from Mathlib's CI rather than built from source. Fitting that into Nix is
-  # its own project, and it isn't just a package list: a notebook that `import Mathlib` needs
-  # those oleans on LEAN_PATH inside the repl process and inside the language server, so it
-  # means rebuilding both environments. Ship nothing for now and say so.
-  packageOptions = {};
-  packageSearch = common.searcher packageOptions;
-
   kernel = callPackage ./kernel.nix {
-    inherit attrs displayName extensions lean4 lean4-jupyter repl;
+    inherit attrs chosenPackages displayName extensions lean4 lean4-jupyter repl;
   };
 
 in
