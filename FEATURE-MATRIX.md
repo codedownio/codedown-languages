@@ -20,6 +20,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Java | ✅ | ✅ | – | – | ✅ |
 | JavaScript | ✅ | ✅ | – | – | ✅ |
 | Julia | ✅ | ✅ | ✅ | – | ✅ |
+| Lean | ✅ | ✅ | – | – | ✅ |
 | Octave | ✅ | ✅ | ✅ | – | ✅ |
 | PostgreSQL | ✅ | ✅ | – | – | ✅ |
 | Python | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -41,6 +42,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Java | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | JavaScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Julia | ✅ | ✅ | ✅ | ✅ | ✅ | – | ✅ |
+| Lean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Octave | – | – | – | – | – | – | – |
 | PostgreSQL | – | – | – | – | – | – | – |
 | Python | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
@@ -62,6 +64,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Java | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | JavaScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Julia | ✅ | – | ✅ | ✅ | ✅ | ✅ |
+| Lean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Octave | – | – | – | – | – | – |
 | PostgreSQL | – | – | – | – | – | – |
 | Python | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -83,6 +86,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Java | – | ✅ | ✅ |
 | JavaScript | ✅ | ✅ | ✅ |
 | Julia | ✅ | ✅ | ✅ |
+| Lean | – | ✅ | ✅ |
 | Octave | – | – | – |
 | PostgreSQL | – | – | – |
 | Python | – | ✅ | ✅ |
@@ -104,6 +108,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Java | ✅ |
 | JavaScript | ✅ |
 | Julia | ✅ |
+| Lean | – |
 | Octave | ✅ |
 | PostgreSQL | – |
 | Python | ✅ |

@@ -172,6 +172,8 @@ jobs:
         - name: julia
           flags: "-f julia_112"
           pool: arc-public-medium
+        - name: lean4
+          pool: arc-public-medium
         - name: octave
           pool: arc-public-medium
         - name: postgres
