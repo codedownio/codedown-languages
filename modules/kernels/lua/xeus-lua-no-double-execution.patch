@@ -1,0 +1,42 @@
+diff --git a/src/xinterpreter.cpp b/src/xinterpreter.cpp
+index 45061d3..5efdd1f 100644
+--- a/src/xinterpreter.cpp
++++ b/src/xinterpreter.cpp
+@@ -196,18 +196,31 @@ namespace xlua
+ 
+         bool auto_print = config_table["auto_print"];
+        
+-        bool need_eval = true;
++        // Decide whether the cell is an expression we should echo, WITHOUT running it:
++        // defining a function compiles its body but does not execute it. Testing by
++        // actually running `print(<code>)` (as this release does) executes the cell's
++        // side effects an extra time whenever the cell goes on to raise, because the
++        // failed trial then falls through to a second, bare evaluation.
++        //
++        // This is upstream's fix, backported from 0.9.0's is_expression().
++        std::string code_to_run = code;
+ 
+         if(auto_print)
+         {
+             std::stringstream test_code;
+             test_code << "print(" << code << ")";
+-            auto test_code_result = lua.safe_script(test_code.str(), &sol::script_pass_on_error);
+-            need_eval = !test_code_result.valid();
++
++            std::stringstream probe;
++            probe << "function _xeus_lua_is_expression_probe() \n" << test_code.str() << " \n end";
++
++            if(lua.safe_script(probe.str(), &sol::script_pass_on_error).valid())
++            {
++                code_to_run = test_code.str();
++            }
+         }
+-            
+-        if (need_eval){
+-            sol::protected_function_result code_result = lua.safe_script(code,  &sol::script_pass_on_error);
++
++        {
++            sol::protected_function_result code_result = lua.safe_script(code_to_run,  &sol::script_pass_on_error);
+             if (code_result.valid())
+             {
+ 
