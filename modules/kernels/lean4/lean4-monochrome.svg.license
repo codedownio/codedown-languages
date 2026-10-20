@@ -2,4 +2,8 @@ Redrawn from the Lean "forall" mark in leanprover/vscode-lean4
 (vscode-lean4/media/lean-file-icon-light.svg), Apache-2.0.
 https://github.com/leanprover/vscode-lean4/blob/master/LICENSE
 
-lean4-logo-32x32.png and lean4-logo-64x64.png are rendered from this file.
+lean4-logo-32x32.png and lean4-logo-64x64.png are rendered from this file with the stroke
+recoloured to #2D61CE, which is the blue of the official logomark served at
+https://lean-lang.org/static/apple-touch-icon.png. That reads against both a light and a
+dark background (5.6:1 on white, 3.0:1 on #1e1e1e); the upstream file icons are pure black
+or pure white per theme, which the monochrome SVG keeps.
