@@ -152,6 +152,8 @@ executable tests
       Spec.Tests.Julia.LSP.Hovers
       Spec.Tests.Julia.VariableInspector
       Spec.Tests.Lean4
+      Spec.Tests.Lua
+      Spec.Tests.Lua.VariableInspector
       Spec.Tests.Octave
       Spec.Tests.Octave.VariableInspector
       Spec.Tests.Postgres
