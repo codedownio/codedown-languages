@@ -98,6 +98,32 @@ tests = describe "Lean 4" $ do
       -- No formatting test: Lean ships no formatter and the server advertises no
       -- documentFormattingProvider.
 
+  -- Packages come from nixpkgs' leanPackages, and reach the kernel and the server through
+  -- two different environment variables, so both halves need their own check.
+  describe "Packages" $ introduceNixEnvironment [kernelSpecWithPackages] [] "Lean 4 with batteries" $ introduceJupyterRunner $ do
+    it "imports a package in a cell" $
+      plainOutputsShouldSatisfy unionFindCode $ \case
+        [out] -> out `textShouldContain` "Batteries.UnionFind : Type"
+        xs -> expectationFailure [i|Expected one output, got: #{xs}|]
+
+    it "hovers a name from a package" $ doSession' "test.lean" lsName unionFindCode $ \(Helpers.LspSessionInfo {..}) -> do
+      ident <- openDoc lspSessionInfoFileName leanKind
+
+      waitUntil 180 $ do
+        hover <- getHoverOrException ident (Position 1 20)
+        allHoverText hover `textShouldContain` "Batteries.UnionFind : Type"
+
+    -- LEAN_PATH alone gets the .oleans, which is enough to elaborate but not to navigate:
+    -- without LEAN_SRC_PATH this comes back empty rather than pointing into the library.
+    it "jumps into a package's source" $ doSession' "test.lean" lsName unionFindCode $ \(Helpers.LspSessionInfo {..}) -> do
+      ident <- openDoc lspSessionInfoFileName leanKind
+
+      waitUntil 180 $ do
+        defs <- getDefinitions ident (Position 1 20)
+        case definitionUris defs of
+          [Uri u] -> u `textShouldContain` "batteries"
+          xs -> expectationFailure [i|Expected one definition target, got: #{xs}|]
+
 lsName :: Text
 lsName = "lean"
 
@@ -116,6 +142,18 @@ kernelSpecWithLsp = NixKernelSpec {
       "lsp.lean.enable = true"
       ]
   }
+
+kernelSpecWithPackages :: NixKernelSpec
+kernelSpecWithPackages = kernelSpecWithLsp {
+  nixKernelPackages = [nameOnly "batteries"]
+  }
+
+-- | `Batteries.UnionFind` is in the package and not in core, so resolving it at all means
+-- the package made it onto the search path.
+unionFindCode :: Text
+unionFindCode = [__i|import Batteries
+                     \#check @Batteries.UnionFind
+                    |]
 
 -- | The kernel renders through Alectryon into display_data, not into stdout or an
 -- execute_result, so every kernel assertion goes through the text/plain rendering.

@@ -8,6 +8,7 @@
 , lean4-jupyter
 , repl
 
+, chosenPackages
 , displayName
 , attrs
 , extensions
@@ -17,6 +18,10 @@ with lib;
 
 let
   common = callPackage ../common.nix {};
+
+  # The repl inherits its environment from the kernel process, so selected packages have to
+  # be on LEAN_PATH here rather than anywhere closer to the repl itself.
+  leanPath = concatStringsSep ":" (map (p: "${p}/.lake/build/lib/lean") chosenPackages);
 
   # lean4_jupyter shells out to `lean --version` for its banner and to `repl` for its startup
   # check, so both have to be on the kernel process's PATH even though the spawn itself goes
@@ -28,7 +33,8 @@ let
     mkdir -p $out/bin
     makeWrapper $python/bin/python $out/bin/python \
       --suffix PATH : ${lean4}/bin \
-      --suffix PATH : ${repl}/bin
+      --suffix PATH : ${repl}/bin \
+      ${optionalString (chosenPackages != []) "--prefix LEAN_PATH : ${leanPath}"}
   '';
 
   argv = [
