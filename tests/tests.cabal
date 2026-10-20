@@ -127,6 +127,8 @@ executable tests
       Spec.Tests.Julia
       Spec.Tests.Julia.Diagnostics
       Spec.Tests.Julia.VariableInspector
+      Spec.Tests.Lua
+      Spec.Tests.Lua.VariableInspector
       Spec.Tests.Octave
       Spec.Tests.Octave.VariableInspector
       Spec.Tests.Postgres
