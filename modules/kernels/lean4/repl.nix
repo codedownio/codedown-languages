@@ -1,6 +1,5 @@
-# leanprover-community/repl: a line-oriented JSON frontend to Lean's elaborator. It's what
-# the kernel drives to execute cells, and it's the reason this kernel is packageable at all --
-# its lake-manifest.json lists zero packages, so `lake build` needs no network.
+# leanprover-community/repl: JSON-over-stdio frontend to Lean's elaborator, which the
+# kernel drives to run cells. Its lake-manifest.json is empty, so the build is offline.
 { lib
 , stdenv
 , fetchFromGitHub
@@ -27,10 +26,8 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ lean4 makeWrapper ];
 
-  # The Lean compiler emits C and hands it to a C compiler to build and link. With a host gcc
-  # the 24 Lean targets all compile and only the final link fails, on undefined
-  # `std::__detail::__wait_impl` (libstdc++ too old) and `free_sized` (glibc too old). Keeping
-  # stdenv's cc the only compiler on PATH is what makes it link, so don't add a toolchain here.
+  # Lean emits C and links it with whatever cc is on PATH. A host gcc compiles every target
+  # and then fails the final link on libstdc++/glibc symbols, so leave stdenv's cc alone.
   buildPhase = ''
     runHook preBuild
 
@@ -49,17 +46,15 @@ stdenv.mkDerivation {
     cp .lake/build/bin/repl "$out/bin/.repl-unwrapped"
     cp -r .lake/build/lib/lean/. "$out/lib/lean/"
 
-    # The binary locates its own oleans from any cwd, but it execs `lean` for elaboration,
-    # so the toolchain has to be on its PATH no matter who spawns it.
+    # Finds its own oleans from any cwd, but execs `lean`, so needs it on PATH.
     makeWrapper "$out/bin/.repl-unwrapped" "$out/bin/repl" \
       --prefix PATH : ${lean4}/bin
 
     runHook postInstall
   '';
 
-  # Upstream's test.sh diffs test/*.in through the built repl against checked-in expected
-  # output, then cd's into test/Mathlib and does it again -- that second half fetches Mathlib
-  # and can't run here, so drive the first half ourselves rather than calling test.sh.
+  # Upstream's test.sh also runs a Mathlib half that needs the network, so drive the
+  # test/*.in cases ourselves rather than calling it.
   doCheck = true;
   checkPhase = ''
     runHook preCheck

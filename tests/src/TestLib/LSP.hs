@@ -130,9 +130,8 @@ definitionRanges (TextDocumentIdentifier wanted) = \case
   InR (InR LSP.Null) -> []
   where ranges locs = [r | Location u r <- locs, u == wanted]
 
--- | Every document a textDocument/definition response points at. Unlike 'definitionRanges'
--- this keeps targets outside the document asked about, which is what a jump into a library
--- looks like.
+-- | Every document a definition response points at, including ones outside the document
+-- asked about -- which is what a jump into a library looks like.
 definitionUris :: (Definition |? [DefinitionLink] |? LSP.Null) -> [Uri]
 definitionUris = \case
   InL (Definition (InL loc)) -> [loc ^. uri]

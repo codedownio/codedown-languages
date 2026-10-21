@@ -1,10 +1,5 @@
-# utensil/lean4_jupyter: an ipykernel subclass that drives leanprover-community/repl over a
-# pipe and renders its JSON back as Alectryon-annotated output, with `--% proof` / `--% env`
-# magics for stepping into a sorried goal.
-#
-# Upstream hasn't been touched since 2024-11; see ./patch-lean4-jupyter.py for the two
-# changes it needs. The Lean-side half of the protocol lives in repl.nix and *is* actively
-# maintained, which is the part that matters.
+# utensil/lean4_jupyter: an ipykernel subclass driving leanprover-community/repl, rendering
+# its JSON as Alectryon output. Unmaintained since 2024-11; see ./patch-lean4-jupyter.py.
 { lib
 , fetchFromGitHub
 , python3
@@ -27,16 +22,14 @@ python3.pkgs.buildPythonPackage {
 
   nativeBuildInputs = with python3.pkgs; [ flit-core ];
 
-  # pyyaml is missing from pyproject.toml's dependencies, but kernel.py and display.py both
-  # `import yaml` -- without it the kernel dies on its first cell.
+  # pyyaml is missing from pyproject.toml but both kernel.py and display.py import it.
   propagatedBuildInputs = with python3.pkgs; [ pexpect ipykernel alectryon pyyaml ];
 
   postPatch = ''
     ${python3.interpreter} ${./patch-lean4-jupyter.py} ${repl}/bin/repl
   '';
 
-  # The test suite is nbval over the example notebooks and wants a Lake demo project plus
-  # papermill. tests/app/Spec/Tests/Lean4.hs covers the kernel end to end instead.
+  # Upstream's tests are nbval notebooks needing a Lake demo project; Lean4.hs covers this.
   doCheck = false;
 
   pythonImportsCheck = [ "lean4_jupyter" "lean4_jupyter.display" "lean4_jupyter.kernel" ];
