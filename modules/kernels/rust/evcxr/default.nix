@@ -1,5 +1,6 @@
 { callPackage
 , coreutils
+, fetchFromGitHub
 , gnutar
 , lib
 , libiconv
@@ -16,6 +17,27 @@
 }:
 
 let
+  # 26.05 pins 0.21.1, whose rust-analyzer runs `cargo metadata --lockfile-path`,
+  # a flag cargo 1.95 dropped, so the sysroot never loads and no std type infers.
+  evcxrPinned = evcxr.overrideAttrs (oldAttrs: rec {
+    version = "0.22.0";
+
+    src = fetchFromGitHub {
+      owner = "evcxr";
+      repo = "evcxr";
+      tag = "v${version}";
+      hash = "sha256-lRkDrwq2cfSesQMKiYZiterLvO/4st2AfCzRUNR8Hac=";
+    };
+
+    cargoDeps = rustPlatform.fetchCargoVendor {
+      inherit src;
+      hash = "sha256-aZDoYB0qbXyASGT6uj48DAxJRHkZg66hD/Qy3UjcjJo=";
+    };
+
+    # Completes against std, so it needs network the sandbox doesn't have.
+    checkFlags = (oldAttrs.checkFlags or []) ++ ["--skip=completion_fields_populated"];
+  });
+
   withPackages = callPackage ./withPackages.nix {
     inherit cargo rustPlatform;
   };
@@ -62,6 +84,24 @@ let
       env = lib.foldl' (acc: o: acc // (envOf o)) {} applied;
     };
 
+  # Loading the sysroot resolves rust-src's own deps over the network; the kernel
+  # is offline, so vendor them as sysrootCargoHome does for the language server.
+  sysrootVendorDir = rustPlatform.importCargoLock {
+    lockFile = "${rustPlatform.rustLibSrc}/Cargo.lock";
+  };
+
+  # A directory source takes only one directory, so merge the two vendor trees.
+  vendorDir = packages: runCommand "evcxr-vendor-dir" {} ''
+    mkdir -p $out
+    for dir in "${withPackages.vendorDependencies packages}" "${sysrootVendorDir}"; do
+      for crate in "$dir"/*; do
+        [ -d "$crate" ] || continue
+        name=$(basename "$crate")
+        [ -e "$out/$name" ] || ln -s "$crate" "$out/$name"
+      done
+    done
+  '';
+
   cargoHome = packages: runCommand "cargo-home" { buildInputs = [cargo]; } ''
     mkdir -p $out
     cp "${withPackages.cargoNix packages}"/Cargo.toml $out
@@ -76,7 +116,7 @@ let
     replace-with = "vendored-sources"
 
     [source.vendored-sources]
-    directory = "${withPackages.vendorDependencies packages}"
+    directory = "${vendorDir packages}"
 
     [net]
     offline = true
@@ -106,7 +146,7 @@ let
 
 in
 
-evcxr.overrideAttrs (oldAttrs: {
+evcxrPinned.overrideAttrs (oldAttrs: {
   passthru = (oldAttrs.passthru or {}) // {
     cratesIndex = withPackages.cratesIndex;
     cratesFeatures = withPackages.cratesFeatures;
@@ -151,7 +191,7 @@ evcxr.overrideAttrs (oldAttrs: {
           makeWrapperArgs = baseWrapperArgs;
         } ''
           mkdir -p $out/bin
-          makeWrapper ${evcxr}/bin/evcxr $out/bin/evcxr $makeWrapperArgs
+          makeWrapper ${evcxrPinned}/bin/evcxr $out/bin/evcxr $makeWrapperArgs
         '';
 
         # Compile the crates once here rather than on every kernel start.
@@ -183,7 +223,7 @@ evcxr.overrideAttrs (oldAttrs: {
         '';
       in
       runCommand "evcxr" {
-        version = evcxr.version;
+        version = evcxrPinned.version;
 
         buildInputs = [makeWrapper];
 
@@ -225,8 +265,8 @@ evcxr.overrideAttrs (oldAttrs: {
           fi
         ''}
 
-        makeWrapper ${evcxr}/bin/evcxr $out/bin/evcxr $makeWrapperArgs --run "$seed"
-        makeWrapper ${evcxr}/bin/evcxr_jupyter $out/bin/evcxr_jupyter $makeWrapperArgs --run "$seed"
+        makeWrapper ${evcxrPinned}/bin/evcxr $out/bin/evcxr $makeWrapperArgs --run "$seed"
+        makeWrapper ${evcxrPinned}/bin/evcxr_jupyter $out/bin/evcxr_jupyter $makeWrapperArgs --run "$seed"
       '';
   };
 })
