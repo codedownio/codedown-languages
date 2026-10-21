@@ -154,7 +154,6 @@ evcxrPinned.overrideAttrs (oldAttrs: {
     withPackages = packages:
       let
         inherit (overrideInputs packages) nativeBuildInputs buildInputs env;
-        # Colon-separated so it survives the word-splitting of $makeWrapperArgs.
         # pkg-config emits the right -L/-I flags from these .pc files, so this is
         # all the build scripts need to find and link the libraries.
         pkgConfigPath = lib.concatStringsSep ":" (lib.concatMap (l: [
@@ -164,8 +163,7 @@ evcxrPinned.overrideAttrs (oldAttrs: {
         # Loadable at runtime, for build scripts that link native libs (e.g.
         # clang-sys -> libclang) and for user code that loads them when it runs.
         libraryPath = lib.makeLibraryPath buildInputs;
-        # env-var overrides (LIBCLANG_PATH, ...). Values are store paths / flags
-        # with no spaces, so they pass through $makeWrapperArgs word-splitting.
+        # env-var overrides (LIBCLANG_PATH, ...).
         envArgs = lib.concatLists (lib.mapAttrsToList (n: v: ["--set" n v]) env);
 
         # evcxr links user code at *runtime* outside any Nix derivation, so the
@@ -182,16 +180,18 @@ evcxrPinned.overrideAttrs (oldAttrs: {
           "--suffix" "PKG_CONFIG_PATH" ":" "${pkgConfigPath}"
           "--suffix" "LD_LIBRARY_PATH" ":" "${libraryPath}"
         ] ++ lib.optionals stdenv.isDarwin [
-          "--set" "NIX_LDFLAGS_${stdenv.cc.suffixSalt}" "-L${lib.getLib libiconv}/lib"
+          # evcxr 0.22 moves a cell's dylib out of the directory rustc linked it
+          # in, breaking its relative rpath to libstd under /nix/var/nix/builds.
+          "--set" "NIX_LDFLAGS_${stdenv.cc.suffixSalt}"
+            "-L${lib.getLib libiconv}/lib -rpath ${rustc.unwrapped}/lib/rustlib/${stdenv.hostPlatform.rust.rustcTarget}/lib"
         ];
 
         # Compiles the dependencies itself, to produce the prebuilt directory.
         unseeded = runCommand "evcxr-unseeded" {
           buildInputs = [makeWrapper];
-          makeWrapperArgs = baseWrapperArgs;
         } ''
           mkdir -p $out/bin
-          makeWrapper ${evcxrPinned}/bin/evcxr $out/bin/evcxr $makeWrapperArgs
+          makeWrapper ${evcxrPinned}/bin/evcxr $out/bin/evcxr ${lib.escapeShellArgs baseWrapperArgs}
         '';
 
         # Compile the crates once here rather than on every kernel start.
@@ -204,16 +204,18 @@ evcxrPinned.overrideAttrs (oldAttrs: {
 
           # Cleared, so the rerun-if-env-changed variables match what a kernel
           # sees; otherwise cargo reruns every build script.
+          status=0
           echo '1+1' | env -i \
             HOME=$(mktemp -d) \
             TMPDIR=$TMPDIR \
             EVCXR_TMPDIR=$buildDir \
-            ${unseeded}/bin/evcxr > evcxr.log 2>&1
+            ${unseeded}/bin/evcxr > evcxr.log 2>&1 || status=$?
 
-          # evcxr exits 0 even when the build fails; the expression can only have
-          # evaluated if the crates compiled.
-          if ! grep -qx '2' evcxr.log; then
-            echo "evcxr failed while prebuilding the dependencies:"
+          # The expression can only have evaluated if the crates compiled, and
+          # evcxr often reports a failed build through its output rather than its
+          # exit status.
+          if [ "$status" -ne 0 ] || ! grep -qx '2' evcxr.log; then
+            echo "evcxr failed while prebuilding the dependencies (exit $status):"
             grep -v '"reason":"compiler-artifact"' evcxr.log | tail -50
             exit 1
           fi
@@ -226,8 +228,6 @@ evcxrPinned.overrideAttrs (oldAttrs: {
         version = evcxrPinned.version;
 
         buildInputs = [makeWrapper];
-
-        makeWrapperArgs = baseWrapperArgs;
 
         passthru = {
           cargoHome = cargoHome packages;
@@ -242,8 +242,8 @@ evcxrPinned.overrideAttrs (oldAttrs: {
       } ''
         mkdir -p $out/bin
 
-        # Separate from $makeWrapperArgs, which is word-split. Absolute paths
-        # because the wrapper's PATH has the Rust toolchain, not coreutils.
+        # Absolute paths because the wrapper's PATH has the Rust toolchain, not
+        # coreutils.
         seed=${lib.escapeShellArg ''
           # Skipped when already set: evcxr re-execs itself through this wrapper,
           # and a second build directory would deadlock the two on cargo's lock.
@@ -265,8 +265,8 @@ evcxrPinned.overrideAttrs (oldAttrs: {
           fi
         ''}
 
-        makeWrapper ${evcxrPinned}/bin/evcxr $out/bin/evcxr $makeWrapperArgs --run "$seed"
-        makeWrapper ${evcxrPinned}/bin/evcxr_jupyter $out/bin/evcxr_jupyter $makeWrapperArgs --run "$seed"
+        makeWrapper ${evcxrPinned}/bin/evcxr $out/bin/evcxr ${lib.escapeShellArgs baseWrapperArgs} --run "$seed"
+        makeWrapper ${evcxrPinned}/bin/evcxr_jupyter $out/bin/evcxr_jupyter ${lib.escapeShellArgs baseWrapperArgs} --run "$seed"
       '';
   };
 })
