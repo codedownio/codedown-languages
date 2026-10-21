@@ -33,7 +33,12 @@ tests = describe "Lean 4" $ do
     describe "Kernel tests" $ do
       it "evaluates an expression" $
         plainOutputsShouldSatisfy "#eval 2 + 2" $ \case
-          [out] -> out `textShouldContain` "▶  4"
+          [out] -> do
+            out `textShouldContain` "▶  4"
+            -- Upstream appends the repl's JSON request and response to every cell's
+            -- text/plain; patch-lean4-jupyter.py strips that, leaving it only in the
+            -- HTML, where it's behind a collapsed <details>.
+            out `textShouldNotContain` "Raw output:"
           xs -> expectationFailure [i|Expected one output, got: #{xs}|]
 
       it "proves a theorem with no complaint" $
@@ -48,10 +53,14 @@ tests = describe "Lean 4" $ do
           [out] -> out `textShouldContain` "Tactic `decide` proved that the proposition"
           xs -> expectationFailure [i|Expected one output, got: #{xs}|]
 
+      -- Alectryon renders the warning and the `--% prove N` magic but not the goal, which
+      -- upstream leaves readable only inside the raw JSON. patch-lean4-jupyter.py renders
+      -- the sorries instead, so this asserts our rendering, not a substring of a dump.
       it "surfaces the sorry warning and the open goal" $
         plainOutputsShouldSatisfy "theorem t : 1 + 1 = 2 := by sorry" $ \case
           [out] -> do
             out `textShouldContain` "declaration uses `sorry`"
+            out `textShouldContain` "proofState 0:"
             out `textShouldContain` "⊢ 1 + 1 = 2"
           xs -> expectationFailure [i|Expected one output, got: #{xs}|]
 
