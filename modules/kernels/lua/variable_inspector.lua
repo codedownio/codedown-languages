@@ -98,17 +98,13 @@ function M.truncate(s)
   return s
 end
 
--- Names that exist but should never be listed: our own helpers, and the kernel's.
-function M.hidden(name)
-  return name:sub(1, 13) == '__codedown_vi'
-      or name == '__codedown_variable_inspector_list'
-      or name == '__codedown_variable_inspector_inspect'
-end
-
+-- Everything defined by this file -- M itself and the two entry points -- exists before
+-- the baseline below is taken, so the baseline check alone is enough to keep the
+-- inspector's own names out of the listing.
 function M.user_names()
   local names = {}
   for k, _ in pairs(_G) do
-    if type(k) == 'string' and not M.baseline[k] and not M.hidden(k) then
+    if type(k) == 'string' and not M.baseline[k] then
       names[#names + 1] = k
     end
   end

@@ -26,8 +26,6 @@ let
 in
 
 {
-  inherit luaPatterns;
-
   luaPath = ";;;" + builtins.concatStringsSep ";" luaPatterns;
   luaCPath = ";;;" + builtins.concatStringsSep ";" cPatterns;
 
