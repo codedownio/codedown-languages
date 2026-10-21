@@ -42,6 +42,7 @@ extendedLib.evalModules {
     ../modules/kernels/haskell/module.nix
     ../modules/kernels/javascript/module.nix
     ../modules/kernels/julia/module.nix
+    ../modules/kernels/lua/module.nix
     ../modules/kernels/octave/module.nix
     ../modules/kernels/postgres/module.nix
     ../modules/kernels/python/module.nix

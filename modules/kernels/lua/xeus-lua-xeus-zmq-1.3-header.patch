@@ -1,0 +1,12 @@
+diff --git a/src/main.cpp b/src/main.cpp
+index 5c25f5a..9516b28 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -26,6 +26,7 @@
+ #include "xeus/xserver.hpp"
+ 
+ #include "xeus-zmq/xserver_zmq_split.hpp"
++#include "xeus-zmq/xserver_shell_main.hpp"
+ #include "xeus-zmq/xzmq_context.hpp"
+ 
+ 
