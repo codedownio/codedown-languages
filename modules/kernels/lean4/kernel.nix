@@ -19,13 +19,10 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  # The repl inherits its environment from the kernel process, so selected packages have to
-  # be on LEAN_PATH here rather than anywhere closer to the repl itself.
+  # The repl inherits this process's environment, so LEAN_PATH has to be set here.
   leanPath = concatStringsSep ":" (map (p: "${p}/.lake/build/lib/lean") chosenPackages);
 
-  # lean4_jupyter shells out to `lean --version` for its banner and to `repl` for its startup
-  # check, so both have to be on the kernel process's PATH even though the spawn itself goes
-  # through an absolute path.
+  # lean4_jupyter's startup check shells out to `lean` and `repl` by name.
   python = runCommand "lean4-kernel-python" {
     nativeBuildInputs = [ makeWrapper ];
     python = python3.withPackages (_ps: [ lean4-jupyter ]);
@@ -45,8 +42,7 @@ let
     "{connection_file}"
   ];
 
-  # `lean --repl` is a bare elaborator loop with no editing or history, so there's nothing
-  # worth attaching a PTY to. Run the kernel under jupyter-console, like Go and Coq do.
+  # Nothing worth attaching a PTY to, so run under jupyter-console like Go and Coq.
   repls.console = common.jupyterConsoleRepl {
     inherit displayName argv;
     language = head attrs;

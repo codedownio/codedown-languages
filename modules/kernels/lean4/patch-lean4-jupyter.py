@@ -1,27 +1,12 @@
 """Build-time patches to utensil/lean4_jupyter. Run from the unpacked source root with the
 wrapped `repl` binary as argv[1].
 
-Three things upstream does that don't work in a Nix environment:
-
-1. `repl.py` spawns `lake env repl`, which only elaborates inside a Lake project directory.
-   The repl we build runs from any cwd with no project at all, so point both the spawn and
-   the `check()` probe straight at it. That's what lets a notebook live in a plain folder.
-
-2. `display.py` emits an HTML header linking three stylesheets and two scripts from
-   lean-lang.org and jsdelivr, so cell output only renders correctly if whoever is *viewing*
-   the notebook has internet access. The same stylesheets are vendored in the repo, so
-   inline them. The scripts are dropped: Alectryon's pygments lexer already highlighted the
-   code server-side, and highlight.js alone is 111 KB per cell.
-
-3. `plain()` appends the repl's JSON request and response verbatim to every cell's
-   text/plain, carriage returns and all. The HTML rendering puts the same thing behind a
-   collapsed <details>, so it's only noise where it can't be collapsed -- the console REPL
-   and nbconvert's markdown and LaTeX exporters. Drop it there and leave the HTML alone.
-
-   It can't be a straight deletion: a sorried goal appears *only* in that JSON. Alectryon
-   renders the "declaration uses `sorry`" warning and the `--% prove N` magic but not the
-   goal itself, so removing the dump without putting the goals back would lose the most
-   useful line in the cell.
+1. Spawn our `repl` instead of `lake env repl`, so a notebook needn't be a Lake project.
+2. Inline the vendored stylesheets, which upstream links from lean-lang.org and jsdelivr.
+   The two scripts are dropped; Alectryon already highlights server-side.
+3. Drop the raw JSON `plain()` appends to every cell, but render sorried goals first --
+   Alectryon shows the warning and the `--% prove N` magic, never the goal itself, so a
+   straight deletion would lose it. The HTML keeps the dump behind a collapsed <details>.
 """
 
 import pathlib
