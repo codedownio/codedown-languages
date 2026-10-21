@@ -32,11 +32,17 @@ let
   # HOME, which it refuses to start without. It runs fine with no Lake project in sight --
   # verified against a bare .lean file in a scratch directory.
   #
-  # It does need /etc/localtime to exist, which isn't something a wrapper can supply: right
-  # after `initialize` the watchdog builds a default LSP log filename from
-  # Std.Time.ZonedDateTime.now (even with logging off), and Std/Time/Zoned/Database/TZdb.lean
-  # hardcodes /etc/localtime with no fallback and no TZ override. Without it the server exits
-  # with "Watchdog error: no such file or directory" before elaborating anything.
+  # On this Lean it does need /etc/localtime to exist. Right after `initialize` the watchdog
+  # builds a default LSP log filename from Std.Time.ZonedDateTime.now -- it does this even
+  # with logging off -- and 4.29.1's Std/Time/Zoned/Database/TZdb.lean hardcodes
+  # /etc/localtime with no fallback and no TZ override. Without it the server exits with
+  # "Watchdog error: no such file or directory" before elaborating anything.
+  #
+  # leanprover/lean4#12869 added a TZ/TZDIR override, shipped in 4.35.0, so after the next
+  # nixpkgs bump this becomes a wrapper concern rather than a sandbox one: `--set TZ UTC`
+  # plus a TZDIR pointing into tzdata's zoneinfo is enough here, verified against 4.35.0 in
+  # a sandbox with no /etc. The unconditional timestamp in ofLspLogConfig is still there
+  # though, so a Lean with no local timezone at all still loses its language server.
   leanWrapped = runCommand "lean-language-server" {
     nativeBuildInputs = [ makeWrapper ];
   } ''
