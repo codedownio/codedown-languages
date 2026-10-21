@@ -1,7 +1,7 @@
 """Build-time patches to utensil/lean4_jupyter. Run from the unpacked source root with the
 wrapped `repl` binary as argv[1].
 
-Two things upstream does that don't work in a Nix environment:
+Three things upstream does that don't work in a Nix environment:
 
 1. `repl.py` spawns `lake env repl`, which only elaborates inside a Lake project directory.
    The repl we build runs from any cwd with no project at all, so point both the spawn and
@@ -12,6 +12,16 @@ Two things upstream does that don't work in a Nix environment:
    the notebook has internet access. The same stylesheets are vendored in the repo, so
    inline them. The scripts are dropped: Alectryon's pygments lexer already highlighted the
    code server-side, and highlight.js alone is 111 KB per cell.
+
+3. `plain()` appends the repl's JSON request and response verbatim to every cell's
+   text/plain, carriage returns and all. The HTML rendering puts the same thing behind a
+   collapsed <details>, so it's only noise where it can't be collapsed -- the console REPL
+   and nbconvert's markdown and LaTeX exporters. Drop it there and leave the HTML alone.
+
+   It can't be a straight deletion: a sorried goal appears *only* in that JSON. Alectryon
+   renders the "declaration uses `sorry`" warning and the `--% prove N` magic but not the
+   goal itself, so removing the dump without putting the goals back would lose the most
+   useful line in the cell.
 """
 
 import pathlib
@@ -39,6 +49,17 @@ patch(
     "lean4_jupyter/repl.py",
     '\'\'\'echo \'{"cmd": "#eval Lean.versionString"}\'|repl\'\'\'',
     f'\'\'\'echo \'{{"cmd": "#eval Lean.versionString"}}\'|{repl_bin}\'\'\'',
+)
+
+patch(
+    "lean4_jupyter/display.py",
+    """        raw = '\\n\\nRaw input:\\n' + self.output.input.raw + '\\nRaw output:\\n' + self.output.raw
+        return '\\n'.join(lines) + raw""",
+    """        goals = ''.join(
+            '\\nproofState %s:\\n%s' % (s['proofState'], s['goal'])
+            for s in self.output.info.get('sorries', [])
+        )
+        return '\\n'.join(lines) + goals""",
 )
 
 style = "\n".join(
