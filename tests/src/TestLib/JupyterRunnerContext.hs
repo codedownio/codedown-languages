@@ -146,7 +146,7 @@ testKernelErrors :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> (Text -> ExampleT context m ()) -> SpecFree context m ()
 testKernelErrors kernel code cb = it [i|#{kernel} -- #{summarizeCode code} (errors)|] $
-  runKernelCode' (ExitFailure 1) defaultStartTimeout kernel code $ \notebookFile outputNotebookFile _outFile _errFile ->
+  runKernelCode' ExpectExitFailure defaultStartTimeout kernel code $ \notebookFile outputNotebookFile _outFile _errFile ->
     liftIO (A.eitherDecodeFileStrict outputNotebookFile) >>= \case
       Left err -> expectationFailure [i|Failed to decode notebook '#{notebookFile}': #{err}|]
       Right (JupyterNotebook {..}) ->
@@ -249,18 +249,22 @@ runKernelCode :: (
   , MonadReader context m
   , MonadLoggerIO m
   ) => Int -> Text -> Text -> (FilePath -> FilePath -> FilePath -> FilePath -> m b) -> m b
-runKernelCode = runKernelCode' ExitSuccess
+runKernelCode = runKernelCode' ExpectExitSuccess
 
--- | 'runKernelCode' with the exit code papermill is expected to end with. Papermill
--- re-raises a cell's exception and exits non-zero, so code that is *meant* to fail has
--- to pass 'ExitFailure' 1 or the run itself is reported as the failure.
+-- | Whether the notebook run itself is expected to succeed. Papermill re-raises a cell's
+-- exception and exits non-zero, so code that is *meant* to fail has to say so or the run
+-- is reported as the failure. 'ExpectExitFailure' is any non-zero exit rather than a
+-- specific code, since which one papermill picks isn't part of its contract.
+data ExpectedExit = ExpectExitSuccess | ExpectExitFailure
+  deriving (Show, Eq)
+
 runKernelCode' :: (
   HasJupyterRunnerContext context
   , JupyterRunnerMonad m
   , MonadReader context m
   , MonadLoggerIO m
-  ) => ExitCode -> Int -> Text -> Text -> (FilePath -> FilePath -> FilePath -> FilePath -> m b) -> m b
-runKernelCode' expectedExitCode startTimeout kernel code cb = do
+  ) => ExpectedExit -> Int -> Text -> Text -> (FilePath -> FilePath -> FilePath -> FilePath -> m b) -> m b
+runKernelCode' expectedExit startTimeout kernel code cb = do
   nixEnv <- getContext nixEnvironment
   let jupyterPath = nixEnv </> "lib" </> "codedown"
   debug [i|Got jupyterPath: #{jupyterPath}|]
@@ -359,7 +363,11 @@ runKernelCode' expectedExitCode startTimeout kernel code cb = do
         , cwd = Just outerRunDir
         }
 
-  createProcessWithLogging cp >>= waitForProcess . fst >>= (`shouldBe` expectedExitCode)
+  createProcessWithLogging cp >>= waitForProcess . fst >>= \exitCode -> case (expectedExit, exitCode) of
+    (ExpectExitSuccess, _) -> exitCode `shouldBe` ExitSuccess
+    (ExpectExitFailure, ExitFailure _) -> return ()
+    (ExpectExitFailure, ExitSuccess) ->
+      expectationFailure [i|Expected the notebook run to fail, but it exited successfully|]
 
   cb notebook (relativeToOuterRunDir "out.ipynb") (relativeToOuterRunDir outFile) (relativeToOuterRunDir errFile)
 
