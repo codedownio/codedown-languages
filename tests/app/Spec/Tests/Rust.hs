@@ -38,11 +38,7 @@ tests = describe "Rust" $ do
 
       testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
-      -- evcxr has to name the type of every top-level `let` to persist it across
-      -- cells, and asks its built-in rust-analyzer. When that rust-analyzer can't
-      -- resolve std, every binding without an explicit type fails with "Couldn't
-      -- automatically determine type of variable". The rest of these tests
-      -- annotate their types, so they don't notice.
+      -- Unannotated, so evcxr has to ask its rust-analyzer for the type.
       testKernelStdout "rust" [__i|let nums = vec![1, 2, 3];
                                    let sum = nums.iter().sum::<i32>();
                                    println!("{}", sum);
