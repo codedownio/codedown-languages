@@ -21,6 +21,9 @@ module TestLib.LSP (
 
   , itHasHoverSatisfying
 
+  , definitionRanges
+  , definitionUris
+
   , module TestLib.LSP.Formatting
 
   , Helpers.getHoverOrException
@@ -30,6 +33,7 @@ module TestLib.LSP (
   , LspContext
   ) where
 
+import Control.Lens ((^.))
 import Control.Monad.IO.Unlift
 import Control.Monad.Reader
 import Data.Aeson as A
@@ -40,7 +44,9 @@ import qualified Data.Text as T hiding (filter)
 import Data.Text hiding (filter, show)
 import GHC.Int
 import GHC.Stack
+import Language.LSP.Protocol.Lens (uri)
 import Language.LSP.Protocol.Types
+import qualified Language.LSP.Protocol.Types as LSP
 import Language.LSP.Test
 import Language.LSP.Test.Helpers (LspContext, LspSessionOptions(..), withLspSession)
 import qualified Language.LSP.Test.Helpers as Helpers
@@ -113,6 +119,25 @@ itHasHoverSatisfying name filename languageKind code pos cb = it [i|#{name}: #{s
     getHover ident pos >>= \case
       Nothing -> expectationFailure [i|Expected a hover.|]
       Just x -> lift $ cb x
+
+-- | The ranges a textDocument/definition response points at, keeping only those in the
+-- given document. Flattens the four shapes the response can take.
+definitionRanges :: TextDocumentIdentifier -> (Definition |? [DefinitionLink] |? LSP.Null) -> [Range]
+definitionRanges (TextDocumentIdentifier wanted) = \case
+  InL (Definition (InL loc)) -> ranges [loc]
+  InL (Definition (InR locs)) -> ranges locs
+  InR (InL links) -> ranges [Location u r | DefinitionLink (LocationLink _ u r _) <- links]
+  InR (InR LSP.Null) -> []
+  where ranges locs = [r | Location u r <- locs, u == wanted]
+
+-- | Every document a definition response points at, including ones outside the document
+-- asked about -- which is what a jump into a library looks like.
+definitionUris :: (Definition |? [DefinitionLink] |? LSP.Null) -> [Uri]
+definitionUris = \case
+  InL (Definition (InL loc)) -> [loc ^. uri]
+  InL (Definition (InR locs)) -> [l ^. uri | l <- locs]
+  InR (InL links) -> [u | DefinitionLink (LocationLink _ u _ _) <- links]
+  InR (InR LSP.Null) -> []
 
 assertDiagnosticRanges :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges = assertDiagnosticRanges'' Helpers.getDiagnosticRanges

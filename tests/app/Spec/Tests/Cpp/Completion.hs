@@ -1,8 +1,6 @@
 module Spec.Tests.Cpp.Completion (tests) where
 
 import Control.Monad
-import Control.Monad.IO.Unlift
-import qualified Data.List as L
 import Data.Maybe
 import Data.String.Interpolate
 import Data.Text (Text)
@@ -15,6 +13,7 @@ import Test.Sandwich as Sandwich
 import Test.Sandwich.Waits (waitUntil)
 import TestLib.LSP
 import TestLib.Types
+import TestLib.Util
 
 
 tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
@@ -49,8 +48,3 @@ localVarCode :: Text
 localVarCode = [__i|int myVariable = 42;
                     double myDouble = 3.14;
                     my|]
-
-listShouldContain :: (MonadIO m, Eq a, Show a) => [a] -> a -> m ()
-listShouldContain haystack needle = case L.elem needle haystack of
-  True -> return ()
-  False -> expectationFailure [i|Expected list to contain #{show needle}, but had: #{show haystack}|]

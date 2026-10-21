@@ -64,6 +64,8 @@ codedown.makeEnvironment {
 
   kernels.coq.enable = true;
 
+  kernels.lean4.enable = true;
+
   ### Language servers ###
 
   language-servers.spellchecker.enable = true;

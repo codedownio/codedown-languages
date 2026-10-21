@@ -88,4 +88,8 @@ getPathAndNixEnvironmentClosure = do
                )
     ) ""
 
-  return (pathToUse, closure)
+  -- Lean's watchdog reads /etc/localtime at startup and dies without it, so the sandbox
+  -- needs one. See modules/kernels/lean4/language-server-lean/default.nix.
+  localtime <- filterM doesPathExist ["/etc/localtime"]
+
+  return (pathToUse, closure <> localtime)

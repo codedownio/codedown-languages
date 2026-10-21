@@ -134,6 +134,7 @@ jobs:
           flags: "-f julia_111"
         - name: julia
           flags: "-f julia_112"
+        - name: lean4
         - name: octave
         - name: postgres
         - name: python

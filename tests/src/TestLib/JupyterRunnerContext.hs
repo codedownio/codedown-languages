@@ -167,6 +167,15 @@ displayDatasShouldSatisfy kernel code cb = notebookShouldSatisfy defaultStartTim
   let outputs = mconcat [codeOutputs | CodeCell {..} <- notebookCells]
   cb ([displayDataData | DisplayDataOutput {..} <- outputs])
 
+-- | Each output's payload for the given MIME type, in order, skipping outputs without it.
+-- Jupyter stores a multi-line payload as either a string or an array of lines; flatten both.
+mimeTexts :: MimeType -> [Map MimeType A.Value] -> [Text]
+mimeTexts mimeType datas = [flatten v | Just v <- fmap (M.lookup mimeType) datas]
+  where
+    flatten (A.String t) = t
+    flatten (A.Array xs) = T.concat [t | A.String t <- V.toList xs]
+    flatten _ = ""
+
 -- * Execute result helpers
 
 itHasExecuteDatas :: (

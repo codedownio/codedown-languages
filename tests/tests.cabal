@@ -108,8 +108,8 @@ executable tests
       Spec.Tests.Haskell.CodeActions
       Spec.Tests.Haskell.CodeLenses
       Spec.Tests.Haskell.Common
-      Spec.Tests.Haskell.Diagnostics
       Spec.Tests.Haskell.Definition
+      Spec.Tests.Haskell.Diagnostics
       Spec.Tests.Haskell.DocumentHighlight
       Spec.Tests.Haskell.Formatting
       Spec.Tests.Haskell.Hover
@@ -127,6 +127,7 @@ executable tests
       Spec.Tests.Julia
       Spec.Tests.Julia.Diagnostics
       Spec.Tests.Julia.VariableInspector
+      Spec.Tests.Lean4
       Spec.Tests.Octave
       Spec.Tests.Octave.VariableInspector
       Spec.Tests.Postgres
