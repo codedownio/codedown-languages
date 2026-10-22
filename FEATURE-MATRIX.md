@@ -17,6 +17,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Coq | ✅ | ✅ | – | – | ✅ |
 | Go | ✅ | ✅ | – | – | ✅ |
 | Haskell | ✅ | ✅ | – | – | ✅ |
+| Java | ✅ | ✅ | – | – | ✅ |
 | JavaScript | ✅ | ✅ | – | – | ✅ |
 | Julia | ✅ | ✅ | ✅ | – | ✅ |
 | Octave | ✅ | ✅ | ✅ | – | ✅ |
@@ -39,6 +40,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Coq | – | – | – | – | – | – | – |
 | Go | ✅ | ✅ | ✅ | ✅ | ✅ | – | ✅ |
 | Haskell | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Java | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | JavaScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Julia | ✅ | ✅ | ✅ | ✅ | ✅ | – | ✅ |
 | Octave | – | – | – | – | – | – | – |
@@ -61,6 +63,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Coq | – | – | – | – | – | – |
 | Go | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Haskell | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Java | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | JavaScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Julia | ✅ | – | ✅ | ✅ | ✅ | ✅ |
 | Octave | – | – | – | – | – | – |
@@ -83,6 +86,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Coq | – | – | – |
 | Go | ✅ | ✅ | ✅ |
 | Haskell | ✅ | ✅ | ✅ |
+| Java | – | ✅ | ✅ |
 | JavaScript | ✅ | ✅ | ✅ |
 | Julia | ✅ | ✅ | ✅ |
 | Octave | – | – | – |
@@ -105,6 +109,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Coq | ✅ |
 | Go | – |
 | Haskell | ✅ |
+| Java | ✅ |
 | JavaScript | ✅ |
 | Julia | ✅ |
 | Octave | ✅ |

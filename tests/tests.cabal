@@ -108,8 +108,8 @@ executable tests
       Spec.Tests.Haskell.CodeActions
       Spec.Tests.Haskell.CodeLenses
       Spec.Tests.Haskell.Common
-      Spec.Tests.Haskell.Diagnostics
       Spec.Tests.Haskell.Definition
+      Spec.Tests.Haskell.Diagnostics
       Spec.Tests.Haskell.DocumentHighlight
       Spec.Tests.Haskell.Formatting
       Spec.Tests.Haskell.Hover
@@ -117,6 +117,12 @@ executable tests
       Spec.Tests.Haskell.RawFiles
       Spec.Tests.Haskell.Statements
       Spec.Tests.Haskell.Symbols
+      Spec.Tests.Java
+      Spec.Tests.Java.Common
+      Spec.Tests.Java.Completion
+      Spec.Tests.Java.Diagnostics
+      Spec.Tests.Java.Hovers
+      Spec.Tests.Java.Packages
       Spec.Tests.Javascript
       Spec.Tests.Javascript.Common
       Spec.Tests.Javascript.Completion

@@ -1,0 +1,737 @@
+{
+  "artifacts": {
+    "com.fasterxml.jackson.core:jackson-annotations:2.22": {
+      "url": "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+      "hash": "sha256-Id21mIB9OlGodnBOuXnZKW4cam9Hqxgm/4jG1qEnotA="
+    },
+    "com.fasterxml.jackson.core:jackson-core:2.22.4": {
+      "url": "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.22.4/jackson-core-2.22.4.jar",
+      "hash": "sha256-LTDDdc3eqWV6Hh75dUeiaUtmOzVfrLTeU6CXeCsxLRo="
+    },
+    "com.fasterxml.jackson.core:jackson-databind:2.22.4": {
+      "url": "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.22.4/jackson-databind-2.22.4.jar",
+      "hash": "sha256-1Mv4lHCH8wWGmCaAGROr3FBzWh+rIHShmT57xnypdKM="
+    },
+    "com.github.virtuald:curvesapi:1.08": {
+      "url": "https://repo1.maven.org/maven2/com/github/virtuald/curvesapi/1.08/curvesapi-1.08.jar",
+      "hash": "sha256-rZWwi4u/nX0X5eAIFImPojMk8yvFti8aN4AealbOAHk="
+    },
+    "com.google.code.findbugs:jsr305:3.0.2": {
+      "url": "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar",
+      "hash": "sha256-dmrSoHg/JoeWLIrXTO7MOKKLn3Ki0IXuQ4t4E+ko0Mc="
+    },
+    "com.google.code.gson:gson:2.14.0": {
+      "url": "https://repo1.maven.org/maven2/com/google/code/gson/gson/2.14.0/gson-2.14.0.jar",
+      "hash": "sha256-LL0Rm/GWHCh4gxCWPcgLpl9Yze7B3ROci9sSQPqiw28="
+    },
+    "com.google.errorprone:error_prone_annotations:2.23.0": {
+      "url": "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.23.0/error_prone_annotations-2.23.0.jar",
+      "hash": "sha256-7G858Gi2/5rDI8aOKLkpn4wKgMpRLcyx1KcPQKw+wFQ="
+    },
+    "com.google.errorprone:error_prone_annotations:2.48.0": {
+      "url": "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.48.0/error_prone_annotations-2.48.0.jar",
+      "hash": "sha256-tJxclYMW7WegnGmd2pqnScr0NNUdhj3qWZ7zakm5yFU="
+    },
+    "com.google.errorprone:error_prone_annotations:2.50.0": {
+      "url": "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.50.0/error_prone_annotations-2.50.0.jar",
+      "hash": "sha256-RmdySHfx03pokgLaGR4j76dlfGLu+TzNrEBuzP5c3Qo="
+    },
+    "com.google.guava:failureaccess:1.0.2": {
+      "url": "https://repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar",
+      "hash": "sha256-io+Bz5s1nj9t+mkaHndphcBh7y8iPJssgHU+G0WOgGQ="
+    },
+    "com.google.guava:failureaccess:1.0.3": {
+      "url": "https://repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.3/failureaccess-1.0.3.jar",
+      "hash": "sha256-y/w5BrGbj1XdfP1t/gqkUy6DQlDX8IC9jSEaPiRrWcs="
+    },
+    "com.google.guava:guava:33.0.0-jre": {
+      "url": "https://repo1.maven.org/maven2/com/google/guava/guava/33.0.0-jre/guava-33.0.0-jre.jar",
+      "hash": "sha256-9NhcPk1BFpQzfLhzq+oJskK2ZLsBMyC+YQUyfEWZFTc="
+    },
+    "com.google.guava:guava:33.7.2-jre": {
+      "url": "https://repo1.maven.org/maven2/com/google/guava/guava/33.7.2-jre/guava-33.7.2-jre.jar",
+      "hash": "sha256-tTCUIlf7k1+LLPql+Otb1ZxVX9jo0BuM6YkS4HfqYGw="
+    },
+    "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava": {
+      "url": "https://repo1.maven.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
+      "hash": "sha256-s3KgN9QjCqV/vv/e8w/WEj+cDC24XQrO0AyRuXTzP5k="
+    },
+    "com.google.j2objc:j2objc-annotations:2.8": {
+      "url": "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8.jar",
+      "hash": "sha256-8CqV+hpele2z7YWf0Pt99wnRIaNSkO/4t03OKrf01u0="
+    },
+    "com.google.j2objc:j2objc-annotations:3.1": {
+      "url": "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/3.1/j2objc-annotations-3.1.jar",
+      "hash": "sha256-hNOhUFGEhfgUDqmbiphWVnSWKfZDPJK4DHWzaro7CZs="
+    },
+    "com.h2database:h2:2.5.252": {
+      "url": "https://repo1.maven.org/maven2/com/h2database/h2/2.5.252/h2-2.5.252.jar",
+      "hash": "sha256-kLEdxBPaggcO8V/JQygsFAjm/9NPpomYM1/qhgO1/yA="
+    },
+    "com.ibm.icu:icu4j:74.2": {
+      "url": "https://repo1.maven.org/maven2/com/ibm/icu/icu4j/74.2/icu4j-74.2.jar",
+      "hash": "sha256-lcBVCA4UwJPr7rpbcz4aG+ekr1hUZox3TO3wcNQkDkM="
+    },
+    "com.opencsv:opencsv:5.12.0": {
+      "url": "https://repo1.maven.org/maven2/com/opencsv/opencsv/5.12.0/opencsv-5.12.0.jar",
+      "hash": "sha256-8cVdgKksjs/j8V+3F4XVsVbzZ0y1ua1V3P03j/7tKWA="
+    },
+    "com.squareup.okhttp3:okhttp:5.5.0": {
+      "url": "https://repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/5.5.0/okhttp-5.5.0.jar",
+      "hash": "sha256-rrqrP+d2M7789p/Q7jBSCDmZp+qpjW8vfEtJjnvbtzI="
+    },
+    "com.squareup.okio:okio-jvm:3.18.1": {
+      "url": "https://repo1.maven.org/maven2/com/squareup/okio/okio-jvm/3.18.1/okio-jvm-3.18.1.jar",
+      "hash": "sha256-uXtkBVemUNFUEfK+Ka71WMTkIqg2U8sYuklDEdvtGL4="
+    },
+    "com.squareup.okio:okio:3.18.1": {
+      "url": "https://repo1.maven.org/maven2/com/squareup/okio/okio/3.18.1/okio-3.18.1.jar",
+      "hash": "sha256-bZdGWSFw3ubbh3lptSCl952XQIODXJEaPhpYKV7lH2c="
+    },
+    "com.univocity:univocity-parsers:2.9.1": {
+      "url": "https://repo1.maven.org/maven2/com/univocity/univocity-parsers/2.9.1/univocity-parsers-2.9.1.jar",
+      "hash": "sha256-MWhRItXjkumGcu1gCalaTBYjyhGFVnvUTulFJ9RU5cM="
+    },
+    "com.zaxxer:SparseBitSet:1.3": {
+      "url": "https://repo1.maven.org/maven2/com/zaxxer/SparseBitSet/1.3/SparseBitSet-1.3.jar",
+      "hash": "sha256-92uFrbDAByGuJnt8/eTaf3HTEhzCFgyfwAwMifjFPIo="
+    },
+    "commons-beanutils:commons-beanutils:1.11.0": {
+      "url": "https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils/1.11.0/commons-beanutils-1.11.0.jar",
+      "hash": "sha256-nkS6aOyaPyEob6Kou7ADtzXA9pEBu0MUS3n0+KqnRwk="
+    },
+    "commons-cli:commons-cli:1.11.0": {
+      "url": "https://repo1.maven.org/maven2/commons-cli/commons-cli/1.11.0/commons-cli-1.11.0.jar",
+      "hash": "sha256-j3+GBdaOFb8y22HslOrG/a/FGxvb4eDggCtX0j84d5I="
+    },
+    "commons-codec:commons-codec:1.19.0": {
+      "url": "https://repo1.maven.org/maven2/commons-codec/commons-codec/1.19.0/commons-codec-1.19.0.jar",
+      "hash": "sha256-XDiB5PVWhV6cUykn7gyd/elMxmdg1YBcAxpZiHBwr18="
+    },
+    "commons-codec:commons-codec:1.20.0": {
+      "url": "https://repo1.maven.org/maven2/commons-codec/commons-codec/1.20.0/commons-codec-1.20.0.jar",
+      "hash": "sha256-avZllfn2p7tYzmZRjWiI1AtUfDZtImLwZnbu4ZUo/2Y="
+    },
+    "commons-collections:commons-collections:3.2.2": {
+      "url": "https://repo1.maven.org/maven2/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar",
+      "hash": "sha256-7urpF5FxRKaKdB1MDf9mqlxcX9hVk/8he87T/Iyng7g="
+    },
+    "commons-io:commons-io:2.20.0": {
+      "url": "https://repo1.maven.org/maven2/commons-io/commons-io/2.20.0/commons-io-2.20.0.jar",
+      "hash": "sha256-35C7oP48tYa38WTnj+j49No/LdXCf6ZF+IgQDMwl3XI="
+    },
+    "commons-io:commons-io:2.21.0": {
+      "url": "https://repo1.maven.org/maven2/commons-io/commons-io/2.21.0/commons-io-2.21.0.jar",
+      "hash": "sha256-fWQ6Kv6osFi3YqpvuQ5bJW9scpc5+LN4TDNw3cYJ6I0="
+    },
+    "commons-io:commons-io:2.22.0": {
+      "url": "https://repo1.maven.org/maven2/commons-io/commons-io/2.22.0/commons-io-2.22.0.jar",
+      "hash": "sha256-K5p7H3JvuGIW29LIMh6r4CIdvVsb6BwY4ctTgRsQR1g="
+    },
+    "commons-logging:commons-logging:1.3.5": {
+      "url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.3.5/commons-logging-1.3.5.jar",
+      "hash": "sha256-bXp0TkAnZJ+7UIld+Ul9EJ+Yx2amNwYv6NLqu7MUC6Q="
+    },
+    "io.github.classgraph:classgraph:4.8.168": {
+      "url": "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.168/classgraph-4.8.168.jar",
+      "hash": "sha256-IjPyDp2MY0qa8oQkYQAEHGdnDdb+OzWroXKHWACWWmg="
+    },
+    "io.vavr:vavr-match:1.0.0": {
+      "url": "https://repo1.maven.org/maven2/io/vavr/vavr-match/1.0.0/vavr-match-1.0.0.jar",
+      "hash": "sha256-lWVSqcOdfi2e9iOnwtbKDje/IqNvm5+mjCWtaDDMUDE="
+    },
+    "io.vavr:vavr:1.0.1": {
+      "url": "https://repo1.maven.org/maven2/io/vavr/vavr/1.0.1/vavr-1.0.1.jar",
+      "hash": "sha256-+eoQQ61m29jgxN17epzc5b8thvqxzjOqzhrU1WvRJws="
+    },
+    "it.unimi.dsi:fastutil:8.5.13": {
+      "url": "https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.5.13/fastutil-8.5.13.jar",
+      "hash": "sha256-zAzFid+SGUAfhiD8RFT48j8cbWa57JFfGbfEIEL2Lv0="
+    },
+    "joda-time:joda-time:2.15.0": {
+      "url": "https://repo1.maven.org/maven2/joda-time/joda-time/2.15.0/joda-time-2.15.0.jar",
+      "hash": "sha256-a74TAuW+wPA+t+dEIzS0dbsiU2GlSYNp1qCppHJjDDM="
+    },
+    "net.bytebuddy:byte-buddy:1.18.3": {
+      "url": "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.18.3/byte-buddy-1.18.3.jar",
+      "hash": "sha256-14OW48W84/KGXJGGZHSB5VidNMrMYySEcVtoYQjRfGY="
+    },
+    "org.apache.commons:commons-collections4:4.5.0": {
+      "url": "https://repo1.maven.org/maven2/org/apache/commons/commons-collections4/4.5.0/commons-collections4-4.5.0.jar",
+      "hash": "sha256-APkyY8JnviAbiuUhtEpxNycbFmiENTQL9inbG6wKWEU="
+    },
+    "org.apache.commons:commons-collections4:4.6.0": {
+      "url": "https://repo1.maven.org/maven2/org/apache/commons/commons-collections4/4.6.0/commons-collections4-4.6.0.jar",
+      "hash": "sha256-Tg0IlrrFNWzq0ne6wCg/CYE+FEF+PoTgyGtXO1TSGKM="
+    },
+    "org.apache.commons:commons-compress:1.28.0": {
+      "url": "https://repo1.maven.org/maven2/org/apache/commons/commons-compress/1.28.0/commons-compress-1.28.0.jar",
+      "hash": "sha256-4VIpRSGEVvNkmjm8Sv1wzkvUZiIVGdun03jyFBpGQso="
+    },
+    "org.apache.commons:commons-csv:1.14.1": {
+      "url": "https://repo1.maven.org/maven2/org/apache/commons/commons-csv/1.14.1/commons-csv-1.14.1.jar",
+      "hash": "sha256-Mr4OHnZnMJL10Sy3kL0qy2wqsExOpu/GnqXuF5EcJP4="
+    },
+    "org.apache.commons:commons-lang3:3.18.0": {
+      "url": "https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.18.0/commons-lang3-3.18.0.jar",
+      "hash": "sha256-Tu6ujSDAeKu2SwFewVit04OsWBVxzdxFxo8MmuAjByA="
+    },
+    "org.apache.commons:commons-lang3:3.20.0": {
+      "url": "https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.20.0/commons-lang3-3.20.0.jar",
+      "hash": "sha256-aeXJ+jXaelGl/SCZ3+VqLY0yzyM+L213DnlhRkQCY/Q="
+    },
+    "org.apache.commons:commons-lang3:3.21.0": {
+      "url": "https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.21.0/commons-lang3-3.21.0.jar",
+      "hash": "sha256-oq8kfsTbbriUfhjiPgQz5IcafF0KQOH5Lkbt5Urh3v4="
+    },
+    "org.apache.commons:commons-math3:3.6.1": {
+      "url": "https://repo1.maven.org/maven2/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar",
+      "hash": "sha256-HlbXsFjSi2Wr0la4RY44hbZ0wdWI+kPNfRy7nH7yswg="
+    },
+    "org.apache.commons:commons-text:1.13.1": {
+      "url": "https://repo1.maven.org/maven2/org/apache/commons/commons-text/1.13.1/commons-text-1.13.1.jar",
+      "hash": "sha256-dkNL0t13irFA2Es8b/pAxA/mIZkJ9e0di4l3xa6OUMg="
+    },
+    "org.apache.commons:commons-text:1.15.0": {
+      "url": "https://repo1.maven.org/maven2/org/apache/commons/commons-text/1.15.0/commons-text-1.15.0.jar",
+      "hash": "sha256-WNLaMPBYUSoef5FOOSQd7KTf9cJ6CFtO0vqp5yCAZ/Y="
+    },
+    "org.apache.httpcomponents.client5:httpclient5:5.6.5": {
+      "url": "https://repo1.maven.org/maven2/org/apache/httpcomponents/client5/httpclient5/5.6.5/httpclient5-5.6.5.jar",
+      "hash": "sha256-oQtVX3yFpyDRARoIbWedhUsVWBbN6RpAGYzJjCsIZ+g="
+    },
+    "org.apache.httpcomponents.core5:httpcore5-h2:5.4.4": {
+      "url": "https://repo1.maven.org/maven2/org/apache/httpcomponents/core5/httpcore5-h2/5.4.4/httpcore5-h2-5.4.4.jar",
+      "hash": "sha256-mmFEGIn5siLOmVgZd8xUm038p6ydKEFYLB5Xox+mW0g="
+    },
+    "org.apache.httpcomponents.core5:httpcore5:5.4.4": {
+      "url": "https://repo1.maven.org/maven2/org/apache/httpcomponents/core5/httpcore5/5.4.4/httpcore5-5.4.4.jar",
+      "hash": "sha256-sI48OkQP7CAp6JmAE0x8eH3WeWRUZBrR6vuBR41+iws="
+    },
+    "org.apache.logging.log4j:log4j-api:2.24.3": {
+      "url": "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.24.3/log4j-api-2.24.3.jar",
+      "hash": "sha256-W0oKDNDnUd7UMcFiRCvb3VMyjR+Lsrrl/Bu+7g9m2A8="
+    },
+    "org.apache.poi:poi-ooxml-lite:5.5.1": {
+      "url": "https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml-lite/5.5.1/poi-ooxml-lite-5.5.1.jar",
+      "hash": "sha256-5uN63rbW7otA7Eka2VXZNNj5mCerBQ8QWxgoblmx2ec="
+    },
+    "org.apache.poi:poi-ooxml:5.5.1": {
+      "url": "https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/5.5.1/poi-ooxml-5.5.1.jar",
+      "hash": "sha256-vXvi/f4/0sFoT6gTNRwnmP1ja0T2I24GdFANT4/xwvk="
+    },
+    "org.apache.poi:poi:5.5.1": {
+      "url": "https://repo1.maven.org/maven2/org/apache/poi/poi/5.5.1/poi-5.5.1.jar",
+      "hash": "sha256-bFLodsp1d1oRtW5LNqdUH2goJ/VkBnJfzYdWC3ku49g="
+    },
+    "org.apache.xmlbeans:xmlbeans:5.3.0": {
+      "url": "https://repo1.maven.org/maven2/org/apache/xmlbeans/xmlbeans/5.3.0/xmlbeans-5.3.0.jar",
+      "hash": "sha256-bMado7TTW4PF5HfNTauiBORBCYM+NK8rmoosh4gomRc="
+    },
+    "org.apfloat:apfloat:1.14.0": {
+      "url": "https://repo1.maven.org/maven2/org/apfloat/apfloat/1.14.0/apfloat-1.14.0.jar",
+      "hash": "sha256-FPo97kh7nY3m0P98OVJhWUBcCHmmXIF/lZyVdeSxSCA="
+    },
+    "org.apiguardian:apiguardian-api:1.1.2": {
+      "url": "https://repo1.maven.org/maven2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar",
+      "hash": "sha256-tQlEisUG1gcxnxglN/CzXXEAdYLsdBgyofER5bW3Czg="
+    },
+    "org.assertj:assertj-core:3.27.7": {
+      "url": "https://repo1.maven.org/maven2/org/assertj/assertj-core/3.27.7/assertj-core-3.27.7.jar",
+      "hash": "sha256-xKRFQmw8KGFmaGO4QsxOx7uxxCJv79NwttL+g9bE/w8="
+    },
+    "org.checkerframework:checker-qual:3.41.0": {
+      "url": "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.41.0/checker-qual-3.41.0.jar",
+      "hash": "sha256-L58kW/aOQlnWEIlPJAbcH2Nj3GOTAr1WboJy5PRUEXI="
+    },
+    "org.checkerframework:checker-qual:3.55.1": {
+      "url": "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.55.1/checker-qual-3.55.1.jar",
+      "hash": "sha256-hXZYyL3L/3lJSajZki+I1j7jdRwgPHzX0h6pf550Uog="
+    },
+    "org.dflib:dflib:1.3.0": {
+      "url": "https://repo1.maven.org/maven2/org/dflib/dflib/1.3.0/dflib-1.3.0.jar",
+      "hash": "sha256-LHLd4N8Z1UTnrPmP11xUJl+f568PXT42xz6H9oT6TvY="
+    },
+    "org.eclipse.collections:eclipse-collections-api:13.0.0": {
+      "url": "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/13.0.0/eclipse-collections-api-13.0.0.jar",
+      "hash": "sha256-Lt5zXbNVsHn8CLC8dle9T5XQRUFr2qfsUjWFPPbzZNI="
+    },
+    "org.eclipse.collections:eclipse-collections:13.0.0": {
+      "url": "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections/13.0.0/eclipse-collections-13.0.0.jar",
+      "hash": "sha256-TB0vx37rUjJYkzN/QIDJ9zzFNnCVb4BIm183X9xbtuE="
+    },
+    "org.jetbrains.kotlin:kotlin-stdlib:2.1.21": {
+      "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.1.21/kotlin-stdlib-2.1.21.jar",
+      "hash": "sha256-JjvcZ54fYgEtt7CReWJ5ttcc829Hl6mP8azgWDXyAcg="
+    },
+    "org.jetbrains:annotations:13.0": {
+      "url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0.jar",
+      "hash": "sha256-rOKhDcji1f00kl7KwD5JiLLA+FFlDJS4zvSbob0RFHg="
+    },
+    "org.jfree:jfreechart:1.5.6": {
+      "url": "https://repo1.maven.org/maven2/org/jfree/jfreechart/1.5.6/jfreechart-1.5.6.jar",
+      "hash": "sha256-vnrmMQygBayY7Ot0+lFK+IytCYyAiEV4b3YsoIpbS7M="
+    },
+    "org.jgrapht:jgrapht-core:1.5.3": {
+      "url": "https://repo1.maven.org/maven2/org/jgrapht/jgrapht-core/1.5.3/jgrapht-core-1.5.3.jar",
+      "hash": "sha256-oCajRSMobhv1EOS9RiWTXjyXzg/EDhiR9CYjCfO2TD4="
+    },
+    "org.jheaps:jheaps:0.14": {
+      "url": "https://repo1.maven.org/maven2/org/jheaps/jheaps/0.14/jheaps-0.14.jar",
+      "hash": "sha256-SamJjaN1hlk4jxMzxTzK22+9FCp9GKp7GjNXcJBoQnk="
+    },
+    "org.json:json:20260814": {
+      "url": "https://repo1.maven.org/maven2/org/json/json/20260814/json-20260814.jar",
+      "hash": "sha256-fdLeFTPnZuK2wH2BlNqFFFrTE6FnpHYAUPXJtoOWBP4="
+    },
+    "org.jsoup:jsoup:1.23.2": {
+      "url": "https://repo1.maven.org/maven2/org/jsoup/jsoup/1.23.2/jsoup-1.23.2.jar",
+      "hash": "sha256-6djIVoVmgEJ/CW0VbwKkFCiZhckwmY/LUZzlvjm0IAM="
+    },
+    "org.jspecify:jspecify:1.0.0": {
+      "url": "https://repo1.maven.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar",
+      "hash": "sha256-H61ua+dVd4Hk0zcp1Jrhzcj92m/kd7sMxozjUer9+6s="
+    },
+    "org.jspecify:jspecify:1.0.1": {
+      "url": "https://repo1.maven.org/maven2/org/jspecify/jspecify/1.0.1/jspecify-1.0.1.jar",
+      "hash": "sha256-Bw118mH+TFuCAlCDZnFffy1GYPiMjvfm01deSMloO2Y="
+    },
+    "org.junit.jupiter:junit-jupiter-api:6.1.3": {
+      "url": "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/6.1.3/junit-jupiter-api-6.1.3.jar",
+      "hash": "sha256-VV1s8g+hcQiE3QG4bMV4U5e6c+Ia2i1LeE9fGhTcr8Q="
+    },
+    "org.junit.jupiter:junit-jupiter-engine:6.1.3": {
+      "url": "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/6.1.3/junit-jupiter-engine-6.1.3.jar",
+      "hash": "sha256-QUVZ54u/o72y6rAJrDqx4iNprDERfCcKC9Zm2hFcXGw="
+    },
+    "org.junit.jupiter:junit-jupiter-params:6.1.3": {
+      "url": "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/6.1.3/junit-jupiter-params-6.1.3.jar",
+      "hash": "sha256-BcUc7bosBql3Bwc5HgBs7oJYdpN96lgLlKJlzhRdSTk="
+    },
+    "org.junit.jupiter:junit-jupiter:6.1.3": {
+      "url": "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter/6.1.3/junit-jupiter-6.1.3.jar",
+      "hash": "sha256-awoUB1x0Ih3lMEfjY4YLfRn86AK+vBUt8sNcQInGw3k="
+    },
+    "org.junit.platform:junit-platform-commons:6.1.3": {
+      "url": "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/6.1.3/junit-platform-commons-6.1.3.jar",
+      "hash": "sha256-pHdK6SPBCVRANK6ufHYs8Bf7zdE0JAO6kOCSGYS2CMM="
+    },
+    "org.junit.platform:junit-platform-engine:6.1.3": {
+      "url": "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/6.1.3/junit-platform-engine-6.1.3.jar",
+      "hash": "sha256-Ia1606Nb7aFjh5eTF74YM6cqcdgS+aZu5LmnuvtWM0w="
+    },
+    "org.knowm.xchart:xchart:4.0.4": {
+      "url": "https://repo1.maven.org/maven2/org/knowm/xchart/xchart/4.0.4/xchart-4.0.4.jar",
+      "hash": "sha256-YkJNEVOTQGCYs1xo/VUM8n3bknIqqQ/RzznPnPsU228="
+    },
+    "org.ojalgo:ojalgo:57.5.0": {
+      "url": "https://repo1.maven.org/maven2/org/ojalgo/ojalgo/57.5.0/ojalgo-57.5.0.jar",
+      "hash": "sha256-YD28JsjWJWmatjG21WJA/WxIgmDj1dtJj5rHGUTLmz8="
+    },
+    "org.opentest4j:opentest4j:1.3.0": {
+      "url": "https://repo1.maven.org/maven2/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar",
+      "hash": "sha256-SOLfY2yrZWPO1k3N/4q7I1VifLI27wvzdZhoLd90Lxs="
+    },
+    "org.postgresql:postgresql:42.7.14": {
+      "url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.14/postgresql-42.7.14.jar",
+      "hash": "sha256-c5FFJzBaQMzlBLDT2QsjyvVlE2kS1geuiufFiVUSMyw="
+    },
+    "org.roaringbitmap:RoaringBitmap:1.0.5": {
+      "url": "https://repo1.maven.org/maven2/org/roaringbitmap/RoaringBitmap/1.0.5/RoaringBitmap-1.0.5.jar",
+      "hash": "sha256-1Bhlgyw0KdUdYw8DMT4pj6XRUFzhW/LdRT4ndTMRIv0="
+    },
+    "org.slf4j:slf4j-api:1.7.36": {
+      "url": "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.jar",
+      "hash": "sha256-0+9XXj5JeWeNwBvx3M5RAhSTtNEft/G+itmCh3wWocA="
+    },
+    "org.slf4j:slf4j-api:2.0.12": {
+      "url": "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/2.0.12/slf4j-api-2.0.12.jar",
+      "hash": "sha256-p5UCuKvfvXIoRqJ2kSJqQIhoLW01ZU+bgOKpzKz37Uc="
+    },
+    "org.slf4j:slf4j-api:2.0.20": {
+      "url": "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/2.0.20/slf4j-api-2.0.20.jar",
+      "hash": "sha256-fhRGSZs1lnXYqr5q8t6GuF5yrooqkywLQNDlulcJdDk="
+    },
+    "org.slf4j:slf4j-simple:2.0.20": {
+      "url": "https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/2.0.20/slf4j-simple-2.0.20.jar",
+      "hash": "sha256-jnAUBHhqT4chnTnUhTyG3+ToaumTdqOXSd9sCOdQIuA="
+    },
+    "org.xerial:sqlite-jdbc:3.53.4.0": {
+      "url": "https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.53.4.0/sqlite-jdbc-3.53.4.0.jar",
+      "hash": "sha256-vLH1Hjb5QIZ+gzQvnvv1lorESmvvTTl7tK97F7Rc0vs="
+    },
+    "org.yaml:snakeyaml:2.7": {
+      "url": "https://repo1.maven.org/maven2/org/yaml/snakeyaml/2.7/snakeyaml-2.7.jar",
+      "hash": "sha256-LhlOukWmfe4ZpOJy9KBLGN6AVOn1mLCUOC9trgsOS14="
+    },
+    "tech.tablesaw:tablesaw-core:0.44.4": {
+      "url": "https://repo1.maven.org/maven2/tech/tablesaw/tablesaw-core/0.44.4/tablesaw-core-0.44.4.jar",
+      "hash": "sha256-zO3e5Jaw1CmkyhWtJ90zjZ4bf042RdFVL4kHoPdSWYQ="
+    }
+  },
+  "packages": {
+    "com.fasterxml.jackson.core:jackson-databind": {
+      "version": "2.22.4",
+      "classpath": [
+        "com.fasterxml.jackson.core:jackson-databind:2.22.4",
+        "com.fasterxml.jackson.core:jackson-annotations:2.22",
+        "com.fasterxml.jackson.core:jackson-core:2.22.4"
+      ],
+      "description": "General data-binding functionality for Jackson: works on core streaming API",
+      "homepage": "https://github.com/FasterXML/jackson",
+      "license": "The Apache Software License, Version 2.0"
+    },
+    "com.google.code.gson:gson": {
+      "version": "2.14.0",
+      "classpath": [
+        "com.google.code.gson:gson:2.14.0",
+        "com.google.errorprone:error_prone_annotations:2.48.0"
+      ],
+      "license": "Apache-2.0",
+      "description": "Gson JSON library",
+      "homepage": "https://github.com/google/gson"
+    },
+    "com.google.guava:guava": {
+      "version": "33.7.2-jre",
+      "classpath": [
+        "com.google.guava:guava:33.7.2-jre",
+        "com.google.guava:failureaccess:1.0.3",
+        "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava",
+        "org.jspecify:jspecify:1.0.1",
+        "com.google.errorprone:error_prone_annotations:2.50.0",
+        "com.google.j2objc:j2objc-annotations:3.1"
+      ],
+      "description": "Guava is a suite of core and expanded libraries that include utility classes, Google's collections, I/O classes, and much more.",
+      "homepage": "https://github.com/google/guava",
+      "license": "Apache License, Version 2.0"
+    },
+    "com.h2database:h2": {
+      "version": "2.5.252",
+      "classpath": [
+        "com.h2database:h2:2.5.252"
+      ]
+    },
+    "com.opencsv:opencsv": {
+      "version": "5.12.0",
+      "classpath": [
+        "com.opencsv:opencsv:5.12.0",
+        "org.apache.commons:commons-lang3:3.18.0",
+        "org.apache.commons:commons-text:1.13.1",
+        "commons-beanutils:commons-beanutils:1.11.0",
+        "commons-logging:commons-logging:1.3.5",
+        "commons-collections:commons-collections:3.2.2",
+        "org.apache.commons:commons-collections4:4.5.0"
+      ],
+      "description": "A simple library for reading and writing CSV in Java",
+      "homepage": "http://opencsv.sf.net",
+      "license": "Apache 2"
+    },
+    "com.squareup.okhttp3:okhttp": {
+      "version": "5.5.0",
+      "classpath": [
+        "com.squareup.okhttp3:okhttp:5.5.0",
+        "org.jetbrains.kotlin:kotlin-stdlib:2.1.21",
+        "org.jetbrains:annotations:13.0",
+        "com.squareup.okio:okio:3.18.1",
+        "com.squareup.okio:okio-jvm:3.18.1"
+      ],
+      "description": "Square\u2019s meticulous HTTP client for Java and Kotlin.",
+      "homepage": "https://lysine.dev/okhttp/",
+      "license": "The Apache Software License, Version 2.0"
+    },
+    "commons-cli:commons-cli": {
+      "version": "1.11.0",
+      "classpath": [
+        "commons-cli:commons-cli:1.11.0"
+      ],
+      "description": "Apache Commons CLI provides a simple API for presenting, processing, and validating a Command Line Interface.",
+      "homepage": "https://commons.apache.org/proper/commons-cli/",
+      "license": "Apache-2.0"
+    },
+    "commons-io:commons-io": {
+      "version": "2.22.0",
+      "classpath": [
+        "commons-io:commons-io:2.22.0"
+      ],
+      "description": "The Apache Commons IO library contains utility classes, stream implementations, file filters, file comparators, endian transformation classes, and much more.",
+      "homepage": "https://commons.apache.org/proper/commons-io/",
+      "license": "Apache-2.0"
+    },
+    "io.vavr:vavr": {
+      "version": "1.0.1",
+      "classpath": [
+        "io.vavr:vavr:1.0.1",
+        "io.vavr:vavr-match:1.0.0",
+        "org.jspecify:jspecify:1.0.0"
+      ],
+      "description": "Vavr (formerly called Javaslang) is an object-functional language extension to Java 8+.",
+      "homepage": "https://vavr.io",
+      "license": "The Apache Software License, Version 2.0"
+    },
+    "joda-time:joda-time": {
+      "version": "2.15.0",
+      "classpath": [
+        "joda-time:joda-time:2.15.0"
+      ],
+      "description": "Date and time library to replace JDK date handling",
+      "homepage": "https://www.joda.org/joda-time/",
+      "license": "Apache License, Version 2.0"
+    },
+    "org.apache.commons:commons-collections4": {
+      "version": "4.6.0",
+      "classpath": [
+        "org.apache.commons:commons-collections4:4.6.0"
+      ],
+      "description": "The Apache Commons Collections package contains types that extend and augment the Java Collections Framework.",
+      "homepage": "https://commons.apache.org/proper/commons-collections/",
+      "license": "Apache-2.0"
+    },
+    "org.apache.commons:commons-compress": {
+      "version": "1.28.0",
+      "classpath": [
+        "org.apache.commons:commons-compress:1.28.0",
+        "commons-codec:commons-codec:1.19.0",
+        "commons-io:commons-io:2.20.0",
+        "org.apache.commons:commons-lang3:3.18.0"
+      ],
+      "description": "Apache Commons Compress defines an API for working with compression and archive formats.",
+      "homepage": "https://commons.apache.org/proper/commons-compress/",
+      "license": "Apache-2.0"
+    },
+    "org.apache.commons:commons-csv": {
+      "version": "1.14.1",
+      "classpath": [
+        "org.apache.commons:commons-csv:1.14.1",
+        "commons-io:commons-io:2.20.0",
+        "commons-codec:commons-codec:1.19.0"
+      ],
+      "description": "The Apache Commons CSV library provides a simple interface for reading and writing CSV files of various types.",
+      "homepage": "https://commons.apache.org/proper/commons-csv/",
+      "license": "Apache-2.0"
+    },
+    "org.apache.commons:commons-lang3": {
+      "version": "3.21.0",
+      "classpath": [
+        "org.apache.commons:commons-lang3:3.21.0"
+      ],
+      "description": "Apache Commons Lang is a package of Java utility classes for the Java lang packages, classes that could be considered standard to justify their existence in java.lang.",
+      "homepage": "https://commons.apache.org/proper/commons-lang/",
+      "license": "Apache-2.0"
+    },
+    "org.apache.commons:commons-math3": {
+      "version": "3.6.1",
+      "classpath": [
+        "org.apache.commons:commons-math3:3.6.1"
+      ],
+      "description": "The Apache Commons Math project is a library of lightweight, self-contained mathematics and statistics components addressing the most common practical problems not immediately available in the Java programming language or commons-lang.",
+      "homepage": "http://commons.apache.org/proper/commons-math/",
+      "license": "Apache License, Version 2.0"
+    },
+    "org.apache.commons:commons-text": {
+      "version": "1.15.0",
+      "classpath": [
+        "org.apache.commons:commons-text:1.15.0",
+        "org.apache.commons:commons-lang3:3.20.0"
+      ],
+      "description": "Apache Commons Text is a set of utility functions and reusable components for processing and manipulating text in a Java environment.",
+      "homepage": "https://commons.apache.org/proper/commons-text",
+      "license": "Apache-2.0"
+    },
+    "org.apache.httpcomponents.client5:httpclient5": {
+      "version": "5.6.5",
+      "classpath": [
+        "org.apache.httpcomponents.client5:httpclient5:5.6.5",
+        "org.apache.httpcomponents.core5:httpcore5:5.4.4",
+        "org.apache.httpcomponents.core5:httpcore5-h2:5.4.4",
+        "org.slf4j:slf4j-api:1.7.36"
+      ],
+      "description": "Apache HttpComponents Client",
+      "homepage": "https://hc.apache.org/httpcomponents-client-5.6.x/${project.version}/",
+      "license": "Apache License, Version 2.0"
+    },
+    "org.apache.poi:poi-ooxml": {
+      "version": "5.5.1",
+      "classpath": [
+        "org.apache.poi:poi-ooxml:5.5.1",
+        "org.apache.poi:poi:5.5.1",
+        "commons-codec:commons-codec:1.20.0",
+        "org.apache.commons:commons-math3:3.6.1",
+        "com.zaxxer:SparseBitSet:1.3",
+        "org.apache.poi:poi-ooxml-lite:5.5.1",
+        "org.apache.xmlbeans:xmlbeans:5.3.0",
+        "org.apache.commons:commons-compress:1.28.0",
+        "org.apache.commons:commons-lang3:3.18.0",
+        "commons-io:commons-io:2.21.0",
+        "com.github.virtuald:curvesapi:1.08",
+        "org.apache.logging.log4j:log4j-api:2.24.3",
+        "org.apache.commons:commons-collections4:4.5.0"
+      ],
+      "description": "Apache POI - Java API To Access Microsoft Format Files",
+      "homepage": "https://poi.apache.org/",
+      "license": "Apache License, Version 2.0"
+    },
+    "org.assertj:assertj-core": {
+      "version": "3.27.7",
+      "classpath": [
+        "org.assertj:assertj-core:3.27.7",
+        "net.bytebuddy:byte-buddy:1.18.3"
+      ],
+      "description": "Rich and fluent assertions for testing in Java",
+      "homepage": "https://assertj.github.io/doc/#assertj-core",
+      "license": "Apache-2.0"
+    },
+    "org.dflib:dflib": {
+      "version": "1.3.0",
+      "classpath": [
+        "org.dflib:dflib:1.3.0"
+      ],
+      "description": "dflib: DataFrame library",
+      "homepage": "https://github.com/dflib/dflib",
+      "license": "Apache License"
+    },
+    "org.eclipse.collections:eclipse-collections": {
+      "version": "13.0.0",
+      "classpath": [
+        "org.eclipse.collections:eclipse-collections:13.0.0",
+        "org.eclipse.collections:eclipse-collections-api:13.0.0"
+      ],
+      "description": "Eclipse Collections is a collections framework for Java.",
+      "homepage": "https://github.com/eclipse/eclipse-collections",
+      "license": "Eclipse Public License - v 1.0, Eclipse Distribution License - v 1.0"
+    },
+    "org.jfree:jfreechart": {
+      "version": "1.5.6",
+      "classpath": [
+        "org.jfree:jfreechart:1.5.6"
+      ],
+      "description": "JFreeChart is a class library, written in Java, for generating charts.",
+      "homepage": "https://www.jfree.org/jfreechart/",
+      "license": "GNU Lesser General Public Licence"
+    },
+    "org.jgrapht:jgrapht-core": {
+      "version": "1.5.3",
+      "classpath": [
+        "org.jgrapht:jgrapht-core:1.5.3",
+        "org.jheaps:jheaps:0.14",
+        "org.apfloat:apfloat:1.14.0"
+      ],
+      "license": "GNU Lesser General Public License Version 2.1, February 1999, Eclipse Public License (EPL) 2.0",
+      "description": "A Java class library for graph-theory data structures and algorithms.",
+      "homepage": "http://www.jgrapht.org"
+    },
+    "org.json:json": {
+      "version": "20260814",
+      "classpath": [
+        "org.json:json:20260814"
+      ],
+      "description": "JSON is a light-weight, language independent, data interchange format.",
+      "homepage": "https://github.com/douglascrockford/JSON-java",
+      "license": "Public Domain"
+    },
+    "org.jsoup:jsoup": {
+      "version": "1.23.2",
+      "classpath": [
+        "org.jsoup:jsoup:1.23.2"
+      ],
+      "description": "jsoup is a Java library that simplifies working with real-world HTML and XML. It offers an easy-to-use API for URL fetching, data parsing, extraction, and manipulation using DOM API methods, CSS, and xpath selectors.",
+      "homepage": "https://jsoup.org/",
+      "license": "The MIT License"
+    },
+    "org.junit.jupiter:junit-jupiter": {
+      "version": "6.1.3",
+      "classpath": [
+        "org.junit.jupiter:junit-jupiter:6.1.3",
+        "org.junit.jupiter:junit-jupiter-api:6.1.3",
+        "org.opentest4j:opentest4j:1.3.0",
+        "org.junit.platform:junit-platform-commons:6.1.3",
+        "org.apiguardian:apiguardian-api:1.1.2",
+        "org.jspecify:jspecify:1.0.0",
+        "org.junit.jupiter:junit-jupiter-params:6.1.3",
+        "org.junit.jupiter:junit-jupiter-engine:6.1.3",
+        "org.junit.platform:junit-platform-engine:6.1.3"
+      ],
+      "description": "Module \"junit-jupiter\" of JUnit",
+      "homepage": "https://junit.org/",
+      "license": "Eclipse Public License v2.0"
+    },
+    "org.knowm.xchart:xchart": {
+      "version": "4.0.4",
+      "classpath": [
+        "org.knowm.xchart:xchart:4.0.4"
+      ],
+      "description": "The core XChart library",
+      "homepage": "http://knowm.org/open-source/xchart",
+      "license": "The Apache Software License, Version 2.0"
+    },
+    "org.ojalgo:ojalgo": {
+      "version": "57.5.0",
+      "classpath": [
+        "org.ojalgo:ojalgo:57.5.0"
+      ],
+      "description": "oj! Algorithms - ojAlgo - is Open Source Java code that has to do with mathematics, linear algebra and optimisation.",
+      "homepage": "http://ojalgo.org",
+      "license": "MIT"
+    },
+    "org.postgresql:postgresql": {
+      "version": "42.7.14",
+      "classpath": [
+        "org.postgresql:postgresql:42.7.14",
+        "org.checkerframework:checker-qual:3.55.1"
+      ],
+      "description": "PostgreSQL JDBC Driver Postgresql",
+      "homepage": "https://jdbc.postgresql.org",
+      "license": "BSD-2-Clause"
+    },
+    "org.slf4j:slf4j-simple": {
+      "version": "2.0.20",
+      "classpath": [
+        "org.slf4j:slf4j-simple:2.0.20",
+        "org.slf4j:slf4j-api:2.0.20"
+      ],
+      "description": "SLF4J Simple Provider",
+      "homepage": "http://www.slf4j.org",
+      "license": "MIT"
+    },
+    "org.xerial:sqlite-jdbc": {
+      "version": "3.53.4.0",
+      "classpath": [
+        "org.xerial:sqlite-jdbc:3.53.4.0"
+      ],
+      "description": "SQLite JDBC library",
+      "homepage": "https://github.com/xerial/sqlite-jdbc",
+      "license": "The Apache Software License, Version 2.0"
+    },
+    "org.yaml:snakeyaml": {
+      "version": "2.7",
+      "classpath": [
+        "org.yaml:snakeyaml:2.7"
+      ],
+      "description": "YAML 1.1 parser and emitter for Java",
+      "homepage": "https://codeberg.org/snakeyaml/snakeyaml",
+      "license": "Apache License, Version 2.0"
+    },
+    "tech.tablesaw:tablesaw-core": {
+      "version": "0.44.4",
+      "classpath": [
+        "tech.tablesaw:tablesaw-core:0.44.4",
+        "com.google.guava:guava:33.0.0-jre",
+        "com.google.guava:failureaccess:1.0.2",
+        "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava",
+        "com.google.code.findbugs:jsr305:3.0.2",
+        "org.checkerframework:checker-qual:3.41.0",
+        "com.google.errorprone:error_prone_annotations:2.23.0",
+        "com.google.j2objc:j2objc-annotations:2.8",
+        "org.apache.commons:commons-math3:3.6.1",
+        "it.unimi.dsi:fastutil:8.5.13",
+        "org.roaringbitmap:RoaringBitmap:1.0.5",
+        "com.univocity:univocity-parsers:2.9.1",
+        "com.ibm.icu:icu4j:74.2",
+        "io.github.classgraph:classgraph:4.8.168",
+        "org.slf4j:slf4j-api:2.0.12"
+      ],
+      "description": "High-performance Java Dataframe",
+      "homepage": "https://github.com/jtablesaw/tablesaw",
+      "license": "Apache License, Version 2.0"
+    }
+  }
+}
