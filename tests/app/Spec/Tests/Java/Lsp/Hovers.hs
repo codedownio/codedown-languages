@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Spec.Tests.Java.Hovers (tests) where
+module Spec.Tests.Java.Lsp.Hovers (tests) where
 
 import Data.String.Interpolate
 import Data.Text (Text)

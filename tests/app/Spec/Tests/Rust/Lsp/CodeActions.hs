@@ -1,4 +1,4 @@
-module Spec.Tests.Rust.CodeActions (tests) where
+module Spec.Tests.Rust.Lsp.CodeActions (tests) where
 
 import Control.Lens
 import Control.Monad

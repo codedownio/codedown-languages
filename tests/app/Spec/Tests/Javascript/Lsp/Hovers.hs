@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Spec.Tests.Javascript.Hovers (tests) where
+module Spec.Tests.Javascript.Lsp.Hovers (tests) where
 
 import Data.String.Interpolate
 import Data.Text (Text)

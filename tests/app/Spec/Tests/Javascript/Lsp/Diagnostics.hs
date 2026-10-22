@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Spec.Tests.Javascript.Diagnostics (tests) where
+module Spec.Tests.Javascript.Lsp.Diagnostics (tests) where
 
 import qualified Data.List as L
 import qualified Data.Text as T

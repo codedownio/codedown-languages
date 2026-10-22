@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedLabels #-}
 
-module Spec.Tests.Rust.Changes (tests) where
+module Spec.Tests.Rust.Lsp.Changes (tests) where
 
 import Control.Lens
 import Data.Function

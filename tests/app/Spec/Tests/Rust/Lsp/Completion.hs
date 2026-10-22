@@ -1,5 +1,5 @@
 
-module Spec.Tests.Rust.Completion (tests) where
+module Spec.Tests.Rust.Lsp.Completion (tests) where
 
 import Control.Lens
 import Control.Monad

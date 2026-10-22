@@ -1,5 +1,5 @@
 
-module Spec.Tests.Rust.Hovers (tests) where
+module Spec.Tests.Rust.Lsp.Hovers (tests) where
 
 import Control.Monad
 import Control.Monad.IO.Unlift

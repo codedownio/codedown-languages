@@ -1,5 +1,5 @@
 
-module Spec.Tests.Rust.Diagnostics (tests) where
+module Spec.Tests.Rust.Lsp.Diagnostics (tests) where
 
 import Control.Lens
 import Data.Function

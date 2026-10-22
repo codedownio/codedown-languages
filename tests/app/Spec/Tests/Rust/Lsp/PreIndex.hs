@@ -1,5 +1,5 @@
 
-module Spec.Tests.Rust.PreIndex (tests) where
+module Spec.Tests.Rust.Lsp.PreIndex (tests) where
 
 import Control.Lens
 import Control.Monad

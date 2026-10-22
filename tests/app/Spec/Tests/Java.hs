@@ -6,20 +6,14 @@ module Spec.Tests.Java (tests) where
 
 import Data.Aeson (Value(..))
 import Data.String.Interpolate
-import Data.Text (Text)
-import Language.LSP.Protocol.Types
-import Spec.Tests.Java.Common
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
-import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
-import qualified Spec.Tests.Java.Completion as Completion
-import qualified Spec.Tests.Java.Diagnostics as Diagnostics
-import qualified Spec.Tests.Java.Hovers as Hovers
+import qualified Spec.Tests.Java.Lsp as Lsp
 import qualified Spec.Tests.Java.Packages as Packages
 
 
@@ -45,14 +39,7 @@ tests = describe "Java" $ do
 
     Packages.tests
 
-    describe "LSP" $ do
-      Diagnostics.tests
-
-      Completion.tests
-
-      Hovers.tests
-
-      itFormatsAs lsName "test.java" LanguageKind_Java badlyFormattedCode formattedCode
+    Lsp.tests
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {
@@ -66,12 +53,6 @@ kernelSpec = NixKernelSpec {
       "lsp.jdtls.enable = true"
       ]
   }
-
-badlyFormattedCode :: Text
-badlyFormattedCode = "class Example {\nint   x =1+2;\nint doubled( ){\nreturn x*2;\n}\n}\n"
-
-formattedCode :: Text
-formattedCode = "class Example {\n  int x = 1 + 2;\n\n  int doubled() {\n    return x * 2;\n  }\n}\n"
 
 main :: IO ()
 main = jupyterMain tests

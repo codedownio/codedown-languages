@@ -1,4 +1,4 @@
-module Spec.Tests.Rust.Formatting (tests) where
+module Spec.Tests.Rust.Lsp.Formatting (tests) where
 
 import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich

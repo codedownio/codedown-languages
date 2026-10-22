@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Spec.Tests.Java.Diagnostics (tests) where
+module Spec.Tests.Java.Lsp.Diagnostics (tests) where
 
 import Data.Text (Text)
 import Language.LSP.Protocol.Types

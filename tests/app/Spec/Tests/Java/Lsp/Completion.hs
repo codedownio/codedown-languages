@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Spec.Tests.Java.Completion (tests) where
+module Spec.Tests.Java.Lsp.Completion (tests) where
 
 import Control.Lens
 import Data.String.Interpolate
