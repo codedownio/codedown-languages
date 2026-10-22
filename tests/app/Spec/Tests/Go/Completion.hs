@@ -1,8 +1,6 @@
 module Spec.Tests.Go.Completion (tests) where
 
 import Control.Lens
-import Control.Monad.IO.Unlift
-import qualified Data.List as L
 import Data.String.Interpolate
 import Data.Text (Text)
 import Language.LSP.Protocol.Lens
@@ -83,8 +81,3 @@ localVarCodeStandalone = [__i|package main
                                   myFloat := 3.14
                                   my
                               }|]
-
-listShouldContain :: (MonadIO m, Eq a, Show a) => [a] -> a -> m ()
-listShouldContain haystack needle = case L.elem needle haystack of
-  True -> return ()
-  False -> expectationFailure [i|Expected list to contain #{show needle}, but had: #{show haystack}|]

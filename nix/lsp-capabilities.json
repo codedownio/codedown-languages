@@ -696,6 +696,174 @@
         "version": "2.13.0.0"
       }
     },
+    "java": {
+      "jdtls": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "refactor.extract",
+              "refactor.inline",
+              "refactor.rewrite",
+              "source",
+              "source.organizeImports"
+            ],
+            "resolveProvider": false
+          },
+          "codeLensProvider": {
+            "resolveProvider": true
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              ".",
+              "@",
+              "#",
+              "*",
+              " "
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentFormattingProvider": true,
+          "documentHighlightProvider": true,
+          "documentOnTypeFormattingProvider": {
+            "firstTriggerCharacter": ";",
+            "moreTriggerCharacter": [
+              "\n",
+              "}"
+            ]
+          },
+          "documentRangeFormattingProvider": true,
+          "documentSymbolProvider": true,
+          "executeCommandProvider": {
+            "commands": [
+              "java.project.import",
+              "java.project.changeImportedProjects",
+              "java.navigate.openTypeHierarchy",
+              "java.project.resolveStackTraceLocation",
+              "java.edit.handlePasteEvent",
+              "java.edit.stringFormatting",
+              "java.project.getSettings",
+              "java.project.resolveWorkspaceSymbol",
+              "java.project.upgradeGradle",
+              "java.project.createModuleInfo",
+              "java.vm.getAllInstalls",
+              "java.edit.organizeImports",
+              "java.project.refreshDiagnostics",
+              "java.project.removeFromSourcePath",
+              "java.project.listSourcePaths",
+              "java.project.updateSettings",
+              "java.project.getAll",
+              "java.reloadBundles",
+              "java.project.isTestFile",
+              "java.project.resolveText",
+              "java.project.getClasspaths",
+              "java.navigate.resolveTypeHierarchy",
+              "java.getTroubleshootingInfo",
+              "java.edit.smartSemicolonDetection",
+              "java.project.updateSourceAttachment",
+              "java.project.updateClassPaths",
+              "java.decompile",
+              "java.protobuf.generateSources",
+              "java.project.resolveSourceAttachment",
+              "java.project.updateJdk",
+              "java.project.addToSourcePath",
+              "java.completion.onDidSelect"
+            ]
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "implementationProvider": true,
+          "inlayHintProvider": true,
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "selectionRangeProvider": true,
+          "semanticTokensProvider": {
+            "documentSelector": [
+              {
+                "language": "java",
+                "scheme": "file"
+              },
+              {
+                "language": "java",
+                "scheme": "jdt"
+              }
+            ],
+            "full": {
+              "delta": false
+            },
+            "legend": {
+              "tokenModifiers": [
+                "abstract",
+                "static",
+                "readonly",
+                "deprecated",
+                "declaration",
+                "documentation",
+                "public",
+                "private",
+                "protected",
+                "native",
+                "generic",
+                "typeArgument",
+                "importDeclaration",
+                "constructor"
+              ],
+              "tokenTypes": [
+                "namespace",
+                "class",
+                "interface",
+                "enum",
+                "enumMember",
+                "type",
+                "typeParameter",
+                "method",
+                "property",
+                "variable",
+                "parameter",
+                "modifier",
+                "keyword",
+                "annotation",
+                "annotationMember",
+                "record",
+                "recordComponent"
+              ]
+            },
+            "range": false
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              "(",
+              ","
+            ]
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": true
+          },
+          "typeDefinitionProvider": true,
+          "typeHierarchyProvider": true,
+          "workspace": {
+            "workspaceFolders": {
+              "changeNotifications": true,
+              "supported": true
+            }
+          },
+          "workspaceSymbolProvider": true
+        },
+        "displayName": "Eclipse JDT language server",
+        "version": "1.58.0"
+      }
+    },
     "javascript": {
       "typescript-language-server": {
         "capabilities": {

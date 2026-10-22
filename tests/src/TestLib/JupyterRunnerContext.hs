@@ -138,6 +138,21 @@ testKernelSucceeds' startTimeout kernel code = it [i|#{kernel} -- #{summarizeCod
       [] -> return ()
       ((ename, evalue) : _) -> expectationFailure [i|Kernel produced an error output: #{ename}: #{evalue}|]
 
+-- | The counterpart of 'testKernelSucceeds'. Name, message and traceback are all searched,
+-- because kernels disagree about where the compiler's words go: JJava's evalue is just the
+-- rejected snippet.
+testKernelErrorContaining :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Text -> Text -> Text -> SpecFree context m ()
+testKernelErrorContaining kernel code needle = it [i|#{kernel} -- #{summarizeCode code} (error containing #{summarizeCode needle})|] $
+  failingNotebookShouldSatisfy defaultStartTimeout kernel code $ \(JupyterNotebook {..}) ->
+    case [T.intercalate "\n" (errorOutputEname : errorOutputEvalue : errorOutputTraceback)
+         | CodeCell {..} <- notebookCells, ErrorOutput {..} <- codeOutputs] of
+      [] -> expectationFailure [i|Expected an error output, but the cell succeeded.|]
+      errors
+        | L.any (needle `T.isInfixOf`) errors -> return ()
+        | otherwise -> expectationFailure [i|Expected an error containing #{needle}, but got: #{errors}|]
+
 itHasDisplayDatas :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Text -> Text -> [Map MimeType A.Value] -> SpecFree context m ()
@@ -221,8 +236,19 @@ summarizeCode code = code
 notebookShouldSatisfy :: (
   HasJupyterRunnerContext context, JupyterRunnerMonad m
   ) => Int -> Text -> Text -> (JupyterNotebook -> ExampleT context m ()) -> ExampleT context m ()
-notebookShouldSatisfy startTimeout kernel code cb = do
-  runKernelCode startTimeout kernel code $ \notebookFile outputNotebookFile _outFile _errFile -> do
+notebookShouldSatisfy = notebookShouldSatisfy' ExitSuccess
+
+-- | For code meant to fail: papermill exits non-zero but still writes the notebook.
+failingNotebookShouldSatisfy :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => Int -> Text -> Text -> (JupyterNotebook -> ExampleT context m ()) -> ExampleT context m ()
+failingNotebookShouldSatisfy = notebookShouldSatisfy' (ExitFailure 1)
+
+notebookShouldSatisfy' :: (
+  HasJupyterRunnerContext context, JupyterRunnerMonad m
+  ) => ExitCode -> Int -> Text -> Text -> (JupyterNotebook -> ExampleT context m ()) -> ExampleT context m ()
+notebookShouldSatisfy' expectedExitCode startTimeout kernel code cb = do
+  runKernelCode' expectedExitCode startTimeout kernel code $ \notebookFile outputNotebookFile _outFile _errFile -> do
     liftIO (A.eitherDecodeFileStrict outputNotebookFile) >>= \case
       Left err -> expectationFailure [i|Failed to decode notebook '#{notebookFile}': #{err}|]
       Right nb -> cb nb
@@ -233,7 +259,15 @@ runKernelCode :: (
   , MonadReader context m
   , MonadLoggerIO m
   ) => Int -> Text -> Text -> (FilePath -> FilePath -> FilePath -> FilePath -> m b) -> m b
-runKernelCode startTimeout kernel code cb = do
+runKernelCode = runKernelCode' ExitSuccess
+
+runKernelCode' :: (
+  HasJupyterRunnerContext context
+  , JupyterRunnerMonad m
+  , MonadReader context m
+  , MonadLoggerIO m
+  ) => ExitCode -> Int -> Text -> Text -> (FilePath -> FilePath -> FilePath -> FilePath -> m b) -> m b
+runKernelCode' expectedExitCode startTimeout kernel code cb = do
   nixEnv <- getContext nixEnvironment
   let jupyterPath = nixEnv </> "lib" </> "codedown"
   debug [i|Got jupyterPath: #{jupyterPath}|]
@@ -332,7 +366,7 @@ runKernelCode startTimeout kernel code cb = do
         , cwd = Just outerRunDir
         }
 
-  createProcessWithLogging cp >>= waitForProcess . fst >>= (`shouldBe` ExitSuccess)
+  createProcessWithLogging cp >>= waitForProcess . fst >>= (`shouldBe` expectedExitCode)
 
   cb notebook (relativeToOuterRunDir "out.ipynb") (relativeToOuterRunDir outFile) (relativeToOuterRunDir errFile)
 

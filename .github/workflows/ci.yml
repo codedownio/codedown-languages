@@ -126,6 +126,7 @@ jobs:
           flags: "-f ghc910"
         - name: haskell
           flags: "-f ghc912"
+        - name: java
         - name: julia
           flags: "-f julia_19"
         - name: julia

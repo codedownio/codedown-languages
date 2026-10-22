@@ -1097,6 +1097,169 @@ false
 
 
 
+## kernels\.java\.interface\.attrs
+
+
+
+**Notebook attributes**
+
+Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "java"
+]
+```
+
+
+
+## kernels\.java\.interface\.extensions
+
+
+
+**File extensions**
+
+Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "java"
+]
+```
+
+
+
+## kernels\.java\.jdkPackage
+
+
+
+**JDK version**
+
+JShell’s handling of snippets improves with newer releases, so the default is whatever Nixpkgs calls the current JDK\.
+
+
+
+*Type:*
+one of “jdk”, “jdk17”, “jdk21”, “jdk23”, “jdk24”, “jdk25”
+
+
+
+*Default:*
+
+```nix
+"jdk"
+```
+
+
+
+## kernels\.java\.lsp\.jdtls\.enable
+
+
+
+**Enable the Eclipse JDT language server**
+
+JDT LS compiles whole Java files, and a cell of loose statements is not one, so this answers for \.java files in the environment rather than for notebook cells\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## kernels\.java\.lsp\.jdtls\.debug
+
+
+
+**Eclipse JDT language server: debug output**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+## kernels\.java\.lsp\.jdtls\.notebookProxy
+
+
+
+**Answer for notebook cells as well as files**
+
+Runs the language server behind java-notebook-language-server, which projects cells into a document the compiler accepts and maps positions back\. Without it the server answers for \.java files only, because a cell of loose statements is not a compilation unit\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## kernels\.java\.misc\.loadExtensions
+
+
+
+**Load kernel extensions from the classpath**
+
+JJava scans every jar on the classpath for kernel extensions at startup, and again whenever the classpath grows\. Turn this off to skip the scan if startup is slow with a large package selection\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
 ## kernels\.javascript\.interface\.attrs
 
 
@@ -2137,8 +2300,6 @@ one of “autopep8”, “yapf”, “black”, “ruff”, “none”
 
 ## kernels\.python3\.misc\.enableVariableInspector
 
-
-
 **Enable the variable inspector**
 
 This will show a summary of the currently defined variables in the UI\.
@@ -2295,6 +2456,8 @@ true
 
 
 ## kernels\.ruby\.lsp\.solargraph\.rubocopYaml
+
+
 
 **YAML configuration for the rubocop reporter**
 

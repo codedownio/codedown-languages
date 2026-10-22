@@ -16,10 +16,13 @@ module TestLib.LSP (
   , assertDiagnosticRangesFromSource'
   , testDiagnostics
   , testDiagnosticsLabel
+  , testDiagnosticsLabel'
   , testDiagnosticsLabelDesired
   , testDiagnostics''
 
   , itHasHoverSatisfying
+
+  , listShouldContain
 
   , module TestLib.LSP.Formatting
 
@@ -82,6 +85,17 @@ testDiagnosticsLabel :: (
   ) => String -> Text -> FilePath -> LanguageKind -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
 testDiagnosticsLabel label name filename languageKind codeToTest = testDiagnostics'' label name filename languageKind codeToTest []
 
+-- | 'testDiagnosticsLabel' with an explicit timeout, for servers that build a project first.
+-- jdtls takes minutes on a cold workspace, publishing empty diagnostics meanwhile.
+testDiagnosticsLabel' :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Double -> String -> Text -> FilePath -> LanguageKind -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnosticsLabel' timeoutSeconds label name filename languageKind code cb = it label $ do
+  lspSessionOptions <- lspSessionOptionsFor name filename languageKind code
+
+  Helpers.testDiagnostics' timeoutSeconds lspSessionOptions languageKind $ \diags ->
+    lift $ cb diags
+
 testDiagnosticsLabelDesired :: (
   LspContext ctx m, HasNixEnvironment ctx
   ) => String -> Text -> FilePath -> LanguageKind -> Text -> ([Diagnostic] -> Bool) -> SpecFree ctx m ()
@@ -113,6 +127,12 @@ itHasHoverSatisfying name filename languageKind code pos cb = it [i|#{name}: #{s
     getHover ident pos >>= \case
       Nothing -> expectationFailure [i|Expected a hover.|]
       Just x -> lift $ cb x
+
+-- | Completion lists are long and unordered, so assert the interesting label is present.
+listShouldContain :: (HasCallStack, MonadIO m, Eq a, Show a) => [a] -> a -> m ()
+listShouldContain haystack needle = case L.elem needle haystack of
+  True -> return ()
+  False -> expectationFailure [i|Expected list to contain #{show needle}, but had: #{show haystack}|]
 
 assertDiagnosticRanges :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges = assertDiagnosticRanges'' Helpers.getDiagnosticRanges
