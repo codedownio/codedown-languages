@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-incomplete-uni-patterns #-}
 
-module Spec.Tests.Haskell.Hover (tests) where
+module Spec.Tests.Haskell.Lsp.Hover (tests) where
 
 import Control.Lens ((^.))
 import Data.String.Interpolate

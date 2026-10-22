@@ -1,4 +1,4 @@
-module Spec.Tests.Haskell.CodeLenses (tests) where
+module Spec.Tests.Haskell.Lsp.CodeLenses (tests) where
 
 import Control.Applicative
 import Control.Lens ((^.), to)

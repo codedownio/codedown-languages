@@ -2,21 +2,17 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE CPP #-}
 
-module Spec.Tests.Haskell.Diagnostics (
+module Spec.Tests.Haskell.Lsp.Diagnostics (
   tests
   , main
-
-  , etaExpandCode
   ) where
 
 import Control.Lens ((^.))
-import Control.Monad
 import Data.String.Interpolate
-import Data.Text as T
 import Language.LSP.Protocol.Lens hiding (diagnostics)
 import Language.LSP.Protocol.Types
-import qualified Spec.Tests.Haskell.Common as HaskellCommon
-import Spec.Tests.Haskell.Common hiding (lsName)
+import Spec.Tests.Haskell.Common
+import Spec.Tests.Haskell.GhcPackage
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
@@ -24,8 +20,10 @@ import TestLib.NixEnvironmentContext
 import TestLib.Types
 
 
-tests :: (LspContext context m, HasNixEnvironment context) => Text -> Text -> SpecFree context m ()
-tests ghcPackage lsName = describe "Diagnostics" $ do
+tests :: (
+  LspContext context m, HasNixEnvironment context, HasGhcPackage context
+  ) => SpecFree context m ()
+tests = describe "Diagnostics" $ do
   describe "Foo.hs" $ do
     testDiagnosticsLabelDesired "Out of scope variable" lsName "Foo.hs" LanguageKind_Haskell
       [__i|module Foo where
@@ -33,7 +31,7 @@ tests ghcPackage lsName = describe "Diagnostics" $ do
           |]
       ((== [(Range (Position 1 6) (Position 1 9), Just (InR "GHC-88464"))]) . getDiagnosticRanges)
 
-    when (ghcPackage /= "ghc910") $ -- TODO: re-enable hlint test
+    skippedOnGhc910 $
       testDiagnosticsLabelDesired "Eta reduce" lsName "Foo.hs" LanguageKind_Haskell etaExpandCode
         ((== [(Range (Position 6 0) (Position 6 14), Just (InR "refact:Eta reduce"))]) . getDiagnosticRanges)
 
@@ -76,20 +74,11 @@ tests ghcPackage lsName = describe "Diagnostics" $ do
       ((== [(Range (Position 3 6) (Position 3 9), Just (InR "GHC-88464"))]) . getDiagnosticRanges)
 
 
-etaExpandCode :: Text
-etaExpandCode = [__i|module Foo where
-
-                     baz :: Int -> Int
-                     baz x = x + 1
-
-                     baz2 :: Int -> Int
-                     baz2 x = baz x
-                    |]
-
 main :: IO ()
 main = runSandwichWithCommandLineArgs Sandwich.defaultOptions $
-  introduceNixEnvironment [kernelSpec ghcPackage] [] "Haskell" $
+  introduceNixEnvironment [kernelSpec ghcPkg] [] "Haskell" $
     introduceJustBubblewrap $
-      tests ghcPackage HaskellCommon.lsName
+      introduceGhcPackage ghcPkg $
+        tests
   where
-    ghcPackage = "ghc92"
+    ghcPkg = "ghc92"

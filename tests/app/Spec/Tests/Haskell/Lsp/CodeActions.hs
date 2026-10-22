@@ -1,5 +1,5 @@
 
-module Spec.Tests.Haskell.CodeActions (tests) where
+module Spec.Tests.Haskell.Lsp.CodeActions (tests) where
 
 import Control.Lens
 import qualified Data.List as L
@@ -10,31 +10,36 @@ import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
 import qualified Language.LSP.Test.Helpers as Helpers
 import Spec.Tests.Haskell.Common
+import Spec.Tests.Haskell.GhcPackage
 import Test.Sandwich as Sandwich
 import TestLib.LSP
 import TestLib.Types
 import UnliftIO.Timeout
 
 
-tests :: (LspContext context m, HasNixEnvironment context) => Text -> SpecFree context m ()
-tests ghcPackage = describe "Code actions" $ do
+tests :: (
+  LspContext context m, HasNixEnvironment context, HasGhcPackage context
+  ) => SpecFree context m ()
+tests = describe "Code actions" $ do
   it "gets no code actions for putStrLn" $ doNotebookSession lsName codeActionsCode $ \(Helpers.LspSessionInfo {..}) -> do
     ident <- openDoc lspSessionInfoFileName "haskell"
     actions <- timeout 60_000_000 $ getCodeActions ident (Range (Position 1 0) (Position 1 8))
     actions `shouldBe` (Just [])
 
-  it "gets code actions for foo" $ doNotebookSession lsName codeActionsCode $ \(Helpers.LspSessionInfo {..}) -> do
-    ident <- openDoc lspSessionInfoFileName "haskell"
-    actions <- timeout 60_000_000 $ getCodeActions ident (Range (Position 0 0) (Position 0 3))
-    case ghcPackage of
-      x | x `L.elem` ["ghc910", "ghc912"] -> actions `shouldBe` (Just []) -- TODO: figure out why this is
-      _ ->
-        fmap (fmap getTitle) actions `shouldBe` (
-          Just ["Unfold foo"
-               , "Unfold foo in current file"
-               , "Fold foo"
-               , "Fold foo in current file"
-               ])
+  it "gets code actions for foo" $ do
+    ghc <- getContext ghcPackage
+    doNotebookSession lsName codeActionsCode $ \(Helpers.LspSessionInfo {..}) -> do
+      ident <- openDoc lspSessionInfoFileName "haskell"
+      actions <- timeout 60_000_000 $ getCodeActions ident (Range (Position 0 0) (Position 0 3))
+      case ghc of
+        x | x `L.elem` ["ghc910", "ghc912"] -> actions `shouldBe` (Just []) -- TODO: figure out why this is
+        _ ->
+          fmap (fmap getTitle) actions `shouldBe` (
+            Just ["Unfold foo"
+                 , "Unfold foo in current file"
+                 , "Fold foo"
+                 , "Fold foo in current file"
+                 ])
 
 getTitle :: (HasTitle a Text, HasTitle b Text) => (a |? b) -> Text
 getTitle (InL x) = x ^. title

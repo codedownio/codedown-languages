@@ -1,4 +1,4 @@
-module Spec.Tests.Haskell.Definition (tests) where
+module Spec.Tests.Haskell.Lsp.Definition (tests) where
 
 import Data.String.Interpolate
 import Data.Text as T

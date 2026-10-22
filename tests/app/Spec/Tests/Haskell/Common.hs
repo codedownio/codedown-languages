@@ -36,3 +36,14 @@ kernelSpecWithHlintOutput ghcPackage = baseKernelSpec {
   }
   where
     baseKernelSpec = kernelSpec ghcPackage
+
+-- | Shared between the kernel's hlint output test and the LSP eta-reduce diagnostic.
+etaExpandCode :: Text
+etaExpandCode = [__i|module Foo where
+
+                     baz :: Int -> Int
+                     baz x = x + 1
+
+                     baz2 :: Int -> Int
+                     baz2 x = baz x
+                    |]

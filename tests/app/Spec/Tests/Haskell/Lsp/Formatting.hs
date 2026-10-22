@@ -1,4 +1,4 @@
-module Spec.Tests.Haskell.Formatting (tests) where
+module Spec.Tests.Haskell.Lsp.Formatting (tests) where
 
 import Language.LSP.Protocol.Types
 import Spec.Tests.Haskell.Common

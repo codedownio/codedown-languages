@@ -1,4 +1,4 @@
-module Spec.Tests.Haskell.RawFiles (tests) where
+module Spec.Tests.Haskell.Lsp.RawFiles (tests) where
 
 import Data.String.Interpolate
 import Data.Text as T

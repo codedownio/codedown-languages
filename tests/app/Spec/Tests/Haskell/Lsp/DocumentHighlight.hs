@@ -1,5 +1,5 @@
 
-module Spec.Tests.Haskell.DocumentHighlight (
+module Spec.Tests.Haskell.Lsp.DocumentHighlight (
   tests
 
   , documentHighlightCode

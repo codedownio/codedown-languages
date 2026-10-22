@@ -1,12 +1,12 @@
 
-module Spec.Tests.Haskell.Symbols (tests) where
+module Spec.Tests.Haskell.Lsp.Symbols (tests) where
 
 import Control.Lens ((^.))
 import Language.LSP.Protocol.Lens hiding (actions)
 import Language.LSP.Test hiding (message)
 import qualified Language.LSP.Test.Helpers as Helpers
 import Spec.Tests.Haskell.Common
-import Spec.Tests.Haskell.DocumentHighlight (documentHighlightCode)
+import Spec.Tests.Haskell.Lsp.DocumentHighlight (documentHighlightCode)
 import Test.Sandwich as Sandwich
 import TestLib.LSP
 import TestLib.Types

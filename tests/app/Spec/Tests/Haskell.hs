@@ -9,6 +9,7 @@ import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Vector as V
 import Spec.Tests.Haskell.Common
+import Spec.Tests.Haskell.GhcPackage (introduceGhcPackage)
 import Spec.Tests.Haskell.Info
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
@@ -17,16 +18,7 @@ import TestLib.NixEnvironmentContext
 import TestLib.TestSearchers
 import TestLib.Types
 
-import qualified Spec.Tests.Haskell.CodeActions as CodeActions
-import qualified Spec.Tests.Haskell.CodeLenses as CodeLenses
-import qualified Spec.Tests.Haskell.Diagnostics as Diagnostics
-import qualified Spec.Tests.Haskell.Definition as Definition
-import qualified Spec.Tests.Haskell.DocumentHighlight as DocumentHighlight
-import qualified Spec.Tests.Haskell.Formatting as Formatting
-import qualified Spec.Tests.Haskell.Hover as Hover
-import qualified Spec.Tests.Haskell.RawFiles as RawFiles
-import qualified Spec.Tests.Haskell.Statements as Statements
-import qualified Spec.Tests.Haskell.Symbols as Symbols
+import qualified Spec.Tests.Haskell.Lsp as Lsp
 
 
 tests :: LanguageSpec
@@ -50,7 +42,7 @@ haskellCommonTests ghcPackage = do
   describe [i|Haskell #{ghcPackage} with hlint output|] $ introduceNixEnvironment [kernelSpecWithHlintOutput ghcPackage] [] "Haskell" $ do
     describe "Kernel" $ do
       -- With the setting turned on, we should get hlint output
-      itHasDisplayTexts (kernelName ghcPackage) Diagnostics.etaExpandCode [
+      itHasDisplayTexts (kernelName ghcPackage) etaExpandCode [
         Just (A.Array $ V.fromList [
                  String "Line 7: Eta reduce\n"
                  , String "Found:\n"
@@ -70,19 +62,10 @@ haskellCommonTests ghcPackage = do
         itHasDisplayDatas (kernelName ghcPackage) [__i|:info String|] [stringInfo ghcPackage]
 
         -- We shouldn't get hlint output by default
-        itHasDisplayDatas (kernelName ghcPackage) Diagnostics.etaExpandCode []
+        itHasDisplayDatas (kernelName ghcPackage) etaExpandCode []
 
-    describe "LSP" $ do
-      CodeActions.tests ghcPackage
-      CodeLenses.tests
-      Definition.tests
-      Diagnostics.tests ghcPackage lsName
-      DocumentHighlight.tests
-      Formatting.tests
-      Hover.tests
-      RawFiles.tests
-      Statements.tests ghcPackage
-      Symbols.tests
+    introduceGhcPackage ghcPackage $
+      Lsp.tests
 
 
 main :: IO ()

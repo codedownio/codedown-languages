@@ -105,18 +105,20 @@ executable tests
       Spec.Tests.Go.Completion
       Spec.Tests.Go.Hovers
       Spec.Tests.Haskell
-      Spec.Tests.Haskell.CodeActions
-      Spec.Tests.Haskell.CodeLenses
       Spec.Tests.Haskell.Common
-      Spec.Tests.Haskell.Definition
-      Spec.Tests.Haskell.Diagnostics
-      Spec.Tests.Haskell.DocumentHighlight
-      Spec.Tests.Haskell.Formatting
-      Spec.Tests.Haskell.Hover
+      Spec.Tests.Haskell.GhcPackage
       Spec.Tests.Haskell.Info
-      Spec.Tests.Haskell.RawFiles
-      Spec.Tests.Haskell.Statements
-      Spec.Tests.Haskell.Symbols
+      Spec.Tests.Haskell.Lsp
+      Spec.Tests.Haskell.Lsp.CodeActions
+      Spec.Tests.Haskell.Lsp.CodeLenses
+      Spec.Tests.Haskell.Lsp.Definition
+      Spec.Tests.Haskell.Lsp.Diagnostics
+      Spec.Tests.Haskell.Lsp.DocumentHighlight
+      Spec.Tests.Haskell.Lsp.Formatting
+      Spec.Tests.Haskell.Lsp.Hover
+      Spec.Tests.Haskell.Lsp.RawFiles
+      Spec.Tests.Haskell.Lsp.Statements
+      Spec.Tests.Haskell.Lsp.Symbols
       Spec.Tests.Java
       Spec.Tests.Java.Common
       Spec.Tests.Java.Lsp

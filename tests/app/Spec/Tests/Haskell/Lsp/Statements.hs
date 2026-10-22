@@ -1,28 +1,30 @@
 
-module Spec.Tests.Haskell.Statements (tests) where
+module Spec.Tests.Haskell.Lsp.Statements (tests) where
 
-import Control.Monad
 import Data.String.Interpolate
 import Data.Text as T
 import Language.LSP.Protocol.Types
 import Language.LSP.Test hiding (message)
 import qualified Language.LSP.Test.Helpers as Helpers
 import Spec.Tests.Haskell.Common
-import Spec.Tests.Haskell.DocumentHighlight (documentHighlightResults)
+import Spec.Tests.Haskell.GhcPackage
+import Spec.Tests.Haskell.Lsp.DocumentHighlight (documentHighlightResults)
 import Test.Sandwich as Sandwich
 import TestLib.LSP
 import TestLib.Types
 import UnliftIO.Timeout
 
 
-tests :: (LspContext context m, HasNixEnvironment context) => Text -> SpecFree context m ()
-tests ghcPackage = describe "Statements" $ do
+tests :: (
+  LspContext context m, HasNixEnvironment context, HasGhcPackage context
+  ) => SpecFree context m ()
+tests = describe "Statements" $ do
   describe "Single-line" $ do
     it "doesn't choke" $ doNotebookSession lsName statementsCode $ \(Helpers.LspSessionInfo {..}) -> do
       ident <- openDoc lspSessionInfoFileName "haskell"
       timeout 120_000_000 (getHighlights ident (Position 0 1)) >>= (`shouldBe` (Just documentHighlightResults))
 
-    when (ghcPackage /= "ghc910") $ -- TODO: re-enable hlint test
+    skippedOnGhc910 $
       testDiagnosticsLabel "Empty diagnostics" lsName "main.ipynb" LanguageKind_Haskell statementsCode $ \diagnostics -> do
         -- Note: normally the server wouldn't send empty diagnostics. But the statement inserts "= unsafePerformIO $ ",
         -- which causes it to emit a "redundant bracket" diagnostic, which then gets filtered out by untransformPosition
@@ -33,7 +35,7 @@ tests ghcPackage = describe "Statements" $ do
       ident <- openDoc lspSessionInfoFileName "haskell"
       timeout 120_000_000 (getHighlights ident (Position 0 1)) >>= (`shouldBe` (Just documentHighlightResults))
 
-    when (ghcPackage /= "ghc910") $ -- TODO: re-enable hlint test
+    skippedOnGhc910 $
       testDiagnosticsLabel "Redundant bracket" lsName "main.ipynb" LanguageKind_Haskell statementsCodeMultiline $ \diagnostics -> do
         info [i|Got diagnostics: #{diagnostics}|]
         assertDiagnosticRanges diagnostics [(Range (Position 1 9) (Position 1 14), Just (InR "refact:Redundant bracket"))]
