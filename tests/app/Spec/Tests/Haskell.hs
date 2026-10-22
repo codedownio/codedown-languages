@@ -18,7 +18,7 @@ import TestLib.NixEnvironmentContext
 import TestLib.TestSearchers
 import TestLib.Types
 
-import qualified Spec.Tests.Haskell.Lsp as Lsp
+import qualified Spec.Tests.Haskell.LSP as LSP
 
 
 tests :: LanguageSpec
@@ -65,7 +65,7 @@ haskellCommonTests ghcPackage = do
         itHasDisplayDatas (kernelName ghcPackage) etaExpandCode []
 
     introduceGhcPackage ghcPackage $
-      Lsp.tests
+      LSP.tests
 
 
 main :: IO ()

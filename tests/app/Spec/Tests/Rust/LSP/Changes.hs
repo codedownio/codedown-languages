@@ -1,0 +1,41 @@
+{-# LANGUAGE OverloadedLabels #-}
+
+module Spec.Tests.Rust.LSP.Changes (tests) where
+
+import Control.Lens
+import Data.Function
+import qualified Data.List as L
+import Data.String.Interpolate
+import qualified Language.LSP.Protocol.Lens as LSP
+import Language.LSP.Protocol.Types
+import Language.LSP.Test
+import qualified Language.LSP.Test.Helpers as Helpers
+import Test.Sandwich as Sandwich
+import Test.Sandwich.Waits (waitUntil)
+import TestLib.LSP
+import TestLib.Types
+
+
+tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
+tests = describe "Changes" $ do
+  it [i|Simple change|] $ doSession' "main.ipynb" "rust-analyzer" [i|println("hi");|] $ \(Helpers.LspSessionInfo {..}) -> do
+    ident <- openDoc lspSessionInfoFileName "haskell"
+
+    waitUntil 120.0 $ do
+      waitForDiagnostics >>= \diags -> do
+        assertDiagnosticRanges' (L.sortBy (compare `on` (^. LSP.message)) diags) [
+          (Range (Position 0 0) (Position 0 7), Just (InR "E0423"), "expected function, found macro `println`\nnot a function")
+          , (Range (Position 0 7) (Position 0 7), Just (InR "E0423"), "use `!` to invoke the macro: `!`")
+          ]
+
+    changeDoc ident [TextDocumentContentChangeEvent $ InL $ TextDocumentContentChangePartial (Range (p 0 7) (p 0 7)) Nothing "z"]
+
+    waitUntil 120.0 $ do
+      waitForDiagnostics >>= \diags -> do
+        assertDiagnosticRanges' (L.sortBy (compare `on` (^. LSP.message)) diags) [
+          (Range (Position 0 0) (Position 0 8), Just (InR "E0425"), "cannot find function `printlnz` in this scope\nnot found in this scope")
+          ]
+
+
+p :: Int -> Int -> Position
+p l c = Position (fromIntegral l) (fromIntegral c)

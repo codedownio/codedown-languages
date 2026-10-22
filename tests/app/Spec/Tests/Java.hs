@@ -13,7 +13,7 @@ import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
-import qualified Spec.Tests.Java.Lsp as Lsp
+import qualified Spec.Tests.Java.LSP as LSP
 import qualified Spec.Tests.Java.Packages as Packages
 
 
@@ -39,7 +39,7 @@ tests = describe "Java" $ do
 
     Packages.tests
 
-    Lsp.tests
+    LSP.tests
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {

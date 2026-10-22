@@ -108,33 +108,33 @@ executable tests
       Spec.Tests.Haskell.Common
       Spec.Tests.Haskell.GhcPackage
       Spec.Tests.Haskell.Info
-      Spec.Tests.Haskell.Lsp
-      Spec.Tests.Haskell.Lsp.CodeActions
-      Spec.Tests.Haskell.Lsp.CodeLenses
-      Spec.Tests.Haskell.Lsp.Definition
-      Spec.Tests.Haskell.Lsp.Diagnostics
-      Spec.Tests.Haskell.Lsp.DocumentHighlight
-      Spec.Tests.Haskell.Lsp.Formatting
-      Spec.Tests.Haskell.Lsp.Hover
-      Spec.Tests.Haskell.Lsp.RawFiles
-      Spec.Tests.Haskell.Lsp.Statements
-      Spec.Tests.Haskell.Lsp.Symbols
+      Spec.Tests.Haskell.LSP
+      Spec.Tests.Haskell.LSP.CodeActions
+      Spec.Tests.Haskell.LSP.CodeLenses
+      Spec.Tests.Haskell.LSP.Definition
+      Spec.Tests.Haskell.LSP.Diagnostics
+      Spec.Tests.Haskell.LSP.DocumentHighlight
+      Spec.Tests.Haskell.LSP.Formatting
+      Spec.Tests.Haskell.LSP.Hover
+      Spec.Tests.Haskell.LSP.RawFiles
+      Spec.Tests.Haskell.LSP.Statements
+      Spec.Tests.Haskell.LSP.Symbols
       Spec.Tests.Java
       Spec.Tests.Java.Common
-      Spec.Tests.Java.Lsp
-      Spec.Tests.Java.Lsp.Completion
-      Spec.Tests.Java.Lsp.Diagnostics
-      Spec.Tests.Java.Lsp.Formatting
-      Spec.Tests.Java.Lsp.Hovers
+      Spec.Tests.Java.LSP
+      Spec.Tests.Java.LSP.Completion
+      Spec.Tests.Java.LSP.Diagnostics
+      Spec.Tests.Java.LSP.Formatting
+      Spec.Tests.Java.LSP.Hovers
       Spec.Tests.Java.Packages
       Spec.Tests.Javascript
       Spec.Tests.Javascript.Common
       Spec.Tests.Javascript.Display
-      Spec.Tests.Javascript.Lsp
-      Spec.Tests.Javascript.Lsp.Completion
-      Spec.Tests.Javascript.Lsp.Diagnostics
-      Spec.Tests.Javascript.Lsp.Formatting
-      Spec.Tests.Javascript.Lsp.Hovers
+      Spec.Tests.Javascript.LSP
+      Spec.Tests.Javascript.LSP.Completion
+      Spec.Tests.Javascript.LSP.Diagnostics
+      Spec.Tests.Javascript.LSP.Formatting
+      Spec.Tests.Javascript.LSP.Hovers
       Spec.Tests.Javascript.Packages
       Spec.Tests.Julia
       Spec.Tests.Julia.Diagnostics
@@ -150,14 +150,14 @@ executable tests
       Spec.Tests.Ruby
       Spec.Tests.Ruby.VariableInspector
       Spec.Tests.Rust
-      Spec.Tests.Rust.Lsp
-      Spec.Tests.Rust.Lsp.Changes
-      Spec.Tests.Rust.Lsp.CodeActions
-      Spec.Tests.Rust.Lsp.Completion
-      Spec.Tests.Rust.Lsp.Diagnostics
-      Spec.Tests.Rust.Lsp.Formatting
-      Spec.Tests.Rust.Lsp.Hovers
-      Spec.Tests.Rust.Lsp.PreIndex
+      Spec.Tests.Rust.LSP
+      Spec.Tests.Rust.LSP.Changes
+      Spec.Tests.Rust.LSP.CodeActions
+      Spec.Tests.Rust.LSP.Completion
+      Spec.Tests.Rust.LSP.Diagnostics
+      Spec.Tests.Rust.LSP.Formatting
+      Spec.Tests.Rust.LSP.Hovers
+      Spec.Tests.Rust.LSP.PreIndex
       Spec.Tests.Rust.VariableInspector
       Spec.Tests.SampleEnvironments
       Spec.Tests.Searchers

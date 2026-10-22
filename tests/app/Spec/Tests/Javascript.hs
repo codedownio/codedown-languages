@@ -12,7 +12,7 @@ import TestLib.TestSearchers
 import TestLib.Types
 
 import qualified Spec.Tests.Javascript.Display as Display
-import qualified Spec.Tests.Javascript.Lsp as Lsp
+import qualified Spec.Tests.Javascript.LSP as LSP
 import qualified Spec.Tests.Javascript.Packages as Packages
 
 
@@ -35,7 +35,7 @@ tests = describe "JavaScript" $ do
 
     Display.tests
 
-    Lsp.tests
+    LSP.tests
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {

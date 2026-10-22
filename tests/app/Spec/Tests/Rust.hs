@@ -19,7 +19,7 @@ import TestLib.TestSearchers
 import TestLib.Types
 import TestLib.Util
 
-import qualified Spec.Tests.Rust.Lsp as Lsp
+import qualified Spec.Tests.Rust.LSP as LSP
 import qualified Spec.Tests.Rust.VariableInspector as VariableInspector
 
 
@@ -53,7 +53,7 @@ tests = describe "Rust" $ do
 
       VariableInspector.tests "rust"
 
-    Lsp.tests
+    LSP.tests
 
   -- Data-science crates (polars, ndarray, plotters, smartcore) pull in native
   -- dependencies that evcxr must compile at runtime. plotters in particular
