@@ -1,4 +1,7 @@
-module Spec.Tests.Java.Common where
+module Spec.Tests.Java.Common (
+  lsName
+  , projectTimeout
+  ) where
 
 import Data.Text
 

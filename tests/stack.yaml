@@ -13,7 +13,7 @@ system-ghc: true
 extra-deps:
 - git: https://github.com/codedownio/sandwich.git
   # master branch
-  commit: 71f7ac9754fe6bf6a6856cb0b774c356bb8ed02d
+  commit: b46d700f2ee21f5b68b3c94629148f67f0d8add6
   subdirs:
   - sandwich
   - sandwich-contexts

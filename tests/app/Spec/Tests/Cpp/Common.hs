@@ -1,4 +1,6 @@
-module Spec.Tests.Cpp.Common where
+module Spec.Tests.Cpp.Common (
+  lsName
+  ) where
 
 import Data.Text
 

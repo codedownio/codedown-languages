@@ -97,41 +97,57 @@ executable tests
       Spec.Tests.Coq
       Spec.Tests.Cpp
       Spec.Tests.Cpp.Common
-      Spec.Tests.Cpp.Completion
-      Spec.Tests.Cpp.Hovers
+      Spec.Tests.Cpp.LSP
+      Spec.Tests.Cpp.LSP.Completion
+      Spec.Tests.Cpp.LSP.Diagnostics
+      Spec.Tests.Cpp.LSP.Formatting
+      Spec.Tests.Cpp.LSP.Hovers
       Spec.Tests.Exporters
       Spec.Tests.Go
       Spec.Tests.Go.Common
-      Spec.Tests.Go.Completion
-      Spec.Tests.Go.Hovers
+      Spec.Tests.Go.LSP
+      Spec.Tests.Go.LSP.Completion
+      Spec.Tests.Go.LSP.Diagnostics
+      Spec.Tests.Go.LSP.Formatting
+      Spec.Tests.Go.LSP.Hovers
       Spec.Tests.Haskell
-      Spec.Tests.Haskell.CodeActions
-      Spec.Tests.Haskell.CodeLenses
       Spec.Tests.Haskell.Common
-      Spec.Tests.Haskell.Definition
-      Spec.Tests.Haskell.Diagnostics
-      Spec.Tests.Haskell.DocumentHighlight
-      Spec.Tests.Haskell.Formatting
-      Spec.Tests.Haskell.Hover
       Spec.Tests.Haskell.Info
-      Spec.Tests.Haskell.RawFiles
-      Spec.Tests.Haskell.Statements
-      Spec.Tests.Haskell.Symbols
+      Spec.Tests.Haskell.LSP
+      Spec.Tests.Haskell.LSP.CodeActions
+      Spec.Tests.Haskell.LSP.CodeLenses
+      Spec.Tests.Haskell.LSP.Definition
+      Spec.Tests.Haskell.LSP.Diagnostics
+      Spec.Tests.Haskell.LSP.DocumentHighlight
+      Spec.Tests.Haskell.LSP.Formatting
+      Spec.Tests.Haskell.LSP.Hover
+      Spec.Tests.Haskell.LSP.RawFiles
+      Spec.Tests.Haskell.LSP.Statements
+      Spec.Tests.Haskell.LSP.Symbols
       Spec.Tests.Java
       Spec.Tests.Java.Common
-      Spec.Tests.Java.Completion
-      Spec.Tests.Java.Diagnostics
-      Spec.Tests.Java.Hovers
+      Spec.Tests.Java.LSP
+      Spec.Tests.Java.LSP.Completion
+      Spec.Tests.Java.LSP.Diagnostics
+      Spec.Tests.Java.LSP.Formatting
+      Spec.Tests.Java.LSP.Hovers
       Spec.Tests.Java.Packages
       Spec.Tests.Javascript
       Spec.Tests.Javascript.Common
-      Spec.Tests.Javascript.Completion
-      Spec.Tests.Javascript.Diagnostics
       Spec.Tests.Javascript.Display
-      Spec.Tests.Javascript.Hovers
+      Spec.Tests.Javascript.LSP
+      Spec.Tests.Javascript.LSP.Completion
+      Spec.Tests.Javascript.LSP.Diagnostics
+      Spec.Tests.Javascript.LSP.Formatting
+      Spec.Tests.Javascript.LSP.Hovers
       Spec.Tests.Javascript.Packages
       Spec.Tests.Julia
-      Spec.Tests.Julia.Diagnostics
+      Spec.Tests.Julia.Common
+      Spec.Tests.Julia.LSP
+      Spec.Tests.Julia.LSP.Diagnostics
+      Spec.Tests.Julia.LSP.DocumentHighlight
+      Spec.Tests.Julia.LSP.Formatting
+      Spec.Tests.Julia.LSP.Hovers
       Spec.Tests.Julia.VariableInspector
       Spec.Tests.Octave
       Spec.Tests.Octave.VariableInspector
@@ -144,13 +160,14 @@ executable tests
       Spec.Tests.Ruby
       Spec.Tests.Ruby.VariableInspector
       Spec.Tests.Rust
-      Spec.Tests.Rust.Changes
-      Spec.Tests.Rust.CodeActions
-      Spec.Tests.Rust.Completion
-      Spec.Tests.Rust.Diagnostics
-      Spec.Tests.Rust.Formatting
-      Spec.Tests.Rust.Hovers
-      Spec.Tests.Rust.PreIndex
+      Spec.Tests.Rust.LSP
+      Spec.Tests.Rust.LSP.Changes
+      Spec.Tests.Rust.LSP.CodeActions
+      Spec.Tests.Rust.LSP.Completion
+      Spec.Tests.Rust.LSP.Diagnostics
+      Spec.Tests.Rust.LSP.Formatting
+      Spec.Tests.Rust.LSP.Hovers
+      Spec.Tests.Rust.LSP.PreIndex
       Spec.Tests.Rust.VariableInspector
       Spec.Tests.SampleEnvironments
       Spec.Tests.Searchers
@@ -159,8 +176,10 @@ executable tests
       Spec.Tests.Spellchecker
       Spec.Tests.Typescript
       Spec.Tests.Typescript.Common
-      Spec.Tests.Typescript.Completion
-      Spec.Tests.Typescript.Hovers
+      Spec.Tests.Typescript.LSP
+      Spec.Tests.Typescript.LSP.Completion
+      Spec.Tests.Typescript.LSP.Formatting
+      Spec.Tests.Typescript.LSP.Hovers
       Spec.Tests.Typst
       Paths_tests
   hs-source-dirs:

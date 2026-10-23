@@ -4,20 +4,15 @@
 module Spec.Tests.Javascript (tests) where
 
 import Data.String.Interpolate
-import Language.LSP.Protocol.Types
-import Spec.Tests.Javascript.Common
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
-import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
-import qualified Spec.Tests.Javascript.Completion as Completion
-import qualified Spec.Tests.Javascript.Diagnostics as Diagnostics
 import qualified Spec.Tests.Javascript.Display as Display
-import qualified Spec.Tests.Javascript.Hovers as Hovers
+import qualified Spec.Tests.Javascript.LSP as LSP
 import qualified Spec.Tests.Javascript.Packages as Packages
 
 
@@ -40,16 +35,7 @@ tests = describe "JavaScript" $ do
 
     Display.tests
 
-    describe "LSP" $ do
-      Diagnostics.tests
-
-      Completion.tests
-
-      Hovers.tests
-
-      itFormatsAs lsName "test.js" LanguageKind_JavaScript
-        "const x   =   1+2\nconsole.log( x )\n"
-        "const x = 1 + 2\nconsole.log(x)\n"
+    LSP.tests
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {

@@ -17,16 +17,7 @@ import TestLib.NixEnvironmentContext
 import TestLib.TestSearchers
 import TestLib.Types
 
-import qualified Spec.Tests.Haskell.CodeActions as CodeActions
-import qualified Spec.Tests.Haskell.CodeLenses as CodeLenses
-import qualified Spec.Tests.Haskell.Diagnostics as Diagnostics
-import qualified Spec.Tests.Haskell.Definition as Definition
-import qualified Spec.Tests.Haskell.DocumentHighlight as DocumentHighlight
-import qualified Spec.Tests.Haskell.Formatting as Formatting
-import qualified Spec.Tests.Haskell.Hover as Hover
-import qualified Spec.Tests.Haskell.RawFiles as RawFiles
-import qualified Spec.Tests.Haskell.Statements as Statements
-import qualified Spec.Tests.Haskell.Symbols as Symbols
+import qualified Spec.Tests.Haskell.LSP as LSP
 
 
 tests :: LanguageSpec
@@ -46,11 +37,11 @@ kernelName :: Text -> Text
 kernelName _ghcPackage = "haskell"
 
 haskellCommonTests :: Text -> LanguageSpec
-haskellCommonTests ghcPackage = do
-  describe [i|Haskell #{ghcPackage} with hlint output|] $ introduceNixEnvironment [kernelSpecWithHlintOutput ghcPackage] [] "Haskell" $ do
+haskellCommonTests ghcPkg = do
+  describe [i|Haskell #{ghcPkg} with hlint output|] $ introduceNixEnvironment [kernelSpecWithHlintOutput ghcPkg] [] "Haskell" $ do
     describe "Kernel" $ do
       -- With the setting turned on, we should get hlint output
-      itHasDisplayTexts (kernelName ghcPackage) Diagnostics.etaExpandCode [
+      itHasDisplayTexts (kernelName ghcPkg) etaExpandCode [
         Just (A.Array $ V.fromList [
                  String "Line 7: Eta reduce\n"
                  , String "Found:\n"
@@ -59,30 +50,21 @@ haskellCommonTests ghcPackage = do
                  , String "baz2 = baz"
                  ])]
 
-  describe [i|Haskell #{ghcPackage}|] $ introduceNixEnvironment [kernelSpec ghcPackage] [] "Haskell" $ do
+  describe [i|Haskell #{ghcPkg}|] $ introduceNixEnvironment [kernelSpec ghcPkg] [] "Haskell" $ do
     introduceJupyterRunner $ do
-      testKernelSearchersNonempty (kernelName ghcPackage)
-      testHasExpectedFields (kernelName ghcPackage)
+      testKernelSearchersNonempty (kernelName ghcPkg)
+      testHasExpectedFields (kernelName ghcPkg)
 
       describe "Kernel" $ do
-        itHasDisplayDatas (kernelName ghcPackage) [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
+        itHasDisplayDatas (kernelName ghcPkg) [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
 
-        itHasDisplayDatas (kernelName ghcPackage) [__i|:info String|] [stringInfo ghcPackage]
+        itHasDisplayDatas (kernelName ghcPkg) [__i|:info String|] [stringInfo ghcPkg]
 
         -- We shouldn't get hlint output by default
-        itHasDisplayDatas (kernelName ghcPackage) Diagnostics.etaExpandCode []
+        itHasDisplayDatas (kernelName ghcPkg) etaExpandCode []
 
-    describe "LSP" $ do
-      CodeActions.tests ghcPackage
-      CodeLenses.tests
-      Definition.tests
-      Diagnostics.tests ghcPackage lsName
-      DocumentHighlight.tests
-      Formatting.tests
-      Hover.tests
-      RawFiles.tests
-      Statements.tests ghcPackage
-      Symbols.tests
+    introduceGhcPackage ghcPkg $
+      LSP.tests
 
 
 main :: IO ()

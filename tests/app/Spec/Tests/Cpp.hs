@@ -6,17 +6,14 @@ module Spec.Tests.Cpp (tests) where
 
 import Data.String.Interpolate
 import Data.Text
-import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
-import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
-import qualified Spec.Tests.Cpp.Completion as Completion
-import qualified Spec.Tests.Cpp.Hovers as Hovers
+import qualified Spec.Tests.Cpp.LSP as LSP
 
 
 tests :: LanguageSpec
@@ -38,35 +35,7 @@ tests' flavor = describe [i|C++ (#{flavor})|] $ introduceNixEnvironment [kernelS
                                 using namespace std;
                                 cout << "hi" << endl;|] "hi\n"
 
-  describe "LSP" $ do
-    testDiagnostics'' "simple" lsName "test.cpp" LanguageKind_CPP
-      [__i|int main() {
-             undefined_function();
-             return 0;
-           }|] [] $ \diags -> do
-          info [i|Got diags: #{diags}|]
-          info [i|Got ranges: #{getDiagnosticRanges' diags}|]
-          getDiagnosticRanges' diags `shouldBe` [(Range (Position 1 2) (Position 1 20), Just (InR "undeclared_var_use"), "Use of undeclared identifier 'undefined_function'")]
-
-    Completion.tests
-
-    Hovers.tests
-
-    itFormatsAs lsName "test.cpp" LanguageKind_CPP
-      "int main(){int x=1+2;return x;}\n"
-      "int main() {\n  int x = 1 + 2;\n  return x;\n}\n"
-
-    it "clangd formats main.ipynb" $ do
-      -- cpp-notebook-language-server forwards textDocument/formatting with the notebook's
-      -- URI rather than the shadow file's, so clangd answers InvalidParams "trying to format
-      -- non-added document". See plans/notebook-formatting-in-proxies.md.
-      _ <- pending
-      formatsAs defaultTimeout lsName "main.ipynb" LanguageKind_CPP
-        "int x=1+2;\nstd::cout<<x;\n"
-        "int x = 1 + 2;\nstd::cout << x;\n"
-
-lsName :: Text
-lsName = "clangd"
+  LSP.tests
 
 kernelSpecWithLsp :: Text -> NixKernelSpec
 kernelSpecWithLsp flavor = kernelSpec' [

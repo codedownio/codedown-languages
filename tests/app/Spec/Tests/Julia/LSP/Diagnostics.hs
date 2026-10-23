@@ -1,0 +1,45 @@
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE RankNTypes #-}
+
+module Spec.Tests.Julia.LSP.Diagnostics (tests) where
+
+import Data.String.Interpolate
+import Language.LSP.Protocol.Types
+import Spec.Tests.Julia.Common
+import Test.Sandwich as Sandwich
+import TestLib.LSP
+import TestLib.Types
+
+
+tests :: (LspContext context m, HasNixEnvironment context) => SpecFree context m ()
+tests = describe "Diagnostics" $ do
+  testDiagnostics'' "flags a simple missing reference" lsName "test.jl" juliaLanguageKind [i|printlnzzzz("HI")|] [] $ \diagnostics -> do
+    assertDiagnosticRanges' diagnostics [(Range (Position 0 0) (Position 0 11), Nothing, "Missing reference: printlnzzzz")]
+
+  testDiagnosticsLabelDesired "finds symbols from JSON3 package" lsName "test.jl" juliaLanguageKind
+    [__i|using JSON3: write
+         tup = (:car,"Mercedes","S500",5,250.1)
+         write(tup)
+         printlnzzzz("HI")
+         |]
+    ((== [(Range (Position 3 0) (Position 3 11), Nothing, "Missing reference: printlnzzzz")]) . getDiagnosticRanges')
+
+  testDiagnosticsLabelDesired "finds symbols from Roots package" lsName "test.jl" juliaLanguageKind
+    [__i|using Roots: Bisection, find_zero
+         f(x) = exp(x) - x^4
+         find_zero(f, (8, 9), Bisection())
+         printlnzzzz("HI")
+         |]
+    ((== [(Range (Position 3 0) (Position 3 11), Nothing, "Missing reference: printlnzzzz")]) . getDiagnosticRanges')
+
+  -- This test is tricky because symbols like "plot" actually come from RecipesBase (or something), so
+  -- it checks we're indexing such a transitive dependency.
+  testDiagnosticsLabelDesired "finds symbols from Plots package" lsName "test.jl" juliaLanguageKind
+    [__i|using Plots: plot, plot!
+         xx = range(0, 10, length=100)
+         y = sin.(xx)
+         plot(xx, y)
+         plot!(xx, y)
+         printlnzzzz("HI")
+         |]
+    ((== [(Range (Position 5 0) (Position 5 11), Nothing, "Missing reference: printlnzzzz")]) . getDiagnosticRanges')
