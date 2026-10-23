@@ -9,9 +9,9 @@ import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Vector as V
 import Spec.Tests.Haskell.Common
-import Spec.Tests.Haskell.GhcPackage (introduceGhcPackage)
 import Spec.Tests.Haskell.Info
 import Test.Sandwich as Sandwich
+import TestLib.Contexts.GhcPackage (introduceGhcPackage)
 import TestLib.JupyterRunnerContext
 import TestLib.JupyterTypes
 import TestLib.NixEnvironmentContext

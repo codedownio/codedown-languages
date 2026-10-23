@@ -1,7 +1,6 @@
--- | The Haskell LSP specs are picked up by test discovery, which calls a no-argument
--- 'tests', so the GHC version they're running against arrives through the context
--- instead of as a parameter.
-module Spec.Tests.Haskell.GhcPackage (
+-- | Test discovery calls a no-argument 'tests', so the Haskell specs take the GHC version
+-- they're running against from the context rather than as a parameter.
+module TestLib.Contexts.GhcPackage (
   ghcPackage
   , HasGhcPackage
   , introduceGhcPackage

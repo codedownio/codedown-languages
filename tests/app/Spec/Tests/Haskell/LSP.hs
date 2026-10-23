@@ -5,8 +5,8 @@
 
 module Spec.Tests.Haskell.LSP (tests) where
 
-import Spec.Tests.Haskell.GhcPackage
 import Test.Sandwich
+import TestLib.Contexts.GhcPackage
 import TestLib.Types
 
 #insert_test_imports

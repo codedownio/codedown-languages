@@ -19,6 +19,7 @@ extra-source-files:
 library
   exposed-modules:
       TestLib.Aeson
+      TestLib.Contexts.GhcPackage
       TestLib.Contexts.PostgresqlData
       TestLib.Exporters
       TestLib.JupyterRunnerContext
@@ -112,7 +113,6 @@ executable tests
       Spec.Tests.Go.LSP.Hovers
       Spec.Tests.Haskell
       Spec.Tests.Haskell.Common
-      Spec.Tests.Haskell.GhcPackage
       Spec.Tests.Haskell.Info
       Spec.Tests.Haskell.LSP
       Spec.Tests.Haskell.LSP.CodeActions
