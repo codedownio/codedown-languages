@@ -19,7 +19,6 @@ extra-source-files:
 library
   exposed-modules:
       TestLib.Aeson
-      TestLib.Contexts.GhcPackage
       TestLib.Contexts.PostgresqlData
       TestLib.Exporters
       TestLib.JupyterRunnerContext

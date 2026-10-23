@@ -13,7 +13,6 @@ import Language.LSP.Protocol.Lens hiding (diagnostics)
 import Language.LSP.Protocol.Types
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
-import TestLib.Contexts.GhcPackage
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext

@@ -11,7 +11,6 @@ import qualified Data.Vector as V
 import Spec.Tests.Haskell.Common
 import Spec.Tests.Haskell.Info
 import Test.Sandwich as Sandwich
-import TestLib.Contexts.GhcPackage (introduceGhcPackage)
 import TestLib.JupyterRunnerContext
 import TestLib.JupyterTypes
 import TestLib.NixEnvironmentContext
@@ -38,11 +37,11 @@ kernelName :: Text -> Text
 kernelName _ghcPackage = "haskell"
 
 haskellCommonTests :: Text -> LanguageSpec
-haskellCommonTests ghcPackage = do
-  describe [i|Haskell #{ghcPackage} with hlint output|] $ introduceNixEnvironment [kernelSpecWithHlintOutput ghcPackage] [] "Haskell" $ do
+haskellCommonTests ghcPkg = do
+  describe [i|Haskell #{ghcPkg} with hlint output|] $ introduceNixEnvironment [kernelSpecWithHlintOutput ghcPkg] [] "Haskell" $ do
     describe "Kernel" $ do
       -- With the setting turned on, we should get hlint output
-      itHasDisplayTexts (kernelName ghcPackage) etaExpandCode [
+      itHasDisplayTexts (kernelName ghcPkg) etaExpandCode [
         Just (A.Array $ V.fromList [
                  String "Line 7: Eta reduce\n"
                  , String "Found:\n"
@@ -51,20 +50,20 @@ haskellCommonTests ghcPackage = do
                  , String "baz2 = baz"
                  ])]
 
-  describe [i|Haskell #{ghcPackage}|] $ introduceNixEnvironment [kernelSpec ghcPackage] [] "Haskell" $ do
+  describe [i|Haskell #{ghcPkg}|] $ introduceNixEnvironment [kernelSpec ghcPkg] [] "Haskell" $ do
     introduceJupyterRunner $ do
-      testKernelSearchersNonempty (kernelName ghcPackage)
-      testHasExpectedFields (kernelName ghcPackage)
+      testKernelSearchersNonempty (kernelName ghcPkg)
+      testHasExpectedFields (kernelName ghcPkg)
 
       describe "Kernel" $ do
-        itHasDisplayDatas (kernelName ghcPackage) [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
+        itHasDisplayDatas (kernelName ghcPkg) [__i|putStrLn "hi"|] [M.fromList [(MimeType "text/plain", A.Array (V.fromList [A.String "hi"]))]]
 
-        itHasDisplayDatas (kernelName ghcPackage) [__i|:info String|] [stringInfo ghcPackage]
+        itHasDisplayDatas (kernelName ghcPkg) [__i|:info String|] [stringInfo ghcPkg]
 
         -- We shouldn't get hlint output by default
-        itHasDisplayDatas (kernelName ghcPackage) etaExpandCode []
+        itHasDisplayDatas (kernelName ghcPkg) etaExpandCode []
 
-    introduceGhcPackage ghcPackage $
+    introduceGhcPackage ghcPkg $
       LSP.tests
 
 

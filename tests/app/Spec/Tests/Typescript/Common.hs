@@ -1,4 +1,6 @@
-module Spec.Tests.Typescript.Common where
+module Spec.Tests.Typescript.Common (
+  lsName
+  ) where
 
 import Data.Text
 

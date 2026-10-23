@@ -1,4 +1,6 @@
-module Spec.Tests.Javascript.Common where
+module Spec.Tests.Javascript.Common (
+  lsName
+  ) where
 
 import Data.Text
 

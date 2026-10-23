@@ -12,7 +12,6 @@ import Language.LSP.Test hiding (message)
 import qualified Language.LSP.Test.Helpers as Helpers
 import Spec.Tests.Haskell.Common
 import Test.Sandwich as Sandwich
-import TestLib.Contexts.GhcPackage
 import TestLib.LSP
 import TestLib.Types
 import UnliftIO.Timeout
