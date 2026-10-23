@@ -38,6 +38,12 @@ tests = describe "Rust" $ do
 
       testKernelStdout "rust" [__i|println!("hi")|] "hi\n"
 
+      -- Unannotated, so evcxr has to ask its rust-analyzer for the type.
+      testKernelStdout "rust" [__i|let nums = vec![1, 2, 3];
+                                   let sum = nums.iter().sum::<i32>();
+                                   println!("{}", sum);
+                                   |] "6\n"
+
       testKernelStdout "rust" [__i|use serde::{Serialize, Deserialize};
 
                                    \#[derive(Serialize, Deserialize, Debug)]
