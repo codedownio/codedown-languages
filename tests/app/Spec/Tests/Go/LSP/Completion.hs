@@ -1,4 +1,4 @@
-module Spec.Tests.Go.Completion (tests) where
+module Spec.Tests.Go.LSP.Completion (tests) where
 
 import Control.Lens
 import Data.String.Interpolate

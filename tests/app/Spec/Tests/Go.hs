@@ -3,18 +3,14 @@
 module Spec.Tests.Go (tests) where
 
 import Data.String.Interpolate
-import Data.Text as T
-import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
-import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
-import qualified Spec.Tests.Go.Completion as Completion
-import qualified Spec.Tests.Go.Hovers as Hovers
+import qualified Spec.Tests.Go.LSP as LSP
 
 
 tests :: LanguageSpec
@@ -27,26 +23,7 @@ tests = describe "Go" $ do
       testKernelStdout "go" [__i|import("fmt")
                                  fmt.Println("hi")|] "hi\n"
 
-    describe "LSP" $ do
-      testDiagnosticsLabel "gopls: Undeclared name" lsName "test.go" LanguageKind_Go printUnknownCode $ \diagnostics ->
-        assertDiagnosticRanges diagnostics [(Range (Position 3 12) (Position 3 15), Just (InR "UndeclaredName"))]
-
-      Completion.tests
-
-      Hovers.tests
-
-      itFormatsAs lsName "test.go" LanguageKind_Go badlyFormattedCode formattedCode
-
-      it "gopls formats main.ipynb" $ do
-        -- go-notebook-language-server forwards textDocument/formatting with the notebook's URI
-        -- rather than the shadow file's, so gopls answers "no file content for file://.../main.ipynb".
-        -- See plans/notebook-formatting-in-proxies.md.
-        _ <- pending
-        formatsAs defaultTimeout lsName "main.ipynb" LanguageKind_Go
-          badlyFormattedCodeNotebook formattedCodeNotebook
-
-lsName :: Text
-lsName = "gopls"
+    LSP.tests
 
 kernelSpecWithLsp :: NixKernelSpec
 kernelSpecWithLsp = NixKernelSpec {
@@ -61,25 +38,6 @@ kernelSpecWithLsp = NixKernelSpec {
       , "lsp.gopls.debug = true"
       ]
   }
-
-badlyFormattedCode :: Text
-badlyFormattedCode = "package main\nimport (\"fmt\")\nfunc main() {\nx:=1+2\nfmt.Println(x)\n}\n"
-
-formattedCode :: Text
-formattedCode = "package main\n\nimport (\n\t\"fmt\"\n)\n\nfunc main() {\n\tx := 1 + 2\n\tfmt.Println(x)\n}\n"
-
-badlyFormattedCodeNotebook :: Text
-badlyFormattedCodeNotebook = "x:=1+2\nfmt.Println(x)\n"
-
-formattedCodeNotebook :: Text
-formattedCodeNotebook = "x := 1 + 2\nfmt.Println(x)\n"
-
-printUnknownCode :: Text
-printUnknownCode = [__i|package main
-                        import ("fmt")
-                        func main() {
-                        fmt.Println(foo)
-                        }|]
 
 main :: IO ()
 main = jupyterMain tests

@@ -4,18 +4,14 @@
 module Spec.Tests.Typescript (tests) where
 
 import Data.String.Interpolate
-import Language.LSP.Protocol.Types
-import Spec.Tests.Typescript.Common
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
-import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
-import qualified Spec.Tests.Typescript.Completion as Completion
-import qualified Spec.Tests.Typescript.Hovers as Hovers
+import qualified Spec.Tests.Typescript.LSP as LSP
 
 
 -- | The TypeScript kernel is tslab without --js: same binary, same package set and
@@ -43,14 +39,7 @@ tests = describe "TypeScript" $ do
                                          const xs: number[] = [1, 2, 3, 4];
                                          console.log(ss.mean(xs))|] "2.5\n"
 
-    describe "LSP" $ do
-      Completion.tests
-
-      Hovers.tests
-
-      itFormatsAs lsName "test.ts" LanguageKind_TypeScript
-        "const x : number  =   1+2\nconsole.log( x )\n"
-        "const x: number = 1 + 2\nconsole.log(x)\n"
+    LSP.tests
 
 kernelSpec :: NixKernelSpec
 kernelSpec = NixKernelSpec {

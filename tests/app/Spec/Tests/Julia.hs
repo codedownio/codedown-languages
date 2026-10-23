@@ -4,22 +4,16 @@
 
 module Spec.Tests.Julia (tests) where
 
-import Control.Lens hiding (List)
 import Data.String.Interpolate
 import Data.Text as T
-import Language.LSP.Protocol.Lens hiding (diagnostics, hover, text)
-import Language.LSP.Protocol.Types
-import Language.LSP.Test hiding (message)
-import qualified Language.LSP.Test.Helpers as Helpers
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
-import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
-import qualified Spec.Tests.Julia.Diagnostics as Diagnostics
+import qualified Spec.Tests.Julia.LSP as LSP
 import qualified Spec.Tests.Julia.VariableInspector as VariableInspector
 
 
@@ -46,35 +40,7 @@ juliaTests juliaPackage = describe [i|Julia (#{juliaPackage})|] $ introduceNixEn
 
   VariableInspector.tests (kernelName juliaPackage)
 
-  describe "LSP" $ do
-    Diagnostics.tests lsName
-
-    itHasHoverSatisfying lsName "test.jl" (LanguageKind_Custom "julia") [__i|print("hi")|] (Position 0 2) $ \hover -> do
-      let InL (MarkupContent MarkupKind_Markdown text) = hover ^. contents
-      text `textShouldContain` "Write to `io` (or to the default output stream"
-
-    it "highlights foo" $ doNotebookSession lsName documentHighlightCode $ \(Helpers.LspSessionInfo {..}) -> do
-      ident <- openDoc lspSessionInfoFileName "julia"
-      getHighlights ident (Position 0 1) >>= (`shouldBe` documentHighlightResults)
-
-    -- Weaker than the other languages' formatting tests: JuliaFormatter's exact output isn't
-    -- pinned here, only that LanguageServer.jl actually reformats.
-    itReformats lsName "test.jl" (LanguageKind_Custom "julia")
-      "function foo(a,b)\nx=a+b\nreturn x\nend\n"
-
-
-documentHighlightCode :: Text
-documentHighlightCode = [__i|foo = "hello"
-                             println(foo)|]
-
-documentHighlightResults :: [DocumentHighlight]
-documentHighlightResults = [
-  DocumentHighlight (Range (Position 0 0) (Position 0 3)) (Just DocumentHighlightKind_Write)
-  , DocumentHighlight (Range (Position 1 8) (Position 1 11)) (Just DocumentHighlightKind_Read)
-  ]
-
-lsName :: Text
-lsName = "LanguageServer"
+  LSP.tests
 
 kernelSpec :: Text -> NixKernelSpec
 kernelSpec juliaPackage = NixKernelSpec {

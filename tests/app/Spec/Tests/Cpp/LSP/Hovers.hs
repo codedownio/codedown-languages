@@ -1,4 +1,4 @@
-module Spec.Tests.Cpp.Hovers (tests) where
+module Spec.Tests.Cpp.LSP.Hovers (tests) where
 
 import Control.Monad
 import Data.String.Interpolate

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Spec.Tests.Typescript.Hovers (tests) where
+module Spec.Tests.Typescript.LSP.Hovers (tests) where
 
 import Data.String.Interpolate
 import Data.Text (Text)

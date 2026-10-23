@@ -97,13 +97,19 @@ executable tests
       Spec.Tests.Coq
       Spec.Tests.Cpp
       Spec.Tests.Cpp.Common
-      Spec.Tests.Cpp.Completion
-      Spec.Tests.Cpp.Hovers
+      Spec.Tests.Cpp.LSP
+      Spec.Tests.Cpp.LSP.Completion
+      Spec.Tests.Cpp.LSP.Diagnostics
+      Spec.Tests.Cpp.LSP.Formatting
+      Spec.Tests.Cpp.LSP.Hovers
       Spec.Tests.Exporters
       Spec.Tests.Go
       Spec.Tests.Go.Common
-      Spec.Tests.Go.Completion
-      Spec.Tests.Go.Hovers
+      Spec.Tests.Go.LSP
+      Spec.Tests.Go.LSP.Completion
+      Spec.Tests.Go.LSP.Diagnostics
+      Spec.Tests.Go.LSP.Formatting
+      Spec.Tests.Go.LSP.Hovers
       Spec.Tests.Haskell
       Spec.Tests.Haskell.Common
       Spec.Tests.Haskell.GhcPackage
@@ -137,7 +143,12 @@ executable tests
       Spec.Tests.Javascript.LSP.Hovers
       Spec.Tests.Javascript.Packages
       Spec.Tests.Julia
-      Spec.Tests.Julia.Diagnostics
+      Spec.Tests.Julia.Common
+      Spec.Tests.Julia.LSP
+      Spec.Tests.Julia.LSP.Diagnostics
+      Spec.Tests.Julia.LSP.DocumentHighlight
+      Spec.Tests.Julia.LSP.Formatting
+      Spec.Tests.Julia.LSP.Hovers
       Spec.Tests.Julia.VariableInspector
       Spec.Tests.Octave
       Spec.Tests.Octave.VariableInspector
@@ -166,8 +177,10 @@ executable tests
       Spec.Tests.Spellchecker
       Spec.Tests.Typescript
       Spec.Tests.Typescript.Common
-      Spec.Tests.Typescript.Completion
-      Spec.Tests.Typescript.Hovers
+      Spec.Tests.Typescript.LSP
+      Spec.Tests.Typescript.LSP.Completion
+      Spec.Tests.Typescript.LSP.Formatting
+      Spec.Tests.Typescript.LSP.Hovers
       Spec.Tests.Typst
       Paths_tests
   hs-source-dirs:

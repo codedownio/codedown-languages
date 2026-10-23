@@ -1,4 +1,4 @@
-module Spec.Tests.Cpp.Completion (tests) where
+module Spec.Tests.Cpp.LSP.Completion (tests) where
 
 import Control.Monad
 import Data.Maybe

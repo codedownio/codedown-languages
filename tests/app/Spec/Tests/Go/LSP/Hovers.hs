@@ -1,4 +1,4 @@
-module Spec.Tests.Go.Hovers (tests) where
+module Spec.Tests.Go.LSP.Hovers (tests) where
 
 import Data.String.Interpolate
 import Data.Text (Text)
