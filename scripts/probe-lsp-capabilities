@@ -11,6 +11,23 @@ This is the only part of the feature matrix that can't be answered by evaluating
 server's capabilities are whatever it says at runtime. Run this after upgrading nixpkgs
 or changing which language servers a kernel enables.
 
+A server that advertises `workspaceSymbolProvider` is then asked one further question,
+recorded as `workspaceSymbolFindsCellSymbol`: can its workspace query find a symbol
+declared in a cell of a notebook the client has open?
+
+The notebook is a real file on disk, but it's a container -- markdown, typst or latex --
+and no language server reads it as source. What a server is shown instead is a projection:
+this language's cells extracted into one document, opened at the notebook's path plus
+`notebook_suffix` (so `analysis.md.py` for jedi), or at a shadow document a notebook
+language server names for itself. Nothing is written at that path. A server that builds
+its symbol index by walking the project therefore never parses the projection, and answers
+for the project's real source files while leaving every cell out -- jedi and pyright both
+do this.
+
+Note the "has open". codedown builds a projection when a document is opened and not before,
+so a notebook nobody has opened is invisible to every server here, whatever this field
+says. A `true` means the server covers the notebook in front of you, not the project.
+
 Usage:
     scripts/probe-lsp-capabilities              # all kernels
     scripts/probe-lsp-capabilities python3 go   # just these
@@ -34,6 +51,30 @@ INITIALIZE_TIMEOUT_SECONDS = 300
 
 # How long to wait after `initialized` for a server that registers capabilities dynamically.
 REGISTRATION_WINDOW_SECONDS = 8
+
+# How long to keep re-asking workspace/symbol while a server builds its index. Generous
+# because jdtls spends minutes building its invisible project before it answers anything;
+# only a server that never answers pays the whole thing.
+WORKSPACE_SYMBOL_TIMEOUT_SECONDS = 300
+
+# What a user might type in a cell, per language_id: one declaration whose name contains
+# "alpha". Sent as the notebook's contents, so it goes through the notebook language
+# server exactly as a real cell would.
+CELL_SOURCES = {
+    "clojure": "(defn alpha-in-cell [] 2)\n",
+    "cpp": "int alpha_in_cell() { return 2; }\n",
+    "go": "func alphaInCell() int { return 2 }\n",
+    "haskell": "alphaInCell :: Int\nalphaInCell = 2\n",
+    "java": "int alphaInCell() { return 2; }\n",
+    "javascript": "function alphaInCell() { return 2 }\n",
+    "julia": "function alpha_in_cell()\n    2\nend\n",
+    "python": "def alpha_in_cell():\n    return 2\n",
+    "r": "alpha_in_cell <- function() 2\n",
+    "ruby": "def alpha_in_cell\n  2\nend\n",
+    "rust": "fn alpha_in_cell() -> i32 { 2 }\n",
+    "shellscript": "alpha_in_cell() {\n  echo 2\n}\n",
+    "typescript": "function alphaInCell() { return 2 }\n",
+}
 
 # LSP request -> the field of ServerCapabilities that means the same thing, for servers
 # that register dynamically instead of declaring in the initialize result.
@@ -205,6 +246,16 @@ def write_message(stream, message):
     stream.flush()
 
 
+def answer_server_request(process, message):
+    """Say nothing useful, but in the right shape -- workspace/configuration wants one
+    answer per item, and LanguageServer.jl dies on a bare null where a list belongs."""
+    if message.get("method") == "workspace/configuration":
+        result = [None] * len(message.get("params", {}).get("items", []))
+    else:
+        result = None
+    write_message(process.stdin, {"jsonrpc": "2.0", "id": message["id"], "result": result})
+
+
 def collect_registrations(process, seconds):
     """Method names the server registers dynamically in the first few seconds after startup."""
     methods = []
@@ -224,7 +275,90 @@ def collect_registrations(process, seconds):
             for registration in message.get("params", {}).get("registrations", []):
                 methods.append(registration.get("method"))
         if "method" in message and "id" in message:
-            write_message(process.stdin, {"jsonrpc": "2.0", "id": message["id"], "result": None})
+            answer_server_request(process, message)
+
+
+def request(process, request_id, method, params, timeout):
+    """Send a request and read until its answer comes back, answering the server meanwhile."""
+    write_message(process.stdin, {
+        "jsonrpc": "2.0", "id": request_id, "method": method, "params": params})
+    deadline = time.monotonic() + timeout
+    while True:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0 or not select.select([process.stdout], [], [], remaining)[0]:
+            raise LspError(f"no {method} response within {timeout}s")
+        message = read_message(process.stdout)
+        if message.get("id") == request_id and "result" in message:
+            return message["result"]
+        if message.get("id") == request_id and "error" in message:
+            raise LspError(f"{method} failed: {message['error']}")
+        if "method" in message and "id" in message:
+            answer_server_request(process, message)
+
+
+def symbol_names(result):
+    """`workspace/symbol` answers with SymbolInformation[], WorkspaceSymbol[] or null."""
+    if not isinstance(result, list):
+        return []
+    return [s.get("name", "") for s in result if isinstance(s, dict)]
+
+
+def probe_cell_symbol(process, config, workspace):
+    """Can this server's workspace query find a symbol declared in a notebook cell?
+
+    Set up the way codedown does it: a notebook on disk, and the projection opened at the
+    notebook's path plus notebook_suffix, which is a path with nothing at it. An empty
+    suffix means a notebook language server is in front and names its own shadow document,
+    so the uri we open is the notebook's own.
+
+    Returns True/False, or None if we couldn't tell -- a language with no snippet, or a
+    server that can't even find the symbol with `textDocument/documentSymbol`, which would
+    mean the cell never parsed rather than that the index missed it.
+    """
+    source = CELL_SOURCES.get(config.get("language_id"))
+    if source is None:
+        return None
+
+    # Stands in for the notebook. A real one wraps its cells in markdown, typst or latex;
+    # the cells on their own are what codedown and the test suite both send over LSP.
+    (workspace / "main.ipynb").write_text(source)
+
+    notebook = workspace / ("main.ipynb" + config.get("notebook_suffix", ""))
+    write_message(process.stdin, {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {"textDocument": {
+            "uri": notebook.as_uri(), "languageId": config["language_id"],
+            "version": 1, "text": source}},
+    })
+
+    request_id = 100
+    deadline = time.monotonic() + WORKSPACE_SYMBOL_TIMEOUT_SECONDS
+    found = False
+    while time.monotonic() < deadline and not found:
+        time.sleep(5)
+        request_id += 1
+        hits = symbol_names(request(process, request_id, "workspace/symbol",
+                                    {"query": "alpha"}, timeout=60))
+        found = any("alpha" in name.lower() for name in hits)
+
+    if found:
+        return True
+
+    # Nothing came back. Distinguish "the index didn't have it" from "the cell didn't parse".
+    request_id += 1
+    outline = request(process, request_id, "textDocument/documentSymbol",
+                      {"textDocument": {"uri": notebook.as_uri()}}, timeout=60)
+    return False if flatten_symbol_names(outline) else None
+
+
+def flatten_symbol_names(symbols):
+    """documentSymbol answers with a flat list or a tree; we only want the names."""
+    names = []
+    for symbol in symbols or []:
+        names.append(symbol.get("name", ""))
+        names.extend(flatten_symbol_names(symbol.get("children")))
+    return names
 
 
 def probe(config, workspace):
@@ -235,6 +369,9 @@ def probe(config, workspace):
     # still find basic tools.
     if (config.get("env") or {}).get("PATH"):
         env["PATH"] = config["env"]["PATH"] + ":" + os.environ.get("PATH", "")
+    # Servers that cache or scratch under $HOME (jdtls's -data, rnls's shadow crate) should
+    # do it inside the workspace, which goes away with the probe.
+    env["HOME"] = str(workspace)
 
     process = subprocess.Popen(
         config["args"],
@@ -255,7 +392,9 @@ def probe(config, workspace):
                 "clientInfo": {"name": "codedown-lsp-capability-probe", "version": "1"},
                 "rootUri": workspace.as_uri(),
                 "rootPath": str(workspace),
-                "workspaceFolders": [{"uri": workspace.as_uri(), "name": "probe"}],
+                # No workspaceFolders, matching codedown's own client, which leaves the
+                # field unset. rust-analyzer prefers folders over rootUri when it gets
+                # them, which would defeat rnls pointing it at the shadow crate.
                 "capabilities": CLIENT_CAPABILITIES,
                 "initializationOptions": config.get("initialization_options"),
                 "trace": "off",
@@ -276,7 +415,7 @@ def probe(config, workspace):
                 raise LspError(f"initialize failed: {message['error']}")
             # Some servers block until we answer their requests (e.g. workspace/configuration).
             elif "method" in message and "id" in message:
-                write_message(process.stdin, {"jsonrpc": "2.0", "id": message["id"], "result": None})
+                answer_server_request(process, message)
 
         # We ask for dynamicRegistration: false above so servers declare everything up
         # front, but a few register regardless. Give them a moment after `initialized` and
@@ -287,7 +426,15 @@ def probe(config, workspace):
             if field and not capabilities.get(field):
                 capabilities[field] = True
 
-        return capabilities
+        finds_cell_symbol = None
+        if capabilities.get("workspaceSymbolProvider"):
+            try:
+                finds_cell_symbol = probe_cell_symbol(process, config, workspace)
+            except LspError:
+                # Worth recording the capabilities even if the follow-up question failed.
+                finds_cell_symbol = None
+
+        return capabilities, finds_cell_symbol
     finally:
         process.stdin.close()
         try:
@@ -301,6 +448,7 @@ def main():
     requested = sys.argv[1:]
     kernels = requested or kernel_names()
 
+    previous = json.loads(OUTPUT.read_text()).get("kernels", {}) if OUTPUT.exists() else {}
     result = {}
     failures = []
 
@@ -325,7 +473,7 @@ def main():
             print(f"  probing {name}...", end=" ", flush=True)
             workspace = Path(tempfile.mkdtemp(prefix=f"lsp-probe-{kernel}-{name}-"))
             try:
-                capabilities = probe(config, workspace)
+                capabilities, finds_cell_symbol = probe(config, workspace)
             except Exception as e:  # noqa: BLE001 - a broken server shouldn't stop the run
                 print(f"FAILED ({e})", flush=True)
                 failures.append((kernel, name, str(e)))
@@ -333,14 +481,19 @@ def main():
             finally:
                 shutil.rmtree(workspace, ignore_errors=True)
 
-            print(f"ok ({len(capabilities)} capabilities)", flush=True)
+            cells = {True: ", finds cell symbols", False: ", BLIND to cell symbols",
+                     None: ""}[finds_cell_symbol]
+            print(f"ok ({len(capabilities)} capabilities{cells})", flush=True)
             servers[name] = {
                 "displayName": config.get("display_name", name),
                 "version": config.get("version"),
                 "capabilities": capabilities,
+                "workspaceSymbolFindsCellSymbol": finds_cell_symbol,
             }
 
-        result[kernel] = servers
+        # If every server in a kernel failed, keep what the last good run recorded rather
+        # than publishing an empty kernel.
+        result[kernel] = servers or previous.get(kernel, {})
 
     # A partial run (specific kernels requested) updates in place rather than clobbering.
     existing = {}
