@@ -47,7 +47,7 @@ Which languages support which notebook and editor features. The graphic version 
 | PostgreSQL | – | – | – | – | – | – | – |
 | PyPy | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
 | Python | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
-| R | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
+| R | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | R (Ark) | – | – | – | – | – | – | – |
 | Ruby | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
 | Rust | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -137,6 +137,16 @@ The matrix is derived from the repo, not maintained by hand:
   builds a single-kernel environment per language, starts each language server, performs the
   LSP `initialize` handshake, and records the advertised capabilities into
   `nix/lsp-capabilities.json`.
+- That same run records `workspaceSymbolFindsCellSymbol` per server: whether a workspace
+  symbol query can find a symbol declared in a cell of an **open** notebook. The notebook
+  is on disk, but it's a markdown/typst/latex container that no language server reads as
+  source — what a server gets is a projection of this language's cells, opened at the
+  notebook's path plus `notebook_suffix`, where nothing is written. So a server that
+  indexes by walking the project (jedi, pyright) answers for real source files and leaves
+  every cell out. `null` means the probe couldn't tell, because the cell didn't come back
+  from `textDocument/documentSymbol` either. Note that codedown only builds a projection
+  when a document is opened, so cells of *unopened* notebooks are missing from every
+  server's index regardless of this field.
 - The Formatting column needs both halves — see [Formatting](#formatting) below.
 - `scripts/render-feature-matrix.py` turns the resulting JSON into the SVG in the README and
   the Markdown tables above.

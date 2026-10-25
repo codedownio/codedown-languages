@@ -1167,11 +1167,13 @@
       <rect x="459.0" y="577.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 464.9 587.6 L 468.1 590.9 L 474.3 583.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>R - Semantic highlighting: no</title>
-      <circle cx="498.5" cy="587.5" r="2.2" fill="#c3c2b7"/>
+    <g><title>R - Semantic highlighting: yes (languageserver)</title>
+      <rect x="488.0" y="577.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
+      <path d="M 493.9 587.6 L 497.1 590.9 L 503.3 583.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>R - Inlay hints: no</title>
-      <circle cx="527.5" cy="587.5" r="2.2" fill="#c3c2b7"/>
+    <g><title>R - Inlay hints: yes (languageserver)</title>
+      <rect x="517.0" y="577.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
+      <path d="M 522.9 587.6 L 526.1 590.9 L 532.3 583.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>R - Jump to definition: yes (languageserver)</title>
       <rect x="546.0" y="577.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
