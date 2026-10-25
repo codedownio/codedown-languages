@@ -95,6 +95,16 @@ let
         "warningsAsHint" = [];
         "warningsAsInfo" = [];
       };
+      # workspace_symbol_search_kind defaults to OnlyTypes, so a fuzzy query answers with
+      # structs, enums and traits and silently drops functions and values. The picker reads
+      # as a search over everything, so a query matching only a fn came back empty.
+      "workspace" = {
+        "symbol" = {
+          "search" = {
+            "kind" = "all_symbols";
+          };
+        };
+      };
       "imports" = {
         "granularity" = {
           "enforce" = false;
