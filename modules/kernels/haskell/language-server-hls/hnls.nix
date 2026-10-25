@@ -24,83 +24,83 @@ let
       # HASHES_START
       "ghc94-x86_64-linux" = prebuilt "ghc94-x86_64-linux" (fetchzip {
         url = mkUrl "ghc94" "x86_64-linux";
-        sha256 = "sha256-BZ9u/MJnyPt0jmb3C5uvc5YQefFo832WfGXxCehUJrs=";
+        sha256 = "sha256-L6TehMK581Wb2b5aZN18HPdhQliTUwkDusQ8CyJ8DS8=";
       });
       "ghc96-x86_64-linux" = prebuilt "ghc96-x86_64-linux" (fetchzip {
         url = mkUrl "ghc96" "x86_64-linux";
-        sha256 = "sha256-R/2HWyamUTQ+cJPgMQCLeLhv0P/vYfXwqHjUOSkYbXk=";
+        sha256 = "sha256-oJk0PpumY4KnJ+ydUtFaxZhLJyRsJxJTh3cAvJWjZZg=";
       });
       "ghc98-x86_64-linux" = prebuilt "ghc98-x86_64-linux" (fetchzip {
         url = mkUrl "ghc98" "x86_64-linux";
-        sha256 = "sha256-/zpOFaheQU2A2maoJBIsUvD98cITUK/iL8wDGUUQhOI=";
+        sha256 = "sha256-V6QE2o0eQb4ExfJlTtD+Rc5Irc6YOnKBDS8aCO9XWGI=";
       });
       "ghc910-x86_64-linux" = prebuilt "ghc910-x86_64-linux" (fetchzip {
         url = mkUrl "ghc910" "x86_64-linux";
-        sha256 = "sha256-1p7A5iM/b3VSJtRSWWX/ZRJ/Bcugmfg7CitPyH7VXqI=";
+        sha256 = "sha256-7VfIrENEZfZ9sdYFP1+6ybaWEU1bEAnc6TAmGB6OI5E=";
       });
       "ghc912-x86_64-linux" = prebuilt "ghc912-x86_64-linux" (fetchzip {
         url = mkUrl "ghc912" "x86_64-linux";
-        sha256 = "sha256-z3eEnVtaMs9sZZhi0SxV9OwVPOrGL4DZFCtXobjl/Ho=";
+        sha256 = "sha256-rq2AKhC6Sq7vGh9MlML71q/3HbcJplCJMFM4YhhCOHY=";
       });
       "ghc94-aarch64-linux" = prebuilt "ghc94-aarch64-linux" (fetchzip {
         url = mkUrl "ghc94" "aarch64-linux";
-        sha256 = "sha256-g7+reQF6K/WpnV/jcRrXEv08RFvz+h0u0XCz/Bo5xhw=";
+        sha256 = "sha256-6CdsKOUk8yQr23NKUla2Zmnn9plo7koP0W9MBGcAhVI=";
       });
       "ghc96-aarch64-linux" = prebuilt "ghc96-aarch64-linux" (fetchzip {
         url = mkUrl "ghc96" "aarch64-linux";
-        sha256 = "sha256-Rv6HnZ/OPlK01XZJNns2S8WDj9tQONpAgkW0cbGBhiA=";
+        sha256 = "sha256-UYhF5Itcc5oCJTHwNFohphq4tq5bs3s/ciC5sOm+V3A=";
       });
       "ghc98-aarch64-linux" = prebuilt "ghc98-aarch64-linux" (fetchzip {
         url = mkUrl "ghc98" "aarch64-linux";
-        sha256 = "sha256-dGqFnDfYbBQH/PUcsXjm/1//mTkwkxnMOcVVATHtkKY=";
+        sha256 = "sha256-tdPisMCOeYqiUE39gTlkNW0KeZnalH/r+9jWQgHEYy0=";
       });
       "ghc910-aarch64-linux" = prebuilt "ghc910-aarch64-linux" (fetchzip {
         url = mkUrl "ghc910" "aarch64-linux";
-        sha256 = "sha256-HMPqgnigWz1XM6Y3eY3vOHsrtmCtb2dRGtClJU5Gx84=";
+        sha256 = "sha256-hzeRiVY2Uh2NNfKvC5da06Da7T4mYzvU5WSYJTNOyI8=";
       });
       "ghc912-aarch64-linux" = prebuilt "ghc912-aarch64-linux" (fetchzip {
         url = mkUrl "ghc912" "aarch64-linux";
-        sha256 = "sha256-ZBEZByN3/XWGSVkULlRL2+/EfmTy8VvqgZaTwdSj+Ik=";
+        sha256 = "sha256-ZdMPpHKs8I+Dtm+RsALD2IZXl/RboVn135QhSFFoj0E=";
       });
       "ghc94-x86_64-darwin" = prebuilt "ghc94-x86_64-darwin" (fetchzip {
         url = mkUrl "ghc94" "x86_64-darwin";
-        sha256 = "sha256-7VTiBwYoxrv5U4IlESv/yMZOTjyHStFp5bGAaYpiJhw=";
+        sha256 = "sha256-WBcL9gwAGEBJz3O83yyIYm7kZQKVJCgsStkPZNa0cDs=";
       });
       "ghc96-x86_64-darwin" = prebuilt "ghc96-x86_64-darwin" (fetchzip {
         url = mkUrl "ghc96" "x86_64-darwin";
-        sha256 = "sha256-1H5NUChh0XsnPNO9n8yZUgHknOkWII/P9UGL/8O3xUg=";
+        sha256 = "sha256-rQW/dbzPIRFCQ/QVmUUW74ouJQKbTaLDErXxw8z9+mg=";
       });
       "ghc98-x86_64-darwin" = prebuilt "ghc98-x86_64-darwin" (fetchzip {
         url = mkUrl "ghc98" "x86_64-darwin";
-        sha256 = "sha256-XEIK7+WhV7WokEzG+5K9KQ2m79KQ7p8TBAEL0xRCtTU=";
+        sha256 = "sha256-k5x+9Q2GBtjomcWq1tNyMXitIFo0NTx9RLq3M14AjTw=";
       });
       "ghc910-x86_64-darwin" = prebuilt "ghc910-x86_64-darwin" (fetchzip {
         url = mkUrl "ghc910" "x86_64-darwin";
-        sha256 = "sha256-YoWrwyD4ONdAYL882eL/VTcMdKaAZgtfBf2HZKVSfgE=";
+        sha256 = "sha256-IptKtRkgjcKPzycyfNmvmKuMhbgz+lHT2z4GwbvR52o=";
       });
       "ghc912-x86_64-darwin" = prebuilt "ghc912-x86_64-darwin" (fetchzip {
         url = mkUrl "ghc912" "x86_64-darwin";
-        sha256 = "sha256-b3tvdiS+nfUSr1RDXBVS+CKpvuZgSP/QtTA3X+zyxT0=";
+        sha256 = "sha256-PomPet/aukKaIzAtpngTWxiZykhg9vjnRENg588nEKM=";
       });
       "ghc94-aarch64-darwin" = prebuilt "ghc94-aarch64-darwin" (fetchzip {
         url = mkUrl "ghc94" "aarch64-darwin";
-        sha256 = "sha256-EiM+5GRvDwKquAHNlA8h3nenU/exWiH0VHUUBa7fnOA=";
+        sha256 = "sha256-0WoF4mUwNOrNYFdApNSX0hNsfHOLyqOP02/1Z/bgUfQ=";
       });
       "ghc96-aarch64-darwin" = prebuilt "ghc96-aarch64-darwin" (fetchzip {
         url = mkUrl "ghc96" "aarch64-darwin";
-        sha256 = "sha256-YytAS/JxVDz+hdtxkU3AhJ3y2ffao3u2x/gxJkI4z6c=";
+        sha256 = "sha256-HCILHI18ZTpnec4kxoKKyctn5d8aGr3lh3mbaVRYHG4=";
       });
       "ghc98-aarch64-darwin" = prebuilt "ghc98-aarch64-darwin" (fetchzip {
         url = mkUrl "ghc98" "aarch64-darwin";
-        sha256 = "sha256-OWfSLXWxYftjNoarRfe3OOTaowb1Zci7bGtUoK2htKs=";
+        sha256 = "sha256-aBnsn8yg3V3dy15QvxPM5e4rDzr8MzzFZCmld/1lwpA=";
       });
       "ghc910-aarch64-darwin" = prebuilt "ghc910-aarch64-darwin" (fetchzip {
         url = mkUrl "ghc910" "aarch64-darwin";
-        sha256 = "sha256-weKLxvHRmQr5As8BCwiD/hh6EtQY0Rb0TqF+i8xLqZk=";
+        sha256 = "sha256-iU+cBra/tf5WN/HAabIBHVCPvT/gWUY57KXNtIReQ8A=";
       });
       "ghc912-aarch64-darwin" = prebuilt "ghc912-aarch64-darwin" (fetchzip {
         url = mkUrl "ghc912" "aarch64-darwin";
-        sha256 = "sha256-NnRUiOGLEEp0YtmDjmc6RGwg2nt80kveQOlFik98/7Q=";
+        sha256 = "sha256-TxXbAcTkLkNIusGAlWXGDucS++uSsLv4rTsrJ/vTVtw=";
       });
       # HASHES_END
     };
