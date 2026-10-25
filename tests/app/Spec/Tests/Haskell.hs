@@ -32,6 +32,7 @@ tests = do
   haskellCommonTests "ghc98"
   haskellCommonTests "ghc910"
   haskellCommonTests "ghc912"
+  haskellCommonTests "ghc914"
 
 kernelName :: Text -> Text
 kernelName _ghcPackage = "haskell"

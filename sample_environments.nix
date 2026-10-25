@@ -16,6 +16,7 @@
   exporters-typst = import ./sample_environments/exporters-typst.nix args;
   ghc910 = import ./sample_environments/ghc910.nix args;
   ghc912 = import ./sample_environments/ghc912.nix args;
+  ghc914 = import ./sample_environments/ghc914.nix args;
   ghc96 = import ./sample_environments/ghc96.nix args;
   ghc98 = import ./sample_environments/ghc98.nix args;
   go = import ./sample_environments/go.nix args;

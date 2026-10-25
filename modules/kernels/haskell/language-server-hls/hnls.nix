@@ -42,6 +42,10 @@ let
         url = mkUrl "ghc912" "x86_64-linux";
         sha256 = "sha256-rq2AKhC6Sq7vGh9MlML71q/3HbcJplCJMFM4YhhCOHY=";
       });
+      "ghc914-x86_64-linux" = prebuilt "ghc914-x86_64-linux" (fetchzip {
+        url = mkUrl "ghc914" "x86_64-linux";
+        sha256 = "sha256-oD+XKKHcJ6eeV4NnM0KW9Rf6r/f8O94/h3uTAWDpFv0=";
+      });
       "ghc94-aarch64-linux" = prebuilt "ghc94-aarch64-linux" (fetchzip {
         url = mkUrl "ghc94" "aarch64-linux";
         sha256 = "sha256-6CdsKOUk8yQr23NKUla2Zmnn9plo7koP0W9MBGcAhVI=";
@@ -61,6 +65,10 @@ let
       "ghc912-aarch64-linux" = prebuilt "ghc912-aarch64-linux" (fetchzip {
         url = mkUrl "ghc912" "aarch64-linux";
         sha256 = "sha256-ZdMPpHKs8I+Dtm+RsALD2IZXl/RboVn135QhSFFoj0E=";
+      });
+      "ghc914-aarch64-linux" = prebuilt "ghc914-aarch64-linux" (fetchzip {
+        url = mkUrl "ghc914" "aarch64-linux";
+        sha256 = "sha256-lINnwFT9EHdtyDNX5CONxOr3t9nXGRDKqQ7owZvhCHU=";
       });
       "ghc94-x86_64-darwin" = prebuilt "ghc94-x86_64-darwin" (fetchzip {
         url = mkUrl "ghc94" "x86_64-darwin";
@@ -82,6 +90,10 @@ let
         url = mkUrl "ghc912" "x86_64-darwin";
         sha256 = "sha256-PomPet/aukKaIzAtpngTWxiZykhg9vjnRENg588nEKM=";
       });
+      "ghc914-x86_64-darwin" = prebuilt "ghc914-x86_64-darwin" (fetchzip {
+        url = mkUrl "ghc914" "x86_64-darwin";
+        sha256 = "sha256-6NUmUPTFhRShHumhog0aaS93W8q9XWZLwu6ZRrE4cuo=";
+      });
       "ghc94-aarch64-darwin" = prebuilt "ghc94-aarch64-darwin" (fetchzip {
         url = mkUrl "ghc94" "aarch64-darwin";
         sha256 = "sha256-0WoF4mUwNOrNYFdApNSX0hNsfHOLyqOP02/1Z/bgUfQ=";
@@ -101,6 +113,10 @@ let
       "ghc912-aarch64-darwin" = prebuilt "ghc912-aarch64-darwin" (fetchzip {
         url = mkUrl "ghc912" "aarch64-darwin";
         sha256 = "sha256-TxXbAcTkLkNIusGAlWXGDucS++uSsLv4rTsrJ/vTVtw=";
+      });
+      "ghc914-aarch64-darwin" = prebuilt "ghc914-aarch64-darwin" (fetchzip {
+        url = mkUrl "ghc914" "aarch64-darwin";
+        sha256 = "sha256-L5P9sWGyhPZ9n+Iqn3bL2SxmFHCiskkpkZBQC+yREFI=";
       });
       # HASHES_END
     };

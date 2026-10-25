@@ -35,4 +35,5 @@ stringInfo ghcPackage = M.fromList [
       "ghc98" -> "GHC.Base"
       "ghc910" -> "GHC.Internal.Base"
       "ghc912" -> "GHC.Internal.Base"
+      "ghc914" -> "GHC.Internal.Base"
       _ -> error [i|stringInfo: unexpected ghcPackage: #{ghcPackage}|]
