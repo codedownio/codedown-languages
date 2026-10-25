@@ -168,6 +168,7 @@ executable tests
       Spec.Tests.Rust.LSP.Formatting
       Spec.Tests.Rust.LSP.Hovers
       Spec.Tests.Rust.LSP.PreIndex
+      Spec.Tests.Rust.LSP.WorkspaceSymbols
       Spec.Tests.Rust.VariableInspector
       Spec.Tests.SampleEnvironments
       Spec.Tests.Searchers
