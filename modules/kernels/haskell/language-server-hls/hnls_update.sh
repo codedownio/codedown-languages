@@ -1,6 +1,9 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i bash -p nix-prefetch python3
 
+# Otherwise a failed prefetch reports success and leaves a placeholder hash behind.
+set -euo pipefail
+
 VERSION=$(nix eval --raw --expr 'import ./hnls-version.nix' --impure)
 
 echo "Got version: $VERSION"
