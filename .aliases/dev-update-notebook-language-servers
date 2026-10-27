@@ -1,0 +1,21 @@
+#! /usr/bin/env bash
+
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPTDIR/.."
+
+set -eo pipefail
+
+# Found rather than listed, so a new proxy's script is picked up by being named like the rest.
+mapfile -t SCRIPTS < <(find modules -name "*nls-update.sh" -o -name "*nls_update.sh" | sort)
+
+if [[ ${#SCRIPTS[@]} -eq 0 ]]; then
+  echo >&2 "No *nls-update.sh scripts found under modules/"
+  exit 1
+fi
+
+for script in "${SCRIPTS[@]}"; do
+  echo ""
+  echo "===== $script"
+  # Each one rewrites the hashes beside its own <x>nls-version.nix, by relative path.
+  (cd "$(dirname "$script")" && "./$(basename "$script")")
+done
