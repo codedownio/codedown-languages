@@ -1,11 +1,7 @@
 
 module Spec.Tests.Rust.LSP.WorkspaceSymbols (tests) where
 
-import Control.Lens ((^.))
 import Data.String.Interpolate
-import qualified Data.Text as T
-import Language.LSP.Protocol.Lens (name)
-import Language.LSP.Protocol.Types
 import Language.LSP.Test
 import qualified Language.LSP.Test.Helpers as Helpers
 import Test.Sandwich as Sandwich
@@ -32,8 +28,3 @@ tests = describe "Workspace symbols" $ do
 
                 fn alpha_helper() -> i32 { 42 }
                |]
-
-symbolNames :: ([SymbolInformation] |? ([WorkspaceSymbol] |? Null)) -> [T.Text]
-symbolNames (InL symbolInformations) = fmap (^. name) symbolInformations
-symbolNames (InR (InL workspaceSymbols)) = fmap (^. name) workspaceSymbols
-symbolNames (InR (InR Null)) = []

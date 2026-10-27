@@ -95,6 +95,9 @@ common.writeTextDirWithMetaAndPassthru jdt-language-server.meta passthru
         import.maven.enabled = false;
         import.gradle.enabled = false;
         configuration.updateBuildConfiguration = "disabled";
+        # workspace/symbol answers with types alone by default, and everything a cell
+        # declares is a method on the projection's synthetic class.
+        symbols.includeSourceMethodDeclarations = true;
       };
     };
     language_id = "java";
