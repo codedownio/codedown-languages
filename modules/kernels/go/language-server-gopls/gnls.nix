@@ -6,28 +6,28 @@
 {
   # HASHES_START
   "aarch64-linux" = fetchzip {
-    name = "go-notebook-language-server-0.1.3.0";
+    name = "go-notebook-language-server-0.1.4.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/go-notebook-language-server/releases/download/v0.1.3.0/go-notebook-language-server-0.1.3.0-aarch64-linux.tar.gz";
-    hash = "sha256-Of76J9KnwTcjxoXusbIxN9auylxbB9s5ugA9CtORVUk=";
+    url = "https://github.com/codedownio/go-notebook-language-server/releases/download/v0.1.4.0/go-notebook-language-server-0.1.4.0-aarch64-linux.tar.gz";
+    hash = "sha256-TDKpkWhVmtGH/vaCDIlLXvKxfI8P8I4QSMdjteclN6k=";
   };
   "x86_64-linux" = fetchzip {
-    name = "go-notebook-language-server-0.1.3.0";
+    name = "go-notebook-language-server-0.1.4.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/go-notebook-language-server/releases/download/v0.1.3.0/go-notebook-language-server-0.1.3.0-x86_64-linux.tar.gz";
-    hash = "sha256-+lew5MY7EavxeHVWQa/Mjn055HBUWGlI9n8RSv/drr0=";
+    url = "https://github.com/codedownio/go-notebook-language-server/releases/download/v0.1.4.0/go-notebook-language-server-0.1.4.0-x86_64-linux.tar.gz";
+    hash = "sha256-5jdY4sTWio84swuZ3N5InDToPFzQKjdu1ks8qZwSepw=";
   };
   "x86_64-darwin" = fetchzip {
-    name = "go-notebook-language-server-0.1.3.0";
+    name = "go-notebook-language-server-0.1.4.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/go-notebook-language-server/releases/download/v0.1.3.0/go-notebook-language-server-0.1.3.0-x86_64-darwin.tar.gz";
-    hash = "sha256-PlkgF4k2XFH0HwQAX8W+P2beb//Ag+bmzxw/lQLY7hs=";
+    url = "https://github.com/codedownio/go-notebook-language-server/releases/download/v0.1.4.0/go-notebook-language-server-0.1.4.0-x86_64-darwin.tar.gz";
+    hash = "sha256-+ErpKkumw37rXvVjs8wY72hTH50dN+kSipkpwC3IIL0=";
   };
   "aarch64-darwin" = fetchzip {
-    name = "go-notebook-language-server-0.1.3.0";
+    name = "go-notebook-language-server-0.1.4.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/go-notebook-language-server/releases/download/v0.1.3.0/go-notebook-language-server-0.1.3.0-aarch64-darwin.tar.gz";
-    hash = "sha256-r8/5EY8s6DKjxWpaBr3LBK1EWBcTVXVqgzKzpv5Bl4c=";
+    url = "https://github.com/codedownio/go-notebook-language-server/releases/download/v0.1.4.0/go-notebook-language-server-0.1.4.0-aarch64-darwin.tar.gz";
+    hash = "sha256-6qk5IlxWh6UkWDAQnSn7Ify2MMuQTvJLgjHRCqx/sDA=";
   };
   # HASHES_END
 }.${stdenv.hostPlatform.system}
