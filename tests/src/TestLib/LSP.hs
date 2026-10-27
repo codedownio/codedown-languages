@@ -23,6 +23,7 @@ module TestLib.LSP (
   , itHasHoverSatisfying
 
   , listShouldContain
+  , symbolNames
 
   , module TestLib.LSP.Formatting
 
@@ -33,6 +34,7 @@ module TestLib.LSP (
   , LspContext
   ) where
 
+import Control.Lens ((^.))
 import Control.Monad.IO.Unlift
 import Control.Monad.Reader
 import Data.Aeson as A
@@ -43,7 +45,9 @@ import qualified Data.Text as T hiding (filter)
 import Data.Text hiding (filter, show)
 import GHC.Int
 import GHC.Stack
+import Language.LSP.Protocol.Lens (name)
 import Language.LSP.Protocol.Types
+import qualified Language.LSP.Protocol.Types as LSP
 import Language.LSP.Test
 import Language.LSP.Test.Helpers (LspContext, LspSessionOptions(..), withLspSession)
 import qualified Language.LSP.Test.Helpers as Helpers
@@ -127,6 +131,12 @@ itHasHoverSatisfying name filename languageKind code pos cb = it [i|#{name}: #{s
     getHover ident pos >>= \case
       Nothing -> expectationFailure [i|Expected a hover.|]
       Just x -> lift $ cb x
+
+-- | A workspace query answers with either shape, and servers differ on which.
+symbolNames :: ([SymbolInformation] |? ([WorkspaceSymbol] |? Null)) -> [Text]
+symbolNames (InL symbolInformations) = fmap (^. name) symbolInformations
+symbolNames (InR (InL workspaceSymbols)) = fmap (^. name) workspaceSymbols
+symbolNames (InR (InR LSP.Null)) = []
 
 -- | Completion lists are long and unordered, so assert the interesting label is present.
 listShouldContain :: (HasCallStack, MonadIO m, Eq a, Show a) => [a] -> a -> m ()

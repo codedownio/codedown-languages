@@ -131,6 +131,7 @@ executable tests
       Spec.Tests.Java.LSP.Diagnostics
       Spec.Tests.Java.LSP.Formatting
       Spec.Tests.Java.LSP.Hovers
+      Spec.Tests.Java.LSP.WorkspaceSymbols
       Spec.Tests.Java.Packages
       Spec.Tests.Javascript
       Spec.Tests.Javascript.Common
