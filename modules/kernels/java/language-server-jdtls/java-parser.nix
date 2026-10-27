@@ -16,7 +16,7 @@ stdenvNoCC.mkDerivation rec {
     repo = "java-notebook-language-server";
     rev = "v${version}";
     # SOURCE_HASH: rewritten by ./jnls-update.sh, which looks for this comment.
-    hash = "sha256-plcGnsf7WGEDYKPtRl07QdJRLker5wB/NwCaLU+/UmY=";
+    hash = "sha256-3NDvgYz8e8MtAssyclIRLT3JzqlD3Qsf2AJJnuhkL7s=";
   };
 
   sourceRoot = "${src.name}/java-parser/src";
