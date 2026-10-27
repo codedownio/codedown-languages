@@ -5,6 +5,7 @@
 
 , rust
 , rust-analyzer
+, rust-analyzer-unwrapped
 , gcc
 
 , cargoHome
@@ -24,6 +25,12 @@ let
   rustAnalyzerToUse = rust-analyzer.override {
     rustPlatform = rust.packages.stable.rustPlatform;
   };
+
+  # The wrapper only exposes bin/rust-analyzer, and cargo.sysroot below is a rustc wrapper with
+  # no libexec, so rust-analyzer's default lookup for the proc-macro server finds nothing.
+  procMacroServer = "${rust-analyzer-unwrapped.override {
+    rustPlatform = rust.packages.stable.rustPlatform;
+  }}/bin/rust-analyzer-proc-macro-srv";
 
   sysrootCargoHome = writeTextDir "config.toml" ''
     [source.crates-io]
@@ -172,6 +179,7 @@ let
       };
       "procMacro" = {
         "enable" = true;
+        "server" = procMacroServer;
       };
       "rustcSource" = null;
       "highlighting" = {
