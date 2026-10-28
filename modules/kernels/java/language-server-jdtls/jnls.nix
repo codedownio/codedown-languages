@@ -7,28 +7,28 @@
 {
   # HASHES_START
   "aarch64-linux" = fetchzip {
-    name = "java-notebook-language-server-0.1.4.0";
+    name = "java-notebook-language-server-0.1.5.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/java-notebook-language-server/releases/download/v0.1.4.0/java-notebook-language-server-0.1.4.0-aarch64-linux.tar.gz";
-    hash = "sha256-/SiKqJ5YN08I+hGyeuQ1RY8pVpOVGTjknPVKwvJ3AlI=";
+    url = "https://github.com/codedownio/java-notebook-language-server/releases/download/v0.1.5.0/java-notebook-language-server-0.1.5.0-aarch64-linux.tar.gz";
+    hash = "sha256-g6kNF9La6kBkB48aMT3n2jdqujB1Qk9x5wE1JCXwjyM=";
   };
   "x86_64-linux" = fetchzip {
-    name = "java-notebook-language-server-0.1.4.0";
+    name = "java-notebook-language-server-0.1.5.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/java-notebook-language-server/releases/download/v0.1.4.0/java-notebook-language-server-0.1.4.0-x86_64-linux.tar.gz";
-    hash = "sha256-orQEvrRUm5R7gktitDRlUZ7Xf8+HfeWuIMQ5CQm5gYU=";
+    url = "https://github.com/codedownio/java-notebook-language-server/releases/download/v0.1.5.0/java-notebook-language-server-0.1.5.0-x86_64-linux.tar.gz";
+    hash = "sha256-tKtH3Qj1B8iyrn4vWBFvJxpa73jjYpynmxhM6mRnjKY=";
   };
   "x86_64-darwin" = fetchzip {
-    name = "java-notebook-language-server-0.1.4.0";
+    name = "java-notebook-language-server-0.1.5.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/java-notebook-language-server/releases/download/v0.1.4.0/java-notebook-language-server-0.1.4.0-x86_64-darwin.tar.gz";
-    hash = "sha256-RyNxQBxR7vaQuTzKx5Us+MM/bYCZ4PmNxs6T3PNnKq0=";
+    url = "https://github.com/codedownio/java-notebook-language-server/releases/download/v0.1.5.0/java-notebook-language-server-0.1.5.0-x86_64-darwin.tar.gz";
+    hash = "sha256-sbGpsZdk7bOvYGQPwTWR17IZH6Sw4dlitJ/CUMrXvhI=";
   };
   "aarch64-darwin" = fetchzip {
-    name = "java-notebook-language-server-0.1.4.0";
+    name = "java-notebook-language-server-0.1.5.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/java-notebook-language-server/releases/download/v0.1.4.0/java-notebook-language-server-0.1.4.0-aarch64-darwin.tar.gz";
-    hash = "sha256-6Wi0Pzqp6dsWiPnazxuFFP1D4giYqIHPkxP3wByjYrA=";
+    url = "https://github.com/codedownio/java-notebook-language-server/releases/download/v0.1.5.0/java-notebook-language-server-0.1.5.0-aarch64-darwin.tar.gz";
+    hash = "sha256-E7pjkLJ43p/HQC0Z/dNRGH09skLV97FxY8jUXSDlCRU=";
   };
   # HASHES_END
 }.${stdenv.hostPlatform.system}
