@@ -70,15 +70,15 @@ packages:
     git: https://github.com/codedownio/lsp.git
     subdir: lsp-types
 - completed:
-    commit: 961dddec8eaf2ca4cba9d60426111d5230955bf7
+    commit: dd6678ea2e50f0b116ae17db06e8fcaa8793a57f
     git: https://github.com/codedownio/lsp-test-helpers.git
     name: lsp-test-helpers
     pantry-tree:
-      sha256: cc4c78a54a0e259107af495fdd8e61d2362a26e1bb22f67bb5c4b4257fd2434e
+      sha256: 815c04241bf1224d015c8a364d3fd4e5df6e6807a750369607ac9bd2afcafbbb
       size: 1025
     version: 0.1.0.0
   original:
-    commit: 961dddec8eaf2ca4cba9d60426111d5230955bf7
+    commit: dd6678ea2e50f0b116ae17db06e8fcaa8793a57f
     git: https://github.com/codedownio/lsp-test-helpers.git
 - completed:
     hackage: ex-pool-0.2.1@sha256:c8249338ced27bc4d6395ad9c3069eec394fb111813d6ec736814d095f7e6a24,1293
