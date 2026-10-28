@@ -22,7 +22,7 @@ tests = describe "Hover" $ do
     ident <- openDoc lspSessionInfoFileName "haskell"
     hover <- getHoverOrException ident (Position 0 1)
     allHoverText hover `textShouldContain` [i|foo|]
-    allHoverText hover `textShouldContain` [i|main.ipynb.hs:1:1|]
+    allHoverText hover `textShouldContain` [i|main.ipynb:1:1|]
 
   -- Unlike foo, putStrLn comes from base, so there's no hover until HLS has indexed
   -- the dependencies.
