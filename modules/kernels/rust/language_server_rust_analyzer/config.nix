@@ -5,7 +5,6 @@
 
 , rust
 , rust-analyzer
-, rust-analyzer-unwrapped
 , gcc
 
 , cargoHome
@@ -26,11 +25,10 @@ let
     rustPlatform = rust.packages.stable.rustPlatform;
   };
 
-  # The wrapper only exposes bin/rust-analyzer, and cargo.sysroot below is a rustc wrapper with
-  # no libexec, so rust-analyzer's default lookup for the proc-macro server finds nothing.
-  procMacroServer = "${rust-analyzer-unwrapped.override {
-    rustPlatform = rust.packages.stable.rustPlatform;
-  }}/bin/rust-analyzer-proc-macro-srv";
+  # cargo.sysroot below is a rustc wrapper with no libexec, so rust-analyzer's default lookup for
+  # the proc-macro server finds nothing. Only the one rustc builds has the sysroot-abi feature;
+  # rust-analyzer-unwrapped's own copy is built without it and refuses to start.
+  procMacroServer = "${rust.packages.stable.rustc.unwrapped}/libexec/rust-analyzer-proc-macro-srv";
 
   sysrootCargoHome = writeTextDir "config.toml" ''
     [source.crates-io]
