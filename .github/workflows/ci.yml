@@ -4,21 +4,23 @@ on:
   push:
   workflow_dispatch:
 
+# Linux runs on the credential-free ARC pools (codedown's arc.nix); macOS stays
+# on mac1's self-hosted runners, since the cluster has no macOS nodes.
 jobs:
   verify-nixpkgs-revs:
-    name: "verify-nixpkgs-revs (${{matrix.runs-on}})"
-    runs-on:
-    - self-hosted
-    - ${{matrix.runs-on}}
+    name: "verify-nixpkgs-revs (${{matrix.os}})"
+    runs-on: ${{ matrix.os == 'Linux' && 'arc-public-small' || 'macOS' }}
     strategy:
       fail-fast: false
       matrix:
-        runs-on:
+        os:
         - macOS
         - Linux
 
     steps:
     - uses: actions/checkout@v6
+
+    - uses: ./.github/actions/arc_git_creds
 
     - name: verify-default-nix.sh
       if: "!contains(github.event.head_commit.message, 'noci')"
@@ -26,45 +28,44 @@ jobs:
 
   lint-nix:
     name: "lint-nix"
-    runs-on:
-    - self-hosted
-    - Linux
+    runs-on: arc-public-small
 
     steps:
     - uses: actions/checkout@v6
+
+    - uses: ./.github/actions/arc_git_creds
 
     - name: nix build .#checks.x86_64-linux.lint-nix
       if: "!contains(github.event.head_commit.message, 'noci')"
       run: nix build --no-link -L .#checks.x86_64-linux.lint-nix
 
   nix-flake-check:
-    name: "nix-flake-check (${{matrix.runs-on}})"
-    runs-on:
-    - self-hosted
-    - ${{matrix.runs-on}}
+    name: "nix-flake-check (${{matrix.os}})"
+    # medium, not small: the flake eval alone outgrew 4Gi.
+    runs-on: ${{ matrix.os == 'Linux' && 'arc-public-medium' || 'macOS' }}
     strategy:
       fail-fast: false
       matrix:
-        runs-on:
+        os:
         - macOS
         - Linux
 
     steps:
     - uses: actions/checkout@v6
+
+    - uses: ./.github/actions/arc_git_creds
 
     - name: nix flake check
       if: "!contains(github.event.head_commit.message, 'noci')"
       run: nix flake check
 
   build-ui-metadata:
-    name: "build-ui-metadata (${{matrix.runs-on.os}}, ${{matrix.runs-on.arch}})"
-    runs-on:
-    - self-hosted
-    - ${{matrix.runs-on.os}}
+    name: "build-ui-metadata (${{matrix.target.os}}, ${{matrix.target.arch}})"
+    runs-on: ${{ matrix.target.os == 'Linux' && 'arc-public-small' || 'macOS' }}
     strategy:
       fail-fast: false
       matrix:
-        runs-on:
+        target:
         - os: macOS
           arch: aarch64-darwin
         - os: Linux
@@ -74,21 +75,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+
+    - uses: ./.github/actions/arc_git_creds
 
     - name: Build .#ui_metadata_farm
       if: "!contains(github.event.head_commit.message, 'noci')"
       run: |
-        nix build .#packages.${{matrix.runs-on.arch}}.ui_metadata_farm
+        nix build .#packages.${{matrix.target.arch}}.ui_metadata_farm
 
   build-sample-environments:
-    name: "build-sample-environments (${{matrix.runs-on.os}}, ${{matrix.runs-on.arch}})"
-    runs-on:
-    - self-hosted
-    - ${{matrix.runs-on.os}}
+    name: "build-sample-environments (${{matrix.target.os}}, ${{matrix.target.arch}})"
+    runs-on: ${{ matrix.target.os == 'Linux' && 'arc-public-small' || 'macOS' }}
     strategy:
       fail-fast: false
       matrix:
-        runs-on:
+        target:
         - os: macOS
           arch: aarch64-darwin
         - os: Linux
@@ -99,63 +100,94 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
+    - uses: ./.github/actions/arc_git_creds
+
     - name: Build .#sample_environments_farm
       if: "!contains(github.event.head_commit.message, 'noci')"
       run: |
-        nix build .#packages.${{matrix.runs-on.arch}}.sample_environments_farm
+        nix build .#packages.${{matrix.target.arch}}.sample_environments_farm
 
   test:
-    name: ${{ matrix.suite.name }} (${{ matrix.runs-on }}${{ matrix.suite.flags && format(', {0}', matrix.suite.flags) || '' }})
-    runs-on:
-    - self-hosted
-    - ${{matrix.runs-on}}
+    name: ${{ matrix.suite.name }} (${{ matrix.os }}${{ matrix.suite.flags && format(', {0}', matrix.suite.flags) || '' }})
+    # Per-suite `pool`: the language servers are what use the pod's memory, since
+    # nix builds go to the host daemon outside the cgroup.
+    runs-on: ${{ matrix.os == 'Linux' && matrix.suite.pool || 'macOS' }}
     strategy:
       fail-fast: false
       matrix:
         suite:
         - name: bash
+          pool: arc-public-medium
         - name: clojure
+          pool: arc-public-medium
         - name: coq
+          pool: arc-public-medium
         - name: cpp
+          pool: arc-public-medium
         - name: go
+          pool: arc-public-medium
         - name: haskell
           flags: "-f ghc96"
+          pool: arc-public-large
         - name: haskell
           flags: "-f ghc98"
+          pool: arc-public-large
         - name: haskell
           flags: "-f ghc910"
+          pool: arc-public-large
         - name: haskell
           flags: "-f ghc912"
+          pool: arc-public-large
         - name: java
+          pool: arc-public-large
         - name: julia
           flags: "-f julia_19"
+          pool: arc-public-medium
         - name: julia
           flags: "-f julia_110"
+          pool: arc-public-medium
         - name: julia
           flags: "-f julia_111"
+          pool: arc-public-medium
         - name: julia
           flags: "-f julia_112"
+          pool: arc-public-medium
         - name: octave
+          pool: arc-public-medium
         - name: postgres
+          pool: arc-public-medium
         - name: python
+          pool: arc-public-medium
         - name: r
+          pool: arc-public-medium
         - name: ruby
+          pool: arc-public-medium
         - name: rust
+          pool: arc-public-large
         - name: zsh
+          pool: arc-public-medium
         - name: spellchecker
+          pool: arc-public-medium
         - name: typst
+          pool: arc-public-medium
 
         - name: exporters
+          pool: arc-public-medium
         - name: sample-environments
+          pool: arc-public-medium
         - name: searchers
+          pool: arc-public-medium
         - name: settings-schemas
-        runs-on:
+          pool: arc-public-medium
+        os:
         - macOS
         - Linux
     steps:
     - uses: actions/checkout@v6
       with:
         submodules: recursive
+
+    - uses: ./.github/actions/arc_git_creds
 
     - name: Build tests
       if: "!contains(github.event.head_commit.message, 'noci')"
@@ -171,7 +203,9 @@ jobs:
 
         TESTS=$(nix build --no-link .#tests --json | jq -r '.[0].outputs.out')/bin/tests
 
-        export TEST_ROOT=$(pwd)/test_root
+        # Not the workspace: on a pod that's the container's writable layer.
+        export TEST_ROOT="$RUNNER_TEMP/test_root"
+        mkdir -p "$TEST_ROOT"
         echo "Got TEST_ROOT: $TEST_ROOT"
         echo TEST_ROOT="$TEST_ROOT" >> $GITHUB_ENV
 
@@ -183,24 +217,38 @@ jobs:
           --markdown-summary "$GITHUB_STEP_SUMMARY" \
           --${{matrix.suite.name}} ${{matrix.suite.flags}}
 
-    - name: Upload test artifacts
+    # Upload-only key, held only in the org secret; ciartifacts' authorized_keys
+    # forces a receive-tarball command, so it grants nothing else.
+    - name: Upload test artifacts (Linux)
       if: always() && runner.os != 'macOS'
       continue-on-error: true
-      shell: bash
+      env:
+        KEY: ${{ secrets.CI_ARTIFACTS_KEY }}
       run: |
-        DEST="tester@desktop1:/home/tester/all_test_runs/languages_${{github.workflow}}_${{github.run_number}}/${{matrix.suite.name}}-${{matrix.suite.flags}}"
-        DEST="${DEST// /_}"
-        echo "DEST: $DEST"
-        if [[ -n "$TEST_ROOT" ]]; then
-          rsync \
-            -e "ssh -F /secrets/ci_ssh_config" \
-            -azW --mkpath \
-            --exclude=".cache/" \
-            --exclude=".eclipse/" \
-            --exclude="postgres-nix-*/db/" \
-            "$TEST_ROOT/" \
-            "$DEST"
+        [[ -n "$TEST_ROOT" && -d "$TEST_ROOT" ]] || exit 0
+        if [[ -z "$KEY" ]]; then
+          echo "No CI_ARTIFACTS_KEY in this context; skipping upload"
+          exit 0
         fi
+
+        install -m 700 -d "$HOME/.ssh-upload"
+        printf '%s\n' "$KEY" > "$HOME/.ssh-upload/id_ed25519"
+        chmod 600 "$HOME/.ssh-upload/id_ed25519"
+
+        REL="${{github.workflow}}_${{github.run_number}}/${{matrix.suite.name}}-${{matrix.suite.flags}}-Linux"
+        REL="${REL// /_}"
+        echo "REL: $REL"
+
+        tar czf - -C "$TEST_ROOT" \
+          --exclude=./.cache \
+          --exclude=./.eclipse \
+          --exclude='./postgres-nix-*/db' \
+          . \
+        | ssh -i "$HOME/.ssh-upload/id_ed25519" -o IdentitiesOnly=yes -o BatchMode=yes \
+              -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null \
+              -o ConnectTimeout=15 ciartifacts@192.168.1.66 "$REL" \
+          && echo "Uploaded artifacts to ciartifacts@mac1:$REL" \
+          || echo "::warning::artifact upload to mac1 failed"
 
     - name: Save test artifacts (macOS)
       if: always() && runner.os == 'macOS'
