@@ -195,6 +195,9 @@ jobs:
           rsync \
             -e "ssh -F /secrets/ci_ssh_config" \
             -azW --mkpath \
+            --exclude=".cache/" \
+            --exclude=".eclipse/" \
+            --exclude="postgres-nix-*/db/" \
             "$TEST_ROOT/" \
             "$DEST"
         fi
@@ -210,6 +213,9 @@ jobs:
         if [[ -n "$TEST_ROOT" ]]; then
           rsync \
             -azW --mkpath \
+            --exclude=".cache/" \
+            --exclude=".eclipse/" \
+            --exclude="postgres-nix-*/db/" \
             "$TEST_ROOT/" \
             "$DEST"
         fi
