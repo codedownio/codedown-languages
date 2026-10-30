@@ -13,9 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-        - macOS
-        - Linux
+        # `nomac` in the commit message drops the macOS legs, the way codedown's
+        # tests.yml does; job-level `if` can't see the matrix context.
+        os: ${{ fromJSON(contains(github.event.head_commit.message, 'nomac') && '["Linux"]' || '["macOS","Linux"]') }}
 
     steps:
     - uses: actions/checkout@v6
@@ -46,9 +46,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-        - macOS
-        - Linux
+        # `nomac` in the commit message drops the macOS legs, the way codedown's
+        # tests.yml does; job-level `if` can't see the matrix context.
+        os: ${{ fromJSON(contains(github.event.head_commit.message, 'nomac') && '["Linux"]' || '["macOS","Linux"]') }}
 
     steps:
     - uses: actions/checkout@v6
@@ -65,13 +65,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target:
-        - os: macOS
-          arch: aarch64-darwin
-        - os: Linux
-          arch: x86_64-linux
-        - os: Linux
-          arch: aarch64-linux
+        target: ${{ fromJSON(contains(github.event.head_commit.message, 'nomac') && '[{"os":"Linux","arch":"x86_64-linux"},{"os":"Linux","arch":"aarch64-linux"}]' || '[{"os":"macOS","arch":"aarch64-darwin"},{"os":"Linux","arch":"x86_64-linux"},{"os":"Linux","arch":"aarch64-linux"}]') }}
 
     steps:
     - uses: actions/checkout@v6
@@ -89,13 +83,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target:
-        - os: macOS
-          arch: aarch64-darwin
-        - os: Linux
-          arch: x86_64-linux
-        - os: Linux
-          arch: aarch64-linux
+        target: ${{ fromJSON(contains(github.event.head_commit.message, 'nomac') && '[{"os":"Linux","arch":"x86_64-linux"},{"os":"Linux","arch":"aarch64-linux"}]' || '[{"os":"macOS","arch":"aarch64-darwin"},{"os":"Linux","arch":"x86_64-linux"},{"os":"Linux","arch":"aarch64-linux"}]') }}
 
     steps:
     - uses: actions/checkout@v6
@@ -179,9 +167,7 @@ jobs:
           pool: arc-public-medium
         - name: settings-schemas
           pool: arc-public-medium
-        os:
-        - macOS
-        - Linux
+        os: ${{ fromJSON(contains(github.event.head_commit.message, 'nomac') && '["Linux"]' || '["macOS","Linux"]') }}
     steps:
     - uses: actions/checkout@v6
       with:
