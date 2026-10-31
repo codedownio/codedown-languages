@@ -136,9 +136,12 @@ let
       else if serverNames == [] then { level = "none"; detail = null; }
       else if featureId == "diagnostics" then
         # Diagnostics are pushed with textDocument/publishDiagnostics, which servers don't
-        # advertise. Treat pull diagnostics as the strong signal and a live server as the weak one.
-        let pullers = builtins.filter (n: advertises (servers.${n}.capabilities or {}) "diagnosticProvider") serverNames;
-        in if pullers != []
+        # advertise. What a server advertises is the pull request, and advertising it is not the
+        # same as answering it about a cell, which is what the probe asks.
+        let
+          # The probe records null for a server it couldn't ask, so this is a three-way answer
+          answerForCell = builtins.filter (n: (servers.${n}.diagnosticReportsCellProblem or null) == true) serverNames;
+        in if answerForCell != []
            then { level = "full"; detail = "pull + push"; }
            else { level = "full"; detail = "push"; }
       else if providedBy == [] then { level = "none"; detail = null; }
