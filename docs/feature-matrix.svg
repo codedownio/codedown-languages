@@ -1413,7 +1413,7 @@
       <rect x="430.0" y="664.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 435.9 674.6 L 439.1 677.9 L 445.3 670.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Rust - Diagnostics: yes (pull + push)</title>
+    <g><title>Rust - Diagnostics: yes (push)</title>
       <rect x="459.0" y="664.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 464.9 674.6 L 468.1 677.9 L 474.3 670.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>

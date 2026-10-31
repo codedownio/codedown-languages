@@ -15,6 +15,11 @@ A server that advertises `workspaceSymbolProvider` is then asked one further que
 recorded as `workspaceSymbolFindsCellSymbol`: can its workspace query find a symbol
 declared in a cell of a notebook the client has open?
 
+A server that advertises `diagnosticProvider` is asked the matching question for pulled
+diagnostics, recorded as `diagnosticReportsCellProblem`: shown a cell that doesn't compile,
+does `textDocument/diagnostic` come back with anything? Advertising the capability says
+the server answers the request, not that it answers it for a projection.
+
 The notebook is a real file on disk, but it's a container -- markdown, typst or latex --
 and no language server reads it as source. What a server is shown instead is a projection:
 this language's cells extracted into one document, opened at the notebook's path plus
@@ -57,6 +62,9 @@ REGISTRATION_WINDOW_SECONDS = 8
 # only a server that never answers pays the whole thing.
 WORKSPACE_SYMBOL_TIMEOUT_SECONDS = 300
 
+# How long to keep asking for diagnostics while a server builds its index.
+DIAGNOSTIC_TIMEOUT_SECONDS = 180
+
 # What a user might type in a cell, per language_id: one declaration whose name contains
 # "alpha". Sent as the notebook's contents, so it goes through the notebook language
 # server exactly as a real cell would.
@@ -74,6 +82,19 @@ CELL_SOURCES = {
     "rust": "fn alpha_in_cell() -> i32 { 2 }\n",
     "shellscript": "alpha_in_cell() {\n  echo 2\n}\n",
     "typescript": "function alphaInCell() { return 2 }\n",
+}
+
+# The same cells, each with one plain mistake, for asking a server what it makes of a cell
+# it can't compile.
+BROKEN_CELL_SOURCES = {
+    "cpp": "int alpha_in_cell() { return \"not an int\"; }\n",
+    "go": "func alphaInCell() int { return \"not an int\" }\n",
+    "haskell": "alphaInCell :: Int\nalphaInCell = \"not an int\"\n",
+    "java": "int alphaInCell() { return \"not an int\"; }\n",
+    "python": "def alpha_in_cell():\n    return undefined_name_in_cell\n",
+    "ruby": "def alpha_in_cell\n  undefined_name_in_cell\nend\n",
+    "rust": "fn alpha_in_cell() -> i32 { \"not an int\" }\n",
+    "typescript": "function alphaInCell(): number { return \"not an int\" }\n",
 }
 
 # LSP request -> the field of ServerCapabilities that means the same thing, for servers
@@ -352,6 +373,48 @@ def probe_cell_symbol(process, config, workspace):
     return False if flatten_symbol_names(outline) else None
 
 
+def probe_cell_diagnostics(process, config, workspace):
+    """Shown a cell that doesn't compile, does this server answer `textDocument/diagnostic`?
+
+    Opened the way codedown opens a projection, as in probe_cell_symbol. Returns True when
+    a full report comes back with at least one diagnostic, False when the server answers
+    but has nothing to say about the cell, and None when we couldn't ask -- no snippet for
+    this language, or the server never answered.
+    """
+    source = BROKEN_CELL_SOURCES.get(config.get("language_id"))
+    if source is None:
+        return None
+
+    (workspace / "broken.ipynb").write_text(source)
+
+    notebook = workspace / ("broken.ipynb" + config.get("notebook_suffix", ""))
+    write_message(process.stdin, {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {"textDocument": {
+            "uri": notebook.as_uri(), "languageId": config["language_id"],
+            "version": 1, "text": source}},
+    })
+
+    # Same patience as the symbol question: a server that is still indexing answers an
+    # empty report rather than refusing.
+    request_id = 200
+    deadline = time.monotonic() + DIAGNOSTIC_TIMEOUT_SECONDS
+    answered = False
+    while time.monotonic() < deadline:
+        time.sleep(5)
+        request_id += 1
+        report = request(process, request_id, "textDocument/diagnostic",
+                         {"textDocument": {"uri": notebook.as_uri()}}, timeout=60)
+        if not isinstance(report, dict):
+            continue
+        answered = True
+        if report.get("items"):
+            return True
+
+    return False if answered else None
+
+
 def flatten_symbol_names(symbols):
     """documentSymbol answers with a flat list or a tree; we only want the names."""
     names = []
@@ -434,7 +497,15 @@ def probe(config, workspace):
                 # Worth recording the capabilities even if the follow-up question failed.
                 finds_cell_symbol = None
 
-        return capabilities, finds_cell_symbol
+        reports_cell_problem = None
+        if capabilities.get("diagnosticProvider"):
+            try:
+                reports_cell_problem = probe_cell_diagnostics(process, config, workspace)
+            except LspError as e:
+                # The server claims to answer pull requests and didn't; say which way it failed.
+                print(f"[{e}]", end=" ", flush=True)
+
+        return capabilities, finds_cell_symbol, reports_cell_problem
     finally:
         process.stdin.close()
         try:
@@ -473,7 +544,7 @@ def main():
             print(f"  probing {name}...", end=" ", flush=True)
             workspace = Path(tempfile.mkdtemp(prefix=f"lsp-probe-{kernel}-{name}-"))
             try:
-                capabilities, finds_cell_symbol = probe(config, workspace)
+                capabilities, finds_cell_symbol, reports_cell_problem = probe(config, workspace)
             except Exception as e:  # noqa: BLE001 - a broken server shouldn't stop the run
                 print(f"FAILED ({e})", flush=True)
                 failures.append((kernel, name, str(e)))
@@ -483,12 +554,15 @@ def main():
 
             cells = {True: ", finds cell symbols", False: ", BLIND to cell symbols",
                      None: ""}[finds_cell_symbol]
-            print(f"ok ({len(capabilities)} capabilities{cells})", flush=True)
+            pulled = {True: ", reports cell problems", False: ", SILENT on cell problems",
+                      None: ""}[reports_cell_problem]
+            print(f"ok ({len(capabilities)} capabilities{cells}{pulled})", flush=True)
             servers[name] = {
                 "displayName": config.get("display_name", name),
                 "version": config.get("version"),
                 "capabilities": capabilities,
                 "workspaceSymbolFindsCellSymbol": finds_cell_symbol,
+                "diagnosticReportsCellProblem": reports_cell_problem,
             }
 
         # If every server in a kernel failed, keep what the last good run recorded rather

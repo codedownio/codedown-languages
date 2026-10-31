@@ -127,6 +127,7 @@
           },
           "workspaceSymbolProvider": true
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "",
         "version": "0.3.20",
         "workspaceSymbolFindsCellSymbol": true
@@ -162,6 +163,7 @@
           "textDocumentSync": 1,
           "workspaceSymbolProvider": true
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "bash-language-server",
         "version": "5.6.0",
         "workspaceSymbolFindsCellSymbol": true
@@ -338,6 +340,7 @@
           },
           "workspaceSymbolProvider": true
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "Clojure LSP",
         "version": "2026.02.20-16.08.58",
         "workspaceSymbolFindsCellSymbol": false
@@ -472,6 +475,7 @@
           "typeHierarchyProvider": true,
           "workspaceSymbolProvider": true
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "clangd",
         "version": "21.1.8",
         "workspaceSymbolFindsCellSymbol": true
@@ -624,6 +628,7 @@
           },
           "workspaceSymbolProvider": true
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "gopls",
         "version": "0.22.0",
         "workspaceSymbolFindsCellSymbol": true
@@ -667,17 +672,17 @@
           },
           "executeCommandProvider": {
             "commands": [
-              "1553714:cabalHaskellIntegration:cabalAddDependency",
-              "1553714:cabalHaskellIntegration:cabalAddModule",
-              "1553714:ghcide-extend-import-action:extendImport",
-              "1553714:explicit-fields:codeActionResolve",
-              "1553714:eval:evalCommand",
-              "1553714:ghcide-type-lenses:typesignature.add",
-              "1553714:gadt:GADT.toGADT",
-              "1553714:importLens:ImportLensCommand",
-              "1553714:class:classplugin.codeaction",
-              "1553714:class:classplugin.typelens",
-              "1553714:moduleName:updateModuleName"
+              "959475:cabalHaskellIntegration:cabalAddDependency",
+              "959475:cabalHaskellIntegration:cabalAddModule",
+              "959475:ghcide-extend-import-action:extendImport",
+              "959475:explicit-fields:codeActionResolve",
+              "959475:eval:evalCommand",
+              "959475:ghcide-type-lenses:typesignature.add",
+              "959475:gadt:GADT.toGADT",
+              "959475:importLens:ImportLensCommand",
+              "959475:class:classplugin.codeaction",
+              "959475:class:classplugin.typelens",
+              "959475:moduleName:updateModuleName"
             ],
             "workDoneProgress": false
           },
@@ -772,6 +777,7 @@
             "workDoneProgress": false
           }
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "Haskell Language Server",
         "version": "2.13.0.0",
         "workspaceSymbolFindsCellSymbol": true
@@ -941,6 +947,7 @@
           },
           "workspaceSymbolProvider": true
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "Eclipse JDT language server",
         "version": "1.58.0",
         "workspaceSymbolFindsCellSymbol": true
@@ -1146,6 +1153,7 @@
           },
           "workspaceSymbolProvider": true
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "LanguageServer.jl",
         "version": null,
         "workspaceSymbolFindsCellSymbol": true
@@ -1207,6 +1215,7 @@
             "resolveProvider": false
           }
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "Jedi",
         "version": "0.46.0",
         "workspaceSymbolFindsCellSymbol": false
@@ -1266,6 +1275,7 @@
             "resolveProvider": false
           }
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "Jedi",
         "version": "0.46.0",
         "workspaceSymbolFindsCellSymbol": false
@@ -1308,6 +1318,7 @@
           },
           "workspaceSymbolProvider": true
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "Solargraph",
         "version": "0.57.0",
         "workspaceSymbolFindsCellSymbol": true
@@ -1530,6 +1541,7 @@
           },
           "workspaceSymbolProvider": true
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "rust-analyzer",
         "version": "2026-06-01",
         "workspaceSymbolFindsCellSymbol": true
@@ -1657,6 +1669,7 @@
           },
           "workspaceSymbolProvider": true
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "TypeScript language server",
         "version": "5.3.0",
         "workspaceSymbolFindsCellSymbol": true
