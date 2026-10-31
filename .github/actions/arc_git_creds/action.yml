@@ -1,0 +1,14 @@
+name: "ARC git credentials"
+runs:
+  using: "composite"
+  steps:
+    - name: Authenticate nix's github fetches
+      shell: bash
+      run: |
+        # Writing to GITHUB_ENV replaces, so preserve any existing NIX_CONFIG.
+        {
+          echo "NIX_CONFIG<<NIX_CONFIG_EOF"
+          if [[ -n "${NIX_CONFIG:-}" ]]; then echo "$NIX_CONFIG"; fi
+          echo "access-tokens = github.com=${{ github.token }}"
+          echo "NIX_CONFIG_EOF"
+        } >> "$GITHUB_ENV"

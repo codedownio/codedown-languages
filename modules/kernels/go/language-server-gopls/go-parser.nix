@@ -11,7 +11,7 @@ buildGoModule rec {
     owner = "codedownio";
     repo = "go-notebook-language-server";
     rev = "v${version}";
-    hash = "sha256-kPdselwmgOsvl1Q7G5arbpFAPQPy/3fCyZQwqMN31d8=";
+    hash = "sha256-fthzEJZu8fZLCjxVXzor6edOhKfiZhcJrtaxuSliTMA=";
   };
 
   sourceRoot = "${src.name}/go-parser";

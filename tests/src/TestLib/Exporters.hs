@@ -196,7 +196,13 @@ testExport inputExtension writeInputFile exporterName outputExtension = do
   cp <- getContext maybeBubblewrap >>= \case
     Nothing -> return ((proc cmd args) { cwd = Just dir })
     Just bwrapBinary -> do
-      let bwrapArgs = ["--ro-bind", "/bin", "/bin" -- It seems to need /bin/sh
+      -- /bin/sh is needed: xelatex pipes its XDV to xdvipdfmx via popen, so PDF
+      -- export fails with "I can't write on file" if sh can't exec. On a glibc
+      -- distro (the ARC runner image) sh also needs its ELF interpreter, hence
+      -- /lib and /lib64; -try because NixOS has neither.
+      let bwrapArgs = ["--ro-bind", "/bin", "/bin"
+                      , "--ro-bind-try", "/lib", "/lib"
+                      , "--ro-bind-try", "/lib64", "/lib64"
                       , "--bind", dir, dir
                       , "--ro-bind", "/nix", "/nix"
                       , "--tmpfs", "/tmp"
