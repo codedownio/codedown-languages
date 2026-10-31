@@ -241,10 +241,11 @@ jobs:
           --markdown-summary "$GITHUB_STEP_SUMMARY" \
           --${{matrix.suite.name}} ${{matrix.suite.flags}}
 
-    # Upload-only key, held only in the org secret; ciartifacts' authorized_keys
-    # forces a receive-tarball command, so it grants nothing else.
-    - name: Upload test artifacts (Linux)
-      if: always() && runner.os != 'macOS'
+    # One upload path for every leg: tar over ssh to the ciartifacts user on
+    # mac1, which forces a receive-tarball command, so the key grants nothing
+    # else. macOS goes over the loopback, being mac1 itself.
+    - name: Upload test artifacts
+      if: always()
       continue-on-error: true
       env:
         KEY: ${{ secrets.CI_ARTIFACTS_KEY }}
@@ -259,35 +260,19 @@ jobs:
         printf '%s\n' "$KEY" > "$HOME/.ssh-upload/id_ed25519"
         chmod 600 "$HOME/.ssh-upload/id_ed25519"
 
-        REL="${{github.workflow}}_${{github.run_number}}/${{matrix.suite.name}}-${{matrix.suite.flags}}-Linux"
+        if [[ "$RUNNER_OS" == "macOS" ]]; then HOST=localhost; else HOST=192.168.1.66; fi
+
+        REL="${{github.workflow}}_${{github.run_number}}/${{matrix.suite.name}}-${{matrix.suite.flags}}-${{runner.os}}"
         REL="${REL// /_}"
         echo "REL: $REL"
 
-        tar czf - -C "$TEST_ROOT" \
+        tar czf - \
           --exclude=./.cache \
           --exclude=./.eclipse \
           --exclude='./postgres-nix-*/db' \
-          . \
+          -C "$TEST_ROOT" . \
         | ssh -i "$HOME/.ssh-upload/id_ed25519" -o IdentitiesOnly=yes -o BatchMode=yes \
               -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null \
-              -o ConnectTimeout=15 ciartifacts@192.168.1.66 "$REL" \
+              -o ConnectTimeout=15 "ciartifacts@$HOST" "$REL" \
           && echo "Uploaded artifacts to ciartifacts@mac1:$REL" \
           || echo "::warning::artifact upload to mac1 failed"
-
-    - name: Save test artifacts (macOS)
-      if: always() && runner.os == 'macOS'
-      continue-on-error: true
-      shell: bash
-      run: |
-        DEST="/Users/tester/all_test_runs/languages_${{github.workflow}}_${{github.run_number}}/${{matrix.suite.name}}-${{matrix.suite.flags}}"
-        DEST="${DEST// /_}"
-        echo "DEST: $DEST"
-        if [[ -n "$TEST_ROOT" ]]; then
-          rsync \
-            -azW --mkpath \
-            --exclude=".cache/" \
-            --exclude=".eclipse/" \
-            --exclude="postgres-nix-*/db/" \
-            "$TEST_ROOT/" \
-            "$DEST"
-        fi
