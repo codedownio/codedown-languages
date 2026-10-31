@@ -13,9 +13,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # `nomac` in the commit message drops the macOS legs, the way codedown's
-        # tests.yml does; job-level `if` can't see the matrix context.
-        os: ${{ fromJSON(contains(github.event.head_commit.message, 'nomac') && '["Linux"]' || '["macOS","Linux"]') }}
+        os:
+        - macOS
+        - Linux
+        # `nomac` in the commit message drops the macOS legs. An exclude that
+        # matches nothing is ignored, so without it the matrix is unchanged.
+        exclude:
+        - os: ${{ contains(github.event.head_commit.message, 'nomac') && 'macOS' || '' }}
 
     steps:
     - uses: actions/checkout@v6
@@ -46,9 +50,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # `nomac` in the commit message drops the macOS legs, the way codedown's
-        # tests.yml does; job-level `if` can't see the matrix context.
-        os: ${{ fromJSON(contains(github.event.head_commit.message, 'nomac') && '["Linux"]' || '["macOS","Linux"]') }}
+        os:
+        - macOS
+        - Linux
+        # `nomac` in the commit message drops the macOS legs. An exclude that
+        # matches nothing is ignored, so without it the matrix is unchanged.
+        exclude:
+        - os: ${{ contains(github.event.head_commit.message, 'nomac') && 'macOS' || '' }}
 
     steps:
     - uses: actions/checkout@v6
@@ -60,12 +68,24 @@ jobs:
       run: nix flake check
 
   build-ui-metadata:
-    name: "build-ui-metadata (${{matrix.target.os}}, ${{matrix.target.arch}})"
-    runs-on: ${{ matrix.target.os == 'Linux' && 'arc-public-small' || 'macOS' }}
+    name: "build-ui-metadata (${{matrix.os}}, ${{matrix.arch}})"
+    runs-on: ${{ matrix.os == 'Linux' && 'arc-public-small' || 'macOS' }}
     strategy:
       fail-fast: false
       matrix:
-        target: ${{ fromJSON(contains(github.event.head_commit.message, 'nomac') && '[{"os":"Linux","arch":"x86_64-linux"},{"os":"Linux","arch":"aarch64-linux"}]' || '[{"os":"macOS","arch":"aarch64-darwin"},{"os":"Linux","arch":"x86_64-linux"},{"os":"Linux","arch":"aarch64-linux"}]') }}
+        os:
+        - macOS
+        - Linux
+        arch:
+        - aarch64-darwin
+        - x86_64-linux
+        - aarch64-linux
+        exclude:
+        - { os: macOS, arch: x86_64-linux }
+        - { os: macOS, arch: aarch64-linux }
+        - { os: Linux, arch: aarch64-darwin }
+        # `nomac` in the commit message drops the macOS leg.
+        - os: ${{ contains(github.event.head_commit.message, 'nomac') && 'macOS' || '' }}
 
     steps:
     - uses: actions/checkout@v6
@@ -75,15 +95,27 @@ jobs:
     - name: Build .#ui_metadata_farm
       if: "!contains(github.event.head_commit.message, 'noci')"
       run: |
-        nix build .#packages.${{matrix.target.arch}}.ui_metadata_farm
+        nix build .#packages.${{matrix.arch}}.ui_metadata_farm
 
   build-sample-environments:
-    name: "build-sample-environments (${{matrix.target.os}}, ${{matrix.target.arch}})"
-    runs-on: ${{ matrix.target.os == 'Linux' && 'arc-public-small' || 'macOS' }}
+    name: "build-sample-environments (${{matrix.os}}, ${{matrix.arch}})"
+    runs-on: ${{ matrix.os == 'Linux' && 'arc-public-small' || 'macOS' }}
     strategy:
       fail-fast: false
       matrix:
-        target: ${{ fromJSON(contains(github.event.head_commit.message, 'nomac') && '[{"os":"Linux","arch":"x86_64-linux"},{"os":"Linux","arch":"aarch64-linux"}]' || '[{"os":"macOS","arch":"aarch64-darwin"},{"os":"Linux","arch":"x86_64-linux"},{"os":"Linux","arch":"aarch64-linux"}]') }}
+        os:
+        - macOS
+        - Linux
+        arch:
+        - aarch64-darwin
+        - x86_64-linux
+        - aarch64-linux
+        exclude:
+        - { os: macOS, arch: x86_64-linux }
+        - { os: macOS, arch: aarch64-linux }
+        - { os: Linux, arch: aarch64-darwin }
+        # `nomac` in the commit message drops the macOS leg.
+        - os: ${{ contains(github.event.head_commit.message, 'nomac') && 'macOS' || '' }}
 
     steps:
     - uses: actions/checkout@v6
@@ -93,7 +125,7 @@ jobs:
     - name: Build .#sample_environments_farm
       if: "!contains(github.event.head_commit.message, 'noci')"
       run: |
-        nix build .#packages.${{matrix.target.arch}}.sample_environments_farm
+        nix build .#packages.${{matrix.arch}}.sample_environments_farm
 
   test:
     name: ${{ matrix.suite.name }} (${{ matrix.os }}${{ matrix.suite.flags && format(', {0}', matrix.suite.flags) || '' }})
@@ -167,7 +199,13 @@ jobs:
           pool: arc-public-medium
         - name: settings-schemas
           pool: arc-public-medium
-        os: ${{ fromJSON(contains(github.event.head_commit.message, 'nomac') && '["Linux"]' || '["macOS","Linux"]') }}
+        os:
+        - macOS
+        - Linux
+        # `nomac` in the commit message drops the macOS legs. An exclude that
+        # matches nothing is ignored, so without it the matrix is unchanged.
+        exclude:
+        - os: ${{ contains(github.event.head_commit.message, 'nomac') && 'macOS' || '' }}
     steps:
     - uses: actions/checkout@v6
       with:

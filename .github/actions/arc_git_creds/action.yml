@@ -1,9 +1,4 @@
 name: "ARC git credentials"
-description: >
-  A GITHUB_TOKEN for nix's github: fetches, so they aren't rate-limited -- the
-  whole worker fleet NATs through one IP. Unlike the language servers' arc_env
-  this sets no NIX_PATH; the test step sets it from tests/flake.nix's own pin.
-
 runs:
   using: "composite"
   steps:
