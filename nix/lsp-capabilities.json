@@ -1541,7 +1541,7 @@
           },
           "workspaceSymbolProvider": true
         },
-        "diagnosticReportsCellProblem": null,
+        "diagnosticReportsCellProblem": true,
         "displayName": "rust-analyzer",
         "version": "2026-06-01",
         "workspaceSymbolFindsCellSymbol": true
