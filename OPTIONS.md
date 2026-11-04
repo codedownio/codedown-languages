@@ -1237,6 +1237,29 @@ true
 
 
 
+## kernels\.java\.lsp\.jdtls\.signatureHelp
+
+
+
+**Offer signature help while typing a call**
+
+Names the parameters of the method being called, in a widget at the cursor\. Java’s completion list already spells out every overload, so turn this off if the two together are more noise than help\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
 ## kernels\.java\.misc\.loadExtensions
 
 

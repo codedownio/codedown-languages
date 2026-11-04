@@ -95,6 +95,9 @@ common.writeTextDirWithMetaAndPassthru jdt-language-server.meta passthru
         import.maven.enabled = false;
         import.gradle.enabled = false;
         configuration.updateBuildConfiguration = "disabled";
+        # JDT LS gates both the dynamic registration and the answer on this, and defaults it
+        # off, so a client that says nothing gets no signature help at all.
+        signatureHelp.enabled = settings.signatureHelp;
         # workspace/symbol answers with types alone by default, and everything a cell
         # declares is a method on the projection's synthetic class.
         symbols.includeSourceMethodDeclarations = true;
