@@ -56,6 +56,12 @@ in
         type = types.bool;
         default = true;
       };
+      lsp.jdtls.signatureHelp = mkOption {
+        title = "Offer signature help while typing a call";
+        description = "Names the parameters of the method being called, in a widget at the cursor. Java's completion list already spells out every overload, so turn this off if the two together are more noise than help.";
+        type = types.bool;
+        default = true;
+      };
       lsp.jdtls.debug = mkOption {
         title = "Eclipse JDT language server: debug output";
         type = types.bool;
