@@ -1,0 +1,53 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{codedown}[2026/11/06 CodeDown notebook cells]
+\RequirePackage{graphicx}
+\RequirePackage{fancyvrb}
+\RequirePackage{xcolor}
+
+% A cell's source is skipped line by line; its closing line is rescanned with normal catcodes, so
+% the \codedownoutput after \end{codedown} is typeset.
+\newenvironment{codedown}[2][]{%
+  \begingroup
+  \let\do\@makeother\dospecials
+  \catcode`\ =10
+  \catcode`\^^M=13
+  \codedown@readline}{}
+
+% A line closes the cell when it is \end{codedown}, alone or followed by \codedownoutput.
+\newif\ifcodedown@end
+\begingroup
+\catcode`\|=0 \catcode`\(=1 \catcode`\)=2
+|catcode`|\=12 |catcode`|{=12 |catcode`|}=12
+|catcode`|^^M=13%
+|gdef|codedown@readline#1^^M(|codedown@split#1\end{codedown}|codedown@nil(#1))%
+|gdef|codedown@split#1\end{codedown}#2|codedown@nil(%
+  |codedown@endfalse%
+  |def|codedown@prefix(#1)|def|codedown@rest(#2)%
+  |ifx|codedown@prefix|empty|ifx|codedown@rest|empty|else%
+    |ifx|codedown@rest|codedown@endonly|codedown@endtrue|else%
+      |expandafter|codedown@checkout|codedown@rest|codedown@nil%
+    |fi|fi|fi%
+  |ifcodedown@end|expandafter|codedown@isend|else|expandafter|codedown@skipline|fi)%
+|gdef|codedown@endonly(\end{codedown})%
+|gdef|codedown@checkout#1|codedown@nil(|codedown@splitout#1\codedownoutput|codedown@nil)%
+|gdef|codedown@splitout#1\codedownoutput#2|codedown@nil(%
+  |def|codedown@prefix(#1)|ifx|codedown@prefix|empty|codedown@endtrue|fi)%
+|endgroup
+
+\def\codedown@skipline#1{\codedown@readline}
+\def\codedown@isend#1{%
+  \endgroup
+  \begingroup\endlinechar=-1\relax\expandafter\endgroup\scantokens{#1}}
+
+\newcommand\codedownoutput[1]{\par\noindent\begin{minipage}{\linewidth}#1\end{minipage}\par}
+\newcommand\codedowntext[1]{\par\noindent{\ttfamily #1}\par}
+\newcommand\codedowntextfile[1]{\VerbatimInput{#1}}
+\newcommand\codedownerror[1]{\par\noindent{\ttfamily\color{red!60!black}#1}\par}
+\newcommand\codedownerrorfile[1]{\VerbatimInput[formatcom=\color{red!60!black}]{#1}}
+\newcommand\codedownlatex[1]{\input{#1}}
+\newcommand\codedownimage[1]{%
+  \par\noindent
+  \sbox\z@{\includegraphics{#1}}%
+  \ifdim\wd\z@>\linewidth\resizebox{\linewidth}{!}{\usebox\z@}\else\usebox\z@\fi
+  \par}
+\endinput
