@@ -32,6 +32,7 @@ extendedLib.evalModules {
 
     ../modules/exporters/nbconvert/module.nix
     ../modules/exporters/pandoc/module.nix
+    ../modules/exporters/latex/module.nix
     ../modules/exporters/typst/module.nix
 
     ../modules/kernels/bash/module.nix
