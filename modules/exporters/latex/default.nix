@@ -1,7 +1,4 @@
 { callPackage
-, coreutils
-, gnugrep
-, jq
 , lib
 , runCommand
 , symlinkJoin
@@ -24,44 +21,24 @@ let
   '';
   texInputs = "${codedownTexInputs}//:";
 
-  engineFlag = {
-    pdflatex = "-pdf";
-    xelatex = "-pdfxe";
-    lualatex = "-pdflua";
-  }.${settings.engine};
+  renderServer = callPackage ./render-server.nix {};
+  renderServerVersion = import ./render-server-version.nix;
 
-  # Writes "<output>.deps" in the typst_json shape ({"inputs": [...]}, paths relative to cwd), from
-  # latexmk's .fls recorder file, so the runner re-renders when an \input file changes.
-  script = common.writeShellScriptBinWithAttrs {} "latex-export" ''
-    set -euo pipefail
-    export PATH="${texliveToUse}/bin:${coreutils}/bin:${gnugrep}/bin''${PATH:+:''${PATH}}"
+  # The render server with the TeX Live engines and codedown.sty in reach. `serve` is the language
+  # server behind live exports; `render` compiles a file once (the exporter test uses it).
+  wrapper = common.writeShellScriptBinWithAttrs {} "latex-render-server" ''
+    export PATH="${texliveToUse}/bin''${PATH:+:''${PATH}}"
     export TEXINPUTS="${texInputs}''${TEXINPUTS:-}"
-
-    input="$(realpath "$1")"
-    output="$2"
-    jobname="$(basename "$input" .tex)"
-    build="$(dirname "$(realpath -m "$output")")/latex-build"
-    mkdir -p "$build"
-
-    echo latexmk ${engineFlag} -recorder -cd -outdir="$build" "$input"
-    latexmk ${engineFlag} -recorder -interaction=nonstopmode -halt-on-error -file-line-error \
-      -cd -outdir="$build" "$input"
-
-    cp "$build/$jobname.pdf" "$output"
-
-    docdir="$(dirname "$input")"
-    grep '^INPUT ' "$build/$jobname.fls" | cut -c7- | sort -u | while IFS= read -r f; do
-      case "$f" in
-        /nix/store/*) continue ;;
-        /*) ;;
-        *) f="$docdir/$f" ;;
-      esac
-      case "$f" in "$build"/*) continue ;; esac
-      if [ -f "$f" ]; then realpath --relative-to="$PWD" "$f"; fi
-    done | sort -u | ${jq}/bin/jq -R . | ${jq}/bin/jq -s '{inputs: .}' > "$output.deps"
+    exec ${renderServer}/bin/render-server "$@"
   '';
 
-  languageServers = lib.optionals settings.lsp.texlab.enable
+  languageServers = [
+    (callPackage ./language_server_render {
+      inherit wrapper;
+      version = renderServerVersion;
+      inherit (settings) engine;
+    })
+  ] ++ lib.optionals settings.lsp.texlab.enable
     [(callPackage ./language_server_texlab {
       inherit texInputs;
     })];
@@ -76,21 +53,24 @@ let
     extension = "pdf";
     inherit icon;
     icon_monochrome = iconMonochrome;
-    args = [(script + "/bin/latex-export")];
+    # Live exports run on the latex-render-server language server; these args are the one-shot
+    # form of the same render, and carry the task's options (-o key=value)
+    args = ["${wrapper}/bin/latex-render-server" "render" "--backend" "latex" "-o" "engine=${settings.engine}"];
     input_extensions = ["tex"];
-    deps = "typst_json";
+    kind = "render_server";
+    render_server = "latex-render-server";
   };
 
 in
 
 symlinkJoin {
   name = "codedown-exporter-latex";
-  paths = [script] ++ languageServers;
+  paths = [wrapper] ++ languageServers;
 
   passthru = {
     meta = {
       name = "codedown-exporter-latex";
-      description = "CodeDown exporter compiling LaTeX notebooks with latexmk.";
+      description = "CodeDown exporter rendering LaTeX notebooks to PDF as you type.";
 
       # To separate these out in search results
       category = "Exporters";
@@ -102,6 +82,7 @@ symlinkJoin {
 
     versions = {
       texlive = texliveToUse.version or "";
+      render-server = renderServerVersion;
     };
 
     inherit settingsSchema settings;

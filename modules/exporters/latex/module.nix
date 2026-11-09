@@ -8,7 +8,7 @@ with lib;
       enable = mkOption {
         type = types.bool;
         title = "Enable LaTeX exporter";
-        description = "Enable the LaTeX exporter, which compiles .tex notebooks to PDF with latexmk.";
+        description = "Enable the LaTeX exporter, which renders .tex notebooks to PDF as you type.";
         default = false;
         visible = false;
       };
@@ -27,7 +27,7 @@ with lib;
         type = types.enum ["pdflatex" "xelatex" "lualatex"];
         default = "pdflatex";
         title = "TeX engine";
-        description = "The engine latexmk compiles with.";
+        description = "The TeX engine that compiles the document.";
       };
 
       interface.attrs = mkOption {
