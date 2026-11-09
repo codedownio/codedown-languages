@@ -13,6 +13,7 @@
   extra-nix = import ./sample_environments/extra-nix.nix args;
   exporters-nbconvert = import ./sample_environments/exporters-nbconvert.nix args;
   exporters-pandoc = import ./sample_environments/exporters-pandoc.nix args;
+  exporters-latex = import ./sample_environments/exporters-latex.nix args;
   exporters-typst = import ./sample_environments/exporters-typst.nix args;
   ghc910 = import ./sample_environments/ghc910.nix args;
   ghc912 = import ./sample_environments/ghc912.nix args;

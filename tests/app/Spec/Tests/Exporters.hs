@@ -30,6 +30,9 @@ tests = describe "Exporters" $ introduceJustBubblewrap $ do
     it "codedown-exporter-pandoc-beamer" $ testExportMd "codedown-exporter-pandoc-beamer" "html"
     it "codedown-exporter-pandoc-pdf" $ testExportMd "codedown-exporter-pandoc-pdf" "pdf"
 
+  introduceNixEnvironment [] [latexConfig] [i|Exporters (latex)|] $ do
+    it "codedown-exporter-latex" $ testExportLatex "codedown-exporter-latex" "pdf"
+
   introduceNixEnvironment [] [typstConfig] [i|Exporters (typst)|] $ do
     it "codedown-exporter-typst" $ testExportTypst "codedown-exporter-typst" "pdf"
 
@@ -52,6 +55,9 @@ nbconvertConfig scheme = [__i|exporters.nbconvert.enable = true;
 
 pandocConfig :: Text
 pandocConfig = [__i|exporters.pandoc.enable = true;|]
+
+latexConfig :: Text
+latexConfig = [__i|exporters.latex.enable = true;|]
 
 typstConfig :: Text
 typstConfig = [__i|exporters.typst.enable = true;|]

@@ -174,6 +174,26 @@ testExportIpynb = testExport "ipynb" $ \f -> A.encodeFile f sampleJupyterNoteboo
 testExportMd :: (HasBaseContext ctx, HasNixEnvironment ctx, HasMaybeBubblewrap ctx) => Text -> FilePath -> ExampleT ctx IO ()
 testExportMd = testExport "md" $ \f -> T.writeFile f sampleMdFile
 
+-- A notebook with a cell whose output (inline text and a verbatim file) rides its closing line
+sampleLatexFile :: Text
+sampleLatexFile =
+  [__i|\\documentclass{article}
+       \\usepackage{codedown}
+       \\begin{document}
+       \\section{Sample}
+
+       \\begin{codedown}[folded]{python}
+       x = {1: "%d" % 5}  \# braces { and \\end{itemize} are skipped
+       \\end{codedown}\\codedownoutput{\\codedowntext{50\\% of \\{x\\}}\\codedowntextfile{out.txt}}
+
+       \\end{document}
+       |]
+
+testExportLatex :: (HasBaseContext ctx, HasNixEnvironment ctx, HasMaybeBubblewrap ctx) => Text -> FilePath -> ExampleT ctx IO ()
+testExportLatex = testExport "tex" $ \f -> do
+  T.writeFile f sampleLatexFile
+  T.writeFile (takeDirectory f </> "out.txt") "line one {\n  two % \\x\n"
+
 testExportTypst :: (HasBaseContext ctx, HasNixEnvironment ctx, HasMaybeBubblewrap ctx) => Text -> FilePath -> ExampleT ctx IO ()
 testExportTypst = testExport "typ" $ \f -> T.writeFile f sampleTypstFile
 
