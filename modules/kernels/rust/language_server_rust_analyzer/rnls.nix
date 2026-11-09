@@ -21,28 +21,28 @@
 {
   # HASHES_START
   "aarch64-linux" = fetchzip {
-    name = "rust-notebook-language-server-0.2.12.0";
+    name = "rust-notebook-language-server-0.2.13.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.12.0/rust-notebook-language-server-0.2.12.0-aarch64-linux.tar.gz";
-    hash = "sha256-l32Oi6ncaE6At1uqKB3xS6am4ujDwxCcv8IYiVl7Jn8=";
+    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.13.0/rust-notebook-language-server-0.2.13.0-aarch64-linux.tar.gz";
+    hash = "sha256-aZUVnAxYXX5JalNDyw+F1I4MR3HnATJeP3+jZuHwnmo=";
   };
   "x86_64-linux" = fetchzip {
-    name = "rust-notebook-language-server-0.2.12.0";
+    name = "rust-notebook-language-server-0.2.13.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.12.0/rust-notebook-language-server-0.2.12.0-x86_64-linux.tar.gz";
-    hash = "sha256-8BJgMUK2p/07Q7apOSa1es064f0GA2pN3qN+If5tiuk=";
+    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.13.0/rust-notebook-language-server-0.2.13.0-x86_64-linux.tar.gz";
+    hash = "sha256-fVIs+le4pX7pfLme8dHD3SvdJCdWTWB2R2VI+qpsRmA=";
   };
   "x86_64-darwin" = fetchzip {
-    name = "rust-notebook-language-server-0.2.12.0";
+    name = "rust-notebook-language-server-0.2.13.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.12.0/rust-notebook-language-server-0.2.12.0-x86_64-darwin.tar.gz";
-    hash = "sha256-Gs6rI3N1pYzia8xBqg+Bkacw+NOog5SiVNuNngECm70=";
+    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.13.0/rust-notebook-language-server-0.2.13.0-x86_64-darwin.tar.gz";
+    hash = "sha256-/z9mMV+DdjbQpqn5he4xjMMoGzuxZZPP5FVNB1M1sNk=";
   };
   "aarch64-darwin" = fetchzip {
-    name = "rust-notebook-language-server-0.2.12.0";
+    name = "rust-notebook-language-server-0.2.13.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.12.0/rust-notebook-language-server-0.2.12.0-aarch64-darwin.tar.gz";
-    hash = "sha256-cXvs4N+UujXJDMPBf/YSWultTc1o4gF3/PRKGC16MX0=";
+    url = "https://github.com/codedownio/rust-notebook-language-server/releases/download/v0.2.13.0/rust-notebook-language-server-0.2.13.0-aarch64-darwin.tar.gz";
+    hash = "sha256-IXU5n079UTiVxxX5fMIIj+67pbyyqk4bF6VewwzVDEU=";
   };
   # HASHES_END
 }.${stdenv.hostPlatform.system}
