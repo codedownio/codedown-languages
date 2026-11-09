@@ -4,15 +4,15 @@
 # Otherwise a failed prefetch reports success and leaves a placeholder hash behind.
 set -euo pipefail
 
-VERSION=$(nix eval --raw --expr 'import ./render-server-version.nix' --impure)
+VERSION=$(nix eval --raw --expr 'import ./lsp-export-server-version.nix' --impure)
 
 echo "Got version: $VERSION"
 
-NAME="render-server-$VERSION"
+NAME="lsp-export-server-$VERSION"
 
 NEW_HASHES=$(
   for system in x86_64-linux; do
-    URL="https://github.com/codedownio/render-server/releases/download/v${VERSION}/render-server-${VERSION}-${system}.tar.gz"
+    URL="https://github.com/codedownio/lsp-export-server/releases/download/v${VERSION}/lsp-export-server-${VERSION}-${system}.tar.gz"
     HASH=$(nix-prefetch fetchzip --name "$NAME" --no-stripRoot --url "$URL" 2>/dev/null)
 
     echo >&2 "$URL -> $HASH"
@@ -32,7 +32,7 @@ import sys
 
 input = sys.stdin.read()
 
-with open("./render-server.nix", 'r') as f:
+with open("./lsp-export-server.nix", 'r') as f:
   lines = f.readlines()
 
 start_index = indexOf(map(lambda x: "HASHES_START" in x, lines), True)
@@ -40,7 +40,7 @@ end_index = indexOf(map(lambda x: "HASHES_END" in x, lines), True)
 
 new_lines = lines[:start_index + 1] + [input] + lines[end_index:]
 
-with open("./render-server.nix", 'w') as f:
+with open("./lsp-export-server.nix", 'w') as f:
   f.writelines(new_lines)
 END
 )

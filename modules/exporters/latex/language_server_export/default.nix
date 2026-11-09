@@ -9,7 +9,7 @@
 let
   common = callPackage ../../../kernels/common.nix {};
 
-  languageServerName = "latex-render-server";
+  languageServerName = "latex-export-server";
 
   passthru = {
     inherit languageServerName;
@@ -17,10 +17,10 @@ let
 
 in
 
-# The render server compiles the in-memory document for live exports (see the codedown.render
-# protocol in codedownio/render-server). It only handles its own commands, so texlab keeps the
+# The export server compiles the in-memory document for live exports (see the codedown.render
+# protocol in codedownio/lsp-export-server). It only handles its own commands, so texlab keeps the
 # editing features.
-common.writeTextDirWithMetaAndPassthru { description = "Live LaTeX rendering for codedown exports"; } passthru "lib/codedown/language-servers/latex-render-server.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMetaAndPassthru { description = "Live LaTeX rendering for codedown exports"; } passthru "lib/codedown/language-servers/latex-export-server.yaml" (lib.generators.toYAML {} [{
   name = languageServerName;
   inherit version;
   icon = ../../../../codedown.png;
@@ -31,7 +31,7 @@ common.writeTextDirWithMetaAndPassthru { description = "Live LaTeX rendering for
   type = "stream";
   primary = false;
   args = [
-    "${wrapper}/bin/latex-render-server"
+    "${wrapper}/bin/latex-export-server"
     "serve"
     "--backend" "latex"
     "-o" "engine=${engine}"

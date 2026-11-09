@@ -21,21 +21,21 @@ let
   '';
   texInputs = "${codedownTexInputs}//:";
 
-  renderServer = callPackage ./render-server.nix {};
-  renderServerVersion = import ./render-server-version.nix;
+  exportServer = callPackage ./lsp-export-server.nix {};
+  exportServerVersion = import ./lsp-export-server-version.nix;
 
-  # The render server with the TeX Live engines and codedown.sty in reach. `serve` is the language
+  # The export server with the TeX Live engines and codedown.sty in reach. `serve` is the language
   # server behind live exports; `render` compiles a file once (the exporter test uses it).
-  wrapper = common.writeShellScriptBinWithAttrs {} "latex-render-server" ''
+  wrapper = common.writeShellScriptBinWithAttrs {} "latex-export-server" ''
     export PATH="${texliveToUse}/bin''${PATH:+:''${PATH}}"
     export TEXINPUTS="${texInputs}''${TEXINPUTS:-}"
-    exec ${renderServer}/bin/render-server "$@"
+    exec ${exportServer}/bin/lsp-export-server "$@"
   '';
 
   languageServers = [
-    (callPackage ./language_server_render {
+    (callPackage ./language_server_export {
       inherit wrapper;
-      version = renderServerVersion;
+      version = exportServerVersion;
       inherit (settings) engine;
     })
   ] ++ lib.optionals settings.lsp.texlab.enable
@@ -53,12 +53,12 @@ let
     extension = "pdf";
     inherit icon;
     icon_monochrome = iconMonochrome;
-    # Live exports run on the latex-render-server language server; these args are the one-shot
+    # Live exports run on the latex-export-server language server; these args are the one-shot
     # form of the same render, and carry the task's options (-o key=value)
-    args = ["${wrapper}/bin/latex-render-server" "render" "--backend" "latex" "-o" "engine=${settings.engine}"];
+    args = ["${wrapper}/bin/latex-export-server" "render" "--backend" "latex" "-o" "engine=${settings.engine}"];
     input_extensions = ["tex"];
     kind = "render_server";
-    render_server = "latex-render-server";
+    render_server = "latex-export-server";
   };
 
 in
@@ -82,7 +82,7 @@ symlinkJoin {
 
     versions = {
       texlive = texliveToUse.version or "";
-      render-server = renderServerVersion;
+      lsp-export-server = exportServerVersion;
     };
 
     inherit settingsSchema settings;
