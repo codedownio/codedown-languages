@@ -32,14 +32,14 @@ let
   #   tar -czvf $out "$dir"
   # '';
 
-  version = "0.6.5";
+  version = "0.6.6";
 
   indexJs = stdenv.mkDerivation {
     name = "markdown-spellcheck-lsp-index.js";
 
     src = fetchurl {
       url = "https://github.com/codedownio/markdown-spellcheck-lsp/releases/download/v${version}/markdown-spellcheck-lsp.tar.gz";
-      hash = "sha256-58NwVV+Qdz6efbblUUxVHXNI/lwMwhjHXMbqxZ+iJjY=";
+      hash = "sha256-ABUiYMBFO7+K3K84EB17zwSi9rCMmUDeR6wVJ3eOhl0=";
     };
 
     buildPhase = "true";
