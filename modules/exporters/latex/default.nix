@@ -2,6 +2,7 @@
 , lib
 , runCommand
 , symlinkJoin
+, texlive
 , texliveToUse
 
 , settings
@@ -43,12 +44,15 @@ let
       inherit texInputs;
     })];
 
-  icon = ../../../codedown.png;
-  iconMonochrome = ../../../codedown-monochrome.svg;
+  # Simple Icons' LaTeX mark (CC0); see latex.svg.license
+  icon = ./latex.svg;
+  iconMonochrome = ./latex-monochrome.svg;
+
+  texliveYear = texlive.bin.core.version;
 
   pdfExporter = {
     name = "codedown-exporter-latex";
-    display_name = "PDF (.pdf)";
+    display_name = "PDF (${settings.engine}, TeX Live ${texliveYear})";
     group = "LaTeX";
     extension = "pdf";
     inherit icon;
@@ -81,7 +85,7 @@ symlinkJoin {
     };
 
     versions = {
-      texlive = texliveToUse.version or "";
+      texlive = texliveYear;
       lsp-export-server = exportServerVersion;
     };
 
