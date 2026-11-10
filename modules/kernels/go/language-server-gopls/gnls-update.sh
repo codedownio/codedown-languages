@@ -45,3 +45,45 @@ END
 )
 
 echo "$NEW_HASHES" | python -c "$py_script"
+
+# go-parser builds from source, so it needs the repo's hash at the same tag. Prefetching the
+# archive rather than using nix-prefetch's fetchFromGitHub, whose defaults set both rev and tag
+# (rejected by current Nixpkgs); --unpack gives the NAR hash fetchFromGitHub wants.
+echo ""
+echo "Prefetching the source tree for go-parser..."
+
+SRC_URL="https://github.com/codedownio/go-notebook-language-server/archive/v${VERSION}.tar.gz"
+SRC_BASE32=$(nix-prefetch-url --unpack --type sha256 "$SRC_URL" 2>/dev/null | tail -1)
+
+if [[ -z "$SRC_BASE32" ]]; then
+  echo >&2 "Failed to prefetch $SRC_URL"
+  exit 1
+fi
+
+SRC_HASH=$(nix hash convert --hash-algo sha256 --to sri "$SRC_BASE32")
+echo >&2 "source at v$VERSION -> $SRC_HASH"
+
+python3 - "$SRC_HASH" <<'END'
+import re
+import sys
+
+new_hash = sys.argv[1]
+if not new_hash:
+    sys.exit("nix-prefetch-url returned nothing for the source tree")
+
+with open("./go-parser.nix") as f:
+    contents = f.read()
+
+updated, count = re.subn(
+    r"(# SOURCE_HASH[^\n]*\n\s*hash = )[^;]*;",
+    lambda m: m.group(1) + '"%s";' % new_hash,
+    contents,
+)
+if count != 1:
+    sys.exit("expected exactly one # SOURCE_HASH marker in go-parser.nix, found %d" % count)
+
+with open("./go-parser.nix", "w") as f:
+    f.write(updated)
+END
+
+echo "Updated go-parser.nix"
