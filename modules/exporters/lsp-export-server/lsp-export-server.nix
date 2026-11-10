@@ -7,10 +7,10 @@
 {
   # HASHES_START
   "x86_64-linux" = fetchzip {
-    name = "lsp-export-server-0.4.0.0";
+    name = "lsp-export-server-0.4.1.0";
     stripRoot = false;
-    url = "https://github.com/codedownio/lsp-export-server/releases/download/v0.4.0.0/lsp-export-server-0.4.0.0-x86_64-linux.tar.gz";
-    hash = "sha256-/Q2R+AHvEgA5JQF0b83NUKisK8GC7JU/HmHqo9oH/3Y=";
+    url = "https://github.com/codedownio/lsp-export-server/releases/download/v0.4.1.0/lsp-export-server-0.4.1.0-x86_64-linux.tar.gz";
+    hash = "sha256-vR1qSuopon9q42Q2DZvshg5J0Lm6TWCf1JF+fe1sYYc=";
   };
   # HASHES_END
 }.${stdenv.hostPlatform.system}

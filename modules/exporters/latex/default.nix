@@ -22,8 +22,8 @@ let
   '';
   texInputs = "${codedownTexInputs}//:";
 
-  exportServer = callPackage ./lsp-export-server.nix {};
-  exportServerVersion = import ./lsp-export-server-version.nix;
+  exportServer = callPackage ../lsp-export-server/lsp-export-server.nix {};
+  exportServerVersion = import ../lsp-export-server/lsp-export-server-version.nix;
 
   # The export server with the TeX Live engines and codedown.sty in reach. `serve` is the language
   # server behind live exports; `render` compiles a file once (the exporter test uses it).
