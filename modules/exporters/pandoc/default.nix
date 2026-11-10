@@ -1,4 +1,5 @@
 { callPackage
+, fetchzip
 , pandoc
 , symlinkJoin
 , texliveScheme
@@ -10,6 +11,12 @@
 
 let
   common = callPackage ../../kernels/common.nix {};
+
+  slidy = fetchzip {
+    name = "slidy2";
+    url = "https://www.w3.org/Talks/Tools/Slidy2/slidy.zip";
+    hash = "sha256-B1v8hdUR1tOjISn+6mNWIls/Rdc7BTaKoYe34+YtYeo=";
+  };
 
   exportServer = callPackage ../lsp-export-server/lsp-export-server.nix {};
   exportServerVersion = import ../lsp-export-server/lsp-export-server-version.nix;
@@ -69,8 +76,11 @@ let
       display_name = "Slidy (.html)";
       extension = "html";
       to = "slidy";
+      # Slidy's script and stylesheet are embedded from the store; MathJax can't be (pandoc loads
+      # it dynamically) and stays on the CDN
       pandocArgs = [
-        "-V" "slidy-url=https://www.w3.org/Talks/Tools/Slidy2"
+        "--embed-resources"
+        "-V" "slidy-url=${slidy}"
         "--mathjax=https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML-full"
       ];
     })
