@@ -21,8 +21,8 @@ in
 common.writeTextDirWithMetaAndPassthru { description = "Live pandoc rendering for codedown exports"; } passthru "lib/codedown/language-servers/pandoc-export-server.yaml" (lib.generators.toYAML {} [{
   name = languageServerName;
   inherit version;
-  icon = ../../../../codedown.png;
-  icon_monochrome = ../../../../codedown-monochrome.svg;
+  icon = ../pandoc.svg;
+  icon_monochrome = ../pandoc-monochrome.svg;
   extensions = ["md"];
   notebook_suffix = ".md";
   attrs = ["markdown-document"];

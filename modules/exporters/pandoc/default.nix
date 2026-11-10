@@ -49,8 +49,8 @@ let
     '';
   };
 
-  icon = ../../../codedown.png;
-  iconMonochrome = ../../../codedown-monochrome.svg;
+  icon = ./pandoc.svg;
+  iconMonochrome = ./pandoc-monochrome.svg;
 
   # Live exports of .md documents run on the pandoc-export-server language server; the args are
   # the one-shot form of the same render, which notebooks (.ipynb) go through
