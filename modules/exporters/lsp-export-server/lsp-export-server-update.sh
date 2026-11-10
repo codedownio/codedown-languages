@@ -11,7 +11,7 @@ echo "Got version: $VERSION"
 NAME="lsp-export-server-$VERSION"
 
 NEW_HASHES=$(
-  for system in x86_64-linux; do
+  for system in aarch64-linux x86_64-linux x86_64-darwin aarch64-darwin; do
     URL="https://github.com/codedownio/lsp-export-server/releases/download/v${VERSION}/lsp-export-server-${VERSION}-${system}.tar.gz"
     HASH=$(nix-prefetch fetchzip --name "$NAME" --no-stripRoot --url "$URL" 2>/dev/null)
 
