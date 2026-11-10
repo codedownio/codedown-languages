@@ -17,7 +17,8 @@ let
       owner = "codedownio";
       repo = "cpp-notebook-language-server";
       rev = "v${version}";
-      hash = "sha256-unUZw2fG4ESxg4WIqEI6kkKspq1Bu+v2WzpinL3C17U=";
+      # SOURCE_HASH: rewritten by ./cnls-update.sh, which looks for this comment.
+      hash = "sha256-HgYq+/UgLtQs+eQXjczLirNsYIFPcnEyQ6qzOtb7VV4=";
     };
 
     sourceRoot = "${src.name}/cling-parser";
