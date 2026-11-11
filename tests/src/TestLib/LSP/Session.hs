@@ -88,4 +88,13 @@ getPathAndNixEnvironmentClosure = do
                )
     ) ""
 
-  return (pathToUse, closure)
+  case length closure > maxReadOnlyBinds of
+    False -> return (pathToUse, closure)
+    True -> do
+      info [i|Closure of #{length closure} paths is too big to bind one at a time; binding /nix|]
+      return (pathToUse, ["/nix"])
+
+-- | bwrap takes at most 9000 arguments and a bind is three of them, so an environment with a few
+-- thousand paths in its closure (anything carrying TeX Live) has to settle for the whole store.
+maxReadOnlyBinds :: Int
+maxReadOnlyBinds = 2500
