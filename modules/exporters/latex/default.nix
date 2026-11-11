@@ -24,13 +24,15 @@ let
 
   exportServer = callPackage ../lsp-export-server/lsp-export-server.nix {};
   exportServerVersion = import ../lsp-export-server/lsp-export-server-version.nix;
+  latexRender = callPackage ./latex-render.nix {};
 
-  # The export server with the TeX Live engines and codedown.sty in reach. `serve` is the language
-  # server behind live exports; `render` compiles a file once (the exporter test uses it).
+  # The export server with the TeX Live engines and codedown.sty in reach, rendering through
+  # latex-render. `serve` is the language server behind live exports; `render` compiles a file once
+  # (the exporter test uses it).
   wrapper = common.writeShellScriptBinWithAttrs {} "latex-export-server" ''
     export PATH="${texliveToUse}/bin''${PATH:+:''${PATH}}"
     export TEXINPUTS="${texInputs}''${TEXINPUTS:-}"
-    exec ${exportServer}/bin/lsp-export-server "$@"
+    exec ${exportServer}/bin/lsp-export-server "$@" --render ${latexRender}/bin/latex-render --settle ${latexRender}/bin/latex-render
   '';
 
   languageServers = [
@@ -59,7 +61,7 @@ let
     icon_monochrome = iconMonochrome;
     # Live exports run on the latex-export-server language server; these args are the one-shot
     # form of the same render, and carry the task's options (-o key=value)
-    args = ["${wrapper}/bin/latex-export-server" "render" "--backend" "latex" "-o" "engine=${settings.engine}"];
+    args = ["${wrapper}/bin/latex-export-server" "render" "-o" "engine=${settings.engine}"];
     input_extensions = ["tex"];
     kind = "render_server";
     render_server = "latex-export-server";

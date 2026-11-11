@@ -31,7 +31,6 @@ common.writeTextDirWithMetaAndPassthru { description = "Live pandoc rendering fo
   args = [
     "${wrapper}/bin/pandoc-export-server"
     "serve"
-    "--backend" "pandoc"
     "-o" "engine=pdflatex"
   ];
 }])

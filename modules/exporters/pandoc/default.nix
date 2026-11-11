@@ -20,12 +20,15 @@ let
 
   exportServer = callPackage ../lsp-export-server/lsp-export-server.nix {};
   exportServerVersion = import ../lsp-export-server/lsp-export-server-version.nix;
+  latexRender = callPackage ../latex/latex-render.nix {};
+  pandocRender = callPackage ./pandoc-render.nix { inherit latexRender; };
 
-  # The export server with pandoc and TeX Live in reach. `serve` is the language server behind
-  # live exports; `render` converts a file once (the exporter test and notebook exports use it).
+  # The export server with pandoc and TeX Live in reach, rendering through pandoc-render. `serve`
+  # is the language server behind live exports; `render` converts a file once (the exporter test
+  # and notebook exports use it).
   wrapper = common.writeShellScriptBinWithAttrs {} "pandoc-export-server" ''
     export PATH="${pandoc}/bin:${texliveScheme}/bin''${PATH:+:''${PATH}}"
-    exec ${exportServer}/bin/lsp-export-server "$@"
+    exec ${exportServer}/bin/lsp-export-server "$@" --render ${pandocRender}/bin/pandoc-render --settle ${pandocRender}/bin/pandoc-render
   '';
 
   languageServers = [
@@ -60,7 +63,7 @@ let
     inherit icon;
     icon_monochrome = iconMonochrome;
     args = [
-      "${wrapper}/bin/pandoc-export-server" "render" "--backend" "pandoc"
+      "${wrapper}/bin/pandoc-export-server" "render"
       "-o" "to=${to}"
       "-o" "engine=pdflatex"
     ] ++ (if pandocArgs == [] then [] else ["-o" "pandoc_args=${builtins.concatStringsSep " " pandocArgs}"]);
