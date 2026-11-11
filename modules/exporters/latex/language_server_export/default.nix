@@ -33,7 +33,6 @@ common.writeTextDirWithMetaAndPassthru { description = "Live LaTeX rendering for
   args = [
     "${wrapper}/bin/latex-export-server"
     "serve"
-    "--backend" "latex"
     "-o" "engine=${engine}"
   ];
 }])
