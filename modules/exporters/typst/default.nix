@@ -29,18 +29,24 @@ let
     cp ${./codedown-lib/lib.typ} "$dir/lib.typ"
   '';
 
-  # Also writes a dependency file at "<output>.deps" (typst's native JSON
-  # {"inputs": [...]}, paths relative to cwd) so the runner can watch imported
-  # files and re-render when any of them changes. See exporterInfoDeps below.
-  script = common.writeShellScriptBinWithAttrs {} "typst-export" ''
-    echo_and_run() { echo "$*" ; "$@" ; }
-    echo_and_run export PATH="''${PATH:+''${PATH}:}"
-    echo_and_run ${typst}/bin/typst compile --package-path ${codedownPackagePath} --deps "$2.deps" "$1" "$2"
-  '';
-
   typstToUse = typst.withPackages (ps: (map (x: ps.${x}) packages));
 
-  languageServers = lib.optionals settings.lsp.tinymist.enable
+  exportServer = callPackage ../lsp-export-server/lsp-export-server.nix {};
+  exportServerVersion = import ../lsp-export-server/lsp-export-server-version.nix;
+  typstRender = callPackage ./typst-render.nix { inherit typstToUse codedownPackagePath; };
+
+  # The export server rendering through typst-render. `serve` is the language server behind live
+  # exports; `render` compiles a file once (the exporter test uses it). Typst has no settle pass.
+  wrapper = common.writeShellScriptBinWithAttrs {} "typst-export-server" ''
+    exec ${exportServer}/bin/lsp-export-server "$@" --render ${typstRender}/bin/typst-render
+  '';
+
+  languageServers = [
+    (callPackage ./language_server_export {
+      inherit wrapper;
+      version = exportServerVersion;
+    })
+  ] ++ lib.optionals settings.lsp.tinymist.enable
     [(callPackage ./language_server_tinymist {
       inherit kernelName typstToUse codedownPackagePath;
       settings = settings.lsp.tinymist;
@@ -52,6 +58,8 @@ let
   icon = ./typst.png;
   iconMonochrome = ./typst.svg;
 
+  # Live exports run on the typst-export-server language server; the args are the one-shot form of
+  # the same render
   mkTypstExporter = display_name: extension: {
     name = "codedown-exporter-typst";
     inherit display_name;
@@ -59,10 +67,11 @@ let
     inherit extension;
     inherit icon;
     icon_monochrome = iconMonochrome;
-    args = [(script + "/bin/typst-export")];
+    args = ["${wrapper}/bin/typst-export-server" "render"];
     input_extensions = ["typ"];
     pandoc = "${pandoc}/bin/pandoc";
-    deps = "typst_json";
+    kind = "render_server";
+    render_server = "typst-export-server";
   };
 
   # Live preview exporter. Instead of running a command, the runner attaches a tinymist
@@ -87,7 +96,7 @@ symlinkJoin {
   name = "codedown-exporter-typst";
   paths = [
     (callPackage ./kernel.nix { inherit attrs extensions typstToUse; })
-    script
+    wrapper
   ]
   ++ languageServers
   ;
@@ -95,6 +104,7 @@ symlinkJoin {
   passthru = {
     meta = {
       name = "codedown-exporter-typst";
+      displayName = "Typst Exporter ${typst.version}";
       description = "CodeDown exporter using Typst.";
 
       # To separate these out in search results
@@ -118,6 +128,7 @@ symlinkJoin {
 
     versions = {
       typst = typst.version;
+      lsp-export-server = exportServerVersion;
     };
 
     inherit packageOptions packageSearch;

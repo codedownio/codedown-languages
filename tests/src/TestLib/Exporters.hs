@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE GADTs #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module TestLib.Exporters where
@@ -9,13 +10,23 @@ import Control.Monad.IO.Class
 import Data.Aeson as A
 import Data.Aeson.QQ.Simple
 import Data.Aeson.TH as A
+import qualified Data.Aeson.KeyMap as AKM
+import qualified Data.ByteString as B
+import qualified Data.Map as M
 import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Text.IO as T
+import GHC.TypeLits (symbolVal)
+import Language.LSP.Protocol.Message
+import Language.LSP.Protocol.Types
+import Language.LSP.Test
+import Language.LSP.Test.Helpers (LspContext, LspSessionInfo(..), LspSessionOptions(..))
+import qualified Language.LSP.Test.Helpers as Helpers
 import Safe
 import System.FilePath
 import Test.Sandwich as Sandwich
 import TestLib.Aeson
+import TestLib.LSP.Session (lspSessionOptionsFor)
 import TestLib.Types
 import UnliftIO.Directory
 import UnliftIO.Process
@@ -256,3 +267,37 @@ readExporterInfoByName exportersYaml desired = do
   case headMay [x | x@(ExporterInfo {..}) <- exporterInfos, exporterInfoName == desired] of
     Nothing -> expectationFailure [i|Couldn't find exporter info named '#{desired}'. (Had: #{fmap exporterInfoName exporterInfos})|]
     Just x -> pure x
+
+-- | Start a live render on the export server behind an exporter and wait for its first output:
+-- the serve-mode counterpart of 'testExport'. A wrapper that forgets to write the output, or
+-- names a program that isn't on the server's PATH, fails here.
+testExportServe :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Text -> FilePath -> LanguageKind -> Text -> Text -> [(Text, Text)] -> [(FilePath, B.ByteString)] -> ExampleT ctx m ()
+testExportServe serverName filename languageKind code format options extraFiles = do
+  sessionOptions <- lspSessionOptionsFor serverName filename languageKind code
+  Helpers.withLspSession (sessionOptions { lspSessionOptionsExtraFiles = extraFiles }) $ \(LspSessionInfo {..}) -> do
+    let uri = filePathToUri (lspSessionInfoHomeDir </> lspSessionInfoFileName)
+    let startParams = A.object [
+          "taskId" A..= ("test" :: Text)
+          , "uri" A..= getUri uri
+          , "format" A..= format
+          , "options" A..= M.fromList options
+          , "debounceMs" A..= (50 :: Int)
+          ]
+    void $ request SMethod_WorkspaceExecuteCommand (ExecuteCommandParams Nothing "codedown.render.start" (Just [startParams]))
+
+    nextRenderOutput >>= \case
+      A.Object (AKM.lookup "files" -> Just (A.Array files)) | not (Prelude.null files) -> return ()
+      x -> expectationFailure [i|Expected a render output with files, got: #{A.encode x}|]
+
+-- | The params of the next render output notification, skipping the log and status ones.
+nextRenderOutput :: LspContext ctx m => Session (ExampleT ctx m) A.Value
+nextRenderOutput = anyMessage >>= \case
+  FromServerMess method msg -> case splitServerMethod method of
+    IsServerEither -> case msg of
+      NotMess (TNotificationMessage _ (SMethod_CustomMethod p) params)
+        | T.pack (symbolVal p) == "codedown/render/output" -> return params
+      _ -> nextRenderOutput
+    _ -> nextRenderOutput
+  _ -> nextRenderOutput

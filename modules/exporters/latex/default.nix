@@ -1,10 +1,8 @@
 { callPackage
-, coreutils
-, gnugrep
-, jq
 , lib
 , runCommand
 , symlinkJoin
+, texlive
 , texliveToUse
 
 , settings
@@ -24,73 +22,62 @@ let
   '';
   texInputs = "${codedownTexInputs}//:";
 
-  engineFlag = {
-    pdflatex = "-pdf";
-    xelatex = "-pdfxe";
-    lualatex = "-pdflua";
-  }.${settings.engine};
+  exportServer = callPackage ../lsp-export-server/lsp-export-server.nix {};
+  exportServerVersion = import ../lsp-export-server/lsp-export-server-version.nix;
+  latexRender = callPackage ./latex-render.nix {};
 
-  # Writes "<output>.deps" in the typst_json shape ({"inputs": [...]}, paths relative to cwd), from
-  # latexmk's .fls recorder file, so the runner re-renders when an \input file changes.
-  script = common.writeShellScriptBinWithAttrs {} "latex-export" ''
-    set -euo pipefail
-    export PATH="${texliveToUse}/bin:${coreutils}/bin:${gnugrep}/bin''${PATH:+:''${PATH}}"
+  # The export server with the TeX Live engines and codedown.sty in reach, rendering through
+  # latex-render. `serve` is the language server behind live exports; `render` compiles a file once
+  # (the exporter test uses it).
+  wrapper = common.writeShellScriptBinWithAttrs {} "latex-export-server" ''
+    export PATH="${texliveToUse}/bin''${PATH:+:''${PATH}}"
     export TEXINPUTS="${texInputs}''${TEXINPUTS:-}"
-
-    input="$(realpath "$1")"
-    output="$2"
-    jobname="$(basename "$input" .tex)"
-    build="$(dirname "$(realpath -m "$output")")/latex-build"
-    mkdir -p "$build"
-
-    echo latexmk ${engineFlag} -recorder -cd -outdir="$build" "$input"
-    latexmk ${engineFlag} -recorder -interaction=nonstopmode -halt-on-error -file-line-error \
-      -cd -outdir="$build" "$input"
-
-    cp "$build/$jobname.pdf" "$output"
-
-    docdir="$(dirname "$input")"
-    grep '^INPUT ' "$build/$jobname.fls" | cut -c7- | sort -u | while IFS= read -r f; do
-      case "$f" in
-        /nix/store/*) continue ;;
-        /*) ;;
-        *) f="$docdir/$f" ;;
-      esac
-      case "$f" in "$build"/*) continue ;; esac
-      if [ -f "$f" ]; then realpath --relative-to="$PWD" "$f"; fi
-    done | sort -u | ${jq}/bin/jq -R . | ${jq}/bin/jq -s '{inputs: .}' > "$output.deps"
+    exec ${exportServer}/bin/lsp-export-server "$@" --render ${latexRender}/bin/latex-render --settle ${latexRender}/bin/latex-render
   '';
 
-  languageServers = lib.optionals settings.lsp.texlab.enable
+  languageServers = [
+    (callPackage ./language_server_export {
+      inherit wrapper;
+      version = exportServerVersion;
+      inherit (settings) engine;
+    })
+  ] ++ lib.optionals settings.lsp.texlab.enable
     [(callPackage ./language_server_texlab {
       inherit texInputs;
     })];
 
-  icon = ../../../codedown.png;
-  iconMonochrome = ../../../codedown-monochrome.svg;
+  # Simple Icons' LaTeX mark (CC0); see latex.svg.license
+  icon = ./latex.svg;
+  iconMonochrome = ./latex-monochrome.svg;
+
+  texliveYear = texlive.bin.core.version;
 
   pdfExporter = {
     name = "codedown-exporter-latex";
-    display_name = "PDF (.pdf)";
+    display_name = "PDF (${settings.engine}, TeX Live ${texliveYear})";
     group = "LaTeX";
     extension = "pdf";
     inherit icon;
     icon_monochrome = iconMonochrome;
-    args = [(script + "/bin/latex-export")];
+    # Live exports run on the latex-export-server language server; these args are the one-shot
+    # form of the same render, and carry the task's options (-o key=value)
+    args = ["${wrapper}/bin/latex-export-server" "render" "-o" "engine=${settings.engine}"];
     input_extensions = ["tex"];
-    deps = "typst_json";
+    kind = "render_server";
+    render_server = "latex-export-server";
   };
 
 in
 
 symlinkJoin {
   name = "codedown-exporter-latex";
-  paths = [script] ++ languageServers;
+  paths = [wrapper] ++ languageServers;
 
   passthru = {
     meta = {
       name = "codedown-exporter-latex";
-      description = "CodeDown exporter compiling LaTeX notebooks with latexmk.";
+      displayName = "LaTeX Exporter (TeX Live ${texliveYear})";
+      description = "CodeDown exporter rendering LaTeX notebooks to PDF as you type.";
 
       # To separate these out in search results
       category = "Exporters";
@@ -101,7 +88,8 @@ symlinkJoin {
     };
 
     versions = {
-      texlive = texliveToUse.version or "";
+      texlive = texliveYear;
+      lsp-export-server = exportServerVersion;
     };
 
     inherit settingsSchema settings;
