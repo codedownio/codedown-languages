@@ -7,6 +7,7 @@ module Spec.Tests.Exporters (tests) where
 
 import Data.String.Interpolate
 import Data.Text (Text)
+import Language.LSP.Protocol.Types (LanguageKind(..))
 import Test.Sandwich as Sandwich
 import TestLib.Exporters
 import TestLib.JupyterRunnerContext (introduceJustBubblewrap)
@@ -30,11 +31,20 @@ tests = describe "Exporters" $ introduceJustBubblewrap $ do
     it "codedown-exporter-pandoc-beamer" $ testExportMd "codedown-exporter-pandoc-beamer" "html"
     it "codedown-exporter-pandoc-pdf" $ testExportMd "codedown-exporter-pandoc-pdf" "pdf"
 
+    it "pandoc-export-server renders live" $
+      testExportServe "pandoc-export-server" "input.md" LanguageKind_Markdown sampleMdFile "html" [("to", "slidy")] []
+
   introduceNixEnvironment [] [latexConfig] [i|Exporters (latex)|] $ do
     it "codedown-exporter-latex" $ testExportLatex "codedown-exporter-latex" "pdf"
 
+    it "latex-export-server renders live" $
+      testExportServe "latex-export-server" "input.tex" LanguageKind_LaTeX sampleLatexFile "pdf" [] [("out.txt", "line one\n")]
+
   introduceNixEnvironment [] [typstConfig] [i|Exporters (typst)|] $ do
     it "codedown-exporter-typst" $ testExportTypst "codedown-exporter-typst" "pdf"
+
+    it "typst-export-server renders live" $
+      testExportServe "typst-export-server" "input.typ" (LanguageKind_Custom "typst") sampleTypstFile "pdf" [] []
 
 
 testTexliveScheme :: Text -> LanguageSpec
