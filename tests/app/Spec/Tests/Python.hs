@@ -67,6 +67,19 @@ tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelN
       , (Range (Position 2 2) (Position 2 3), Just (InR "reportUnusedVariable"), "Variable \"z\" is not accessed")
       ]
 
+  testDiagnostics "basedpyright" "test.py" LanguageKind_Python [__i|def f(x: int, y: str) -> None:
+                                                                      pass
+                                                                    f("asdf", 42)
+                                                                   |] $ \diagnostics -> do
+    assertDiagnosticRanges' diagnostics [
+      -- pyright reports these two as untagged hints; basedpyright gives them a rule name.
+      (Range (Position 0 6) (Position 0 7), Just (InR "reportUnusedParameter"), "\"x\" is not accessed")
+      , (Range (Position 0 14) (Position 0 15), Just (InR "reportUnusedParameter"), "\"y\" is not accessed")
+
+      , (Range (Position 2 2) (Position 2 8), Just (InR "reportArgumentType"), "Argument of type \"Literal['asdf']\" cannot be assigned to parameter \"x\" of type \"int\" in function \"f\"\n\160\160\"Literal['asdf']\" is not assignable to \"int\"")
+      , (Range (Position 2 10) (Position 2 12), Just (InR "reportArgumentType"), "Argument of type \"Literal[42]\" cannot be assigned to parameter \"y\" of type \"str\" in function \"f\"\n\160\160\"Literal[42]\" is not assignable to \"str\"")
+      ]
+
   testDiagnostics "pycodestyle" "test.py" LanguageKind_Python [__i|def f(x: int, y: str) -> None:
                                                                      z = 1.0
                                                                    f("asdf", 42)
@@ -118,6 +131,7 @@ kernelSpec kernelName pythonPackage = NixKernelSpec {
       , "lsp.python-lsp-server.enable = true"
       , "lsp.pylint.enable = true"
       , "lsp.pyright.enable = true"
+      , "lsp.basedpyright.enable = true"
       , "lsp.pycodestyle.enable = true"
       ]
   }
