@@ -104,6 +104,7 @@ symlinkJoin {
   passthru = {
     meta = {
       name = "codedown-exporter-typst";
+      displayName = "Typst Exporter ${typst.version}";
       description = "CodeDown exporter using Typst.";
 
       # To separate these out in search results
