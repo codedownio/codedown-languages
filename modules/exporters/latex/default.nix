@@ -76,6 +76,7 @@ symlinkJoin {
   passthru = {
     meta = {
       name = "codedown-exporter-latex";
+      displayName = "LaTeX Exporter (TeX Live ${texliveYear})";
       description = "CodeDown exporter rendering LaTeX notebooks to PDF as you type.";
 
       # To separate these out in search results

@@ -115,6 +115,7 @@ symlinkJoin {
   passthru = {
     meta = {
       name = "codedown-exporter-pandoc";
+      displayName = "Pandoc Exporter ${pandoc.version}";
       description = "CodeDown exporters for PDF, HTML, LaTeX, slides, etc.";
 
       # To separate these out in search results
