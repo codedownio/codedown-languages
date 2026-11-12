@@ -70,13 +70,12 @@ let
     args = ["${wrapper}/bin/typst-export-server" "render"];
     input_extensions = ["typ"];
     pandoc = "${pandoc}/bin/pandoc";
-    kind = "render_server";
-    render_server = "typst-export-server";
+    kind = { tag = "render_server"; server = "typst-export-server"; };
   };
 
   # Live preview exporter. Instead of running a command, the runner attaches a tinymist
   # preview to the document's (already-running) tinymist LSP and relays its data-plane to
-  # the browser (see exporterInfoKind = "tinymist_preview"). So it has no args, and is only
+  # the browser (see the tinymist_preview kind). So it has no args, and is only
   # offered when the tinymist language server is enabled.
   typstPreviewExporter = {
     name = "codedown-exporter-typst-preview";
@@ -87,7 +86,7 @@ let
     icon_monochrome = iconMonochrome;
     args = [];
     input_extensions = ["typ"];
-    kind = "tinymist_preview";
+    kind = { tag = "tinymist_preview"; };
   };
 
 in

@@ -69,8 +69,7 @@ let
     ] ++ (if pandocArgs == [] then [] else ["-o" "pandoc_args=${builtins.concatStringsSep " " pandocArgs}"]);
     input_extensions = ["ipynb" "md"];
     pandoc = "${pandoc}/bin/pandoc";
-    kind = "render_server";
-    render_server = "pandoc-export-server";
+    kind = { tag = "render_server"; server = "pandoc-export-server"; };
   };
 
   exporterInfos = [

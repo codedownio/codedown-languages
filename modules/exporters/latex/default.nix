@@ -63,8 +63,7 @@ let
     # form of the same render, and carry the task's options (-o key=value)
     args = ["${wrapper}/bin/latex-export-server" "render" "-o" "engine=${settings.engine}"];
     input_extensions = ["tex"];
-    kind = "render_server";
-    render_server = "latex-export-server";
+    kind = { tag = "render_server"; server = "latex-export-server"; };
   };
 
 in
