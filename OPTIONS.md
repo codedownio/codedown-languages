@@ -33,6 +33,123 @@ string (nix)
 
 
 
+## exporters\.latex\.engine
+
+
+
+**TeX engine**
+
+The TeX engine that compiles the document\.
+
+
+
+*Type:*
+one of “pdflatex”, “xelatex”, “lualatex”
+
+
+
+*Default:*
+
+```nix
+"pdflatex"
+```
+
+
+
+## exporters\.latex\.interface\.attrs
+
+
+
+**Notebook attributes**
+
+Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "latex"
+]
+```
+
+
+
+## exporters\.latex\.interface\.extensions
+
+
+
+**File extensions**
+
+Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "tex"
+]
+```
+
+
+
+## exporters\.latex\.lsp\.texlab\.enable
+
+
+
+**Enable texlab language server**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## exporters\.latex\.texliveScheme
+
+
+
+**TeX Live scheme**
+
+The TeX Live scheme to use, as an attribute of pkgs\.texlive\.pkgs\.\*
+
+
+
+*Type:*
+one of “scheme-small”, “scheme-medium”, “scheme-full”
+
+
+
+*Default:*
+
+```nix
+"scheme-medium"
+```
+
+
+
 ## exporters\.nbconvert\.texliveScheme
 
 
@@ -62,12 +179,12 @@ value “scheme-full” (singular enum)
 
 **TeX Live scheme**
 
-The TeX Live scheme to use, as an attribute of pkgs\.texlive\.combined\.\*
+The TeX Live scheme to use, as an attribute of pkgs\.texlive\.pkgs\.\*
 
 
 
 *Type:*
-value “scheme-full” (singular enum)
+one of “scheme-small”, “scheme-medium”, “scheme-full”
 
 
 
@@ -2195,8 +2312,6 @@ false
 
 ## kernels\.python3\.lsp\.pycodestyle\.enable
 
-
-
 **Enable pycodestyle language server**
 
 
@@ -2322,6 +2437,8 @@ one of “autopep8”, “yapf”, “black”, “ruff”, “none”
 
 
 ## kernels\.python3\.misc\.enableVariableInspector
+
+
 
 **Enable the variable inspector**
 
