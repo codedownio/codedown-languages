@@ -15,12 +15,13 @@ with lib;
 
       texliveScheme = mkOption {
         type = types.enum [
+          "scheme-small"
           "scheme-medium"
           "scheme-full"
         ];
         default = "scheme-medium";
         title = "TeX Live scheme";
-        description = "The TeX Live scheme to use, as an attribute of pkgs.texlive.combined.*";
+        description = "The TeX Live scheme to use, as an attribute of pkgs.texlive.pkgs.*";
       };
 
       engine = mkOption {
@@ -53,7 +54,12 @@ with lib;
 
   config = mkIf config.exporters.latex.enable {
     builtExporters.latex = config.pkgs.callPackage ./default.nix {
-      texliveToUse = config.pkgs.texlive.combined.${config.exporters.latex.texliveScheme};
+      # latexmk runs the compile; cm-super provides the Type1 TS1 fonts
+      texliveToUse = config.pkgs.texlive.withPackages (ps: [
+        ps.${config.exporters.latex.texliveScheme}
+        ps.latexmk
+        ps.cm-super
+      ]);
 
       settings = config.exporters.latex;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.exporters.latex;
