@@ -25,6 +25,7 @@ let
   exportServer = callPackage ../lsp-export-server/lsp-export-server.nix {};
   exportServerVersion = import ../lsp-export-server/lsp-export-server-version.nix;
   latexRender = callPackage ./latex-render.nix {};
+  latexLocate = callPackage ./latex-locate.nix {};
 
   # The export server with the TeX Live engines and codedown.sty in reach, rendering through
   # latex-render. `serve` is the language server behind live exports; `render` compiles a file once
@@ -32,7 +33,7 @@ let
   wrapper = common.writeShellScriptBinWithAttrs {} "latex-export-server" ''
     export PATH="${texliveToUse}/bin''${PATH:+:''${PATH}}"
     export TEXINPUTS="${texInputs}''${TEXINPUTS:-}"
-    exec ${exportServer}/bin/lsp-export-server "$@" --render ${latexRender}/bin/latex-render --settle ${latexRender}/bin/latex-render
+    exec ${exportServer}/bin/lsp-export-server "$@" --render ${latexRender}/bin/latex-render --settle ${latexRender}/bin/latex-render --locate ${latexLocate}/bin/latex-locate
   '';
 
   languageServers = [

@@ -21,7 +21,7 @@ common.writeShellScriptBinWithAttrs {} "latex-render" ''
   export TEXINPUTS="$RENDER_OVERLAY//:''${TEXINPUTS:-}"
   export LC_ALL=C SOURCE_DATE_EPOCH="$RENDER_EPOCH" FORCE_SOURCE_DATE=1
 
-  common=(-interaction=nonstopmode -halt-on-error -file-line-error -recorder "-jobname=$RENDER_JOB")
+  common=(-interaction=nonstopmode -halt-on-error -file-line-error -recorder -synctex=1 "-jobname=$RENDER_JOB")
   case "$RENDER_PHASE" in
     settle)
       case "$engine" in

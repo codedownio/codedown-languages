@@ -277,19 +277,52 @@ testExportServe :: (
 testExportServe serverName filename languageKind code format options extraFiles = do
   sessionOptions <- lspSessionOptionsFor serverName filename languageKind code
   Helpers.withLspSession (sessionOptions { lspSessionOptionsExtraFiles = extraFiles }) $ \(LspSessionInfo {..}) -> do
-    let uri = filePathToUri (lspSessionInfoHomeDir </> lspSessionInfoFileName)
-    let startParams = A.object [
-          "taskId" A..= ("test" :: Text)
-          , "uri" A..= getUri uri
-          , "format" A..= format
-          , "options" A..= M.fromList options
-          , "debounceMs" A..= (50 :: Int)
-          ]
-    void $ request SMethod_WorkspaceExecuteCommand (ExecuteCommandParams Nothing "codedown.render.start" (Just [startParams]))
+    startRenderTask (getUri (filePathToUri (lspSessionInfoHomeDir </> lspSessionInfoFileName))) format options
 
     nextRenderOutput >>= \case
       A.Object (AKM.lookup "files" -> Just (A.Array files)) | not (Prelude.null files) -> return ()
       x -> expectationFailure [i|Expected a render output with files, got: #{A.encode x}|]
+
+-- | Render to PDF, find where a zero-based line landed, and map the middle of that box back to its
+-- source, which should be the same line.
+testExportServeLocate :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Text -> FilePath -> LanguageKind -> Text -> [(FilePath, B.ByteString)] -> Int -> ExampleT ctx m ()
+testExportServeLocate serverName filename languageKind code extraFiles line = do
+  sessionOptions <- lspSessionOptionsFor serverName filename languageKind code
+  Helpers.withLspSession (sessionOptions { lspSessionOptionsExtraFiles = extraFiles }) $ \(LspSessionInfo {..}) -> do
+    let uri = getUri (filePathToUri (lspSessionInfoHomeDir </> lspSessionInfoFileName))
+    startRenderTask uri "pdf" []
+    void nextRenderOutput
+
+    box <- renderCommand "codedown.render.locate" (A.object ["taskId" A..= ("test" :: Text), "uri" A..= uri, "line" A..= line, "character" A..= (0 :: Int)])
+    (page, x, y) <- case box of
+      A.Object (AKM.toList -> fields)
+        | Just (A.Number page) <- Prelude.lookup "page" fields
+        , Just (A.Number left) <- Prelude.lookup "left" fields
+        , Just (A.Number top) <- Prelude.lookup "top" fields
+        , Just (A.Number height) <- Prelude.lookup "height" fields -> return (page, left + 5, top + height / 2)
+      v -> expectationFailure [i|Expected a page box for line #{line}, got: #{A.encode v}|]
+
+    source <- renderCommand "codedown.render.sourceAt" (A.object ["taskId" A..= ("test" :: Text), "page" A..= page, "x" A..= x, "y" A..= y])
+    source `shouldBe` A.object ["uri" A..= uri, "line" A..= line, "character" A..= (0 :: Int)]
+
+startRenderTask :: LspContext ctx m => Text -> Text -> [(Text, Text)] -> Session (ExampleT ctx m) ()
+startRenderTask uri format options = void $ renderCommand "codedown.render.start" $ A.object [
+  "taskId" A..= ("test" :: Text)
+  , "uri" A..= uri
+  , "format" A..= format
+  , "options" A..= M.fromList options
+  , "debounceMs" A..= (50 :: Int)
+  ]
+
+renderCommand :: LspContext ctx m => Text -> A.Value -> Session (ExampleT ctx m) A.Value
+renderCommand command params = do
+  TResponseMessage {..} <- request SMethod_WorkspaceExecuteCommand (ExecuteCommandParams Nothing command (Just [params]))
+  case _result of
+    Left err -> expectationFailure [i|#{command} failed: #{A.encode err}|]
+    Right (InL v) -> return v
+    Right (InR _) -> return A.Null
 
 -- | The params of the next render output notification, skipping the log and status ones.
 nextRenderOutput :: LspContext ctx m => Session (ExampleT ctx m) A.Value

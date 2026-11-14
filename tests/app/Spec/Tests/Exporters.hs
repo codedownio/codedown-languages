@@ -40,6 +40,9 @@ tests = describe "Exporters" $ introduceJustBubblewrap $ do
     it "latex-export-server renders live" $
       testExportServe "latex-export-server" "input.tex" LanguageKind_LaTeX sampleLatexFile "pdf" [] [("out.txt", "line one\n")]
 
+    it "latex-export-server locates a line in the output and back" $
+      testExportServeLocate "latex-export-server" "input.tex" LanguageKind_LaTeX sampleLatexFile [("out.txt", "line one\n")] 3
+
   introduceNixEnvironment [] [typstConfig] [i|Exporters (typst)|] $ do
     it "codedown-exporter-typst" $ testExportTypst "codedown-exporter-typst" "pdf"
 
