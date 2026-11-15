@@ -28,7 +28,7 @@ tests = describe "Exporters" $ introduceJustBubblewrap $ do
 
   introduceNixEnvironment [] [pandocConfig] [i|Exporters (pandoc)|] $ do
     it "codedown-exporter-pandoc-slidy" $ testExportMd "codedown-exporter-pandoc-slidy" "html"
-    it "codedown-exporter-pandoc-beamer" $ testExportMd "codedown-exporter-pandoc-beamer" "html"
+    it "codedown-exporter-pandoc-beamer" $ testExportMd "codedown-exporter-pandoc-beamer" "pdf"
     it "codedown-exporter-pandoc-pdf" $ testExportMd "codedown-exporter-pandoc-pdf" "pdf"
 
     it "pandoc-export-server renders live" $
