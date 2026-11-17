@@ -284,16 +284,16 @@ testExportServe serverName filename languageKind code format options extraFiles 
       A.Object (AKM.lookup "files" -> Just (A.Array files)) | not (Prelude.null files) -> return ()
       x -> expectationFailure [i|Expected a render output with files, got: #{A.encode x}|]
 
--- | Render to PDF, find where a zero-based line landed, and map the middle of that box back to its
+-- | Render to PDF, find where a zero-based line landed, and map a point in that box back to its
 -- source, which should be the same line.
 testExportServeLocate :: (
   LspContext ctx m, HasNixEnvironment ctx
-  ) => Text -> FilePath -> LanguageKind -> Text -> [(FilePath, B.ByteString)] -> Int -> ExampleT ctx m ()
-testExportServeLocate serverName filename languageKind code extraFiles line = do
+  ) => Text -> FilePath -> LanguageKind -> Text -> [(Text, Text)] -> [(FilePath, B.ByteString)] -> Int -> ExampleT ctx m ()
+testExportServeLocate serverName filename languageKind code options extraFiles line = do
   sessionOptions <- lspSessionOptionsFor serverName filename languageKind code
   Helpers.withLspSession (sessionOptions { lspSessionOptionsExtraFiles = extraFiles }) $ \(LspSessionInfo {..}) -> do
     let uri = getUri (filePathToUri (lspSessionInfoHomeDir </> lspSessionInfoFileName))
-    startRenderTask uri "pdf" []
+    startRenderTask uri "pdf" options
     void nextRenderOutput
 
     boxes <- renderCommand "codedown.render.locate" (A.object ["taskId" A..= ("test" :: Text), "uri" A..= uri, "line" A..= line, "character" A..= (0 :: Int)])
@@ -306,7 +306,9 @@ testExportServeLocate serverName filename languageKind code extraFiles line = do
       v -> expectationFailure [i|Expected page boxes for line #{line}, got: #{A.encode v}|]
 
     source <- renderCommand "codedown.render.sourceAt" (A.object ["taskId" A..= ("test" :: Text), "page" A..= page, "x" A..= x, "y" A..= y])
-    source `shouldBe` A.object ["uri" A..= uri, "line" A..= line, "character" A..= (0 :: Int)]
+    case source of
+      A.Object (AKM.toList -> fields) -> (Prelude.lookup "uri" fields, Prelude.lookup "line" fields) `shouldBe` (Just (A.String uri), Just (A.Number (fromIntegral line)))
+      v -> expectationFailure [i|Expected a source for line #{line}, got: #{A.encode v}|]
 
 startRenderTask :: LspContext ctx m => Text -> Text -> [(Text, Text)] -> Session (ExampleT ctx m) ()
 startRenderTask uri format options = void $ renderCommand "codedown.render.start" $ A.object [

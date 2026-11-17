@@ -34,6 +34,9 @@ tests = describe "Exporters" $ introduceJustBubblewrap $ do
     it "pandoc-export-server renders live" $
       testExportServe "pandoc-export-server" "input.md" LanguageKind_Markdown sampleMdFile "html" [("to", "slidy")] []
 
+    it "pandoc-export-server locates a line in the output and back" $
+      testExportServeLocate "pandoc-export-server" "input.md" LanguageKind_Markdown sampleMdFile [("to", "pdf")] [] 2
+
   introduceNixEnvironment [] [latexConfig] [i|Exporters (latex)|] $ do
     it "codedown-exporter-latex" $ testExportLatex "codedown-exporter-latex" "pdf"
 
@@ -41,7 +44,7 @@ tests = describe "Exporters" $ introduceJustBubblewrap $ do
       testExportServe "latex-export-server" "input.tex" LanguageKind_LaTeX sampleLatexFile "pdf" [] [("out.txt", "line one\n")]
 
     it "latex-export-server locates a line in the output and back" $
-      testExportServeLocate "latex-export-server" "input.tex" LanguageKind_LaTeX sampleLatexFile [("out.txt", "line one\n")] 3
+      testExportServeLocate "latex-export-server" "input.tex" LanguageKind_LaTeX sampleLatexFile [] [("out.txt", "line one\n")] 3
 
   introduceNixEnvironment [] [typstConfig] [i|Exporters (typst)|] $ do
     it "codedown-exporter-typst" $ testExportTypst "codedown-exporter-typst" "pdf"
