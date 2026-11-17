@@ -1,0 +1,10 @@
+% \cdpos and \cdposend write their source position and where they land to \jobname.cdpos
+\makeatletter
+\ifdefined\pdfsavepos\else\let\pdfsavepos\savepos\let\pdflastxpos\lastxpos\let\pdflastypos\lastypos\fi
+\newwrite\cdpos@file
+\immediate\openout\cdpos@file=\jobname.cdpos
+\def\cdpos@write#1#2{\leavevmode\pdfsavepos\write\cdpos@file{#1 #2 \the\ReadonlyShipoutCounter\space\the\pdflastxpos\space\the\pdflastypos\space\f@size}}
+\AtBeginDocument{\immediate\write\cdpos@file{h \the\paperheight}}
+\newcommand\cdpos[1]{\cdpos@write{s}{#1}}
+\newcommand\cdposend[1]{\cdpos@write{e}{#1}}
+\makeatother

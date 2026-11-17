@@ -22,13 +22,14 @@ let
   exportServerVersion = import ../lsp-export-server/lsp-export-server-version.nix;
   latexRender = callPackage ../latex/latex-render.nix {};
   pandocRender = callPackage ./pandoc-render.nix { inherit latexRender; };
+  pandocLocate = callPackage ./pandoc-locate.nix {};
 
   # The export server with pandoc and TeX Live in reach, rendering through pandoc-render. `serve`
   # is the language server behind live exports; `render` converts a file once (the exporter test
   # and notebook exports use it).
   wrapper = common.writeShellScriptBinWithAttrs {} "pandoc-export-server" ''
     export PATH="${pandoc}/bin:${texliveScheme}/bin''${PATH:+:''${PATH}}"
-    exec ${exportServer}/bin/lsp-export-server "$@" --render ${pandocRender}/bin/pandoc-render --settle ${pandocRender}/bin/pandoc-render
+    exec ${exportServer}/bin/lsp-export-server "$@" --render ${pandocRender}/bin/pandoc-render --settle ${pandocRender}/bin/pandoc-render --locate ${pandocLocate}/bin/pandoc-locate
   '';
 
   languageServers = [
