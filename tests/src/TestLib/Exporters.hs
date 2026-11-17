@@ -11,6 +11,7 @@ import Data.Aeson as A
 import Data.Aeson.QQ.Simple
 import Data.Aeson.TH as A
 import qualified Data.Aeson.KeyMap as AKM
+import qualified Data.Foldable as F
 import qualified Data.ByteString as B
 import qualified Data.Map as M
 import Data.String.Interpolate
@@ -295,14 +296,14 @@ testExportServeLocate serverName filename languageKind code extraFiles line = do
     startRenderTask uri "pdf" []
     void nextRenderOutput
 
-    box <- renderCommand "codedown.render.locate" (A.object ["taskId" A..= ("test" :: Text), "uri" A..= uri, "line" A..= line, "character" A..= (0 :: Int)])
-    (page, x, y) <- case box of
-      A.Object (AKM.toList -> fields)
+    boxes <- renderCommand "codedown.render.locate" (A.object ["taskId" A..= ("test" :: Text), "uri" A..= uri, "line" A..= line, "character" A..= (0 :: Int)])
+    (page, x, y) <- case boxes of
+      A.Array (F.toList -> A.Object (AKM.toList -> fields) : _)
         | Just (A.Number page) <- Prelude.lookup "page" fields
         , Just (A.Number left) <- Prelude.lookup "left" fields
         , Just (A.Number top) <- Prelude.lookup "top" fields
         , Just (A.Number height) <- Prelude.lookup "height" fields -> return (page, left + 5, top + height / 2)
-      v -> expectationFailure [i|Expected a page box for line #{line}, got: #{A.encode v}|]
+      v -> expectationFailure [i|Expected page boxes for line #{line}, got: #{A.encode v}|]
 
     source <- renderCommand "codedown.render.sourceAt" (A.object ["taskId" A..= ("test" :: Text), "page" A..= page, "x" A..= x, "y" A..= y])
     source `shouldBe` A.object ["uri" A..= uri, "line" A..= line, "character" A..= (0 :: Int)]
