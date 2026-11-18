@@ -8,4 +8,6 @@
 % Typeset they record; written to a file or a mark (contents, running heads) they vanish
 \def\cdpos{\ifx\protect\@typeset@protect\expandafter\cdpos@write\expandafter s\else\expandafter\@gobble\fi}
 \def\cdposend{\ifx\protect\@typeset@protect\expandafter\cdpos@write\expandafter e\else\expandafter\@gobble\fi}
+% Before an upright \textbf or \texttt, LaTeX corrects the letter before the space; markers hide it
+\def\cdposic{\ifx\protect\@typeset@protect\ifdim\fontdimen\@ne\font=\z@\/\fi\fi}
 \makeatother
