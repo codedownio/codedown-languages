@@ -100,7 +100,7 @@ let
     })
     (mkExporter {
       name = "codedown-exporter-pandoc-pdf";
-      display_name = "Pandoc PDF (.pdf)";
+      display_name = "PDF (.pdf)";
       extension = "pdf";
       to = "pdf";
     })
