@@ -52,8 +52,8 @@ local function forward(words, height, line, col)
       if before(line, col, w.line, w.col) then
         following = following or w
       elseif before(line, col, w.end_line, w.end_col) then
-        at = w
-        break
+        -- The innermost: an image's word holds its caption's
+        if not at or before(at.line, at.col, w.line, w.col) then at = w end
       else
         prev = w
       end
