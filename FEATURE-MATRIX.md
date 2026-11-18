@@ -22,10 +22,8 @@ Which languages support which notebook and editor features. The graphic version 
 | Julia | ✅ | ✅ | ✅ | – | ✅ |
 | Octave | ✅ | ✅ | ✅ | – | ✅ |
 | PostgreSQL | ✅ | ✅ | – | – | ✅ |
-| PyPy | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Python | ✅ | ✅ | ✅ | ✅ | ✅ |
-| R | ✅ | ✅ | ✅ | – | ✅ |
-| R (Ark) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| R | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Ruby | ✅ | ✅ | ✅ | – | ✅ |
 | Rust | ✅ | ✅ | ✅ | – | ✅ |
 | TypeScript | ✅ | ✅ | – | – | ✅ |
@@ -45,10 +43,8 @@ Which languages support which notebook and editor features. The graphic version 
 | Julia | ✅ | ✅ | ✅ | ✅ | ✅ | – | ✅ |
 | Octave | – | – | – | – | – | – | – |
 | PostgreSQL | – | – | – | – | – | – | – |
-| PyPy | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
 | Python | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
 | R | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| R (Ark) | – | – | – | – | – | – | – |
 | Ruby | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
 | Rust | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | TypeScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -68,10 +64,8 @@ Which languages support which notebook and editor features. The graphic version 
 | Julia | ✅ | – | ✅ | ✅ | ✅ | ✅ |
 | Octave | – | – | – | – | – | – |
 | PostgreSQL | – | – | – | – | – | – |
-| PyPy | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Python | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | R | ✅ | – | ✅ | ✅ | ✅ | ✅ |
-| R (Ark) | – | – | – | – | – | – |
 | Ruby | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Rust | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | TypeScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -91,10 +85,8 @@ Which languages support which notebook and editor features. The graphic version 
 | Julia | ✅ | ✅ | ✅ |
 | Octave | – | – | – |
 | PostgreSQL | – | – | – |
-| PyPy | – | ✅ | ✅ |
 | Python | – | ✅ | ✅ |
 | R | ✅ | ✅ | ✅ |
-| R (Ark) | – | – | – |
 | Ruby | ✅ | ✅ | – |
 | Rust | ✅ | ✅ | ✅ |
 | TypeScript | ✅ | ✅ | ✅ |
@@ -114,10 +106,8 @@ Which languages support which notebook and editor features. The graphic version 
 | Julia | ✅ |
 | Octave | ✅ |
 | PostgreSQL | – |
-| PyPy | ✅ |
 | Python | ✅ |
 | R | ✅ |
-| R (Ark) | ✅ |
 | Ruby | ✅ |
 | Rust | ✅ |
 | TypeScript | ✅ |
