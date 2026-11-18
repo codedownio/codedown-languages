@@ -3,8 +3,9 @@
 \ifdefined\pdfsavepos\else\let\pdfsavepos\savepos\let\pdflastxpos\lastxpos\let\pdflastypos\lastypos\fi
 \newwrite\cdpos@file
 \immediate\openout\cdpos@file=\jobname.cdpos
-\def\cdpos@write#1#2{\leavevmode\pdfsavepos\write\cdpos@file{#1 #2 \the\ReadonlyShipoutCounter\space\the\pdflastxpos\space\the\pdflastypos\space\f@size}}
+\def\cdpos@write#1#2{\leavevmode\pdfsavepos\edef\cdpos@x{\write\cdpos@file{#1 #2 \noexpand\the\ReadonlyShipoutCounter\space\noexpand\the\pdflastxpos\space\noexpand\the\pdflastypos\space\f@size}}\cdpos@x}
 \AtBeginDocument{\immediate\write\cdpos@file{h \the\paperheight}}
-\newcommand\cdpos[1]{\cdpos@write{s}{#1}}
-\newcommand\cdposend[1]{\cdpos@write{e}{#1}}
+% Typeset they record; written to a file or a mark (contents, running heads) they vanish
+\def\cdpos{\ifx\protect\@typeset@protect\expandafter\cdpos@write\expandafter s\else\expandafter\@gobble\fi}
+\def\cdposend{\ifx\protect\@typeset@protect\expandafter\cdpos@write\expandafter e\else\expandafter\@gobble\fi}
 \makeatother

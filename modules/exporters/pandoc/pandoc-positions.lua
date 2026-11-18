@@ -62,7 +62,7 @@ end
 
 function Pandoc(doc)
   doc = doc:walk({
-    Header = without_markers, Table = without_markers, Figure = without_markers,
+    Table = without_markers, Figure = without_markers,
     Strikeout = without_markers, Underline = without_markers,
     Subscript = without_markers, Superscript = without_markers,
   })
