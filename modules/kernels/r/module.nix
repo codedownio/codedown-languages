@@ -12,6 +12,13 @@ with lib;
         visible = false;
       };
 
+      backend = mkOption {
+        title = "Kernel backend";
+        description = "Ark is Posit's newer R kernel and supports the debugger. IRkernel is the classic R kernel, with rich output through the repr package.";
+        type = types.enum ["ark" "irkernel"];
+        default = "ark";
+      };
+
       packages = mkOption {
         title = "List of packages";
         type = types.listOf types.str;

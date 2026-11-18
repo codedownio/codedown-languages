@@ -4,7 +4,7 @@
 # Used by scripts/probe-lsp-capabilities to attribute language servers to kernels
 # unambiguously: whatever shows up under lib/codedown/language-servers in one of these
 # environments belongs to that kernel. (In a combined environment like `mega` you can't
-# always tell, since e.g. the R and R-ark kernels would both claim the same `attrs`.)
+# always tell which kernel a server came from.)
 
 { lib
 , makeEnvironment

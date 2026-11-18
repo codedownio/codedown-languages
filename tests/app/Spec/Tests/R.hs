@@ -3,6 +3,8 @@
 module Spec.Tests.R (tests) where
 
 import Data.String.Interpolate
+import Data.Text (Text)
+import qualified Data.Text as T
 import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
@@ -15,19 +17,24 @@ import TestLib.Types
 import qualified Spec.Tests.R.VariableInspector as VariableInspector
 
 
-kernelSpec :: NixKernelSpec
-kernelSpec = NixKernelSpec {
+kernelSpec :: Text -> NixKernelSpec
+kernelSpec backend = NixKernelSpec {
   nixKernelName = "R"
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "R"
   , nixKernelPackages = [nameOnly "ggplot2"]
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelExtraConfig = Nothing
+  , nixKernelExtraConfig = Just [[i|backend = "#{backend}"|]]
   }
 
 tests :: LanguageSpec
-tests = describe "R" $ introduceNixEnvironment [kernelSpec] [] "R" $ introduceJupyterRunner $ do
+tests = describe "R" $ do
+  backendTests "ark"
+  backendTests "irkernel"
+
+backendTests :: SomeLanguageSpec context => Text -> SpecFree context IO ()
+backendTests backend = describe (T.unpack backend) $ introduceNixEnvironment [kernelSpec backend] [] [i|R (#{backend})|] $ introduceJupyterRunner $ do
   testKernelSearchersNonempty "R"
   testHasExpectedFields "R"
 

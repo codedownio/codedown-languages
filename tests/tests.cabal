@@ -158,7 +158,6 @@ executable tests
       Spec.Tests.Python.VariableInspector
       Spec.Tests.R
       Spec.Tests.R.VariableInspector
-      Spec.Tests.RArk
       Spec.Tests.Ruby
       Spec.Tests.Ruby.VariableInspector
       Spec.Tests.Rust
