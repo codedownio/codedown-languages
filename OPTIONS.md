@@ -290,6 +290,29 @@ one of “typstyle”, “typstfmt”, “none”
 
 
 
+## kernels\.R\.backend
+
+
+
+**Kernel backend**
+
+Ark is Posit’s newer R kernel and supports the debugger\. IRkernel is the classic R kernel, with rich output through the repr package\.
+
+
+
+*Type:*
+one of “ark”, “irkernel”
+
+
+
+*Default:*
+
+```nix
+"ark"
+```
+
+
+
 ## kernels\.R\.interface\.attrs
 
 
@@ -363,80 +386,6 @@ true
 
 
 ## kernels\.R\.misc\.enableVariableInspector
-
-
-
-**Enable the variable inspector**
-
-This will show a summary of the currently defined variables in the UI\.
-
-
-
-*Type:*
-boolean
-
-
-
-*Default:*
-
-```nix
-true
-```
-
-
-
-## kernels\.R-ark\.interface\.attrs
-
-
-
-**Notebook attributes**
-
-Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
-
-
-
-*Type:*
-list of string
-
-
-
-*Default:*
-
-```nix
-[
-  "r"
-  "R"
-]
-```
-
-
-
-## kernels\.R-ark\.interface\.extensions
-
-
-
-**File extensions**
-
-Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
-
-
-
-*Type:*
-list of string
-
-
-
-*Default:*
-
-```nix
-[
-  "r"
-]
-```
-
-
-
-## kernels\.R-ark\.misc\.enableVariableInspector
 
 
 
@@ -1887,315 +1836,6 @@ list of string
 
 
 
-## kernels\.pypy3\.interface\.attrs
-
-
-
-**Notebook attributes**
-
-Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
-
-
-
-*Type:*
-list of string
-
-
-
-*Default:*
-
-```nix
-[
-  "python3"
-  "python"
-]
-```
-
-
-
-## kernels\.pypy3\.interface\.extensions
-
-
-
-**File extensions**
-
-Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
-
-
-
-*Type:*
-list of string
-
-
-
-*Default:*
-
-```nix
-[
-  "py"
-]
-```
-
-
-
-## kernels\.pypy3\.lsp\.flake8\.enable
-
-
-
-**Enable Flake8 language server**
-
-
-
-*Type:*
-boolean
-
-
-
-*Default:*
-
-```nix
-false
-```
-
-
-
-## kernels\.pypy3\.lsp\.jedi\.enable
-
-
-
-**Enable Jedi language server**
-
-
-
-*Type:*
-boolean
-
-
-
-*Default:*
-
-```nix
-true
-```
-
-
-
-## kernels\.pypy3\.lsp\.microsoft\.enable
-
-
-
-**Enable Microsoft Python language server**
-
-
-
-*Type:*
-boolean
-
-
-
-*Default:*
-
-```nix
-false
-```
-
-
-
-## kernels\.pypy3\.lsp\.pycodestyle\.enable
-
-
-
-**Enable pycodestyle language server**
-
-
-
-*Type:*
-boolean
-
-
-
-*Default:*
-
-```nix
-false
-```
-
-
-
-## kernels\.pypy3\.lsp\.pylint\.enable
-
-
-
-**Enable Pylint language server**
-
-
-
-*Type:*
-boolean
-
-
-
-*Default:*
-
-```nix
-false
-```
-
-
-
-## kernels\.pypy3\.lsp\.pyright\.enable
-
-
-
-**Enable Pyright language server**
-
-
-
-*Type:*
-boolean
-
-
-
-*Default:*
-
-```nix
-false
-```
-
-
-
-## kernels\.pypy3\.lsp\.python-language-server\.enable
-
-
-
-**Enable python-language-server language server**
-
-
-
-*Type:*
-boolean
-
-
-
-*Default:*
-
-```nix
-false
-```
-
-
-
-## kernels\.pypy3\.lsp\.python-lsp-server\.enable
-
-
-
-**Enable python-lsp-server language server**
-
-
-
-*Type:*
-boolean
-
-
-
-*Default:*
-
-```nix
-false
-```
-
-
-
-## kernels\.pypy3\.lsp\.python-lsp-server\.formatter
-
-
-
-**Python formatter**
-
-Which formatter python-lsp-server uses\.
-
-
-
-*Type:*
-one of “autopep8”, “yapf”, “black”, “ruff”, “none”
-
-
-
-*Default:*
-
-```nix
-"autopep8"
-```
-
-
-
-## kernels\.pypy3\.misc\.enableVariableInspector
-
-
-
-**Enable the variable inspector**
-
-This will show a summary of the currently defined variables in the UI\.
-
-
-
-*Type:*
-boolean
-
-
-
-*Default:*
-
-```nix
-true
-```
-
-
-
-## kernels\.pypy3\.misc\.permitUserSite
-
-
-
-**Permit user site-packages**
-
-Skip setting the PYTHONNOUSERSITE variable\. This will allow your Python code to import local packages (e\.g\. from ~/\.local/lib)\. This is useful if you want to use pip to install Python packages independently of Nix\.
-
-
-
-*Type:*
-boolean
-
-
-
-*Default:*
-
-```nix
-false
-```
-
-
-
-## kernels\.pypy3\.python3Package
-
-
-
-**PyPy 3 version**
-
-
-
-*Type:*
-value “pypy3” (singular enum)
-
-
-
-*Default:*
-
-```nix
-"pypy3"
-```
-
-
-
 ## kernels\.python3\.interface\.attrs
 
 
@@ -2311,6 +1951,8 @@ false
 
 
 ## kernels\.python3\.lsp\.pycodestyle\.enable
+
+
 
 **Enable pycodestyle language server**
 
@@ -2486,12 +2128,12 @@ false
 
 
 
-**Python 3 version**
+**Python interpreter**
 
 
 
 *Type:*
-one of “python3”, “python312”, “python313”, “python314”
+one of “python3”, “python312”, “python313”, “python314”, “pypy3”
 
 
 
@@ -2694,8 +2336,6 @@ list of (string or (submodule))
 
 
 ## kernels\.rust\.interface\.attrs
-
-
 
 **Notebook attributes**
 

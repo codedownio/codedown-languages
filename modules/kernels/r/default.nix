@@ -10,7 +10,7 @@
 , settingsSchema
 }:
 
-with { inherit (settings) packages; };
+with { inherit (settings) packages backend; };
 with { inherit (settings.interface) attrs extensions; };
 
 with lib;
@@ -18,7 +18,15 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  basePackages = [rPackages.IRkernel] ++ (map (x: lib.getAttr x rPackages) (map common.packageName packages));
+  isArk = backend == "ark";
+
+  userPackages = map (x: lib.getAttr x rPackages) (map common.packageName packages);
+
+  basePackages =
+    if isArk
+    # The variable inspector uses jsonlite, which IRkernel would have brought in.
+    then userPackages ++ lib.optionals settings.misc.enableVariableInspector [rPackages.jsonlite]
+    else [rPackages.IRkernel] ++ userPackages;
 
   kernelName = "R";
 
@@ -31,12 +39,18 @@ let
     )]
   ;
 
+  ark = callPackage ./ark.nix { inherit R; };
+
   packageOptions = rPackages;
   packageSearch = common.searcher packageOptions;
   versions = {
     r = R.version;
     languageserver = (callPackage ./language-server-languageserver/languageserver.nix {}).version;
-  };
+  } // (if isArk then {
+    ark = ark.version;
+  } else {
+    irkernel = rPackages.IRkernel.version;
+  });
 
   rWithPackages = rWrapper.override {
     packages = basePackages;
@@ -52,6 +66,20 @@ let
     };
   };
 
+  kernel =
+    if isArk
+    then callPackage ./kernel-ark.nix {
+      inherit ark R attrs extensions repls;
+      # Ark embeds R through libR, so rWrapper's R_LIBS_SITE never reaches it.
+      rLibsSite = lib.concatMapStringsSep ":" (p: "${p}/library") basePackages;
+      version = R.version;
+      enableVariableInspector = settings.misc.enableVariableInspector;
+    }
+    else callPackage ./kernel-irkernel.nix {
+      inherit rWithPackages attrs extensions repls;
+      version = R.version;
+      enableVariableInspector = settings.misc.enableVariableInspector;
+    };
 
 in
 
@@ -59,11 +87,7 @@ symlinkJoin {
   name = "r";
 
   paths = [
-    (callPackage ./kernel.nix {
-      inherit rWithPackages attrs extensions repls;
-      version = R.version;
-      enableVariableInspector = settings.misc.enableVariableInspector;
-    })
+    kernel
     rWithPackages
   ]
   ++ languageServers
@@ -77,6 +101,7 @@ symlinkJoin {
       icon = ./r-logo-64x64.png;
       iconMonochrome = ./r-monochrome.svg;
       hasPackages = packageOptions != {};
+      hasDebugger = isArk;
     };
     inherit packageOptions packageSearch versions;
     inherit settingsSchema settings;

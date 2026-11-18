@@ -25,7 +25,7 @@
   octave = import ./sample_environments/octave.nix args;
   postgres = import ./sample_environments/postgres.nix args;
   r = import ./sample_environments/r.nix args;
-  r-ark = import ./sample_environments/r-ark.nix args;
+  r-irkernel = import ./sample_environments/r-irkernel.nix args;
   ruby_3_3 = import ./sample_environments/ruby_3_3.nix args;
   ruby_3_4 = import ./sample_environments/ruby_3_4.nix args;
   ruby = import ./sample_environments/ruby.nix args;

@@ -15,9 +15,8 @@
 let
   common = callPackage ../common.nix {};
 
-  # Ark runs R, so it reuses the IRkernel R inspector verbatim.
   variableInspector = {
-    initial_code_path = ../r/variable_inspector.R;
+    initial_code_path = ./variable_inspector.R;
     list_variables_command = ".codedown_variable_inspector$dict_list()";
     inspect_variable_command = ".codedown_variable_inspector$inspect('{{VARIABLE_NAME}}')";
   };
@@ -25,8 +24,8 @@ let
 in
 
 common.makeJupyterKernel {
-  r-ark = {
-    displayName = "R (Ark)";
+  r = {
+    displayName = "R";
     argv = [
       "${ark}/bin/ark"
       "--connection_file"
@@ -63,7 +62,7 @@ common.makeJupyterKernel {
 
         variable_inspector = if enableVariableInspector then variableInspector else null;
 
-        repls = common.replsToMetadata "r-ark" repls;
+        repls = common.replsToMetadata "r" repls;
 
         priority = 1;
       };

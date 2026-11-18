@@ -157,8 +157,14 @@ executable tests
       Spec.Tests.Python
       Spec.Tests.Python.VariableInspector
       Spec.Tests.R
+      Spec.Tests.R.Common
+      Spec.Tests.R.LSP
+      Spec.Tests.R.LSP.Completion
+      Spec.Tests.R.LSP.Diagnostics
+      Spec.Tests.R.LSP.Formatting
+      Spec.Tests.R.LSP.Hovers
+      Spec.Tests.R.LSP.Symbols
       Spec.Tests.R.VariableInspector
-      Spec.Tests.RArk
       Spec.Tests.Ruby
       Spec.Tests.Ruby.VariableInspector
       Spec.Tests.Rust
