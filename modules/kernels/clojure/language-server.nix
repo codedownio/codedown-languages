@@ -34,4 +34,8 @@ common.writeTextDirWithMetaAndPassthru clojure-lsp.meta passthru "lib/codedown/l
   args = ["${clojure-lsp}/bin/clojure-lsp"];
   env = {};
   language_id = "clojure";
+  # With no deps.edn or project.clj, clojure-lsp has no source paths and indexes nothing.
+  initialization_options = {
+    source-paths = ["."];
+  };
 }])

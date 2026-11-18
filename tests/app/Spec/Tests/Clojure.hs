@@ -4,7 +4,10 @@ module Spec.Tests.Clojure (tests) where
 
 import Data.String.Interpolate
 import Language.LSP.Protocol.Types
+import Language.LSP.Test
+import qualified Language.LSP.Test.Helpers as Helpers
 import Test.Sandwich as Sandwich
+import Test.Sandwich.Waits (waitUntil)
 import TestLib.JupyterRunnerContext
 import TestLib.LSP
 import TestLib.NixEnvironmentContext
@@ -42,6 +45,14 @@ tests = describe "Clojure" $ introduceNixEnvironment [kernelSpec] [] "Clojure" $
   itFormatsAs "clojure-lsp" "test.clj" LanguageKind_Clojure
     "(defn  foo [a   b]\n(+ a  b))\n"
     "(defn  foo [a   b]\n  (+ a  b))\n"
+
+  it "finds a cell's function in workspace symbols" $ doNotebookSession "clojure-lsp" "(defn alpha-in-cell [] 2)\n" $ \(Helpers.LspSessionInfo {..}) -> do
+    ident <- openDoc lspSessionInfoFileName LanguageKind_Clojure
+    _ <- getDocumentSymbols ident
+
+    waitUntil 60 $ do
+      symbols <- symbolNames <$> getWorkspaceSymbols "alpha"
+      symbols `listShouldContain` "alpha-in-cell"
 
 
 main :: IO ()
