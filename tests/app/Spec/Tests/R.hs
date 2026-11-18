@@ -2,18 +2,18 @@
 
 module Spec.Tests.R (tests) where
 
+import Control.Monad (when)
 import Data.String.Interpolate
 import Data.Text (Text)
 import qualified Data.Text as T
-import Language.LSP.Protocol.Types
 import Test.Sandwich as Sandwich
 import TestLib.JupyterRunnerContext
-import TestLib.LSP
 import TestLib.NixEnvironmentContext
 import TestLib.NixTypes
 import TestLib.TestSearchers
 import TestLib.Types
 
+import qualified Spec.Tests.R.LSP as LSP
 import qualified Spec.Tests.R.VariableInspector as VariableInspector
 
 
@@ -43,9 +43,7 @@ backendTests backend = describe (T.unpack backend) $ introduceNixEnvironment [ke
 
   VariableInspector.tests "R"
 
-  itFormatsAs "languageserver" "test.R" LanguageKind_R
-    "f <- function(a,b){\na+b\n}\n"
-    "f <- function(a, b) {\n  a + b\n}\n"
+  when (backend == "ark") LSP.tests
 
 
 main :: IO ()
