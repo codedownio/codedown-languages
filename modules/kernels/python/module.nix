@@ -37,7 +37,10 @@ let
     ];
   };
 
-  mkOptions = packageOption: {
+in
+
+{
+  options.kernels.python3 = {
     enable = mkOption {
       title = "Enable Python 3 kernel";
       type = types.bool;
@@ -52,7 +55,23 @@ let
       visible = false;
     };
 
-    python3Package = packageOption;
+    python3Package = mkOption {
+      title = "Python interpreter";
+      type = types.enum (lib.unique (
+        [
+          "python3"
+
+          # "python310"
+          "python312"
+          "python313"
+          "python314"
+
+          "pypy3"
+        ]
+        # ++ (builtins.filter (n: builtins.match "^python3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
+      ));
+      default = "python3";
+    };
 
     interface.attrs = mkOption {
       title = boilerplate.attrsTitle;
@@ -126,29 +145,6 @@ let
       type = types.bool;
       default = true;
     };
-  };
-
-in
-
-{
-  options = {
-    kernels.python3 = mkOptions (mkOption {
-      title = "Python interpreter";
-      type = types.enum (lib.unique (
-        [
-          "python3"
-
-          # "python310"
-          "python312"
-          "python313"
-          "python314"
-
-          "pypy3"
-        ]
-        # ++ (builtins.filter (n: builtins.match "^python3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
-      ));
-      default = "python3";
-    });
   };
 
   config = mkIf config.kernels.python3.enable {
