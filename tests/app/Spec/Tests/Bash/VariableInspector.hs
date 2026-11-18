@@ -47,3 +47,8 @@ tests kernel = describe "Variable Inspector" $ do
       variableDetailIsMatrix detail `shouldBe` True
       (variableTableColumns <$> variableDetailTable detail) `shouldBe` Just ["value"]
       (length . variableTableData <$> variableDetailTable detail) `shouldBe` Just 3
+
+  it "inspects an associative array as keys and values" $
+    withInspectVariable kernel [i|declare -A ports=([https]=443 [http]=80)|] "ports" $ \detail -> do
+      variableDetailIsMatrix detail `shouldBe` True
+      variableDetailTable detail `shouldBe` Just (VariableTable ["key", "value"] [["http", "80"], ["https", "443"]])
