@@ -46,9 +46,11 @@ let
   versions = {
     r = R.version;
     languageserver = (callPackage ./language-server-languageserver/languageserver.nix {}).version;
-  } // lib.optionalAttrs isArk {
+  } // (if isArk then {
     ark = ark.version;
-  };
+  } else {
+    irkernel = rPackages.IRkernel.version;
+  });
 
   rWithPackages = rWrapper.override {
     packages = basePackages;
