@@ -35,30 +35,46 @@ end
 local function top_of(w, height) return height - w.y - ASCENT * w.size * 72 / 72.27 end
 local function depth(w) return (ASCENT + DESCENT) * w.size * 72 / 72.27 end
 
-local function forward(words, height, line)
-  local boxes, order = {}, {}
+local function before(l1, c1, l2, c2) return l1 < l2 or (l1 == l2 and c1 < c2) end
+
+-- A word's right edge, if it ends on the output line it starts on
+local function right_of(w) return (w.end_page == w.page and w.end_y == w.y) and w.end_x or nil end
+
+local function box(w, x, width, height)
+  return string.format("%d %.3f %.3f %.3f %.3f", w.page, x, top_of(w, height), width, depth(w))
+end
+
+-- The word at the column, or just before it, and the column's point as a zero-width box
+local function forward(words, height, line, col)
+  local at, prev, following
   for _, w in ipairs(words) do
     if w.line <= line and w.end_line >= line then
-      -- A word broken across output lines only marks where it starts
-      local right = (w.end_page == w.page and w.end_y == w.y) and w.end_x or w.x
-      local key = w.page .. ":" .. w.y
-      local b = boxes[key]
-      if not b then
-        b = { page = w.page, left = w.x, right = right, top = top_of(w, height), height = depth(w) }
-        boxes[key] = b
-        order[#order + 1] = b
+      if before(line, col, w.line, w.col) then
+        following = following or w
+      elseif before(line, col, w.end_line, w.end_col) then
+        at = w
+        break
       else
-        b.left = math.min(b.left, w.x)
-        b.right = math.max(b.right, right)
+        prev = w
       end
     end
   end
   local out = {}
-  local first_page = order[1] and order[1].page
-  for _, b in ipairs(order) do
-    if b.page == first_page then
-      out[#out + 1] = string.format("%d %.3f %.3f %.3f %.3f", b.page, b.left, b.top, b.right - b.left, b.height)
+  if at then
+    local right = right_of(at)
+    if right then out[#out + 1] = box(at, at.x, right - at.x, height) end
+    local x = at.x
+    if right and at.line == line and at.end_line == line then
+      x = at.x + (right - at.x) * (col - at.col) / (at.end_col - at.col)
     end
+    out[#out + 1] = box(at, x, 0, height)
+  elseif prev and prev.end_line == line and prev.end_col == col and right_of(prev) then
+    out[#out + 1] = box(prev, prev.x, right_of(prev) - prev.x, height)
+    out[#out + 1] = box(prev, right_of(prev), 0, height)
+  elseif prev and not following then
+    out[#out + 1] = box(prev, right_of(prev) or prev.x, 0, height)
+  elseif following then
+    out[#out + 1] = box(following, following.x, 0, height)
   end
   return out
 end
@@ -71,7 +87,7 @@ local function inverse(words, height, page, x, y)
       local top = top_of(w, height)
       local bottom = top + depth(w)
       local dy = (y < top and top - y) or (y > bottom and y - bottom) or 0
-      local right = (w.end_page == w.page and w.end_y == w.y) and w.end_x or w.x
+      local right = right_of(w) or w.x
       local dx = (x < w.x and w.x - x) or (x > right and x - right) or 0
       local score = dy * 1000 + dx
       if not best_score or score < best_score then best, best_score = w, score end
@@ -91,7 +107,7 @@ local words, height = read_words(env("RENDER_OUT") .. "/" .. env("RENDER_JOB") .
 local result = io.open(env("RENDER_RESULT"), "w")
 if words and height then
   if env("RENDER_QUERY") == "forward" then
-    for _, l in ipairs(forward(words, height, tonumber(env("RENDER_LINE")))) do result:write(l, "\n") end
+    for _, l in ipairs(forward(words, height, tonumber(env("RENDER_LINE")), tonumber(env("RENDER_COLUMN")))) do result:write(l, "\n") end
   else
     local answer = inverse(words, height, tonumber(env("RENDER_PAGE")), tonumber(env("RENDER_X")), tonumber(env("RENDER_Y")))
     if answer then result:write(answer, "\n") end
