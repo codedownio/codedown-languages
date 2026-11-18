@@ -50,9 +50,6 @@ codedown.makeEnvironment {
   kernels.python3.lsp.python-lsp-server.enable = true;
   kernels.python3.misc.permitUserSite = false;
 
-  # kernels.pypy3.enable = true;
-  # kernels.pypy3.misc.permitUserSite = false;
-
   kernels.ruby.enable = true;
 
   kernels.rust.enable = true;

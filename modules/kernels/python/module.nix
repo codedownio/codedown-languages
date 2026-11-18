@@ -133,7 +133,7 @@ in
 {
   options = {
     kernels.python3 = mkOptions (mkOption {
-      title = "Python 3 version";
+      title = "Python interpreter";
       type = types.enum (lib.unique (
         [
           "python3"
@@ -142,103 +142,75 @@ in
           "python312"
           "python313"
           "python314"
+
+          "pypy3"
         ]
         # ++ (builtins.filter (n: builtins.match "^python3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
       ));
       default = "python3";
     });
-
-    kernels.pypy3 = mkOptions (mkOption {
-      title = "PyPy 3 version";
-      type = types.enum (lib.unique (
-        [
-          "pypy3"
-        ]
-        # ++ (builtins.filter (n: builtins.match "^pypy3[0-9]*$" n != null) (builtins.attrNames config.pkgs))
-      ));
-      default = "pypy3";
-    });
   };
 
-  config = mkMerge [
-    (mkIf config.kernels.python3.enable {
-      builtKernels.python3 = let
-        x = config.kernels.python3.python3Package;
+  config = mkIf config.kernels.python3.enable {
+    builtKernels.python3 = let
+      x = config.kernels.python3.python3Package;
 
-        basePython = (lib.getAttr x config.pkgs).override {
-          packageOverrides = _pyFinal: pyPrev: {
-            # A reply written raw on the shell socket drains its descriptor edge, so a request
-            # arriving at that moment is never dispatched and the shell channel wedges for good.
-            ipykernel = pyPrev.ipykernel.overridePythonAttrs (old: {
-              patches = (old.patches or []) ++ [ ./ipykernel-reply-through-shell-stream.patch ];
-            });
+      isPyPy = lib.hasPrefix "pypy" x;
 
-            # Every pylint primer test drives one shared PRIMER_DIRECTORY and reads back the
-            # comment.txt it writes there, so the pytest-xdist workers overwrite each other's
-            # output and one of them reads an empty file. They only run on the single
-            # interpreter pylint pins them to (PRIMER_CURRENT_INTERPRETER, currently 3.13), and
-            # they cover pylint's own CI tooling rather than anything we ship.
-            pylint = pyPrev.pylint.overridePythonAttrs (old: {
-              disabledTestPaths = (old.disabledTestPaths or []) ++ [
-                "tests/testutils/_primer/test_primer.py"
-              ];
-            });
-          };
+      cpythonOverrides = _pyFinal: pyPrev: {
+        # A reply written raw on the shell socket drains its descriptor edge, so a request
+        # arriving at that moment is never dispatched and the shell channel wedges for good.
+        ipykernel = pyPrev.ipykernel.overridePythonAttrs (old: {
+          patches = (old.patches or []) ++ [ ./ipykernel-reply-through-shell-stream.patch ];
+        });
+
+        # Every pylint primer test drives one shared PRIMER_DIRECTORY and reads back the
+        # comment.txt it writes there, so the pytest-xdist workers overwrite each other's
+        # output and one of them reads an empty file. They only run on the single
+        # interpreter pylint pins them to (PRIMER_CURRENT_INTERPRETER, currently 3.13), and
+        # they cover pylint's own CI tooling rather than anything we ship.
+        pylint = pyPrev.pylint.overridePythonAttrs (old: {
+          disabledTestPaths = (old.disabledTestPaths or []) ++ [
+            "tests/testutils/_primer/test_primer.py"
+          ];
+        });
+      };
+
+      pypyOverrides = pyFinal: pyPrev:
+        # Test suites are the main thing standing between PyPy and a working kernel: a
+        # package unsupported on PyPy throws when its outPath is evaluated even as a mere
+        # check input, and several check inputs are C extensions that don't compile here.
+        (lib.mapAttrs (_name: value:
+          let isPythonPackage = builtins.tryEval (lib.isDerivation value && value ? overridePythonAttrs);
+          in if isPythonPackage.success && isPythonPackage.value
+             then value.overridePythonAttrs (_: { doCheck = false; })
+             else value
+        ) pyPrev)
+        // {
+          ipykernel = pyPrev.ipykernel.overridePythonAttrs (old: {
+            doCheck = false;
+            patches = (old.patches or []) ++ [ ./ipykernel-reply-through-shell-stream.patch ];
+          });
+
+          # On PyPy, pyzmq builds and runs against cffi rather than Cython, but nixpkgs
+          # only wires up the Cython path.
+          pyzmq = pyPrev.pyzmq.overridePythonAttrs (old: {
+            doCheck = false;
+            build-system = (old.build-system or []) ++ [ pyFinal.cffi pyFinal.pycparser ];
+            dependencies = (old.dependencies or []) ++ [ pyFinal.cffi pyFinal.pycparser ];
+          });
         };
-          # if lib.hasAttr x specialEnvPythons then (config.pkgs.poetry2nix.mkPoetryEnv {
-          #   projectDir = ./envs/${x};
-          #   python = specialEnvPythons.${x};
-          #   overrides = import ./envs/${x}/poetry-overrides.nix { inherit (config.pkgs) poetry2nix; };
-          # }).overrideAttrs (_: { version = specialEnvPythons.${x}.version; })
-          # else lib.getAttr x config.pkgs;
-      in
-        config.pkgs.callPackage ./. {
-          name = "Python";
+    in
+      config.pkgs.callPackage ./. {
+        name = if isPyPy then "PyPy" else "Python";
 
-          python3 = basePython;
-
-          settings = config.kernels.python3;
-          settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.python3;
-          subPackageSettingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } subPackageEvaluated.options.subPackage;
+        python3 = (lib.getAttr x config.pkgs).override {
+          packageOverrides = if isPyPy then pypyOverrides else cpythonOverrides;
         };
-    })
 
-    (mkIf config.kernels.pypy3.enable {
-      builtKernels.pypy3 =
-        config.pkgs.callPackage ./. {
-          name = "PyPy";
-
-          python3 = (lib.getAttr config.kernels.pypy3.python3Package config.pkgs).override {
-            packageOverrides = pyFinal: pyPrev:
-              # Test suites are the main thing standing between PyPy and a working kernel: a
-              # package unsupported on PyPy throws when its outPath is evaluated even as a mere
-              # check input, and several check inputs are C extensions that don't compile here.
-              (lib.mapAttrs (_name: value:
-                let isPythonPackage = builtins.tryEval (lib.isDerivation value && value ? overridePythonAttrs);
-                in if isPythonPackage.success && isPythonPackage.value
-                   then value.overridePythonAttrs (_: { doCheck = false; })
-                   else value
-              ) pyPrev)
-              // {
-                ipykernel = pyPrev.ipykernel.overridePythonAttrs (old: {
-                  doCheck = false;
-                  patches = (old.patches or []) ++ [ ./ipykernel-reply-through-shell-stream.patch ];
-                });
-
-                # On PyPy, pyzmq builds and runs against cffi rather than Cython, but nixpkgs
-                # only wires up the Cython path.
-                pyzmq = pyPrev.pyzmq.overridePythonAttrs (old: {
-                  doCheck = false;
-                  build-system = (old.build-system or []) ++ [ pyFinal.cffi pyFinal.pycparser ];
-                  dependencies = (old.dependencies or []) ++ [ pyFinal.cffi pyFinal.pycparser ];
-                });
-              };
-          };
-
-          settings = config.kernels.pypy3;
-          settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.pypy3;
-          subPackageSettingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } subPackageEvaluated.options.subPackage;
-        };
-    })
-  ];
+        settings = config.kernels.python3;
+        settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.python3;
+        subPackageSettingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 1; } subPackageEvaluated.options.subPackage;
+      };
+  };
 }

@@ -85,22 +85,18 @@ tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelN
 -- rather than the package and language server stack the CPython tests exercise.
 pypyTests :: LanguageSpec
 pypyTests = introduceNixEnvironment [pypyKernelSpec] [] "Python (pypy3)" $ introduceJupyterRunner $ do
-  -- The Nix attribute is kernels.pypy3, but the kernel it installs is named python3, the
-  -- same as the CPython ones.
-  testHasExpectedFields "pypy3"
-
   testKernelStdout "python3" [i|print("hi")|] "hi\n"
   testKernelStdout "python3" [i|import platform; print(platform.python_implementation())|] "PyPy\n"
 
 pypyKernelSpec :: NixKernelSpec
 pypyKernelSpec = NixKernelSpec {
-  nixKernelName = "pypy3"
+  nixKernelName = "python3"
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just "PyPy"
   , nixKernelPackages = []
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
-  , nixKernelExtraConfig = Nothing
+  , nixKernelExtraConfig = Just [[i|python3Package = "pypy3"|]]
   }
 
 kernelSpec :: Text -> Text -> NixKernelSpec
