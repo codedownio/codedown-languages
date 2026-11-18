@@ -37,6 +37,9 @@ tests = describe "Exporters" $ introduceJustBubblewrap $ do
     it "pandoc-export-server locates a line in the output and back" $
       testExportServeLocate "pandoc-export-server" "input.md" LanguageKind_Markdown sampleMdFile [("to", "pdf")] [] 2
 
+    it "pandoc-export-server locates a word of every kind and back" $
+      testExportServeLocateWords "pandoc-export-server" "input.md" LanguageKind_Markdown sampleMdWordsFile [("to", "pdf"), ("from", "commonmark_x+tex_math_gfm+implicit_figures")] [("pic.png", tinyPng)] sampleMdWords
+
   introduceNixEnvironment [] [latexConfig] [i|Exporters (latex)|] $ do
     it "codedown-exporter-latex" $ testExportLatex "codedown-exporter-latex" "pdf"
 

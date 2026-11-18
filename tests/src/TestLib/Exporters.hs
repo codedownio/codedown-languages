@@ -14,6 +14,7 @@ import qualified Data.Aeson.KeyMap as AKM
 import qualified Data.Foldable as F
 import qualified Data.ByteString as B
 import qualified Data.Map as M
+import Data.Maybe (catMaybes)
 import Data.String.Interpolate
 import Data.Text as T
 import qualified Data.Text.IO as T
@@ -43,6 +44,22 @@ data ExporterInfo = ExporterInfo {
 } deriving (Show, Eq)
 deriveJSON toSnake2 ''ExporterInfo
 
+data PageBox = PageBox {
+  boxPage :: Int
+  , boxLeft :: Double
+  , boxTop :: Double
+  , boxWidth :: Double
+  , boxHeight :: Double
+} deriving (Show, Eq)
+deriveJSON toSnake1 ''PageBox
+
+data SourceLocation = SourceLocation {
+  sourceUri :: Text
+  , sourceLine :: Int
+  , sourceCharacter :: Int
+} deriving (Show, Eq)
+deriveJSON toSnake1 ''SourceLocation
+
 sampleJupyterNotebook :: Value
 sampleJupyterNotebook = [aesonQQ|{
   "cells": [
@@ -64,6 +81,49 @@ sampleJupyterNotebook = [aesonQQ|{
   "nbformat": 4,
   "nbformat_minor": 4
 }|]
+
+-- | A word of every kind pandoc's LaTeX can mark, each written once and on one output line
+sampleMdWordsFile :: Text
+sampleMdWordsFile =
+  [__i|\# Heading with `code` and *slanted*
+
+       Plain **strong** *emphasized* `inline` $`x^2`$ ~~struck~~ ^sup^ ~sub~ end.
+
+       A [linked](https://example.com) <https://example.com/auto> "quoted" ![pic](pic.png) end.
+
+       - bullet
+       1. ordered
+
+       > blockquoted
+
+       Term
+       : defined
+
+       Footnoted[^1] text.
+
+       [^1]: footnotetext
+
+       | header | cell |
+       |--------|------|
+       | bodycell | more |
+
+       ![captioned](pic.png)
+       |]
+
+-- | The words of 'sampleMdWordsFile' to locate, as written
+sampleMdWords :: [Text]
+sampleMdWords = [
+  "Heading", "`code`", "slanted"
+  , "Plain", "strong", "emphasized", "`inline`", "$`x^2`$", "~~struck~~", "^sup^", "~sub~", "linked", "<https://example.com/auto>", "quoted", "![pic](pic.png)"
+  , "bullet", "ordered", "blockquoted", "Term", "defined", "Footnoted", "footnotetext", "header", "bodycell", "captioned"
+  ]
+
+-- | A one-pixel PNG
+tinyPng :: B.ByteString
+tinyPng = B.pack [
+  137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 0, 0, 0, 58, 126, 155, 85
+  , 0, 0, 0, 10, 73, 68, 65, 84, 120, 156, 99, 104, 0, 0, 0, 130, 0, 129, 119, 205, 114, 182, 0, 0, 0, 0, 73, 69, 78, 68, 174, 66, 96, 130
+  ]
 
 sampleMdFile :: Text
 sampleMdFile =
@@ -309,6 +369,35 @@ testExportServeLocate serverName filename languageKind code options extraFiles l
     case source of
       A.Object (AKM.toList -> fields) -> (Prelude.lookup "uri" fields, Prelude.lookup "line" fields) `shouldBe` (Just (A.String uri), Just (A.Number (fromIntegral line)))
       v -> expectationFailure [i|Expected a source for line #{line}, got: #{A.encode v}|]
+
+-- | Render to PDF, and for each word (its first occurrence in the source, markup included) expect
+-- that locating its middle gives its box with a point inside, and that the box maps back into it
+testExportServeLocateWords :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Text -> FilePath -> LanguageKind -> Text -> [(Text, Text)] -> [(FilePath, B.ByteString)] -> [Text] -> ExampleT ctx m ()
+testExportServeLocateWords serverName filename languageKind code options extraFiles targets = do
+  sessionOptions <- lspSessionOptionsFor serverName filename languageKind code
+  Helpers.withLspSession (sessionOptions { lspSessionOptionsExtraFiles = extraFiles }) $ \(LspSessionInfo {..}) -> do
+    let uri = getUri (filePathToUri (lspSessionInfoHomeDir </> lspSessionInfoFileName))
+    startRenderTask uri "pdf" options
+    void nextRenderOutput
+
+    failures <- fmap catMaybes $ forM targets $ \target -> do
+      (line, start) <- case headMay [(l, T.length before) | (l, t) <- Prelude.zip [0 :: Int ..] (T.lines code), let (before, after) = T.breakOn target t, not (T.null after)] of
+        Nothing -> expectationFailure [i|#{target} isn't in the document|]
+        Just x -> return x
+      let end = start + T.length target
+      located <- renderCommand "codedown.render.locate" (A.object ["taskId" A..= ("test" :: Text), "uri" A..= uri, "line" A..= line, "character" A..= ((start + end) `div` 2)])
+      case fromJSON located :: A.Result [PageBox] of
+        A.Success boxes | ([word], [point]) <- (Prelude.filter ((> 0) . boxWidth) boxes, Prelude.filter ((== 0) . boxWidth) boxes)
+                      , boxLeft word <= boxLeft point, boxLeft point <= boxLeft word + boxWidth word -> do
+          source <- renderCommand "codedown.render.sourceAt" (A.object ["taskId" A..= ("test" :: Text), "page" A..= boxPage word, "x" A..= (boxLeft word + boxWidth word / 2), "y" A..= (boxTop word + boxHeight word / 2)])
+          return $ case fromJSON source of
+            A.Success (SourceLocation {sourceLine=l, sourceCharacter=c}) | l == line, c >= start, c <= end -> Nothing
+            _ -> Just [i|#{target}: its box maps back to #{A.encode source}, not line #{line} characters #{start}-#{end}|]
+        _ -> return (Just [i|#{target}: expected its box and a point in it, got #{A.encode located}|])
+
+    failures `shouldBe` ([] :: [Text])
 
 startRenderTask :: LspContext ctx m => Text -> Text -> [(Text, Text)] -> Session (ExampleT ctx m) ()
 startRenderTask uri format options = void $ renderCommand "codedown.render.start" $ A.object [
