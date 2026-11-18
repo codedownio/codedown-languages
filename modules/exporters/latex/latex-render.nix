@@ -20,6 +20,8 @@ common.writeShellScriptBinWithAttrs {} "latex-render" ''
   engine="''${RENDER_OPT_engine:-pdflatex}"
   export TEXINPUTS="$RENDER_OVERLAY//:''${TEXINPUTS:-}"
   export LC_ALL=C SOURCE_DATE_EPOCH="$RENDER_EPOCH" FORCE_SOURCE_DATE=1
+  # TeX breaks its output and log lines at 79 columns otherwise
+  export max_print_line=100000
 
   common=(-interaction=nonstopmode -halt-on-error -file-line-error -recorder -synctex=1 "-jobname=$RENDER_JOB")
   case "$RENDER_PHASE" in
