@@ -23,6 +23,13 @@ with lib;
         title = "TeX Live scheme";
         description = "The TeX Live scheme to use, as an attribute of pkgs.texlive.pkgs.*";
       };
+
+      engine = mkOption {
+        type = types.enum ["pdflatex" "xelatex" "lualatex"];
+        default = "pdflatex";
+        title = "TeX engine";
+        description = "The TeX engine that compiles PDF and Beamer exports.";
+      };
     };
   };
 

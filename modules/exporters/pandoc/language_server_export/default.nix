@@ -3,6 +3,7 @@
 
 , wrapper
 , version
+, engine
 }:
 
 let
@@ -31,6 +32,6 @@ common.writeTextDirWithMetaAndPassthru { description = "Live pandoc rendering fo
   args = [
     "${wrapper}/bin/pandoc-export-server"
     "serve"
-    "-o" "engine=pdflatex"
+    "-o" "engine=${engine}"
   ];
 }])

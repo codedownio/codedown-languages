@@ -36,6 +36,7 @@ let
     (callPackage ./language_server_export {
       inherit wrapper;
       version = exportServerVersion;
+      inherit (settings) engine;
     })
   ];
 
@@ -66,7 +67,7 @@ let
     args = [
       "${wrapper}/bin/pandoc-export-server" "render"
       "-o" "to=${to}"
-      "-o" "engine=pdflatex"
+      "-o" "engine=${settings.engine}"
     ] ++ (if pandocArgs == [] then [] else ["-o" "pandoc_args=${builtins.concatStringsSep " " pandocArgs}"]);
     input_extensions = ["ipynb" "md"];
     pandoc = "${pandoc}/bin/pandoc";
