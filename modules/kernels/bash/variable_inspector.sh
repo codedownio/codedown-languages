@@ -121,12 +121,20 @@ __codedown_variable_inspector_inspect() {
     shape="[$size]"
     content="${__codedown_vi_ref[*]}"
     ismatrix=true
-    local rows="" elem
-    for elem in "${__codedown_vi_ref[@]}"; do
-      [ -n "$rows" ] && rows="$rows,"
-      rows="$rows[$(__codedown_vi_json_str "$elem")]"
-    done
-    table=',"table":{"columns":["value"],"data":['"$rows"']}'
+    local rows="" elem key
+    if [ "$type" = assoc ]; then
+      while IFS= read -r key; do
+        [ -n "$rows" ] && rows="$rows,"
+        rows="$rows[$(__codedown_vi_json_str "$key"),$(__codedown_vi_json_str "${__codedown_vi_ref[$key]}")]"
+      done < <(printf '%s\n' "${!__codedown_vi_ref[@]}" | sort)
+      table=',"table":{"columns":["key","value"],"data":['"$rows"']}'
+    else
+      for elem in "${__codedown_vi_ref[@]}"; do
+        [ -n "$rows" ] && rows="$rows,"
+        rows="$rows[$(__codedown_vi_json_str "$elem")]"
+      done
+      table=',"table":{"columns":["value"],"data":['"$rows"']}'
+    fi
   else
     content=${!name}
     shape=null
