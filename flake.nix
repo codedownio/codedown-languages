@@ -61,6 +61,7 @@
           checks = {
             lint-nix = pkgsStable.callPackage ./nix/lint.nix {};
             kernel-attrs = pkgsStable.callPackage ./nix/check-kernel-attrs.nix { inherit (codedown) kernels; };
+            settings-schema = pkgsStable.callPackage ./nix/check-settings-schema.nix {};
           };
 
           devShells = {
