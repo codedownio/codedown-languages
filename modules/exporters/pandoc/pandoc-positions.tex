@@ -1,8 +1,8 @@
-% \cdpos and \cdposend write their source position and where they land to \jobname.cdpos
+% \cdpos and \cdposend write their source position and where they land to \jobname.cdpos-busy
 \makeatletter
 \ifdefined\pdfsavepos\else\let\pdfsavepos\savepos\let\pdflastxpos\lastxpos\let\pdflastypos\lastypos\fi
 \newwrite\cdpos@file
-\immediate\openout\cdpos@file=\jobname.cdpos
+\immediate\openout\cdpos@file=\jobname.cdpos-busy
 \def\cdpos@write#1#2{\leavevmode\pdfsavepos\edef\cdpos@x{\write\cdpos@file{#1 #2 \noexpand\the\ReadonlyShipoutCounter\space\noexpand\the\pdflastxpos\space\noexpand\the\pdflastypos\space\f@size}}\cdpos@x}
 \AtBeginDocument{\immediate\write\cdpos@file{h \the\paperheight}}
 % Typeset they record; written to a file or a mark (contents, running heads) they vanish

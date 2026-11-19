@@ -1,4 +1,5 @@
 { callPackage
+, coreutils
 , pandoc
 
 , latexRender
@@ -50,6 +51,9 @@ common.writeShellScriptBinWithAttrs {} "pandoc-render" ''
   "''${cmd[@]}"
 
   if [ "$via_latex" = 1 ]; then
-    LATEX_RENDER_INPUT="$out" exec ${latexRender}/bin/latex-render
+    LATEX_RENDER_INPUT="$out" ${latexRender}/bin/latex-render
+    # TeX truncates the positions file as it starts, so pandoc-locate reads the last finished run's
+    busy="$RENDER_OUT/$RENDER_JOB.cdpos-busy"
+    if [ -f "$busy" ]; then ${coreutils}/bin/mv "$busy" "$RENDER_OUT/$RENDER_JOB.cdpos"; fi
   fi
 ''
