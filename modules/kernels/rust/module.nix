@@ -43,6 +43,7 @@ in
           };
         }));
         default = [];
+        visible = false;
       };
 
       rustPackage = mkOption {

@@ -2314,27 +2314,6 @@ one of “ruby”, “ruby_3_3”, “ruby_3_4”
 
 
 
-## kernels\.rust\.packages
-
-
-
-**List of packages**
-
-
-
-*Type:*
-list of (string or (submodule))
-
-
-
-*Default:*
-
-```nix
-[ ]
-```
-
-
-
 ## kernels\.rust\.interface\.attrs
 
 **Notebook attributes**
