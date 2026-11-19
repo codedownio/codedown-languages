@@ -41,7 +41,7 @@ let
     if features == [] then subPackageSettingsSchema
     else subPackageSettingsSchema // {
       features = subPackageSettingsSchema.features // {
-        listType = { type = "enum"; values = features; };
+        listType = { type = "enum"; values = features; defaultValue = lib.head features; };
       };
     };
 
