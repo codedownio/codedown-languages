@@ -1887,6 +1887,96 @@ list of string
 
 
 
+## kernels\.python3\.lsp\.basedpyright\.enable
+
+
+
+**Enable basedpyright language server**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+## kernels\.python3\.lsp\.basedpyright\.diagnosticSeverityOverrides
+
+
+
+**basedpyright rule severities**
+
+Severity for individual rules, overriding the type checking mode, e\.g\. reportUnusedExpression = “none”\. A pyrightconfig\.json or pyproject\.toml in the project folder replaces both the type checking mode and the rule severities\.
+
+
+
+*Type:*
+attribute set of (one of “none”, “hint”, “information”, “warning”, “error”)
+
+
+
+*Default:*
+
+```nix
+{ }
+```
+
+
+
+## kernels\.python3\.lsp\.basedpyright\.disableLanguageServices
+
+
+
+**Disable basedpyright’s language services**
+
+Use basedpyright for diagnostics only, without its completions, hovers, and other features\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+## kernels\.python3\.lsp\.basedpyright\.typeCheckingMode
+
+
+
+**basedpyright type checking mode**
+
+How strict basedpyright is\. A pyrightconfig\.json or pyproject\.toml in the project folder replaces both the type checking mode and the rule severities\.
+
+
+
+*Type:*
+one of “off”, “basic”, “standard”, “strict”, “recommended”, “all”
+
+
+
+*Default:*
+
+```nix
+"standard"
+```
+
+
+
 ## kernels\.python3\.lsp\.flake8\.enable
 
 
@@ -2009,6 +2099,75 @@ boolean
 
 ```nix
 false
+```
+
+
+
+## kernels\.python3\.lsp\.pyright\.diagnosticSeverityOverrides
+
+
+
+**Pyright rule severities**
+
+Severity for individual rules, overriding the type checking mode, e\.g\. reportUnusedExpression = “none”\. A pyrightconfig\.json or pyproject\.toml in the project folder replaces both the type checking mode and the rule severities\.
+
+
+
+*Type:*
+attribute set of (one of “none”, “information”, “warning”, “error”)
+
+
+
+*Default:*
+
+```nix
+{ }
+```
+
+
+
+## kernels\.python3\.lsp\.pyright\.disableLanguageServices
+
+
+
+**Disable Pyright’s language services**
+
+Use Pyright for diagnostics only, without its completions, hovers, and other features\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
+## kernels\.python3\.lsp\.pyright\.typeCheckingMode
+
+
+
+**Pyright type checking mode**
+
+How strict Pyright is\. A pyrightconfig\.json or pyproject\.toml in the project folder replaces both the type checking mode and the rule severities\.
+
+
+
+*Type:*
+one of “off”, “basic”, “standard”, “strict”
+
+
+
+*Default:*
+
+```nix
+"basic"
 ```
 
 
@@ -2146,8 +2305,6 @@ one of “python3”, “python312”, “python313”, “python314”, “pypy
 
 
 ## kernels\.ruby\.interface\.attrs
-
-
 
 **Notebook attributes**
 
@@ -2315,6 +2472,8 @@ one of “ruby”, “ruby_3_3”, “ruby_3_4”
 
 
 ## kernels\.rust\.interface\.attrs
+
+
 
 **Notebook attributes**
 

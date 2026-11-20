@@ -21,6 +21,8 @@ let
     };
   };
 
+  projectConfigNote = "A pyrightconfig.json or pyproject.toml in the project folder replaces both the type checking mode and the rule severities.";
+
   subPackageEvaluated = lib.evalModules {
     modules = [
       {
@@ -95,6 +97,47 @@ in
       title = "Enable Pyright language server";
       type = types.bool;
       default = false;
+    };
+    lsp.pyright.disableLanguageServices = mkOption {
+      title = "Disable Pyright's language services";
+      description = "Use Pyright for diagnostics only, without its completions, hovers, and other features.";
+      type = types.bool;
+      default = true;
+    };
+    lsp.pyright.typeCheckingMode = mkOption {
+      title = "Pyright type checking mode";
+      description = "How strict Pyright is. ${projectConfigNote}";
+      type = types.enum ["off" "basic" "standard" "strict"];
+      default = "basic";
+    };
+    lsp.pyright.diagnosticSeverityOverrides = mkOption {
+      title = "Pyright rule severities";
+      description = "Severity for individual rules, overriding the type checking mode, e.g. reportUnusedExpression = \"none\". ${projectConfigNote}";
+      type = types.attrsOf (types.enum ["none" "information" "warning" "error"]);
+      default = {};
+    };
+    lsp.basedpyright.enable = mkOption {
+      title = "Enable basedpyright language server";
+      type = types.bool;
+      default = false;
+    };
+    lsp.basedpyright.disableLanguageServices = mkOption {
+      title = "Disable basedpyright's language services";
+      description = "Use basedpyright for diagnostics only, without its completions, hovers, and other features.";
+      type = types.bool;
+      default = false;
+    };
+    lsp.basedpyright.typeCheckingMode = mkOption {
+      title = "basedpyright type checking mode";
+      description = "How strict basedpyright is. ${projectConfigNote}";
+      type = types.enum ["off" "basic" "standard" "strict" "recommended" "all"];
+      default = "standard";
+    };
+    lsp.basedpyright.diagnosticSeverityOverrides = mkOption {
+      title = "basedpyright rule severities";
+      description = "Severity for individual rules, overriding the type checking mode, e.g. reportUnusedExpression = \"none\". ${projectConfigNote}";
+      type = types.attrsOf (types.enum ["none" "hint" "information" "warning" "error"]);
+      default = {};
     };
     lsp.pylint.enable = mkOption {
       title = "Enable Pylint language server";

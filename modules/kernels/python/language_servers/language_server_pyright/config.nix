@@ -5,6 +5,7 @@
 
 , kernelName
 , attrs
+, settings
 }:
 
 
@@ -38,23 +39,25 @@ common.writeTextDirWithMetaAndPassthru pyright.meta passthru "lib/codedown/langu
   inherit attrs;
   type = "stream";
   args = ["${pyright}/bin/pyright-langserver" "--stdio"];
+  env.PATH = "${pythonEnv}/bin";
 
-  # Taken from https://github.com/emacs-lsp/lsp-pyright/blob/master/lsp-pyright.el
+  # Keyed by the section names pyright requests over workspace/configuration.
   initialization_options = {
-    "pyright.disableLanguageServices" = true;
-    "pyright.disableOrganizeImports" = true;
-    "python.analysis.autoImportCompletions" = true;
-    "python.analysis.typeshedPaths" = true;
-    "python.analysis.stubPath" = true;
-    "python.analysis.useLibraryCodeForTypes" = true;
-    "python.analysis.diagnosticMode" = "openFilesOnly";
-    "python.analysis.typeCheckingMode" = "basic";
-    "python.analysis.logLevel" = "Trace"; # Information
-    "python.analysis.autoSearchPaths" = true;
-    "python.analysis.extraPaths" = ["/home/user"];
-    "python.pythonPath" = "${pythonEnv}/bin/python";
-    # We need to send empty string, otherwise  pyright-langserver fails with parse error
-    # "python.venvPath" = "";
+    python = {
+      pythonPath = "${pythonEnv}/bin/python";
+      analysis = {
+        inherit (settings) typeCheckingMode diagnosticSeverityOverrides;
+        autoImportCompletions = true;
+        autoSearchPaths = true;
+        diagnosticMode = "openFilesOnly";
+        extraPaths = ["/home/user"];
+        useLibraryCodeForTypes = true;
+      };
+    };
+    pyright = {
+      inherit (settings) disableLanguageServices;
+      disableOrganizeImports = true;
+    };
   };
 
   language_id = "python";
