@@ -52,7 +52,8 @@ symlinkJoin {
   paths = [
     (callPackage ./kernel.nix {
       inherit iruby;
-      inherit displayName attrs extensions version repls;
+      inherit displayName attrs extensions repls;
+      version = ruby.version;
       enableVariableInspector = settings.misc.enableVariableInspector;
     })
     ruby
