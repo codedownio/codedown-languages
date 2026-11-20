@@ -7,6 +7,7 @@
 
 , enableVariableInspector
 
+, displayName
 , attrs
 , extensions
 , repls ? {}
@@ -43,7 +44,7 @@ in
 
 common.makeJupyterKernel {
   bash = {
-    displayName = "Bash";
+    inherit displayName;
     argv = [
       "${python}/bin/python"
       "-m"

@@ -23,7 +23,7 @@ let
   jjavaVersion = import ./jjava-version.nix;
 
   kernelName = "java";
-  displayName = "Java";
+  displayName = "Java " + jdk.version;
 
   # null when nothing is selected, so JJAVA_CLASSPATH isn't an empty glob.
   classpath = if packages == [] then null else maven.mkClasspath { inherit packages; };

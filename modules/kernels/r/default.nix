@@ -41,6 +41,8 @@ let
 
   ark = callPackage ./ark.nix { inherit R; };
 
+  displayName = "R " + R.version;
+
   packageOptions = rPackages;
   packageSearch = common.searcher packageOptions;
   versions = {
@@ -69,14 +71,14 @@ let
   kernel =
     if isArk
     then callPackage ./kernel-ark.nix {
-      inherit ark R attrs extensions repls;
+      inherit displayName ark R attrs extensions repls;
       # Ark embeds R through libR, so rWrapper's R_LIBS_SITE never reaches it.
       rLibsSite = lib.concatMapStringsSep ":" (p: "${p}/library") basePackages;
       version = R.version;
       enableVariableInspector = settings.misc.enableVariableInspector;
     }
     else callPackage ./kernel-irkernel.nix {
-      inherit rWithPackages attrs extensions repls;
+      inherit displayName rWithPackages attrs extensions repls;
       version = R.version;
       enableVariableInspector = settings.misc.enableVariableInspector;
     };
@@ -96,7 +98,7 @@ symlinkJoin {
   passthru = {
     meta = R.meta // {
       baseName = "R";
-      displayName = "R";
+      inherit displayName;
       version = R.version;
       icon = ./r-logo-64x64.png;
       iconMonochrome = ./r-monochrome.svg;

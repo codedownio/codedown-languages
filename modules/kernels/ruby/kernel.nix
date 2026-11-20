@@ -5,6 +5,7 @@
 
 , enableVariableInspector
 
+, displayName
 , attrs
 , extensions
 , version
@@ -28,7 +29,7 @@ common.makeJupyterKernel (
   listToAttrs [{
     name = head attrs;
     value = {
-      displayName = "Ruby";
+      inherit displayName;
       language = head attrs;
       argv = [
         "${iruby}/bin/iruby"

@@ -18,6 +18,8 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
+  displayName = "Octave " + octave.version;
+
   packageOptions = octave.pkgs;
   packageSearch = common.searcher packageOptions;
 
@@ -52,7 +54,7 @@ symlinkJoin {
   name = "octave";
   paths = [
     (callPackage ./kernel.nix {
-      inherit attrs extensions repls;
+      inherit displayName attrs extensions repls;
       inherit (settings) extraJupyterConfig;
       octave = octaveToUse;
       version = octave.version;
@@ -63,7 +65,7 @@ symlinkJoin {
   passthru = {
     meta = octave.meta // {
       baseName = "octave";
-      displayName = "Octave " + octave.version;
+      inherit displayName;
       version = octave.version;
       icon = ./octave-logo-64x64.png;
       iconMonochrome = ./octave-monochrome.svg;

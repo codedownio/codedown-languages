@@ -11,6 +11,7 @@
 
 , enableVariableInspector
 
+, displayName
 , attrs
 , extensions
 , version
@@ -102,7 +103,7 @@ in
 
 common.makeJupyterKernel {
   octave = {
-    displayName = "Octave";
+    inherit displayName;
     argv = [
       "${python}/bin/python"
       "-m"

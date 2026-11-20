@@ -157,11 +157,14 @@ let
       meta = kernel.meta or {};
       version = meta.version or null;
 
-      # meta.displayName sometimes carries the version ("Bash 5.3p9"); strip it for a clean label.
+      # Strip the version from meta.displayName ("Bash 5.3p9", "C++ 20 (Clang 19.1.7)").
       rawDisplayName = meta.displayName or meta.name or name;
       displayName =
-        if version != null && lib.hasSuffix " ${version}" rawDisplayName
+        if version == null then rawDisplayName
+        else if lib.hasSuffix " ${version}" rawDisplayName
         then lib.removeSuffix " ${version}" rawDisplayName
+        else if lib.hasSuffix " ${version})" rawDisplayName
+        then lib.concatStringsSep " (" (lib.init (lib.splitString " (" rawDisplayName))
         else rawDisplayName;
 
       availableLanguageServers = builtins.attrNames (opts.lsp or {});

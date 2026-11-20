@@ -1,4 +1,5 @@
 { callPackage
+, displayName
 , attrs
 , extensions
 , version
@@ -21,7 +22,7 @@ in
 
 common.makeJupyterKernel {
   clojure = {
-    displayName = "Clojure";
+    inherit displayName;
     argv = [
       "${clojupyter.launcher}/bin/clojupyter"
       "{connection_file}"

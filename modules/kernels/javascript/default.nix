@@ -27,7 +27,7 @@ let
   isTypescript = variant == "typescript";
 
   kernelName = variant;
-  displayName = if isTypescript then "TypeScript" else "JavaScript";
+  displayName = "${if isTypescript then "TypeScript" else "JavaScript"} (Node.js ${nodejs.version})";
 
   icon = if isTypescript then ../typescript/typescript-logo-64x64.png else ./javascript-logo-64x64.png;
   iconMonochrome = if isTypescript then ../typescript/typescript-monochrome.svg else ./javascript-monochrome.svg;

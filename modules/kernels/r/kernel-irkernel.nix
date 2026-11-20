@@ -7,6 +7,7 @@
 
 , enableVariableInspector
 
+, displayName
 , attrs
 , extensions
 , version
@@ -26,7 +27,7 @@ in
 
 common.makeJupyterKernel {
   r = {
-    displayName = "R";
+    inherit displayName;
     argv = [
       "${rWithPackages}/bin/R"
       "--slave"

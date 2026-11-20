@@ -15,6 +15,7 @@ with { inherit (settings.interface) attrs extensions; };
 
 let
   kernelName = "bash";
+  displayName = "Bash " + bash.version;
 
   common = callPackage ../common.nix {};
 
@@ -41,7 +42,7 @@ symlinkJoin {
 
   paths = [
     (callPackage ./kernel.nix {
-      inherit attrs extensions repls;
+      inherit displayName attrs extensions repls;
       enableVariableInspector = settings.misc.enableVariableInspector;
     })
     (callPackage ./man-with-pages.nix {})
@@ -52,7 +53,7 @@ symlinkJoin {
   passthru = {
     meta = bash.meta // {
       baseName = kernelName;
-      displayName = "Bash " + bash.version;
+      inherit displayName;
       version = bash.version;
       icon = ./bash-logo-128x128.png;
       iconMonochrome = ./gnubash-monochrome.svg;
