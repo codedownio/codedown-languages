@@ -1908,6 +1908,75 @@ false
 
 
 
+## kernels\.python3\.lsp\.basedpyright\.diagnosticSeverityOverrides
+
+
+
+**basedpyright rule severities**
+
+Severity for individual rules, overriding the type checking mode, e\.g\. reportUnusedExpression = “none”\.
+
+
+
+*Type:*
+attribute set of (one of “none”, “hint”, “information”, “warning”, “error”)
+
+
+
+*Default:*
+
+```nix
+{ }
+```
+
+
+
+## kernels\.python3\.lsp\.basedpyright\.disableLanguageServices
+
+
+
+**Disable basedpyright’s language services**
+
+Use basedpyright for diagnostics only, without its completions, hovers, and other features\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+## kernels\.python3\.lsp\.basedpyright\.typeCheckingMode
+
+
+
+**basedpyright type checking mode**
+
+How strict basedpyright is\. A pyrightconfig\.json or pyproject\.toml in the project takes precedence\.
+
+
+
+*Type:*
+one of “off”, “basic”, “standard”, “strict”, “recommended”, “all”
+
+
+
+*Default:*
+
+```nix
+"standard"
+```
+
+
+
 ## kernels\.python3\.lsp\.flake8\.enable
 
 
@@ -2030,6 +2099,29 @@ boolean
 
 ```nix
 false
+```
+
+
+
+## kernels\.python3\.lsp\.pyright\.disableLanguageServices
+
+
+
+**Disable Pyright’s language services**
+
+Use Pyright for diagnostics only, without its completions, hovers, and other features\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
 ```
 
 
@@ -2218,8 +2310,6 @@ list of string
 
 ## kernels\.ruby\.lsp\.solargraph\.enable
 
-
-
 **Enable Solargraph language server**
 
 
@@ -2315,6 +2405,8 @@ true
 
 
 ## kernels\.ruby\.rubyPackage
+
+
 
 **Ruby version**
 

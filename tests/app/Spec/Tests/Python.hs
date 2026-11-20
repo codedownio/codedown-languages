@@ -67,17 +67,26 @@ tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelN
       , (Range (Position 2 2) (Position 2 3), Just (InR "reportUnusedVariable"), "Variable \"z\" is not accessed")
       ]
 
-  testDiagnostics "basedpyright" "test.py" LanguageKind_Python [__i|def f(x: int, y: str) -> None:
-                                                                      pass
-                                                                    f("asdf", 42)
-                                                                   |] $ \diagnostics -> do
+  testDiagnosticsServingConfig "pyright" "imports.py" LanguageKind_Python [__i|import scipy
+                                                                               x: int = "a"
+                                                                              |] $ \diagnostics -> do
     assertDiagnosticRanges' diagnostics [
-      -- pyright reports these two as untagged hints; basedpyright gives them a rule name.
-      (Range (Position 0 6) (Position 0 7), Just (InR "reportUnusedParameter"), "\"x\" is not accessed")
-      , (Range (Position 0 14) (Position 0 15), Just (InR "reportUnusedParameter"), "\"y\" is not accessed")
+      (Range (Position 1 9) (Position 1 12), Just (InR "reportAssignmentType"), "Type \"Literal['a']\" is not assignable to declared type \"int\"\n\160\160\"Literal['a']\" is not assignable to \"int\"")
+      , (Range (Position 0 7) (Position 0 12), Nothing, "\"scipy\" is not accessed")
+      ]
 
-      , (Range (Position 2 2) (Position 2 8), Just (InR "reportArgumentType"), "Argument of type \"Literal['asdf']\" cannot be assigned to parameter \"x\" of type \"int\" in function \"f\"\n\160\160\"Literal['asdf']\" is not assignable to \"int\"")
-      , (Range (Position 2 10) (Position 2 12), Just (InR "reportArgumentType"), "Argument of type \"Literal[42]\" cannot be assigned to parameter \"y\" of type \"str\" in function \"f\"\n\160\160\"Literal[42]\" is not assignable to \"str\"")
+  testDiagnosticsServingConfig "basedpyright" "test.py" LanguageKind_Python [__i|import scipy
+                                                                                 def f(x: int, y: str) -> None:
+                                                                                     pass
+                                                                                 f("asdf", 42)
+                                                                                 scipy
+                                                                                |] $ \diagnostics -> do
+    assertDiagnosticRanges' diagnostics [
+      (Range (Position 1 6) (Position 1 7), Just (InR "reportUnusedParameter"), "\"x\" is not accessed")
+      , (Range (Position 1 14) (Position 1 15), Just (InR "reportUnusedParameter"), "\"y\" is not accessed")
+
+      , (Range (Position 3 2) (Position 3 8), Just (InR "reportArgumentType"), "Argument of type \"Literal['asdf']\" cannot be assigned to parameter \"x\" of type \"int\" in function \"f\"\n\160\160\"Literal['asdf']\" is not assignable to \"int\"")
+      , (Range (Position 3 10) (Position 3 12), Just (InR "reportArgumentType"), "Argument of type \"Literal[42]\" cannot be assigned to parameter \"y\" of type \"str\" in function \"f\"\n\160\160\"Literal[42]\" is not assignable to \"str\"")
       ]
 
   testDiagnostics "pycodestyle" "test.py" LanguageKind_Python [__i|def f(x: int, y: str) -> None:
@@ -128,6 +137,7 @@ kernelSpec kernelName pythonPackage = NixKernelSpec {
       , "lsp.pylint.enable = true"
       , "lsp.pyright.enable = true"
       , "lsp.basedpyright.enable = true"
+      , [i|lsp.basedpyright.diagnosticSeverityOverrides.reportUnusedExpression = "none"|]
       , "lsp.pycodestyle.enable = true"
       ]
   }

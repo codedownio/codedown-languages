@@ -57,8 +57,8 @@ let
   languageServers =
     []
     ++ lib.optionals settings.lsp.jedi.enable [(callPackage ./language_servers/language_server_jedi/config.nix { inherit pythonWithPackages kernelName attrs; })]
-    ++ lib.optionals settings.lsp.pyright.enable [(callPackage ./language_servers/language_server_pyright/config.nix { inherit pythonWithPackages kernelName attrs; })]
-    ++ lib.optionals settings.lsp.basedpyright.enable [(callPackage ./language_servers/language_server_basedpyright/config.nix { inherit pythonWithPackages kernelName attrs; })]
+    ++ lib.optionals settings.lsp.pyright.enable [(callPackage ./language_servers/language_server_pyright/config.nix { inherit pythonWithPackages kernelName attrs; settings = settings.lsp.pyright; })]
+    ++ lib.optionals settings.lsp.basedpyright.enable [(callPackage ./language_servers/language_server_basedpyright/config.nix { inherit pythonWithPackages kernelName attrs; settings = settings.lsp.basedpyright; })]
     ++ lib.optionals settings.lsp.pylint.enable [(callPackage ./language_servers/language_server_pylint/config.nix { inherit pythonWithPackages kernelName attrs; })]
     ++ lib.optionals settings.lsp.flake8.enable [(callPackage ./language_servers/language_server_flake8/config.nix { inherit pythonWithPackages kernelName attrs; })]
     ++ lib.optionals settings.lsp.pycodestyle.enable [(callPackage ./language_servers/language_server_pycodestyle/config.nix { inherit pythonWithPackages kernelName attrs; })]

@@ -19,6 +19,7 @@ module TestLib.LSP (
   , testDiagnosticsLabel'
   , testDiagnosticsLabelDesired
   , testDiagnostics''
+  , testDiagnosticsServingConfig
 
   , itHasHoverSatisfying
 
@@ -34,7 +35,7 @@ module TestLib.LSP (
   , LspContext
   ) where
 
-import Control.Lens ((^.))
+import Control.Lens (set, (^.), _Just)
 import Control.Monad.IO.Unlift
 import Control.Monad.Reader
 import Data.Aeson as A
@@ -45,7 +46,7 @@ import qualified Data.Text as T hiding (filter)
 import Data.Text hiding (filter, show)
 import GHC.Int
 import GHC.Stack
-import Language.LSP.Protocol.Lens (name)
+import Language.LSP.Protocol.Lens (configuration, name, workspace)
 import Language.LSP.Protocol.Types
 import qualified Language.LSP.Protocol.Types as LSP
 import Language.LSP.Test
@@ -118,6 +119,17 @@ testDiagnostics'' label name filename languageKind code extraFiles cb = it label
                          <$> lspSessionOptionsFor name filename languageKind code
 
   Helpers.testDiagnostics lspSessionOptions languageKind $ \diags -> do
+    lift $ cb diags
+
+-- | 'testDiagnostics', answering workspace/configuration from initialization_options like the runner.
+testDiagnosticsServingConfig :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Text -> FilePath -> LanguageKind -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnosticsServingConfig name filename languageKind code cb = it [i|#{name}, #{filename} with #{show code} (diagnostics, serving config)|] $ do
+  lspSessionOptions <- (\o -> o { lspSessionOptionsModifyClientCaps = set (workspace . _Just . configuration) (Just True) })
+                         <$> lspSessionOptionsFor name filename languageKind code
+
+  Helpers.testDiagnostics lspSessionOptions languageKind $ \diags ->
     lift $ cb diags
 
 itHasHoverSatisfying :: (
