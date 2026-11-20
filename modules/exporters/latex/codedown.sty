@@ -4,14 +4,29 @@
 \RequirePackage{fancyvrb}
 \RequirePackage{xcolor}
 
-% A cell's source is skipped line by line; its closing line is rescanned with normal catcodes, so
-% the \codedownoutput after \end{codedown} is typeset.
+% A cell's source is skipped line by line, or typeset with the export option; its closing line is
+% rescanned with normal catcodes, so the \codedownoutput after \end{codedown} is typeset.
+\newif\ifcodedown@export
+\def\codedown@exportname{export}
 \newenvironment{codedown}[2][]{%
+  \codedown@exportfalse
+  \@for\codedown@option:=#1\do{\ifx\codedown@option\codedown@exportname\codedown@exporttrue\fi}%
+  \ifcodedown@export\par\smallskip\fi
   \begingroup
   \let\do\@makeother\dospecials
   \catcode`\ =10
+  \ifcodedown@export\codedown@obeyspaces\fi
   \catcode`\^^M=13
   \codedown@readline}{}
+
+% With the export option a space is active, so a line keeps its indentation.
+\begingroup
+\lccode`\~=`\ %
+\lowercase{\endgroup
+  \def\codedown@obeyspaces{\catcode`\ =13 \parindent\z@ \parskip\z@ \def~{\ }}%
+  \def\codedown@stripcheck{\ifx\codedown@next~\expandafter\codedown@stripspace\else\expandafter\codedown@stripped\fi}%
+  \def\codedown@stripspace~{\codedown@strip}}
+\def\codedown@strip{\futurelet\codedown@next\codedown@stripcheck}
 
 % A line closes the cell when it is \end{codedown}, alone or followed by \codedownoutput.
 \newif\ifcodedown@end
@@ -19,7 +34,8 @@
 \catcode`\|=0 \catcode`\(=1 \catcode`\)=2
 |catcode`|\=12 |catcode`|{=12 |catcode`|}=12
 |catcode`|^^M=13%
-|gdef|codedown@readline#1^^M(|codedown@split#1\end{codedown}|codedown@nil(#1))%
+|gdef|codedown@readline#1^^M(|codedown@strip#1|codedown@stop(#1))%
+|gdef|codedown@stripped#1|codedown@stop(|codedown@split#1\end{codedown}|codedown@nil)%
 |gdef|codedown@split#1\end{codedown}#2|codedown@nil(%
   |codedown@endfalse%
   |def|codedown@prefix(#1)|def|codedown@rest(#2)%
@@ -34,7 +50,9 @@
   |def|codedown@prefix(#1)|ifx|codedown@prefix|empty|codedown@endtrue|fi)%
 |endgroup
 
-\def\codedown@skipline#1{\codedown@readline}
+\def\codedown@skipline#1{%
+  \ifcodedown@export\par\noindent\hbox{\strut\ttfamily\frenchspacing#1}\par\fi
+  \codedown@readline}
 \def\codedown@isend#1{%
   \endgroup
   \begingroup\endlinechar=-1\relax\expandafter\endgroup\scantokens{#1}}
