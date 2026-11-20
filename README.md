@@ -22,8 +22,9 @@ See the available options in [OPTIONS.md](./OPTIONS.md).
 | `typst` (Live Preview) | `.typ` | in-browser preview | tinymist, from the editor's buffers | yes | yes, to the character |
 | `typst` | `.typ` | PDF, PNG, SVG, HTML | lsp-export-server, from the editor's buffers | no | no |
 | `latex` | `.tex` | PDF | lsp-export-server, from the editor's buffers | yes | yes, to the line (SyncTeX) |
-| `pandoc` | `.md` | PDF, Beamer PDF, Slidy HTML | lsp-export-server, from the editor's buffers | no | no |
+| `pandoc` | `.md` | PDF, Beamer PDF | lsp-export-server, from the editor's buffers | yes | yes, to the word |
+| `pandoc` | `.md` | Slidy HTML | lsp-export-server, from the editor's buffers | no | no |
 | `pandoc` | `.ipynb` | PDF, Beamer PDF, Slidy HTML | re-runs on every notebook change | no | no |
 | `nbconvert` | `.ipynb` | AsciiDoc, LaTeX, PDF, HTML, reStructuredText, Slides, Markdown | re-runs on every notebook change | no | no |
 
-Following needs a map from the output back to the source. LaTeX gets one from SyncTeX and Typst from tinymist; the others have none yet.
+Following needs a map from the output back to the source. LaTeX gets one from SyncTeX, Typst from tinymist, and pandoc's PDFs from word positions recorded while typesetting; the others have none yet.

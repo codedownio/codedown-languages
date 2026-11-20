@@ -3,6 +3,7 @@
 
 , wrapper
 , version
+, engine
 }:
 
 let
@@ -25,12 +26,12 @@ common.writeTextDirWithMetaAndPassthru { description = "Live pandoc rendering fo
   icon_monochrome = ../pandoc-monochrome.svg;
   extensions = ["md"];
   notebook_suffix = ".md";
-  attrs = ["markdown-document"];
+  attrs = ["markdown-document" "markdown-explicit-math" "markdown-cell-outputs"];
   type = "stream";
   primary = false;
   args = [
     "${wrapper}/bin/pandoc-export-server"
     "serve"
-    "-o" "engine=pdflatex"
+    "-o" "engine=${engine}"
   ];
 }])

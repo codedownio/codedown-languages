@@ -22,19 +22,21 @@ let
   exportServerVersion = import ../lsp-export-server/lsp-export-server-version.nix;
   latexRender = callPackage ../latex/latex-render.nix {};
   pandocRender = callPackage ./pandoc-render.nix { inherit latexRender; };
+  pandocLocate = callPackage ./pandoc-locate.nix {};
 
   # The export server with pandoc and TeX Live in reach, rendering through pandoc-render. `serve`
   # is the language server behind live exports; `render` converts a file once (the exporter test
   # and notebook exports use it).
   wrapper = common.writeShellScriptBinWithAttrs {} "pandoc-export-server" ''
     export PATH="${pandoc}/bin:${texliveScheme}/bin''${PATH:+:''${PATH}}"
-    exec ${exportServer}/bin/lsp-export-server "$@" --render ${pandocRender}/bin/pandoc-render --settle ${pandocRender}/bin/pandoc-render
+    exec ${exportServer}/bin/lsp-export-server "$@" --render ${pandocRender}/bin/pandoc-render --settle ${pandocRender}/bin/pandoc-render --locate ${pandocLocate}/bin/pandoc-locate
   '';
 
   languageServers = [
     (callPackage ./language_server_export {
       inherit wrapper;
       version = exportServerVersion;
+      inherit (settings) engine;
     })
   ];
 
@@ -65,7 +67,7 @@ let
     args = [
       "${wrapper}/bin/pandoc-export-server" "render"
       "-o" "to=${to}"
-      "-o" "engine=pdflatex"
+      "-o" "engine=${settings.engine}"
     ] ++ (if pandocArgs == [] then [] else ["-o" "pandoc_args=${builtins.concatStringsSep " " pandocArgs}"]);
     input_extensions = ["ipynb" "md"];
     pandoc = "${pandoc}/bin/pandoc";
@@ -99,7 +101,7 @@ let
     })
     (mkExporter {
       name = "codedown-exporter-pandoc-pdf";
-      display_name = "Pandoc PDF (.pdf)";
+      display_name = "PDF (.pdf)";
       extension = "pdf";
       to = "pdf";
     })

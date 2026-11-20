@@ -1,4 +1,5 @@
 { callPackage
+, coreutils
 , pandoc
 
 , latexRender
@@ -13,7 +14,7 @@ in
 # codedownio/lsp-export-server). Options: to (the writer; pdf means latex), from (the reader for
 # Markdown input), pandoc_args (extra arguments, space-separated), and engine for the LaTeX-based
 # writers, which hand the generated .tex to latex-render for both phases. The other writers have
-# nothing to settle.
+# nothing to settle. Markdown going through LaTeX carries word positions for pandoc-locate.
 common.writeShellScriptBinWithAttrs {} "pandoc-render" ''
   set -euo pipefail
 
@@ -30,7 +31,14 @@ common.writeShellScriptBinWithAttrs {} "pandoc-render" ''
 
   reader=()
   case "$RENDER_ENTRY" in
-    *.md) reader=(-f "''${RENDER_OPT_from:-markdown+tex_math_dollars+tex_math_single_backslash+raw_html+smart}") ;;
+    *.md)
+      from="''${RENDER_OPT_from:-commonmark_x+tex_math_gfm}"
+      case "$via_latex:$from" in
+        1:commonmark*|1:gfm*)
+          reader=(-f "$from+sourcepos" --lua-filter ${./pandoc-positions.lua} -H ${./pandoc-positions.tex} --wrap=preserve) ;;
+        *) reader=(-f "$from") ;;
+      esac
+      ;;
   esac
   extra=()
   if [ -n "''${RENDER_OPT_pandoc_args:-}" ]; then
@@ -43,6 +51,9 @@ common.writeShellScriptBinWithAttrs {} "pandoc-render" ''
   "''${cmd[@]}"
 
   if [ "$via_latex" = 1 ]; then
-    LATEX_RENDER_INPUT="$out" exec ${latexRender}/bin/latex-render
+    LATEX_RENDER_INPUT="$out" ${latexRender}/bin/latex-render
+    # TeX truncates the positions file as it starts, so pandoc-locate reads the last finished run's
+    busy="$RENDER_OUT/$RENDER_JOB.cdpos-busy"
+    if [ -f "$busy" ]; then ${coreutils}/bin/mv "$busy" "$RENDER_OUT/$RENDER_JOB.cdpos"; fi
   fi
 ''

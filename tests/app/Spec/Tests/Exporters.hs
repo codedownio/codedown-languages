@@ -5,6 +5,7 @@
 
 module Spec.Tests.Exporters (tests) where
 
+import Control.Monad (forM_)
 import Data.String.Interpolate
 import Data.Text (Text)
 import Language.LSP.Protocol.Types (LanguageKind(..))
@@ -34,6 +35,19 @@ tests = describe "Exporters" $ introduceJustBubblewrap $ do
     it "pandoc-export-server renders live" $
       testExportServe "pandoc-export-server" "input.md" LanguageKind_Markdown sampleMdFile "html" [("to", "slidy")] []
 
+    it "pandoc-export-server locates a line in the output and back" $
+      testExportServeLocate "pandoc-export-server" "input.md" LanguageKind_Markdown sampleMdFile [("to", "pdf")] [] 2
+
+    it "pandoc-export-server locates a word of every kind and back" $
+      testExportServeLocateWords "pandoc-export-server" "input.md" LanguageKind_Markdown sampleMdWordsFile [("to", "pdf"), ("from", "commonmark_x+tex_math_gfm+implicit_figures")] [("pic.png", tinyPng)] sampleMdWords
+
+  forM_ ["xelatex", "lualatex" :: Text] $ \engine ->
+    introduceNixEnvironment [] [pandocConfig, [i|exporters.pandoc.engine = "#{engine}";|]] [i|Exporters (pandoc, #{engine})|] $ do
+      it "codedown-exporter-pandoc-pdf" $ testExportMd "codedown-exporter-pandoc-pdf" "pdf"
+
+      it "pandoc-export-server locates a word of every kind and back" $
+        testExportServeLocateWords "pandoc-export-server" "input.md" LanguageKind_Markdown sampleMdWordsFile [("to", "pdf"), ("from", "commonmark_x+tex_math_gfm+implicit_figures")] [("pic.png", tinyPng)] sampleMdWords
+
   introduceNixEnvironment [] [latexConfig] [i|Exporters (latex)|] $ do
     it "codedown-exporter-latex" $ testExportLatex "codedown-exporter-latex" "pdf"
 
@@ -41,7 +55,7 @@ tests = describe "Exporters" $ introduceJustBubblewrap $ do
       testExportServe "latex-export-server" "input.tex" LanguageKind_LaTeX sampleLatexFile "pdf" [] [("out.txt", "line one\n")]
 
     it "latex-export-server locates a line in the output and back" $
-      testExportServeLocate "latex-export-server" "input.tex" LanguageKind_LaTeX sampleLatexFile [("out.txt", "line one\n")] 3
+      testExportServeLocate "latex-export-server" "input.tex" LanguageKind_LaTeX sampleLatexFile [] [("out.txt", "line one\n")] 3
 
   introduceNixEnvironment [] [typstConfig] [i|Exporters (typst)|] $ do
     it "codedown-exporter-typst" $ testExportTypst "codedown-exporter-typst" "pdf"
