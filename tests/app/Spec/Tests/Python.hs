@@ -69,6 +69,7 @@ tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelN
 
   testDiagnosticsServingConfig "pyright" "imports.py" LanguageKind_Python [__i|import scipy
                                                                                x: int = "a"
+                                                                               x
                                                                               |] $ \diagnostics -> do
     assertDiagnosticRanges' diagnostics [
       (Range (Position 1 9) (Position 1 12), Just (InR "reportAssignmentType"), "Type \"Literal['a']\" is not assignable to declared type \"int\"\n\160\160\"Literal['a']\" is not assignable to \"int\"")
@@ -87,6 +88,19 @@ tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelN
 
       , (Range (Position 3 2) (Position 3 8), Just (InR "reportArgumentType"), "Argument of type \"Literal['asdf']\" cannot be assigned to parameter \"x\" of type \"int\" in function \"f\"\n\160\160\"Literal['asdf']\" is not assignable to \"int\"")
       , (Range (Position 3 10) (Position 3 12), Just (InR "reportArgumentType"), "Argument of type \"Literal[42]\" cannot be assigned to parameter \"y\" of type \"str\" in function \"f\"\n\160\160\"Literal[42]\" is not assignable to \"str\"")
+      ]
+
+  testDiagnosticsServingConfigWithFiles "basedpyright" "test.py" LanguageKind_Python [__i|import mymod
+                                                                                          def g(a):
+                                                                                              return a
+                                                                                          mymod
+                                                                                         |] [("mymod.py", "foo = 1\n"), ("pyrightconfig.json", "{\"typeCheckingMode\": \"strict\"}")] $ \diagnostics -> do
+    assertDiagnosticRanges' diagnostics [
+      (Range (Position 1 4) (Position 1 5), Just (InR "reportUnknownParameterType"), "Return type is unknown")
+      , (Range (Position 1 6) (Position 1 7), Just (InR "reportUnknownParameterType"), "Type of parameter \"a\" is unknown")
+      , (Range (Position 1 6) (Position 1 7), Just (InR "reportMissingParameterType"), "Type annotation is missing for parameter \"a\"")
+      , (Range (Position 2 11) (Position 2 12), Just (InR "reportUnknownVariableType"), "Return type is unknown")
+      , (Range (Position 3 0) (Position 3 5), Just (InR "reportUnusedExpression"), "Expression value is unused")
       ]
 
   testDiagnostics "pycodestyle" "test.py" LanguageKind_Python [__i|def f(x: int, y: str) -> None:
@@ -137,6 +151,7 @@ kernelSpec kernelName pythonPackage = NixKernelSpec {
       , "lsp.pylint.enable = true"
       , "lsp.pyright.enable = true"
       , "lsp.basedpyright.enable = true"
+      , [i|lsp.pyright.diagnosticSeverityOverrides.reportUnusedExpression = "none"|]
       , [i|lsp.basedpyright.diagnosticSeverityOverrides.reportUnusedExpression = "none"|]
       , "lsp.pycodestyle.enable = true"
       ]

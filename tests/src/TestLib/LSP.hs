@@ -20,6 +20,7 @@ module TestLib.LSP (
   , testDiagnosticsLabelDesired
   , testDiagnostics''
   , testDiagnosticsServingConfig
+  , testDiagnosticsServingConfigWithFiles
 
   , itHasHoverSatisfying
 
@@ -125,8 +126,21 @@ testDiagnostics'' label name filename languageKind code extraFiles cb = it label
 testDiagnosticsServingConfig :: (
   LspContext ctx m, HasNixEnvironment ctx
   ) => Text -> FilePath -> LanguageKind -> Text -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
-testDiagnosticsServingConfig name filename languageKind code cb = it [i|#{name}, #{filename} with #{show code} (diagnostics, serving config)|] $ do
-  lspSessionOptions <- (\o -> o { lspSessionOptionsModifyClientCaps = set (workspace . _Just . configuration) (Just True) })
+testDiagnosticsServingConfig name filename languageKind code cb = it [i|#{name}, #{filename} with #{show code} (diagnostics, serving config)|] $
+  testDiagnosticsServingConfig' name filename languageKind code [] cb
+
+testDiagnosticsServingConfigWithFiles :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Text -> FilePath -> LanguageKind -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> SpecFree ctx m ()
+testDiagnosticsServingConfigWithFiles name filename languageKind code extraFiles cb = it [i|#{name}, #{filename} with #{fmap fst extraFiles} (diagnostics, serving config)|] $
+  testDiagnosticsServingConfig' name filename languageKind code extraFiles cb
+
+testDiagnosticsServingConfig' :: (
+  LspContext ctx m, HasNixEnvironment ctx
+  ) => Text -> FilePath -> LanguageKind -> Text -> [(FilePath, B.ByteString)] -> ([Diagnostic] -> ExampleT ctx m ()) -> ExampleT ctx m ()
+testDiagnosticsServingConfig' name filename languageKind code extraFiles cb = do
+  lspSessionOptions <- (\o -> o { lspSessionOptionsModifyClientCaps = set (workspace . _Just . configuration) (Just True)
+                                , lspSessionOptionsExtraFiles = extraFiles })
                          <$> lspSessionOptionsFor name filename languageKind code
 
   Helpers.testDiagnostics lspSessionOptions languageKind $ \diags ->

@@ -46,11 +46,11 @@ common.writeTextDirWithMetaAndPassthru pyright.meta passthru "lib/codedown/langu
     python = {
       pythonPath = "${pythonEnv}/bin/python";
       analysis = {
+        inherit (settings) typeCheckingMode diagnosticSeverityOverrides;
         autoImportCompletions = true;
         autoSearchPaths = true;
         diagnosticMode = "openFilesOnly";
         extraPaths = ["/home/user"];
-        typeCheckingMode = "basic";
         useLibraryCodeForTypes = true;
       };
     };

@@ -21,6 +21,8 @@ let
     };
   };
 
+  projectConfigNote = "A pyrightconfig.json or pyproject.toml in the project folder replaces both the type checking mode and the rule severities.";
+
   subPackageEvaluated = lib.evalModules {
     modules = [
       {
@@ -102,6 +104,18 @@ in
       type = types.bool;
       default = true;
     };
+    lsp.pyright.typeCheckingMode = mkOption {
+      title = "Pyright type checking mode";
+      description = "How strict Pyright is. ${projectConfigNote}";
+      type = types.enum ["off" "basic" "standard" "strict"];
+      default = "basic";
+    };
+    lsp.pyright.diagnosticSeverityOverrides = mkOption {
+      title = "Pyright rule severities";
+      description = "Severity for individual rules, overriding the type checking mode, e.g. reportUnusedExpression = \"none\". ${projectConfigNote}";
+      type = types.attrsOf (types.enum ["none" "information" "warning" "error"]);
+      default = {};
+    };
     lsp.basedpyright.enable = mkOption {
       title = "Enable basedpyright language server";
       type = types.bool;
@@ -115,13 +129,13 @@ in
     };
     lsp.basedpyright.typeCheckingMode = mkOption {
       title = "basedpyright type checking mode";
-      description = "How strict basedpyright is. A pyrightconfig.json or pyproject.toml in the project takes precedence.";
+      description = "How strict basedpyright is. ${projectConfigNote}";
       type = types.enum ["off" "basic" "standard" "strict" "recommended" "all"];
       default = "standard";
     };
     lsp.basedpyright.diagnosticSeverityOverrides = mkOption {
       title = "basedpyright rule severities";
-      description = "Severity for individual rules, overriding the type checking mode, e.g. reportUnusedExpression = \"none\".";
+      description = "Severity for individual rules, overriding the type checking mode, e.g. reportUnusedExpression = \"none\". ${projectConfigNote}";
       type = types.attrsOf (types.enum ["none" "hint" "information" "warning" "error"]);
       default = {};
     };

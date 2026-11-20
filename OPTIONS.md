@@ -1914,7 +1914,7 @@ false
 
 **basedpyright rule severities**
 
-Severity for individual rules, overriding the type checking mode, e\.g\. reportUnusedExpression = “none”\.
+Severity for individual rules, overriding the type checking mode, e\.g\. reportUnusedExpression = “none”\. A pyrightconfig\.json or pyproject\.toml in the project folder replaces both the type checking mode and the rule severities\.
 
 
 
@@ -1960,7 +1960,7 @@ false
 
 **basedpyright type checking mode**
 
-How strict basedpyright is\. A pyrightconfig\.json or pyproject\.toml in the project takes precedence\.
+How strict basedpyright is\. A pyrightconfig\.json or pyproject\.toml in the project folder replaces both the type checking mode and the rule severities\.
 
 
 
@@ -2103,6 +2103,29 @@ false
 
 
 
+## kernels\.python3\.lsp\.pyright\.diagnosticSeverityOverrides
+
+
+
+**Pyright rule severities**
+
+Severity for individual rules, overriding the type checking mode, e\.g\. reportUnusedExpression = “none”\. A pyrightconfig\.json or pyproject\.toml in the project folder replaces both the type checking mode and the rule severities\.
+
+
+
+*Type:*
+attribute set of (one of “none”, “information”, “warning”, “error”)
+
+
+
+*Default:*
+
+```nix
+{ }
+```
+
+
+
 ## kernels\.python3\.lsp\.pyright\.disableLanguageServices
 
 
@@ -2122,6 +2145,29 @@ boolean
 
 ```nix
 true
+```
+
+
+
+## kernels\.python3\.lsp\.pyright\.typeCheckingMode
+
+
+
+**Pyright type checking mode**
+
+How strict Pyright is\. A pyrightconfig\.json or pyproject\.toml in the project folder replaces both the type checking mode and the rule severities\.
+
+
+
+*Type:*
+one of “off”, “basic”, “standard”, “strict”
+
+
+
+*Default:*
+
+```nix
+"basic"
 ```
 
 
@@ -2260,8 +2306,6 @@ one of “python3”, “python312”, “python313”, “python314”, “pypy
 
 ## kernels\.ruby\.interface\.attrs
 
-
-
 **Notebook attributes**
 
 Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
@@ -2309,6 +2353,8 @@ list of string
 
 
 ## kernels\.ruby\.lsp\.solargraph\.enable
+
+
 
 **Enable Solargraph language server**
 
