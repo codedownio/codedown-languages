@@ -38,6 +38,7 @@ common.writeTextDirWithMetaAndPassthru pyright.meta passthru "lib/codedown/langu
   inherit attrs;
   type = "stream";
   args = ["${pyright}/bin/pyright-langserver" "--stdio"];
+  env.PATH = "${pythonEnv}/bin";
 
   # Taken from https://github.com/emacs-lsp/lsp-pyright/blob/master/lsp-pyright.el
   initialization_options = {

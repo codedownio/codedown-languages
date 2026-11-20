@@ -39,6 +39,7 @@ common.writeTextDirWithMetaAndPassthru basedpyright.meta passthru "lib/codedown/
   inherit attrs;
   type = "stream";
   args = ["${basedpyright}/bin/basedpyright-langserver" "--stdio"];
+  env.PATH = "${pythonEnv}/bin";
 
   initialization_options = {
     "basedpyright.disableLanguageServices" = false;
