@@ -16,7 +16,9 @@ let
 
   languageServers = [];
 
-  kernel = callPackage ./kernel.nix { inherit attrs extensions; };
+  displayName = "PostgreSQL";
+
+  kernel = callPackage ./kernel.nix { inherit displayName attrs extensions; };
 
   version = "0.1";
 
@@ -35,7 +37,7 @@ symlinkJoin {
     meta = {
       name = "postgres";
       baseName = "postgres";
-      displayName = "PostgreSQL";
+      inherit displayName;
       description = "A simple Jupyter kernel for PostgreSQL";
       icon = ./postgres-logo-64x64.png;
       iconMonochrome = ./postgresql-monochrome.svg;

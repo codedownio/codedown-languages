@@ -17,6 +17,7 @@ let
   common = callPackage ../common.nix {};
 
   kernelName = "ruby";
+  displayName = "Ruby " + ruby.version;
 
   rubyPackages = lib.recurseIntoAttrs ruby.gems;
 
@@ -51,7 +52,7 @@ symlinkJoin {
   paths = [
     (callPackage ./kernel.nix {
       inherit iruby;
-      inherit attrs extensions version repls;
+      inherit displayName attrs extensions version repls;
       enableVariableInspector = settings.misc.enableVariableInspector;
     })
     ruby
@@ -61,7 +62,7 @@ symlinkJoin {
   passthru = {
     meta = ruby.meta // {
       baseName = "ruby";
-      displayName = "Ruby";
+      inherit displayName;
       version = ruby.version;
       icon = ./iruby-64x64.png;
       iconMonochrome = ./ruby-monochrome.svg;

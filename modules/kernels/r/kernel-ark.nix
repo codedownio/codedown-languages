@@ -6,6 +6,7 @@
 
 , enableVariableInspector
 
+, displayName
 , attrs
 , extensions
 , version
@@ -25,7 +26,7 @@ in
 
 common.makeJupyterKernel {
   r = {
-    displayName = "R";
+    inherit displayName;
     argv = [
       "${ark}/bin/ark"
       "--connection_file"

@@ -20,7 +20,7 @@ let
   hasHlsSupport = version: builtins.compareVersions version "9.0" >= 0;
 
   version = snapshot.ghc.version;
-  displayName = "Haskell";
+  displayName = "Haskell (GHC ${version})";
   kernelName = "haskell";
 
   packageOptions = snapshot;

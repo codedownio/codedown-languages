@@ -1,6 +1,7 @@
 { callPackage
 , fetchFromGitHub
 , python3
+, displayName
 , attrs
 , extensions
 }:
@@ -42,7 +43,7 @@ let
 
   # The kernel is the interactive interface here; there's no psql session to attach to.
   repls.console = common.jupyterConsoleRepl {
-    displayName = "PostgreSQL";
+    inherit displayName;
     language = "postgres";
     inherit argv;
     icon = ./postgres-logo-64x64.png;
@@ -53,7 +54,7 @@ in
 
 (common.makeJupyterKernel {
   postgres = {
-    displayName = "PostgreSQL";
+    inherit displayName;
     inherit argv;
     language = "postgres";
     logo32 = ./postgres-logo-32x32.png;

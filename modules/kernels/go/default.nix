@@ -18,6 +18,7 @@ let
   common = callPackage ../common.nix {};
 
   kernelName = "go";
+  displayName = "Go " + go.version;
 
   languageServers =
     []
@@ -31,7 +32,7 @@ let
   packageSearch = common.searcher packageOptions;
 
   kernel = callPackage ./kernel.nix {
-    inherit attrs extensions;
+    inherit displayName attrs extensions;
     version = go.version;
   };
 
@@ -49,7 +50,7 @@ symlinkJoin {
   passthru = {
     meta = go.meta // {
       baseName = "go";
-      displayName = "Go";
+      inherit displayName;
       version = go.version;
       icon = ./go-logo-64x64.png;
       iconMonochrome = ./go-monochrome.svg;

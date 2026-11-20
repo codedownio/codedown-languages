@@ -40,7 +40,7 @@ let
     "gnu++2c" = " 26";
   };
 
-  displayName = "C++" + (displaySuffix.${flavor} or "");
+  displayName = "C++${displaySuffix.${flavor} or ""} (Clang ${clang.version})";
 
   iconsSvg = {
     "c++17" = ./cpp17.svg;

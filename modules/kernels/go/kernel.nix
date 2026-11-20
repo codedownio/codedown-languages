@@ -3,6 +3,7 @@
 , stdenv
 , gophernotes
 
+, displayName
 , attrs
 , extensions
 , version
@@ -28,7 +29,7 @@ let
 
   # Go has no standard REPL, so the kernel itself is the interactive interpreter.
   repls.console = common.jupyterConsoleRepl {
-    displayName = "Go";
+    inherit displayName;
     language = head attrs;
     inherit argv;
     icon = ./go-logo-64x64.png;
@@ -39,7 +40,7 @@ in
 
 (common.makeJupyterKernel {
   go = {
-    displayName = "Go";
+    inherit displayName;
     inherit argv;
     language = head attrs;
     logo32 = ./go-logo-32x32.png;

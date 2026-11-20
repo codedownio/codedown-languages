@@ -54,7 +54,7 @@ let
     })]
   ;
 
-  displayName = "Rust";
+  displayName = "Rust " + rustPackages.rustc.version;
   kernelName = "rust";
 
   packageOptions = listToAttrs (map (x: {

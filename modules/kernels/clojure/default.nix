@@ -27,6 +27,7 @@ let
   packageSearch = common.searcher packageOptions;
 
   kernelName = "clojure";
+  displayName = "Clojure " + clojure.version;
 
   languageServers = []
     ++ lib.optionals settings.lsp.clojure-lsp.enable [(callPackage ./language-server.nix { inherit kernelName; })]
@@ -38,7 +39,7 @@ symlinkJoin {
   name = "clojure";
   paths = [
     (callPackage ./kernel.nix {
-      inherit attrs extensions;
+      inherit displayName attrs extensions;
       repls = repls clojure;
       version = clojure.version;
       enableVariableInspector = settings.misc.enableVariableInspector;
@@ -51,7 +52,7 @@ symlinkJoin {
   passthru = {
     meta = clojure.meta // {
       baseName = "clojure";
-      displayName = "Clojure";
+      inherit displayName;
       version = clojure.version;
       icon = ./clojure-logo-64x64.png;
       iconMonochrome = ./clojure-monochrome.svg;
