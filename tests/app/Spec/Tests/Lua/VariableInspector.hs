@@ -19,26 +19,18 @@ tests kernel = describe "Variable Inspector" $ do
                                   myTab = {a = 1, b = "two"}
                                  |] $ \vars -> do
       filter (not . (`M.member` vars)) ["myNum", "myStr", "myArr", "myTab"] `shouldBe` []
-
       (variableInfoType <$> M.lookup "myNum" vars) `shouldBe` Just "number"
       (variableInfoContent <$> M.lookup "myNum" vars) `shouldBe` Just "42"
       (variableInfoIsMatrix <$> M.lookup "myNum" vars) `shouldBe` Just False
-
       (variableInfoType <$> M.lookup "myStr" vars) `shouldBe` Just "string"
       (variableInfoSize <$> M.lookup "myStr" vars) `shouldBe` Just (Just 5)
-
-      -- A table whose keys are exactly 1..n is reported as an array, with a shape.
       (variableInfoType <$> M.lookup "myArr" vars) `shouldBe` Just "array"
       (variableInfoShape <$> M.lookup "myArr" vars) `shouldBe` Just (Just [3])
       (variableInfoIsMatrix <$> M.lookup "myArr" vars) `shouldBe` Just True
-
       (variableInfoType <$> M.lookup "myTab" vars) `shouldBe` Just "table"
       (variableInfoShape <$> M.lookup "myTab" vars) `shouldBe` Just Nothing
       (variableInfoIsMatrix <$> M.lookup "myTab" vars) `shouldBe` Just False
 
-  -- Everything a Lua user assigns lands in _G next to the standard library and the
-  -- globals xeus-lua injects, so the inspector lists only what appeared after its
-  -- own baseline snapshot.
   it "hides the standard library, the kernel's globals, and its own helpers" $
     withListVariables kernel [i|x = 1|] $ \vars -> do
       filter (`M.member` vars) ["string", "table", "math", "ilua", "pprint"] `shouldBe` []

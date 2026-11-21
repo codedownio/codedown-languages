@@ -14,10 +14,6 @@ import TestLib.JupyterRunnerContext
 import TestLib.JupyterTypes
 
 
--- | xeus-lua's rich output lives on the `ilua.display` table, which it defines in Lua on
--- top of a `_display_data` binding (src/xdisplay.cpp). Each of these publishes a
--- display_data message with one MIME type; a kernel that only ever manages stdout isn't
--- much of a notebook kernel, so they're worth pinning per MIME type.
 tests :: (HasJupyterRunnerContext context, JupyterRunnerMonad m) => Text -> SpecFree context m ()
 tests kernel = describe "Display" $ do
   it "publishes text/html" $
@@ -38,8 +34,6 @@ tests kernel = describe "Display" $ do
         [text] -> text `shouldBe` "just text"
         xs -> expectationFailure [i|Expected one text/plain output, got: #{xs}|]
 
-  -- The HTML goes through ilua.json's string encoder on the way out, so anything that
-  -- would break the JSON payload has to survive the round trip.
   it "escapes a payload containing quotes and newlines" $
     displayDatasShouldSatisfy kernel [__i|ilua.display.html('<p class="x">a\\nb</p>')|] $ \datas ->
       case mimeOutputs "text/html" datas of
@@ -53,7 +47,6 @@ tests kernel = describe "Display" $ do
                                           ilua.display.html("<i>second</i>")|] $ \datas ->
       mimeOutputs "text/html" datas `shouldBe` ["<i>first</i>", "<i>second</i>"]
 
--- Jupyter stores a multi-line MIME payload as an array of lines, so flatten before matching.
 mimeOutputs :: Text -> [M.Map MimeType A.Value] -> [Text]
 mimeOutputs mime datas = [flatten v | Just v <- fmap (M.lookup (MimeType mime)) datas]
   where

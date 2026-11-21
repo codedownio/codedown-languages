@@ -153,7 +153,13 @@ executable tests
       Spec.Tests.Julia.VariableInspector
       Spec.Tests.Lean4
       Spec.Tests.Lua
+      Spec.Tests.Lua.Common
       Spec.Tests.Lua.Display
+      Spec.Tests.Lua.LSP
+      Spec.Tests.Lua.LSP.Completion
+      Spec.Tests.Lua.LSP.Diagnostics
+      Spec.Tests.Lua.LSP.Formatting
+      Spec.Tests.Lua.LSP.Hovers
       Spec.Tests.Lua.VariableInspector
       Spec.Tests.Octave
       Spec.Tests.Octave.VariableInspector
