@@ -14,9 +14,7 @@
 , zeromq
 }:
 
-# xeus-lua 0.9+ requires xeus 6 and xeus-zmq 4; the pin has xeus 5.2.4 and xeus-zmq 1.3.0.
-# 0.8.0 is the last release that asks for xeus >= 5.0.0 and xeus-zmq >= 1.0.1, so it is the
-# one that builds here. Revisit when nixpkgs' xeus moves to 6.
+# Pinned to 0.8.0: later releases need xeus 6, and nixpkgs has 5.2.4.
 stdenv.mkDerivation rec {
   pname = "xeus-lua";
   version = "0.8.0";
@@ -29,16 +27,10 @@ stdenv.mkDerivation rec {
   };
 
   patches = [
-    # main.cpp calls xeus::make_xserver_shell_main but only includes
-    # xserver_zmq_split.hpp, which re-exported it in the xeus-zmq xeus-lua was developed
-    # against. In 1.3.0 it lives in its own header.
+    # xeus-zmq 1.3 moved make_xserver_shell_main into its own header.
     ./xeus-lua-xeus-zmq-1.3-header.patch
 
-    # 0.8.0 decides whether a cell is an expression by *running* `print(<cell>)` and
-    # falling back to a second, bare evaluation if that fails -- so a cell that has a
-    # side effect and then raises performs the side effect twice. Upstream fixed this in
-    # 0.9.1 (is_expression / has_valid_syntax, which compile rather than run); we can't
-    # take that release because it needs xeus 6, so the fix is backported here.
+    # 0.9.1's fix for running a failing cell's side effects twice.
     ./xeus-lua-no-double-execution.patch
   ];
 
@@ -57,8 +49,7 @@ stdenv.mkDerivation rec {
   ];
 
   cmakeFlags = [
-    # xwidgets, xproperty and xcanvas aren't in nixpkgs. They only add the ipywidgets and
-    # canvas bindings, which the notebook frontend here doesn't consume anyway.
+    # xwidgets and xcanvas aren't in nixpkgs.
     (lib.cmakeBool "XLUA_WITH_XWIDGETS" false)
     (lib.cmakeBool "XLUA_WITH_XCANVAS" false)
     (lib.cmakeBool "XEUS_LUA_USE_LUAJIT" false)

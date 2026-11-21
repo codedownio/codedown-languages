@@ -28,9 +28,7 @@ let
     inspect_variable_command = "__codedown_variable_inspector_inspect('{{VARIABLE_NAME}}')";
   };
 
-  # xeus-lua embeds Lua itself rather than shelling out to the interpreter, so the
-  # selected packages reach it the way they reach any embedded Lua state: through
-  # LUA_PATH / LUA_CPATH, which luaL_openlibs reads when it builds package.path.
+  # xeus-lua embeds Lua, so packages reach it only through LUA_PATH / LUA_CPATH.
   xlua = runCommand "xlua-wrapped" { nativeBuildInputs = [makeWrapper]; } ''
     mkdir -p $out/bin
     makeWrapper ${xeus-lua}/bin/xlua $out/bin/xlua \

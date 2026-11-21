@@ -26,11 +26,8 @@ let
 
   chosenPackages = map (x: getAttr x packageOptions) packages;
 
-  # xeus-lua ships the Lua logo with its kernelspec, so there's no PNG to vendor here.
   icon = "${xeus-lua}/share/jupyter/kernels/xlua/logo-64x64.png";
 
-  # Built even when nothing is selected, so the kernel and the language server can
-  # name one path for Lua's module search regardless.
   luaEnv = lua.withPackages (_ps: chosenPackages);
 
   languageServers = lib.optionals settings.lsp.lua-language-server.enable

@@ -60,8 +60,7 @@ in
 
   config = mkIf config.kernels.lua.enable {
     builtKernels.lua = pkgsToUse.callPackage ./. {
-      # xeus-lua 0.8.0 embeds Lua through sol2, which supports up to 5.4; the pin's
-      # default `lua` is 5.5.
+      # sol2 in xeus-lua 0.8.0 supports up to Lua 5.4.
       lua = pkgsToUse.lua5_4;
       xeus-lua = pkgsToUse.callPackage ./xeus-lua.nix { lua = pkgsToUse.lua5_4; };
       settings = config.kernels.lua;

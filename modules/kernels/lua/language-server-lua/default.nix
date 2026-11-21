@@ -20,12 +20,7 @@ let
 
   v = lua.luaversion;
 
-  # lua-language-server ignores initializationOptions -- it pulls configuration from
-  # the client via workspace/configuration, or reads a .luarc.json. codedown doesn't
-  # answer configuration requests, so hand it a file with --configpath instead.
-  #
-  # The server watches the directory holding this file, so it gets one of its own:
-  # a bare store path would have it watch all of /nix/store.
+  # Passed with --configpath, since codedown doesn't answer workspace/configuration.
   luarc = (formats.json {}).generate "luarc.json" {
     runtime = {
       version = "Lua ${v}";
@@ -33,45 +28,32 @@ let
     };
     workspace = {
       library = luaPaths.serverLibrary;
-      # Otherwise the server prompts the user about "third party" libraries it
-      # recognizes in the store path, and there's no UI here to answer with.
+      # Otherwise it prompts about third-party libraries, with no UI to answer.
       checkThirdParty = false;
     };
-    # xeus-lua injects these into the global table before any cell runs, so they are
-    # defined even though nothing in the document declares them.
+    # Defined by xeus-lua before any cell runs.
     diagnostics.globals = ["ilua" "pprint"];
     telemetry.enable = false;
     format.enable = settings.format;
   };
 
+  # The server watches the config file's directory; a bare store path means all of /nix/store.
   luarcDir = runCommand "luarc" {} ''
     mkdir $out
     cp ${luarc} $out/luarc.json
   '';
 
-  # `shutdown` must answer with a null result. lua-language-server returns `true`,
-  # which is a different type, and a client that decodes the response strictly can't
-  # match it to its request -- so the shutdown handshake never completes and the
-  # client waits out its timeout before killing the process. (proto.lua turns a
-  # handler that returns nothing into `"result": null`, so dropping the `return` is
-  # the whole fix.) R's languageserver had the same bug with `[]`; see
-  # FEATURE-MATRIX.md.
-  #
-  # Prepended, not appended: nixpkgs' postPatch ends with `pushd 3rd/luamake`, so
-  # anything after it runs from the wrong directory.
+  # Prepended because nixpkgs' postPatch ends in `pushd 3rd/luamake`.
   luaLanguageServer = lua-language-server.overrideAttrs (oldAttrs: {
     postPatch = ''
-      # Drop the `return true` on the line after the shutdown log call. sed rather
-      # than substituteInPlace because a Nix indented string strips the leading
-      # whitespace that would have to be part of a multi-line match.
+      # `shutdown` must answer null, not `true`.
       sed -i "/log.info('Server shutdown.')/{n;/^ *return true$/d}" script/provider/provider.lua
       if grep -A1 "Server shutdown" script/provider/provider.lua | grep -q 'return true'; then
         echo "lua-language-server shutdown patch did not apply" >&2
         exit 1
       fi
 
-      # After `exit`, stop reading stdin, or os.exit blocks joining this reader thread
-      # until the client closes the pipe.
+      # Stop reading stdin after `exit`, or os.exit waits for the client to close it.
       sed -i "s/^        brave.push('proto', proto)$/&\n        if proto.method == 'exit' then return end/" script/brave/work.lua
       grep -q "if proto.method == 'exit' then return end" script/brave/work.lua || {
         echo "lua-language-server exit patch did not apply" >&2
@@ -84,7 +66,7 @@ let
 
   passthru = {
     inherit languageServerName;
-    # EmmyLuaCodeStyle is vendored into lua-language-server, so it adds nothing to the closure.
+    # EmmyLuaCodeStyle is built into lua-language-server.
     formatters = lib.optionals settings.format ["EmmyLuaCodeStyle"];
   };
 
@@ -98,8 +80,6 @@ common.writeTextDirWithMetaAndPassthru luaLanguageServer.meta passthru "lib/code
   inherit icon;
   icon_monochrome = ../lua-monochrome.svg;
   extensions = ["lua"];
-  # A concatenation of Lua cells is a valid Lua chunk -- statements are legal at the
-  # top level -- so the server can read the notebook directly, with no proxy.
   notebook_suffix = ".lua";
   kernel_name = kernelName;
   header_lines = [];

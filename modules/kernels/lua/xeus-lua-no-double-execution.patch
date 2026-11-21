@@ -2,18 +2,12 @@ diff --git a/src/xinterpreter.cpp b/src/xinterpreter.cpp
 index 45061d3..5efdd1f 100644
 --- a/src/xinterpreter.cpp
 +++ b/src/xinterpreter.cpp
-@@ -196,18 +196,31 @@ namespace xlua
+@@ -196,18 +196,25 @@ namespace xlua
  
          bool auto_print = config_table["auto_print"];
         
 -        bool need_eval = true;
-+        // Decide whether the cell is an expression we should echo, WITHOUT running it:
-+        // defining a function compiles its body but does not execute it. Testing by
-+        // actually running `print(<code>)` (as this release does) executes the cell's
-+        // side effects an extra time whenever the cell goes on to raise, because the
-+        // failed trial then falls through to a second, bare evaluation.
-+        //
-+        // This is upstream's fix, backported from 0.9.1's is_expression().
++        // Compile-only expression check, backported from 0.9.1's is_expression().
 +        std::string code_to_run = code;
  
          if(auto_print)

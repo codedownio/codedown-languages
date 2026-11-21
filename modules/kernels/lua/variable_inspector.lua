@@ -1,33 +1,17 @@
--- Variable inspector for the Lua (xeus-lua) Jupyter kernel.
---
--- Lua has no notion of "user variables" -- an assignment at the top level of a cell
--- goes into _G alongside everything the standard library and the kernel put there.
--- So we snapshot the names present at startup and list only what appeared since.
---
--- Output goes through io.write rather than print: xeus-lua's print routes through
--- pprint, which would quote and reformat our JSON. io.write publishes the string
--- verbatim.
---
--- The frontend runs this file once at startup, then calls
--- __codedown_variable_inspector_list() and
--- __codedown_variable_inspector_inspect('<name>').
+-- Lists globals added since startup. Uses io.write, because print goes through pprint.
 
 __codedown_vi = {}
 
 local M = __codedown_vi
 
--- Escape a Lua string into a JSON string literal, including the quotes.
 function M.json_str(s)
   s = tostring(s)
   s = s:gsub('[\\"]', '\\%0')
   s = s:gsub('\n', '\\n'):gsub('\r', '\\r'):gsub('\t', '\\t')
-  -- Remaining control characters have no short escape.
   s = s:gsub('%c', function(c) return string.format('\\u%04x', c:byte()) end)
   return '"' .. s .. '"'
 end
 
--- A table is "array-like" if its only keys are 1..#t. Those get a shape and a
--- single-column table in the detail view; everything else is shown as a map.
 function M.is_array(t)
   local n = 0
   for _ in pairs(t) do n = n + 1 end
@@ -42,8 +26,6 @@ function M.type_of(v)
   return t
 end
 
--- A short human-readable rendering. Tables are summarized rather than dumped,
--- since the listing shows one line per variable.
 function M.content_of(v)
   local t = type(v)
   if t == 'string' then
@@ -71,8 +53,6 @@ function M.content_of(v)
   return tostring(v)
 end
 
--- One nesting level deeper than content_of goes, so a table of tables doesn't
--- expand without bound.
 function M.short(v)
   if type(v) == 'table' then
     return M.is_array(v) and ('array(' .. #v .. ')') or 'table'
@@ -98,9 +78,6 @@ function M.truncate(s)
   return s
 end
 
--- Everything defined by this file -- M itself and the two entry points -- exists before
--- the baseline below is taken, so the baseline check alone is enough to keep the
--- inspector's own names out of the listing.
 function M.user_names()
   local names = {}
   for k, _ in pairs(_G) do
@@ -170,8 +147,7 @@ function __codedown_variable_inspector_inspect(name)
     tbl))
 end
 
--- Snapshot what's already in _G, last, so the inspector's own definitions above
--- are included in the baseline and stay out of the listing.
+-- Taken last, so the inspector's own names are in the baseline.
 M.baseline = {}
 for k, _ in pairs(_G) do
   M.baseline[k] = true

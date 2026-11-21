@@ -7,8 +7,7 @@ codedown.makeEnvironment {
 
   kernels.lua.enable = true;
 
-  # inspect is pure Lua (found via LUA_PATH) and luafilesystem is a C module (found via
-  # LUA_CPATH), so between them this covers both halves of the module search path.
+  # One pure-Lua package and one C module, to cover LUA_PATH and LUA_CPATH.
   kernels.lua.packages = [
     "inspect"
     "luafilesystem"
