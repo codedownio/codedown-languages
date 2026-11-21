@@ -97,7 +97,6 @@ jobs:
       run: |
         nix build .#packages.${{matrix.arch}}.ui_metadata_farm
 
-    # Evaluating the searcher must not need anything built or fetched first.
     - name: Build .#packageSearch without import-from-derivation
       if: "!contains(github.event.head_commit.message, 'noci')"
       run: |
