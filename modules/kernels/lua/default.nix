@@ -17,6 +17,7 @@ with lib;
 
 let
   kernelName = "lua";
+  displayName = "Lua " + lua.version;
 
   common = callPackage ../common.nix {};
 
@@ -40,7 +41,7 @@ let
 
   repls = {
     lua = {
-      display_name = "Lua " + lua.version;
+      display_name = displayName;
       attr = "lua";
       args = ["${luaEnv}/bin/lua"];
       inherit icon;
@@ -55,7 +56,7 @@ symlinkJoin {
 
   paths = [
     (callPackage ./kernel.nix {
-      inherit attrs extensions lua luaEnv repls xeus-lua;
+      inherit displayName attrs extensions lua luaEnv repls xeus-lua;
       enableVariableInspector = settings.misc.enableVariableInspector;
     })
     luaEnv
@@ -66,7 +67,7 @@ symlinkJoin {
   passthru = {
     meta = lua.meta // {
       baseName = kernelName;
-      displayName = "Lua " + lua.version;
+      inherit displayName;
       version = lua.version;
       inherit icon;
       iconMonochrome = ./lua-monochrome.svg;

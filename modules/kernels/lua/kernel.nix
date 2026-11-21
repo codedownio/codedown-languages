@@ -10,6 +10,7 @@
 
 , enableVariableInspector
 
+, displayName
 , attrs
 , extensions
 , repls ? {}
@@ -41,7 +42,7 @@ in
 
 common.makeJupyterKernel {
   lua = {
-    displayName = "Lua";
+    inherit displayName;
     argv = [
       "${xlua}/bin/xlua"
       "-f"
