@@ -181,6 +181,8 @@ jobs:
           pool: arc-public-medium
         - name: lean4
           pool: arc-public-medium
+        - name: lua
+          pool: arc-public-medium
         - name: octave
           pool: arc-public-medium
         - name: postgres

@@ -31,6 +31,9 @@ codedown.makeEnvironment {
   kernels.haskell.packages = ["aeson"];
   kernels.haskell.lsp.haskell-language-server.debug = true;
 
+  kernels.lua.enable = true;
+  kernels.lua.packages = ["inspect"];
+
   kernels.octave.enable = true;
   kernels.octave.packages = ["doctest"];
   kernels.octave.extraJupyterConfig = ''
