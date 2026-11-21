@@ -1,6 +1,7 @@
 { lib
 , callPackage
 , formats
+, runCommand
 
 , lua
 , luaEnv
@@ -22,6 +23,9 @@ let
   # lua-language-server ignores initializationOptions -- it pulls configuration from
   # the client via workspace/configuration, or reads a .luarc.json. codedown doesn't
   # answer configuration requests, so hand it a file with --configpath instead.
+  #
+  # The server watches the directory holding this file, so it gets one of its own:
+  # a bare store path would have it watch all of /nix/store.
   luarc = (formats.json {}).generate "luarc.json" {
     runtime = {
       version = "Lua ${v}";
@@ -39,6 +43,11 @@ let
     telemetry.enable = false;
     format.enable = settings.format;
   };
+
+  luarcDir = runCommand "luarc" {} ''
+    mkdir $out
+    cp ${luarc} $out/luarc.json
+  '';
 
   # `shutdown` must answer with a null result. lua-language-server returns `true`,
   # which is a different type, and a client that decodes the response strictly can't
@@ -99,7 +108,7 @@ common.writeTextDirWithMetaAndPassthru luaLanguageServer.meta passthru "lib/code
   primary = true;
   args = [
     "${luaLanguageServer}/bin/lua-language-server"
-    "--configpath=${luarc}"
+    "--configpath=${luarcDir}/luarc.json"
   ];
   env = {};
   language_id = "lua";
