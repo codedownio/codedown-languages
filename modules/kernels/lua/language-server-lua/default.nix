@@ -60,6 +60,14 @@ let
         echo "lua-language-server shutdown patch did not apply" >&2
         exit 1
       fi
+
+      # After `exit`, stop reading stdin, or os.exit blocks joining this reader thread
+      # until the client closes the pipe.
+      sed -i "s/^        brave.push('proto', proto)$/&\n        if proto.method == 'exit' then return end/" script/brave/work.lua
+      grep -q "if proto.method == 'exit' then return end" script/brave/work.lua || {
+        echo "lua-language-server exit patch did not apply" >&2
+        exit 1
+      }
     '' + (oldAttrs.postPatch or "");
   });
 
