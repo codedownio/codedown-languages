@@ -37,7 +37,7 @@ stdenv.mkDerivation rec {
     # 0.8.0 decides whether a cell is an expression by *running* `print(<cell>)` and
     # falling back to a second, bare evaluation if that fails -- so a cell that has a
     # side effect and then raises performs the side effect twice. Upstream fixed this in
-    # 0.9.0 (is_expression / has_valid_syntax, which compile rather than run); we can't
+    # 0.9.1 (is_expression / has_valid_syntax, which compile rather than run); we can't
     # take that release because it needs xeus 6, so the fix is backported here.
     ./xeus-lua-no-double-execution.patch
   ];

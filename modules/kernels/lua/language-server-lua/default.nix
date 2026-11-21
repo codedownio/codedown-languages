@@ -67,8 +67,7 @@ let
 
   passthru = {
     inherit languageServerName;
-    # EmmyLuaCodeStyle is vendored into lua-language-server, so formatting costs
-    # nothing extra in the closure and is on unconditionally.
+    # EmmyLuaCodeStyle is vendored into lua-language-server, so it adds nothing to the closure.
     formatters = lib.optionals settings.format ["EmmyLuaCodeStyle"];
   };
 

@@ -13,7 +13,7 @@ index 45061d3..5efdd1f 100644
 +        // side effects an extra time whenever the cell goes on to raise, because the
 +        // failed trial then falls through to a second, bare evaluation.
 +        //
-+        // This is upstream's fix, backported from 0.9.0's is_expression().
++        // This is upstream's fix, backported from 0.9.1's is_expression().
 +        std::string code_to_run = code;
  
          if(auto_print)
