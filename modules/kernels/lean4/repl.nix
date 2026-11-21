@@ -13,6 +13,9 @@ let
 
 in
 
+assert lib.assertMsg (replVersion.tag == "v${lean4.version}")
+  "repl-version.nix is at ${replVersion.tag} but lean4 is ${lean4.version}";
+
 stdenv.mkDerivation {
   pname = "lean4-repl";
   version = lean4.version;
@@ -20,7 +23,7 @@ stdenv.mkDerivation {
   src = fetchFromGitHub {
     owner = "leanprover-community";
     repo = "repl";
-    rev = replVersion.rev;
+    inherit (replVersion) tag;
     sha256 = replVersion.sha256;
   };
 

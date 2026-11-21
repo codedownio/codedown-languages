@@ -4,6 +4,7 @@
 , callPackage
 , makeWrapper
 , runCommand
+, tzdata
 
 , lean4
 
@@ -23,10 +24,8 @@ let
   leanPath = lib.concatStringsSep ":" (map (p: "${p}/.lake/build/lib/lean") chosenPackages);
   leanSrcPath = lib.concatStringsSep ":" (map toString chosenPackages);
 
-  # Needs a writable HOME, and needs /etc/localtime to exist: 4.29.1 reads it for a log
-  # filename it then discards, and dies with "Watchdog error: no such file or directory"
-  # if it's missing. 4.35.0 takes TZ/TZDIR instead (leanprover/lean4#12869), so the bump
-  # turns this into two --set flags here.
+  # Needs a writable HOME. The server reads the local timezone at startup and exits if
+  # there's no /etc/localtime, unless TZ and TZDIR both point at a real zone.
   leanWrapped = runCommand "lean-language-server" {
     nativeBuildInputs = [ makeWrapper ];
   } ''
@@ -34,6 +33,8 @@ let
     makeWrapper ${lean4}/bin/lean $out/bin/lean-language-server \
       --add-flags --server \
       --suffix PATH : ${lean4}/bin \
+      --set-default TZ UTC \
+      --set-default TZDIR ${tzdata}/share/zoneinfo \
       ${lib.optionalString (chosenPackages != []) ''
         --prefix LEAN_PATH : ${leanPath} \
         --prefix LEAN_SRC_PATH : ${leanSrcPath} \

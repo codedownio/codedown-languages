@@ -3,9 +3,6 @@
 , runCommand
 , symlinkJoin
 
-, lean4
-, leanPackages
-
 , settings
 , settingsSchema
 }:
@@ -16,36 +13,47 @@ with { inherit (settings.interface) attrs extensions; };
 let
   common = callPackage ../common.nix {};
 
+  leanPkgs = callPackage ./nixpkgs.nix {};
+  inherit (leanPkgs) leanPackages;
+  # The set's own toolchain, so the packages' oleans match it exactly.
+  inherit (leanPackages) lean4;
+
   kernelName = "lean4";
 
   displayName = "Lean " + lean4.version;
 
-  repl = callPackage ./repl.nix { inherit lean4; };
+  repl = leanPkgs.callPackage ./repl.nix { inherit lean4; };
 
   lean4-jupyter = callPackage ./lean4-jupyter.nix { inherit repl; };
 
-  # buildLakePackage installs the whole Lake tree, build artifacts and all -- 1.2 GB for
-  # the set, mostly test executables and intermediate C. Keep the sources: jump to
-  # definition resolves through LEAN_SRC_PATH and comes back empty without them. Drop the
-  # .trace files too; each names the toolchain that built it, pulling leanPackages' own
-  # 4.29.0 (3.1 GB) into an environment that already has 4.29.1. Leaves ~300 MB. Skip
+  # As mathlib's own, which packs without zstd; stock leantar can't read the result.
+  leangz-raw = leanPkgs.leangz.overrideAttrs { cargoBuildNoDefaultFeatures = true; };
+
+  # buildLakePackage installs the whole Lake tree: test executables, intermediate C, npm
+  # trees. Keep the sources, which jump to definition resolves through LEAN_SRC_PATH. Skip
   # nix-support, whose propagated-build-inputs points back at the unslimmed dependencies.
-  slimLakePackage = pkg: runCommand "${pkg.name}-slim" {
+  # mathlib is unpacked straight from its cached archive, skipping the 8.7 GB full tree.
+  slimLakePackage = pkg: let
+    packed = pkg.passthru.mathlib__archive or null;
+  in runCommand "${pkg.name}-slim" {
     inherit (pkg) version;
+    nativeBuildInputs = lib.optional (packed != null) leangz-raw;
     meta = pkg.meta // { inherit (pkg) version; };
   } ''
     mkdir $out
-    tar -C ${pkg} -c \
+    tar -C ${if packed != null then packed else pkg} -c \
       --exclude=./.lake/build/bin --exclude=./.lake/build/ir --exclude=./bin \
       --exclude=./widget --exclude=./nix-support . \
       | tar -C $out -x
     chmod -R u+w $out
-    find $out -name '*.trace' -delete
+    ${lib.optionalString (packed != null) ''
+      oleans=$out/.lake/build/lib/lean
+      find $oleans -name '*.ltar' -exec leantar -C $oleans -C $TMPDIR/ir -x {} +
+      find $oleans -name '*.ltar' -delete
+    ''}
   '';
 
-  # leanPackages.lean4 is the set's own toolchain, not a library. It needn't match ours:
-  # oleans are compatible across a patch series, so its 4.29.0 loads under our 4.29.1.
-  libraries = lib.filterAttrs (n: v: n != "lean4" && lib.isDerivation v) leanPackages;
+  libraries = lib.filterAttrs (n: v: lib.isDerivation v && !(lib.elem n ["lean4" "mathlib__archive"])) leanPackages;
 
   packageOptions = lib.mapAttrs (_: slimLakePackage) libraries;
   packageSearch = common.searcher packageOptions;
@@ -93,7 +101,7 @@ symlinkJoin {
     inherit packageOptions packageSearch;
     versions = {
       lean4 = lean4.version;
-      repl = (import ./repl-version.nix).rev;
+      repl = (import ./repl-version.nix).tag;
     };
     inherit settings settingsSchema;
     inherit (kernel) repls;

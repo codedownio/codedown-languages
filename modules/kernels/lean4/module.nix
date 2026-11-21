@@ -21,12 +21,8 @@ with lib;
         title = "List of packages";
         description = ''
           Lean libraries from nixpkgs' `leanPackages`, put on the kernel's and the language
-          server's search paths.
-
-          All are prebuilt in the binary cache except `mathlib`, whose 8.7 GB output is
-          over Hydra's upload limit (NixOS/nixpkgs#510957), so selecting it means compiling
-          Mathlib locally for hours. nixpkgs master has since fixed that; drop this caveat
-          on the next bump.
+          server's search paths, along with their dependencies. All are prebuilt; `mathlib`
+          is a ~1 GB download that unpacks to 5.8 GB.
         '';
         type = types.listOf types.str;
         default = [];
