@@ -16,11 +16,16 @@ let
   leanPkgs = callPackage ./nixpkgs.nix {};
   inherit (leanPkgs) leanPackages;
   # The set's own toolchain, so the packages' oleans match it exactly.
-  inherit (leanPackages) lean4;
+  lean4 = assert lib.assertMsg (leanPackages.lean4.version == version)
+    "version.nix is at ${version} but lean4 is ${leanPackages.lean4.version}; run .aliases/dev-update-lean4";
+    leanPackages.lean4;
+
+  # Known without importing leanPkgs, so describing the kernel doesn't fetch its nixpkgs.
+  version = import ./version.nix;
 
   kernelName = "lean4";
 
-  displayName = "Lean " + lean4.version;
+  displayName = "Lean " + version;
 
   repl = leanPkgs.callPackage ./repl.nix { inherit lean4; };
 
@@ -78,7 +83,7 @@ let
 in
 
 symlinkJoin {
-  name = "lean4-${lean4.version}";
+  name = "lean4-${version}";
 
   paths = [
     kernel
@@ -90,17 +95,22 @@ symlinkJoin {
   ;
 
   passthru = {
-    meta = lean4.meta // {
+    meta = {
+      name = "lean4-${version}";
       baseName = "lean4";
-      inherit displayName settingsSchema;
-      inherit (lean4) version;
+      description = "Automatic and interactive theorem prover";
+      homepage = "https://leanprover.github.io/";
+      changelog = "https://github.com/leanprover/lean4/blob/v${version}/RELEASES.md";
+      license = lib.licenses.asl20;
+      mainProgram = "lean";
+      inherit displayName settingsSchema version;
       icon = ./lean4-logo-64x64.png;
       iconMonochrome = ./lean4-monochrome.svg;
-      hasPackages = packageOptions != {};
+      hasPackages = true;
     };
     inherit packageOptions packageSearch;
     versions = {
-      lean4 = lean4.version;
+      lean4 = version;
       repl = (import ./repl-version.nix).tag;
     };
     inherit settings settingsSchema;

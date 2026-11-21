@@ -49,7 +49,7 @@ let
 
 in
 
-common.writeTextDirWithMetaAndPassthru lean4.meta passthru "lib/codedown/language-servers/lean-${kernelName}-lean.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMetaAndPassthru { description = "The Lean 4 language server"; } passthru "lib/codedown/language-servers/lean-${kernelName}-lean.yaml" (lib.generators.toYAML {} [{
   name = languageServerName;
   version = lean4.version;
   display_name = "Lean";
