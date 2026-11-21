@@ -16,12 +16,12 @@ let
   leanPkgs = callPackage ./nixpkgs.nix {};
   inherit (leanPkgs) leanPackages;
   # The set's own toolchain, so the packages' oleans match it exactly.
-  lean4 = assert lib.assertMsg (leanPackages.lean4.version == version)
-    "version.nix is at ${version} but lean4 is ${leanPackages.lean4.version}; run .aliases/dev-update-lean4";
+  lean4 = assert lib.assertMsg (leanMeta.fromPackage leanPackages.lean4 == leanMeta.pinned)
+    "meta.json doesn't match lean4 at nixpkgs.nix's pin; run modules/kernels/lean4/update.sh";
     leanPackages.lean4;
 
-  # Known without importing leanPkgs, so describing the kernel doesn't fetch its nixpkgs.
-  version = import ./version.nix;
+  leanMeta = callPackage ./meta.nix {};
+  inherit (leanMeta.pinned) version;
 
   kernelName = "lean4";
 
@@ -73,6 +73,7 @@ let
     []
     ++ lib.optionals settings.lsp.lean.enable [(callPackage ./language-server-lean/default.nix {
       inherit attrs chosenPackages extensions kernelName lean4;
+      inherit (leanMeta) meta;
     })]
   ;
 
@@ -95,15 +96,9 @@ symlinkJoin {
   ;
 
   passthru = {
-    meta = {
-      name = "lean4-${version}";
+    meta = leanMeta.meta // {
       baseName = "lean4";
-      description = "Automatic and interactive theorem prover";
-      homepage = "https://leanprover.github.io/";
-      changelog = "https://github.com/leanprover/lean4/blob/v${version}/RELEASES.md";
-      license = lib.licenses.asl20;
-      mainProgram = "lean";
-      inherit displayName settingsSchema version;
+      inherit displayName settingsSchema;
       icon = ./lean4-logo-64x64.png;
       iconMonochrome = ./lean4-monochrome.svg;
       hasPackages = true;

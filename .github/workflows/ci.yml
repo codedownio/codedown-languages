@@ -97,7 +97,7 @@ jobs:
       run: |
         nix build .#packages.${{matrix.arch}}.ui_metadata_farm
 
-    # codedown builds searchers in stores that can only substitute, so evaluating one can't fetch.
+    # Evaluating the searcher must not need anything built or fetched first.
     - name: Build .#packageSearch without import-from-derivation
       if: "!contains(github.event.head_commit.message, 'noci')"
       run: |
