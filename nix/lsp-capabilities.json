@@ -1402,7 +1402,7 @@
                 "filters": [
                   {
                     "pattern": {
-                      "glob": "/tmp/nix-shell-3086687-1901684833/lsp-probe-lua-lua-language-server-hcdb094v/**",
+                      "glob": "/tmp/nix-shell-2695460-2988446153/lsp-probe-lua-lua-language-server-8f1azo0r/**",
                       "options": {
                         "ignoreCase": true
                       }
@@ -1421,7 +1421,7 @@
         "diagnosticReportsCellProblem": null,
         "displayName": "lua-language-server",
         "version": "3.18.1",
-        "workspaceSymbolFindsCellSymbol": null
+        "workspaceSymbolFindsCellSymbol": true
       }
     },
     "octave": {},
