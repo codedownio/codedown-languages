@@ -7,6 +7,7 @@
 , tzdata
 
 , lean4
+, meta
 
 , attrs
 , chosenPackages
@@ -49,7 +50,7 @@ let
 
 in
 
-common.writeTextDirWithMetaAndPassthru lean4.meta passthru "lib/codedown/language-servers/lean-${kernelName}-lean.yaml" (lib.generators.toYAML {} [{
+common.writeTextDirWithMetaAndPassthru meta passthru "lib/codedown/language-servers/lean-${kernelName}-lean.yaml" (lib.generators.toYAML {} [{
   name = languageServerName;
   version = lean4.version;
   display_name = "Lean";

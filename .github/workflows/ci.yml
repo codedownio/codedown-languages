@@ -97,6 +97,11 @@ jobs:
       run: |
         nix build .#packages.${{matrix.arch}}.ui_metadata_farm
 
+    - name: Build .#packageSearch without import-from-derivation
+      if: "!contains(github.event.head_commit.message, 'noci')"
+      run: |
+        nix build --no-link --option allow-import-from-derivation false .#packages.${{matrix.arch}}.packageSearch
+
   build-sample-environments:
     name: "build-sample-environments (${{matrix.os}}, ${{matrix.arch}})"
     runs-on: ${{ matrix.os == 'Linux' && 'arc-public-small' || 'macOS' }}

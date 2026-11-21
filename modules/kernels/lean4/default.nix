@@ -16,11 +16,16 @@ let
   leanPkgs = callPackage ./nixpkgs.nix {};
   inherit (leanPkgs) leanPackages;
   # The set's own toolchain, so the packages' oleans match it exactly.
-  inherit (leanPackages) lean4;
+  lean4 = assert lib.assertMsg (leanMeta.fromPackage leanPackages.lean4 == leanMeta.pinned)
+    "meta.json doesn't match lean4 at nixpkgs.nix's pin; run modules/kernels/lean4/update.sh";
+    leanPackages.lean4;
+
+  leanMeta = callPackage ./meta.nix {};
+  inherit (leanMeta.pinned) version;
 
   kernelName = "lean4";
 
-  displayName = "Lean " + lean4.version;
+  displayName = "Lean " + version;
 
   repl = leanPkgs.callPackage ./repl.nix { inherit lean4; };
 
@@ -68,6 +73,7 @@ let
     []
     ++ lib.optionals settings.lsp.lean.enable [(callPackage ./language-server-lean/default.nix {
       inherit attrs chosenPackages extensions kernelName lean4;
+      inherit (leanMeta) meta;
     })]
   ;
 
@@ -78,7 +84,7 @@ let
 in
 
 symlinkJoin {
-  name = "lean4-${lean4.version}";
+  name = "lean4-${version}";
 
   paths = [
     kernel
@@ -90,17 +96,16 @@ symlinkJoin {
   ;
 
   passthru = {
-    meta = lean4.meta // {
+    meta = leanMeta.meta // {
       baseName = "lean4";
       inherit displayName settingsSchema;
-      inherit (lean4) version;
       icon = ./lean4-logo-64x64.png;
       iconMonochrome = ./lean4-monochrome.svg;
-      hasPackages = packageOptions != {};
+      hasPackages = true;
     };
     inherit packageOptions packageSearch;
     versions = {
-      lean4 = lean4.version;
+      lean4 = version;
       repl = (import ./repl-version.nix).tag;
     };
     inherit settings settingsSchema;
