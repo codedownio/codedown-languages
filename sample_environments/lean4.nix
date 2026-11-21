@@ -7,6 +7,6 @@ codedown.makeEnvironment {
 
   kernels.lean4.enable = true;
   kernels.lean4.packages = [
-    "batteries"
+    "aesop"
   ];
 }

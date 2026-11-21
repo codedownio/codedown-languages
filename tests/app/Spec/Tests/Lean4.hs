@@ -128,7 +128,7 @@ tests = describe "Lean 4" $ do
       -- No formatting test: Lean has no formatter.
 
   -- The kernel and the server get packages through different variables; check both.
-  describe "Packages" $ introduceNixEnvironment [kernelSpecWithPackages] [] "Lean 4 with batteries" $ introduceJupyterRunner $ do
+  describe "Packages" $ introduceNixEnvironment [kernelSpecWithPackages] [] "Lean 4 with aesop" $ introduceJupyterRunner $ do
     it "imports a package in a cell" $
       plainOutputsShouldSatisfy unionFindCode $ \case
         [out] -> out `textShouldContain` "Batteries.UnionFind : Type"
@@ -172,7 +172,7 @@ kernelSpecWithLsp = NixKernelSpec {
 
 kernelSpecWithPackages :: NixKernelSpec
 kernelSpecWithPackages = kernelSpecWithLsp {
-  nixKernelPackages = [nameOnly "batteries"]
+  nixKernelPackages = [nameOnly "aesop"]
   }
 
 -- | `Batteries.UnionFind` isn't in core, so resolving it means the package is on the path.

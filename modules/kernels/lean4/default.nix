@@ -40,12 +40,16 @@ let
 
   # leanPackages.lean4 is the set's own toolchain, not a library. It needn't match ours:
   # oleans are compatible across a patch series, so its 4.29.0 loads under our 4.29.1.
-  packageOptions = lib.mapAttrs (_: slimLakePackage) (
-    lib.filterAttrs (n: v: n != "lean4" && lib.isDerivation v) leanPackages
-  );
+  libraries = lib.filterAttrs (n: v: n != "lean4" && lib.isDerivation v) leanPackages;
+
+  packageOptions = lib.mapAttrs (_: slimLakePackage) libraries;
   packageSearch = common.searcher packageOptions;
 
-  chosenPackages = map (x: lib.getAttr x packageOptions) packages;
+  # buildLakePackage hands dependencies on through a setup hook, not in the output, so
+  # LEAN_PATH needs the whole closure or `import Aesop` can't find Batteries.
+  nameByOutPath = lib.mapAttrs' (n: v: lib.nameValuePair (builtins.unsafeDiscardStringContext v.outPath) n) libraries;
+  withDeps = n: [n] ++ map (d: nameByOutPath.${builtins.unsafeDiscardStringContext d.outPath}) (libraries.${n}.allLeanDeps or []);
+  chosenPackages = map (n: packageOptions.${n}) (lib.unique (lib.concatMap withDeps packages));
 
   languageServers =
     []
