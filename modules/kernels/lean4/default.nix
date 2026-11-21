@@ -28,14 +28,19 @@ let
   # the set, mostly test executables and intermediate C. Keep the sources: jump to
   # definition resolves through LEAN_SRC_PATH and comes back empty without them. Drop the
   # .trace files too; each names the toolchain that built it, pulling leanPackages' own
-  # 4.29.0 (3.1 GB) into an environment that already has 4.29.1. Leaves ~300 MB.
+  # 4.29.0 (3.1 GB) into an environment that already has 4.29.1. Leaves ~300 MB. Skip
+  # nix-support, whose propagated-build-inputs points back at the unslimmed dependencies.
   slimLakePackage = pkg: runCommand "${pkg.name}-slim" {
     inherit (pkg) version;
     meta = pkg.meta // { inherit (pkg) version; };
   } ''
-    cp -r --no-preserve=mode,ownership ${pkg} $out
-    rm -rf "$out/.lake/build/bin" "$out/.lake/build/ir" "$out/bin" "$out/widget"
-    find "$out" -name '*.trace' -delete
+    mkdir $out
+    tar -C ${pkg} -c \
+      --exclude=./.lake/build/bin --exclude=./.lake/build/ir --exclude=./bin \
+      --exclude=./widget --exclude=./nix-support . \
+      | tar -C $out -x
+    chmod -R u+w $out
+    find $out -name '*.trace' -delete
   '';
 
   # leanPackages.lean4 is the set's own toolchain, not a library. It needn't match ours:
