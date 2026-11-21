@@ -26,6 +26,8 @@ module TestLib.LSP (
 
   , listShouldContain
   , symbolNames
+  , definitionRanges
+  , definitionUris
 
   , module TestLib.LSP.Formatting
 
@@ -47,7 +49,7 @@ import qualified Data.Text as T hiding (filter)
 import Data.Text hiding (filter, show)
 import GHC.Int
 import GHC.Stack
-import Language.LSP.Protocol.Lens (configuration, name, workspace)
+import Language.LSP.Protocol.Lens (configuration, name, uri, workspace)
 import Language.LSP.Protocol.Types
 import qualified Language.LSP.Protocol.Types as LSP
 import Language.LSP.Test
@@ -169,6 +171,25 @@ listShouldContain :: (HasCallStack, MonadIO m, Eq a, Show a) => [a] -> a -> m ()
 listShouldContain haystack needle = case L.elem needle haystack of
   True -> return ()
   False -> expectationFailure [i|Expected list to contain #{show needle}, but had: #{show haystack}|]
+
+-- | The ranges a textDocument/definition response points at, keeping only those in the
+-- given document. Flattens the four shapes the response can take.
+definitionRanges :: TextDocumentIdentifier -> (Definition |? [DefinitionLink] |? LSP.Null) -> [Range]
+definitionRanges (TextDocumentIdentifier wanted) = \case
+  InL (Definition (InL loc)) -> ranges [loc]
+  InL (Definition (InR locs)) -> ranges locs
+  InR (InL links) -> ranges [Location u r | DefinitionLink (LocationLink _ u r _) <- links]
+  InR (InR LSP.Null) -> []
+  where ranges locs = [r | Location u r <- locs, u == wanted]
+
+-- | Every document a definition response points at, including ones outside the document
+-- asked about -- which is what a jump into a library looks like.
+definitionUris :: (Definition |? [DefinitionLink] |? LSP.Null) -> [Uri]
+definitionUris = \case
+  InL (Definition (InL loc)) -> [loc ^. uri]
+  InL (Definition (InR locs)) -> [l ^. uri | l <- locs]
+  InR (InL links) -> [u | DefinitionLink (LocationLink _ u _ _) <- links]
+  InR (InR LSP.Null) -> []
 
 assertDiagnosticRanges :: (HasCallStack, MonadIO m) => [Diagnostic] -> [(Range, Maybe (Int32 |? Text))] -> ExampleT ctx m ()
 assertDiagnosticRanges = assertDiagnosticRanges'' Helpers.getDiagnosticRanges
