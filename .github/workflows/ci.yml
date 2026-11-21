@@ -160,6 +160,8 @@ jobs:
           pool: arc-public-large
         - name: java
           pool: arc-public-large
+        - name: javascript
+          pool: arc-public-medium
         - name: julia
           flags: "-f julia_19"
           pool: arc-public-medium
@@ -189,6 +191,8 @@ jobs:
         - name: zsh
           pool: arc-public-medium
         - name: spellchecker
+          pool: arc-public-medium
+        - name: typescript
           pool: arc-public-medium
         - name: typst
           pool: arc-public-medium
