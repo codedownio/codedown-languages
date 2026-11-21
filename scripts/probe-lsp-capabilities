@@ -76,6 +76,7 @@ CELL_SOURCES = {
     "java": "int alphaInCell() { return 2; }\n",
     "javascript": "function alphaInCell() { return 2 }\n",
     "julia": "function alpha_in_cell()\n    2\nend\n",
+    "lua": "function alpha_in_cell()\n  return 2\nend\n",
     "python": "def alpha_in_cell():\n    return 2\n",
     "r": "alpha_in_cell <- function() 2\n",
     "ruby": "def alpha_in_cell\n  2\nend\n",
