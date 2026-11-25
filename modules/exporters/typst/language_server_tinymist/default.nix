@@ -48,4 +48,8 @@ common.writeTextDirWithMetaAndPassthru tinymist.meta passthru "lib/codedown/lang
     # documentFormattingProvider either way and just answers null when it's off.
     formatterMode = if settings.formatter == "none" then "disable" else settings.formatter;
   };
+  disabled_code_lens_commands = [ 
+    "tinymist.exportPdf" 
+    "tinymist.exportHtml"
+  ];
 }])
