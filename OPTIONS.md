@@ -173,6 +173,29 @@ value “scheme-full” (singular enum)
 
 
 
+## exporters\.pandoc\.engine
+
+
+
+**TeX engine**
+
+The TeX engine that compiles PDF and Beamer exports\.
+
+
+
+*Type:*
+one of “pdflatex”, “xelatex”, “lualatex”
+
+
+
+*Default:*
+
+```nix
+"pdflatex"
+```
+
+
+
 ## exporters\.pandoc\.texliveScheme
 
 
@@ -1668,6 +1691,78 @@ true
 
 
 
+## kernels\.lean4\.interface\.attrs
+
+
+
+**Notebook attributes**
+
+Notebook cells that have these attributes will match this kernel, allowing it to run the code\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "lean4"
+  "lean"
+]
+```
+
+
+
+## kernels\.lean4\.interface\.extensions
+
+
+
+**File extensions**
+
+Files with these extensions will match against this kernel, allowing you to run the code as if it were a Jupyter cell\.
+
+
+
+*Type:*
+list of string
+
+
+
+*Default:*
+
+```nix
+[
+  "lean"
+]
+```
+
+
+
+## kernels\.lean4\.lsp\.lean\.enable
+
+
+
+**Enable Lean language server**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+
+
 ## kernels\.octave\.extraJupyterConfig
 
 
@@ -2082,6 +2177,73 @@ false
 
 
 
+## kernels\.python3\.lsp\.pyrefly\.enable
+
+
+
+**Enable Pyrefly language server**
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+## kernels\.python3\.lsp\.pyrefly\.disableLanguageServices
+
+
+
+**Disable Pyrefly’s language services**
+
+Use Pyrefly for diagnostics only, without its completions, hovers, and other features\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
+## kernels\.python3\.lsp\.pyrefly\.typeCheckingMode
+
+
+
+**Pyrefly type checking mode**
+
+How strict Pyrefly is\. “auto” migrates a mypy or Pyright config found in the project, and otherwise uses “basic”\. A pyrefly\.toml or a \[tool\.pyrefly] section in pyproject\.toml takes precedence\.
+
+
+
+*Type:*
+one of “auto”, “off”, “basic”, “legacy”, “default”, “strict”, “all”
+
+
+
+*Default:*
+
+```nix
+"auto"
+```
+
+
+
 ## kernels\.python3\.lsp\.pyright\.enable
 
 
@@ -2150,8 +2312,6 @@ true
 
 
 ## kernels\.python3\.lsp\.pyright\.typeCheckingMode
-
-
 
 **Pyright type checking mode**
 
@@ -2237,6 +2397,29 @@ one of “autopep8”, “yapf”, “black”, “ruff”, “none”
 
 
 
+## kernels\.python3\.lsp\.ruff\.enable
+
+
+
+**Enable Ruff language server**
+
+Linting, formatting and import sorting\. It provides no completions or hovers, so pair it with another language server\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+false
+```
+
+
+
 ## kernels\.python3\.misc\.enableVariableInspector
 
 
@@ -2305,6 +2488,8 @@ one of “python3”, “python312”, “python313”, “python314”, “pypy
 
 
 ## kernels\.ruby\.interface\.attrs
+
+
 
 **Notebook attributes**
 

@@ -18,6 +18,8 @@ codedown.makeEnvironment {
   kernels.python3.lsp = {
     jedi.enable = true;
     pyright.enable = true;
+    pyrefly.enable = true;
+    ruff.enable = true;
     pylint.enable = true;
     flake8.enable = true;
     pycodestyle.enable = true;
