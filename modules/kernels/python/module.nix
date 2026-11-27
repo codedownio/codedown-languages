@@ -139,6 +139,29 @@ in
       type = types.attrsOf (types.enum ["none" "hint" "information" "warning" "error"]);
       default = {};
     };
+    lsp.pyrefly.enable = mkOption {
+      title = "Enable Pyrefly language server";
+      type = types.bool;
+      default = false;
+    };
+    lsp.pyrefly.disableLanguageServices = mkOption {
+      title = "Disable Pyrefly's language services";
+      description = "Use Pyrefly for diagnostics only, without its completions, hovers, and other features.";
+      type = types.bool;
+      default = false;
+    };
+    lsp.pyrefly.typeCheckingMode = mkOption {
+      title = "Pyrefly type checking mode";
+      description = "How strict Pyrefly is. \"auto\" migrates a mypy or Pyright config found in the project, and otherwise uses \"basic\". A pyrefly.toml or a [tool.pyrefly] section in pyproject.toml takes precedence.";
+      type = types.enum ["auto" "off" "basic" "legacy" "default" "strict" "all"];
+      default = "auto";
+    };
+    lsp.ruff.enable = mkOption {
+      title = "Enable Ruff language server";
+      description = "Linting, formatting and import sorting. It provides no completions or hovers, so pair it with another language server.";
+      type = types.bool;
+      default = false;
+    };
     lsp.pylint.enable = mkOption {
       title = "Enable Pylint language server";
       type = types.bool;

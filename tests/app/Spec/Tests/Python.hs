@@ -103,6 +103,42 @@ tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelN
       , (Range (Position 3 0) (Position 3 5), Just (InR "reportUnusedExpression"), "Expression value is unused")
       ]
 
+  testDiagnosticsServingConfig "pyrefly" "test.py" LanguageKind_Python [__i|import scipy
+                                                                            import notamodule
+                                                                            scipy
+                                                                            undefined_name
+                                                                           |] $ \diagnostics -> do
+    assertDiagnosticRanges diagnostics [
+      (Range (Position 1 7) (Position 1 17), Just (InR "missing-import"))
+      , (Range (Position 3 0) (Position 3 14), Just (InR "unknown-name"))
+      , (Range (Position 1 7) (Position 1 17), Just (InR "unused-import"))
+      ]
+
+  testDiagnosticsServingConfigWithFiles "pyrefly" "test.py" LanguageKind_Python [__i|import mymod
+                                                                                     def f(x: int, y: str) -> None:
+                                                                                         pass
+                                                                                     f("asdf", 42)
+                                                                                     mymod
+                                                                                    |] [("mymod.py", "foo = 1\n"), ("pyrefly.toml", "preset = \"default\"\n")] $ \diagnostics -> do
+    assertDiagnosticRanges' diagnostics [
+      (Range (Position 3 2) (Position 3 8), Just (InR "bad-argument-type"), "Argument `Literal['asdf']` is not assignable to parameter `x` with type `int` in function `f`")
+      , (Range (Position 3 10) (Position 3 12), Just (InR "bad-argument-type"), "Argument `Literal[42]` is not assignable to parameter `y` with type `str` in function `f`")
+      ]
+
+  testDiagnosticsServingConfig "ruff" "test.py" LanguageKind_Python [__i|import os
+                                                                         x = 1
+                                                                         import json
+                                                                         x
+                                                                        |] $ \diagnostics -> do
+    assertDiagnosticRanges' diagnostics [
+      (Range (Position 0 7) (Position 0 9), Just (InR "F401"), "`os` imported but unused")
+      , (Range (Position 2 7) (Position 2 11), Just (InR "F401"), "`json` imported but unused")
+      ]
+
+  itFormatsAs "ruff" "test.py" LanguageKind_Python
+    "def f( x,y ):\n  return x+y\nz   =   f(1,2)\n"
+    "def f(x, y):\n    return x + y\n\n\nz = f(1, 2)\n"
+
   testDiagnostics "pycodestyle" "test.py" LanguageKind_Python [__i|def f(x: int, y: str) -> None:
                                                                      z = 1.0
                                                                    f("asdf", 42)
@@ -151,6 +187,8 @@ kernelSpec kernelName pythonPackage = NixKernelSpec {
       , "lsp.pylint.enable = true"
       , "lsp.pyright.enable = true"
       , "lsp.basedpyright.enable = true"
+      , "lsp.pyrefly.enable = true"
+      , "lsp.ruff.enable = true"
       , [i|lsp.pyright.diagnosticSeverityOverrides.reportUnusedExpression = "none"|]
       , [i|lsp.basedpyright.diagnosticSeverityOverrides.reportUnusedExpression = "none"|]
       , "lsp.pycodestyle.enable = true"

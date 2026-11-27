@@ -1,7 +1,9 @@
 { basedpyright
 , callPackage
 , lib
+, pyrefly
 , pyright
+, ruff
 , symlinkJoin
 
 , python3
@@ -59,6 +61,8 @@ let
     ++ lib.optionals settings.lsp.jedi.enable [(callPackage ./language_servers/language_server_jedi/config.nix { inherit pythonWithPackages kernelName attrs; })]
     ++ lib.optionals settings.lsp.pyright.enable [(callPackage ./language_servers/language_server_pyright/config.nix { inherit pythonWithPackages kernelName attrs; settings = settings.lsp.pyright; })]
     ++ lib.optionals settings.lsp.basedpyright.enable [(callPackage ./language_servers/language_server_basedpyright/config.nix { inherit pythonWithPackages kernelName attrs; settings = settings.lsp.basedpyright; })]
+    ++ lib.optionals settings.lsp.pyrefly.enable [(callPackage ./language_servers/language_server_pyrefly/config.nix { inherit pythonWithPackages kernelName attrs; settings = settings.lsp.pyrefly; })]
+    ++ lib.optionals settings.lsp.ruff.enable [(callPackage ./language_servers/language_server_ruff/config.nix { inherit kernelName attrs; })]
     ++ lib.optionals settings.lsp.pylint.enable [(callPackage ./language_servers/language_server_pylint/config.nix { inherit pythonWithPackages kernelName attrs; })]
     ++ lib.optionals settings.lsp.flake8.enable [(callPackage ./language_servers/language_server_flake8/config.nix { inherit pythonWithPackages kernelName attrs; })]
     ++ lib.optionals settings.lsp.pycodestyle.enable [(callPackage ./language_servers/language_server_pycodestyle/config.nix { inherit pythonWithPackages kernelName attrs; })]
@@ -115,6 +119,8 @@ symlinkJoin {
       jedi-language-server = python3.pkgs.jedi-language-server.version;
       pyright = pyright.version;
       basedpyright = basedpyright.version;
+      pyrefly = pyrefly.version;
+      ruff = ruff.version;
       pylint = python3.pkgs.pylint.version;
       flake8 = python3.pkgs.flake8.version;
       pycodestyle = python3.pkgs.pycodestyle.version;
