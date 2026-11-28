@@ -41,7 +41,7 @@ common.writeTextDirWithMetaAndPassthru ruff.meta passthru "lib/codedown/language
   initialization_options = {
     settings = {
       configurationPreference = "filesystemFirst";
-      lint.ignore = ["E402"];
+      lint.ignore = ["E402" "B018" "I001"];
       showSyntaxErrors = false;
     };
   };

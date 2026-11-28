@@ -131,8 +131,8 @@ tests' (kernelName, pythonPackage) = introduceNixEnvironment [kernelSpec kernelN
                                                                          x
                                                                         |] $ \diagnostics -> do
     assertDiagnosticRanges' diagnostics [
-      (Range (Position 0 7) (Position 0 9), Just (InR "F401"), "`os` imported but unused")
-      , (Range (Position 2 7) (Position 2 11), Just (InR "F401"), "`json` imported but unused")
+      (Range (Position 0 7) (Position 0 9), Just (InR "F401"), "`os` imported but unused\n\nhelp: Remove unused import: `os`")
+      , (Range (Position 2 7) (Position 2 11), Just (InR "F401"), "`json` imported but unused\n\nhelp: Remove unused import: `json`")
       ]
 
   itFormatsAs "ruff" "test.py" LanguageKind_Python
