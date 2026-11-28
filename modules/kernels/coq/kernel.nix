@@ -2,6 +2,7 @@
 , lib
 
 , coq
+, coqPackages
 , coq-kernel
 
 , displayName
@@ -23,7 +24,7 @@ let
   # };
 
   coqKernelToUse = coq-kernel.override {
-    inherit coq;
+    rocqPackages = coqPackages;
   };
 
   argv = [
@@ -41,8 +42,8 @@ let
     }
     {
       name = "OCAMLPATH";
-      value = lib.concatStringsSep ":" (
-        map (x: "${x}/lib/ocaml/${coq.ocaml.version}/site-lib/") ([ coq.ocamlPackages.findlib ] ++ chosenPackages)
+      value = lib.makeSearchPathOutput "dev" "lib/ocaml/${coq.ocaml.version}/site-lib" (
+        [ coq.ocamlPackages.findlib ] ++ chosenPackages
       );
     }
   ];
@@ -81,5 +82,5 @@ in
     };
   }]
 )).overrideAttrs (old: {
-  passthru = (old.passthru or {}) // { inherit repls; };
+  passthru = (old.passthru or {}) // { inherit repls; inherit (coqKernelToUse) logos; };
 })

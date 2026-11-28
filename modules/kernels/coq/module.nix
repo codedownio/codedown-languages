@@ -51,7 +51,11 @@ in
 
   config = mkIf config.kernels.coq.enable {
     builtKernels.coq = pkgsToUse.callPackage ./. {
-      coqPackages = getAttr config.kernels.coq.coqPackages pkgsToUse;
+      # The Coq 9 sets are deprecated aliases of the Rocq ones.
+      coqPackages = let
+        name = config.kernels.coq.coqPackages;
+        rocqName = builtins.replaceStrings ["coqPackages"] ["rocqPackages"] name;
+      in getAttr (if builtins.hasAttr rocqName pkgsToUse then rocqName else name) pkgsToUse;
 
       settings = config.kernels.coq;
       settingsSchema = nixosOptionsToSettingsSchema { componentsToDrop = 2; } options.kernels.coq;
