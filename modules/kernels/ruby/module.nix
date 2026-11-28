@@ -30,7 +30,7 @@ in
           "ruby"
           # "ruby_3_1" # EOL
           # "ruby_3_2" # EOL
-          "ruby_3_3"
+          # "ruby_3_3" # EOL
           "ruby_3_4"
 
           # iruby doesn't support yet; upstream has unreleased fix though; see
