@@ -4,6 +4,7 @@
 
 module Spec.Tests.Julia (tests) where
 
+import Control.Monad
 import Data.String.Interpolate
 import Data.Text as T
 import Test.Sandwich as Sandwich
@@ -19,20 +20,18 @@ import qualified Spec.Tests.Julia.VariableInspector as VariableInspector
 
 tests :: LanguageSpec
 tests = do
-  juliaTests "julia_110"
-  juliaTests "julia_110-bin"
+  juliaTests True "julia_112"
+  juliaTests True "julia_112-bin"
 
-  juliaTests "julia_111"
-  juliaTests "julia_111-bin"
-
-  juliaTests "julia_112"
-  juliaTests "julia_112-bin"
+  -- LanguageServer.jl doesn't run on Julia 1.13 yet, and Plots needs a newer General registry
+  juliaTests False "julia_113"
+  juliaTests False "julia_113-bin"
 
 kernelName :: Text -> Text
 kernelName _juliaPackage = "julia"
 
-juliaTests :: Text -> LanguageSpec
-juliaTests juliaPackage = describe [i|Julia (#{juliaPackage})|] $ introduceNixEnvironment [kernelSpec juliaPackage] [] [i|Julia (#{juliaPackage})|] $ introduceJupyterRunner $ do
+juliaTests :: Bool -> Text -> LanguageSpec
+juliaTests hasLanguageServer juliaPackage = describe [i|Julia (#{juliaPackage})|] $ introduceNixEnvironment [kernelSpec hasLanguageServer juliaPackage] [] [i|Julia (#{juliaPackage})|] $ introduceJupyterRunner $ do
   testKernelSearchersNonempty (kernelName juliaPackage)
   testHasExpectedFields (kernelName juliaPackage)
 
@@ -40,18 +39,14 @@ juliaTests juliaPackage = describe [i|Julia (#{juliaPackage})|] $ introduceNixEn
 
   VariableInspector.tests (kernelName juliaPackage)
 
-  LSP.tests
+  when hasLanguageServer LSP.tests
 
-kernelSpec :: Text -> NixKernelSpec
-kernelSpec juliaPackage = NixKernelSpec {
+kernelSpec :: Bool -> Text -> NixKernelSpec
+kernelSpec hasLanguageServer juliaPackage = NixKernelSpec {
   nixKernelName = kernelName juliaPackage
   , nixKernelChannel = "codedown"
   , nixKernelDisplayName = Just [i|Julia (#{juliaPackage})|]
-  , nixKernelPackages = [
-      nameOnly "JSON3"
-      , nameOnly "Plots"
-      , nameOnly "Roots"
-      ]
+  , nixKernelPackages = nameOnly "JSON3" : [p | hasLanguageServer, p <- [nameOnly "Plots", nameOnly "Roots"]]
   , nixKernelMeta = Nothing
   , nixKernelIcon = Nothing
   , nixKernelExtraConfig = Just [

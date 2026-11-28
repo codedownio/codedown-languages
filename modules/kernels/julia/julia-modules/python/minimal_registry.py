@@ -123,6 +123,30 @@ for pkg in desired_packages:
       Path(out_path / path).mkdir(parents=True, exist_ok=True)
       shutil.copy2(registry_path / path / "Package.toml", out_path / path / "Package.toml")
 
+# Pkg 1.13 looks up the name of every package that any version range in Deps.toml or
+# WeakDeps.toml mentions, not just the ranges covering the versions we kept, and fails on
+# one the registry doesn't list. List those too. Without a Versions.toml they have no
+# versions, so nothing can resolve to them.
+for entry in list(registry["packages"].values()):
+  for f in ["Deps.toml", "WeakDeps.toml"]:
+    deps_file = out_path / entry["path"] / f
+    if not deps_file.exists():
+      continue
+    for deps in toml.load(deps_file).values():
+      for uuid in deps.values():
+        if uuid in registry["packages"]:
+          continue
+        dep_entry = full_registry["packages"].get(uuid)
+        if not dep_entry:
+          continue
+
+        registry["packages"][uuid] = dep_entry
+        path = Path(dep_entry["path"])
+        if (out_path / path / "Package.toml").exists():
+          continue
+        Path(out_path / path).mkdir(parents=True, exist_ok=True)
+        shutil.copy2(registry_path / path / "Package.toml", out_path / path / "Package.toml")
+
 # Finally, dump the Registry.toml
 with open(out_path / "Registry.toml", "w") as f:
     toml.dump(registry, f)

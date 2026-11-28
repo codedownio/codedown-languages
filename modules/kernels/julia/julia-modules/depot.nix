@@ -63,9 +63,8 @@ runCommand "julia-depot"
 
       mkdir -p $out/depot/artifacts
 
-      # Keep Julia's own depots on the path, to avoid recompiling stdlibs
-      bundledDepots=$(julia --startup-file=no -e 'print(join(Base.DEPOT_PATH[2:end], ":"))')
-      export JULIA_DEPOT_PATH="$out/depot:$bundledDepots"
+      # Keep Julia's bundled depot on the path, to avoid recompiling stdlibs
+      export JULIA_DEPOT_PATH="$out/depot:${julia.bundledDepot}"
 
       cp ${overridesToml} $out/depot/artifacts/Overrides.toml
 
@@ -124,7 +123,8 @@ runCommand "julia-depot"
             println("Precompiling with CPU_NAME = " * Sys.CPU_NAME)
           end
 
-          Pkg.precompile()
+          # strict=true so a transitive dependency that fails to precompile fails the build.
+          Pkg.precompile(strict=true)
         end
 
         # Remove the registry to save space

@@ -27,7 +27,6 @@
   postgres = import ./sample_environments/postgres.nix args;
   r = import ./sample_environments/r.nix args;
   r-irkernel = import ./sample_environments/r-irkernel.nix args;
-  ruby_3_3 = import ./sample_environments/ruby_3_3.nix args;
   ruby_3_4 = import ./sample_environments/ruby_3_4.nix args;
   ruby = import ./sample_environments/ruby.nix args;
   rust = import ./sample_environments/rust.nix args;
@@ -39,9 +38,8 @@
 } // pkgsStable.lib.optionalAttrs (pkgsStable.stdenv.targetPlatform.system != "aarch64-linux") {
   # Disable these in aarch 64 builds; see
   # https://github.com/codedownio/codedown-languages/issues/96
-  julia110 = import ./sample_environments/julia110.nix args;
-  julia111 = import ./sample_environments/julia111.nix args;
   julia112 = import ./sample_environments/julia112.nix args;
+  julia113 = import ./sample_environments/julia113.nix args;
   mega = import ./sample_environments/mega.nix args;
   python312 = import ./sample_environments/python312.nix args;
   python313 = import ./sample_environments/python313.nix args;
