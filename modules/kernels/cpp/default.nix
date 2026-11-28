@@ -3,7 +3,7 @@
 , symlinkJoin
 , cling
 , clang
-, xeus-cling
+, xeus-cpp
 , llvmPackages
 
 , settings
@@ -109,7 +109,7 @@ symlinkJoin {
     versions = {
       clang = clang.version;
       cling = cling.unwrapped.version;
-      xeus-cling = xeus-cling.version;
+      xeus-cpp = xeus-cpp.version;
       clangd = llvmPackages.clang-tools.version;
       std = flavor;
     };

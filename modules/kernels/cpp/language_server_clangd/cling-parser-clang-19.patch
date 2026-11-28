@@ -1,0 +1,98 @@
+diff --git a/src/main.cpp b/src/main.cpp
+index de2f9ed..6c2f234 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -11,6 +11,7 @@
+ #include "clang/Frontend/CompilerInstance.h"
+ #include "clang/Basic/SourceManager.h"
+ #include "clang/Basic/SourceLocation.h"
++#include "clang/Basic/Version.h"
+ #include "clang/Lex/PPCallbacks.h"
+ #include "clang/Lex/Preprocessor.h"
+ #include "llvm/Support/Casting.h"
+@@ -22,6 +23,17 @@
+ 
+ using interpreter_ptr = std::unique_ptr<cling::Interpreter>;
+ 
++// Input code shows up as memory buffers named "input_line_X", which have no file entry.
++static std::string fileNameForID(clang::SourceManager& SM, clang::FileID fileID) {
++    if (auto fileEntry = SM.getFileEntryRefForID(fileID)) {
++        return std::string(fileEntry->getName());
++    }
++    if (auto bufferPtr = SM.getBufferOrNone(fileID)) {
++        return bufferPtr->getBufferIdentifier().str();
++    }
++    return "";
++}
++
+ struct PreprocessorDirective {
+     std::string type;
+     int line;
+@@ -49,22 +61,14 @@ public:
+         llvm::StringRef SearchPath,
+         llvm::StringRef RelativePath,
+         const clang::Module* Imported,
++#if CLANG_VERSION_MAJOR >= 19
++        bool ModuleImported,
++#endif
+         clang::SrcMgr::CharacteristicKind FileType) override {
+ 
+         // Only capture includes from our input source
+         if (HashLoc.isValid()) {
+-            clang::FileID fileID = sourceManager_.getFileID(HashLoc);
+-            const clang::FileEntry* fileEntry = sourceManager_.getFileEntryForID(fileID);
+-
+-            std::string filename = "";
+-            if (fileEntry) {
+-                filename = std::string(fileEntry->getName());
+-            } else {
+-                // For memory buffers/input, use the buffer name
+-                if (auto bufferPtr = sourceManager_.getBufferOrNone(fileID)) {
+-                    filename = bufferPtr->getBufferIdentifier().str();
+-                }
+-            }
++            std::string filename = fileNameForID(sourceManager_, sourceManager_.getFileID(HashLoc));
+ 
+             // Filter: ONLY show includes from actual input lines
+             bool isFromInput = filename.find("input_line_") != std::string::npos ||
+@@ -88,18 +92,7 @@ public:
+                       const clang::MacroDirective* MD) override {
+         clang::SourceLocation loc = MacroNameTok.getLocation();
+         if (loc.isValid()) {
+-            clang::FileID fileID = sourceManager_.getFileID(loc);
+-            const clang::FileEntry* fileEntry = sourceManager_.getFileEntryForID(fileID);
+-
+-            std::string filename = "";
+-            if (fileEntry) {
+-                filename = std::string(fileEntry->getName());
+-            } else {
+-                // For memory buffers/input, use the buffer name
+-                if (auto bufferPtr = sourceManager_.getBufferOrNone(fileID)) {
+-                    filename = bufferPtr->getBufferIdentifier().str();
+-                }
+-            }
++            std::string filename = fileNameForID(sourceManager_, sourceManager_.getFileID(loc));
+ 
+             // Filter: ONLY show defines from actual input lines
+             bool isFromInput = filename.find("input_line_") != std::string::npos ||
+@@ -199,19 +192,7 @@ int main(int argc, char* argv[])
+ 
+                     // Check if this declaration is from our input (not from system headers)
+                     if (loc.isValid()) {
+-                        clang::FileID fileID = SM.getFileID(loc);
+-                        const clang::FileEntry* fileEntry = SM.getFileEntryForID(fileID);
+-
+-                        // Input code shows up as special "input_line_X" files or similar
+-                        std::string filename = "";
+-                        if (fileEntry) {
+-                            filename = std::string(fileEntry->getName());
+-                        } else {
+-                            // For memory buffers/input, use the buffer name
+-                            if (auto bufferPtr = SM.getBufferOrNone(fileID)) {
+-                                filename = bufferPtr->getBufferIdentifier().str();
+-                            }
+-                        }
++                        std::string filename = fileNameForID(SM, SM.getFileID(loc));
+ 
+                         // Filter: ONLY show declarations from actual input lines
+                         bool isFromInput = filename.find("input_line_") != std::string::npos;
