@@ -21,7 +21,7 @@ let
   nodejs = nodejs-slim;
 
   # nodehun's native build fails on Darwin under newer Apple clang; patch it.
-  nodehun' = if stdenv.isDarwin
+  nodehun' = if stdenv.hostPlatform.isDarwin
              then (import ./nodehun-darwin-fix.nix) nodehun
              else nodehun;
 
