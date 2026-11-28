@@ -48,14 +48,14 @@ common.writeTextDirWithMetaAndPassthru basedpyright.meta passthru "lib/codedown/
     basedpyright = {
       inherit (settings) disableLanguageServices;
       disableOrganizeImports = false;
-    };
-    "basedpyright.analysis" = {
-      inherit (settings) typeCheckingMode diagnosticSeverityOverrides;
-      autoImportCompletions = true;
-      autoSearchPaths = true;
-      diagnosticMode = "openFilesOnly";
-      extraPaths = ["/home/user"];
-      useLibraryCodeForTypes = true;
+      analysis = {
+        inherit (settings) typeCheckingMode diagnosticSeverityOverrides;
+        autoImportCompletions = true;
+        autoSearchPaths = true;
+        diagnosticMode = "openFilesOnly";
+        extraPaths = ["/home/user"];
+        useLibraryCodeForTypes = true;
+      };
     };
   };
 
