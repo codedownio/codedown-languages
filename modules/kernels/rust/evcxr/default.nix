@@ -141,7 +141,7 @@ evcxr.overrideAttrs (oldAttrs: {
         ] ++ envArgs ++ lib.optionals (buildInputs != []) [
           "--suffix" "PKG_CONFIG_PATH" ":" "${pkgConfigPath}"
           "--suffix" "LD_LIBRARY_PATH" ":" "${libraryPath}"
-        ] ++ lib.optionals stdenv.isDarwin [
+        ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
           "--set" "NIX_LDFLAGS_${stdenv.cc.suffixSalt}" "-L${lib.getLib libiconv}/lib"
         ];
 

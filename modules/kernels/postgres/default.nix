@@ -20,7 +20,7 @@ let
 
   kernel = callPackage ./kernel.nix { inherit displayName attrs extensions; };
 
-  version = "0.1";
+  version = "0.2.2";
 
 in
 

@@ -29,12 +29,14 @@ in
         type = types.enum (
           ["julia"]
           ++ (builtins.filter (n:
-            builtins.match "^julia_[0-9].*" n != null
-            || builtins.match "^julia-lts.*" n != null
-            || builtins.match "^julia-stable.*" n != null
+            (builtins.match "^julia_[0-9].*" n != null
+             || builtins.match "^julia-lts.*" n != null
+             || builtins.match "^julia-stable.*" n != null)
+            && (pkgsToUse.${n}.meta.knownVulnerabilities or []) == []
           ) (builtins.attrNames pkgsToUse))
         );
-        default = "julia";
+        # LanguageServer.jl doesn't run on Julia 1.13 yet.
+        default = "julia_112";
       };
 
       interface.attrs = mkOption {
@@ -59,6 +61,7 @@ in
 
       lsp.LanguageServer.enable = mkOption {
         title = "Enable LanguageServer language server";
+        description = "Not available on Julia 1.13 and later.";
         type = types.bool;
         default = true;
       };
@@ -86,15 +89,20 @@ in
     builtKernels.julia = pkgsToUse.callPackage ./. {
       julia = let
         juliaPackage = config.kernels.julia.juliaPackage;
-        requestedJulia = getAttr juliaPackage pkgsToUse;
+        # A -bin build's install check is Julia's whole test suite, which is slow and can crash
+        # under load, and Hydra doesn't cache every -bin build.
+        getJulia = name: if lib.hasSuffix "-bin" name
+                         then (getAttr name pkgsToUse).overrideAttrs { doInstallCheck = false; }
+                         else getAttr name pkgsToUse;
+        requestedJulia = getJulia juliaPackage;
         hasBin = builtins.hasAttr (juliaPackage + "-bin") pkgsToUse;
         # On Darwin, nixpkgs lists julia source builds as supported (meta.unsupported = false)
         # but the actual build fails (PCRE2 build errors). Prefer the -bin variant on Darwin
         # whenever it's available, since it works in practice.
-        preferBin = requestedJulia.meta.unsupported || (pkgsToUse.stdenv.isDarwin && hasBin);
+        preferBin = requestedJulia.meta.unsupported || (pkgsToUse.stdenv.hostPlatform.isDarwin && hasBin);
         in
           if preferBin
-          then (if hasBin then pkgsToUse.${juliaPackage + "-bin"} else throw "${juliaPackage} is not supported on this system and fallback ${juliaPackage}-bin was not found.")
+          then (if hasBin then getJulia (juliaPackage + "-bin") else throw "${juliaPackage} is not supported on this system and fallback ${juliaPackage}-bin was not found.")
           else requestedJulia;
 
       settings = config.kernels.julia;

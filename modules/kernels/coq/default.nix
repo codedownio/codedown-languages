@@ -3,7 +3,6 @@
 , symlinkJoin
 
 , coqPackages
-, coq-kernel
 
 , settings
 , settingsSchema
@@ -25,7 +24,7 @@ let
   packageSearch = common.searcher packageOptions;
 
   kernel = callPackage ./kernel.nix {
-    inherit coq displayName attrs extensions isRocq;
+    inherit coq coqPackages displayName attrs extensions isRocq;
     # enableVariableInspector = settings.enableVariableInspector;
     chosenPackages = (
       map (x: builtins.getAttr x packageOptions) packages
@@ -49,7 +48,7 @@ symlinkJoin {
     meta = coq.meta // {
       inherit displayName settingsSchema;
       version = coq.version;
-      icon = "${coq-kernel.logos}/logo-64x64.png";
+      icon = "${kernel.logos}/logo-64x64.png";
       iconMonochrome = ./coq-monochrome.svg;
       hasPackages = packageOptions != {};
     };

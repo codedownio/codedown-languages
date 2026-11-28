@@ -52,7 +52,7 @@ stdenv.mkDerivation {
 
   buildInputs = [
     buildR
-  ] ++ lib.optionals stdenv.isDarwin [
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
     gettext
   ];
 

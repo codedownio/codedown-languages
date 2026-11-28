@@ -21,7 +21,7 @@ codedown.makeEnvironment {
   kernels.cpp.flavor = "c++23";
 
   kernels.julia.enable = true;
-  kernels.julia.juliaPackage = "julia_110";
+  kernels.julia.juliaPackage = "julia_112";
   kernels.julia.packages = ["JSON3" "Plots"];
   kernels.julia.lsp.LanguageServer.enable = true;
   kernels.julia.lsp.LanguageServer.index = true;

@@ -1,8 +1,7 @@
 { lib
 , callPackage
 
-, cling
-, xeus-cling
+, xeus-cpp
 
 , kernelName
 , attrs
@@ -25,20 +24,13 @@ common.makeJupyterKernel (
     value = {
       displayName = displayName;
       argv = [
-        "${xeus-cling}/bin/xcpp"
-      ]
-      ++ cling.flags
-      ++ [
-        "-resource-dir" "${cling.unwrapped}"
-        "-L" "${cling.unwrapped}/lib"
-        "-l" "${cling.unwrapped}/lib/cling.so"
+        "${xeus-cpp}/bin/xcpp"
         "-std=${std}"
-        # "-v"
         "-f" "{connection_file}"
       ];
       language = kernelName;
-      logo32 = "${xeus-cling}/share/jupyter/kernels/xcpp17/logo-32x32.png";
-      logo64 = "${xeus-cling}/share/jupyter/kernels/xcpp17/logo-64x64.png";
+      logo32 = "${xeus-cpp}/share/jupyter/kernels/xcpp17/logo-32x32.png";
+      logo64 = "${xeus-cpp}/share/jupyter/kernels/xcpp17/logo-64x64.png";
       metadata = {
         codedown = {
           inherit attrs extensions;

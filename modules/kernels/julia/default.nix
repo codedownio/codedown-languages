@@ -17,8 +17,8 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
-  # Vendored copy of nixpkgs' julia.withPackages, carrying two build-speed patches that
-  # aren't upstream yet. Switch back to "julia.withPackages" once they land.
+  # Vendored copy of nixpkgs' julia.withPackages, carrying a fix that isn't upstream yet
+  # (see julia-modules/VENDORED.md). Switch back to "julia.withPackages" once it lands.
   # juliaWithPackagesBase = julia.withPackages # To use upstream
   juliaWithPackagesBase = callPackage ./julia-modules {};
 
@@ -30,6 +30,9 @@ let
 
   displayName = "Julia " + julia.version;
   kernelName = "julia";
+
+  # SymbolServer.jl, which LanguageServer.jl 5 indexes packages with, fails on Julia 1.13.
+  languageServerEnabled = settings.lsp.LanguageServer.enable && lib.versionOlder julia.version "1.13";
 
   packageOptions = lib.listToAttrs (map (x: {
     name = x;
@@ -50,12 +53,12 @@ let
     # The variable inspector (variable_inspector.jl) imports JSON to serialize its output.
     ++ lib.optionals settings.misc.enableVariableInspector ["JSON"]
     ++ packages
-    ++ lib.optionals settings.lsp.LanguageServer.enable ["LanguageServer" "SymbolServer"]
+    ++ lib.optionals languageServerEnabled ["LanguageServer" "SymbolServer"]
   );
 
   languageServers =
     []
-    ++ lib.optionals settings.lsp.LanguageServer.enable [(callPackage ./language-server-LanguageServer.nix {
+    ++ lib.optionals languageServerEnabled [(callPackage ./language-server-LanguageServer.nix {
       inherit attrs;
       juliaWithPackages = juliaToUse;
       inherit kernelName;

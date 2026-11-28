@@ -629,7 +629,7 @@ true
 
 
 *Type:*
-one of “coqPackages”, “coqPackages_8_10”, “coqPackages_8_11”, “coqPackages_8_12”, “coqPackages_8_13”, “coqPackages_8_14”, “coqPackages_8_15”, “coqPackages_8_16”, “coqPackages_8_17”, “coqPackages_8_18”, “coqPackages_8_19”, “coqPackages_8_20”, “coqPackages_8_7”, “coqPackages_8_8”, “coqPackages_8_9”, “coqPackages_9_0”, “coqPackages_9_1”, “coqPackages_9_2”
+one of “coqPackages”, “coqPackages_8_10”, “coqPackages_8_11”, “coqPackages_8_12”, “coqPackages_8_13”, “coqPackages_8_14”, “coqPackages_8_15”, “coqPackages_8_16”, “coqPackages_8_17”, “coqPackages_8_18”, “coqPackages_8_19”, “coqPackages_8_20”, “coqPackages_8_7”, “coqPackages_8_8”, “coqPackages_8_9”, “coqPackages_9_0”, “coqPackages_9_1”, “coqPackages_9_2”, “coqPackages_9_3”
 
 
 
@@ -1570,14 +1570,14 @@ list of string
 
 
 *Type:*
-one of “julia”, “julia-lts”, “julia-lts-bin”, “julia-stable”, “julia-stable-bin”, “julia_110”, “julia_110-bin”, “julia_111”, “julia_111-bin”, “julia_112”, “julia_112-bin”, “julia_19”, “julia_19-bin”
+one of “julia”, “julia-stable”, “julia-stable-bin”, “julia_112”, “julia_112-bin”, “julia_113”, “julia_113-bin”
 
 
 
 *Default:*
 
 ```nix
-"julia"
+"julia_112"
 ```
 
 
@@ -1587,6 +1587,8 @@ one of “julia”, “julia-lts”, “julia-lts-bin”, “julia-stable”, �
 
 
 **Enable LanguageServer language server**
+
+Not available on Julia 1\.13 and later\.
 
 
 
@@ -2644,7 +2646,7 @@ true
 
 
 *Type:*
-one of “ruby”, “ruby_3_3”, “ruby_3_4”
+one of “ruby”, “ruby_3_4”
 
 
 
@@ -2804,7 +2806,7 @@ true
 
 
 *Type:*
-one of “rust”, “rust_1_95”, “rust_1_97”
+one of “rust”, “rust_1_100”, “rust_1_99”
 
 
 

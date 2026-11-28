@@ -37,7 +37,7 @@ Which languages support which notebook and editor features. The graphic version 
 | C++ 23 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Clojure | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | – |
 | Coq | – | – | – | – | – | – | – |
-| Go | ✅ | ✅ | ✅ | ✅ | ✅ | – | ✅ |
+| Go | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Haskell | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Java | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | JavaScript | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |

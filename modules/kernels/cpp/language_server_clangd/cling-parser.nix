@@ -23,6 +23,9 @@ let
 
     sourceRoot = "${src.name}/cling-parser";
 
+    # Ports to the clang 19+ API that cling 1.3 is built on.
+    patches = [ ./cling-parser-clang-19.patch ];
+
     nativeBuildInputs = [ cmake ];
 
     buildInputs = [ cling.unwrapped zlib ncurses ];

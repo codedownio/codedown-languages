@@ -28,6 +28,7 @@ import TestLib.JupyterTypes
 import TestLib.Types
 import TestLib.Util
 import UnliftIO.Directory
+import UnliftIO.IO (IOMode(..), withFile)
 import UnliftIO.Process
 
 
@@ -375,7 +376,14 @@ runKernelCode' expectedExitCode startTimeout kernel code cb = do
         , cwd = Just outerRunDir
         }
 
-  createProcessWithLogging cp >>= waitForProcess . fst >>= (`shouldBe` expectedExitCode)
+  -- A file rather than a pipe: the kernel inherits papermill's stdio, and once something marks
+  -- a pipe non-blocking, a write bigger than its buffer fails with EAGAIN.
+  let papermillLog = folder </> "papermill.log"
+  exitCode <- withFile papermillLog WriteMode $ \h -> do
+    (_, _, _, p) <- createProcess (cp { std_out = UseHandle h, std_err = UseHandle h })
+    waitForProcess p
+  liftIO (BL8.readFile papermillLog) >>= debug . T.pack . BL8.unpack
+  exitCode `shouldBe` expectedExitCode
 
   cb notebook (relativeToOuterRunDir "out.ipynb") (relativeToOuterRunDir outFile) (relativeToOuterRunDir errFile)
 

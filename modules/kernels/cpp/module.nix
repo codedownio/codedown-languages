@@ -3,11 +3,7 @@
 with lib;
 
 let
-  # cling 1.2 is built on clang 18, which segfaults parsing GCC 15's libstdc++ headers, so give
-  # it GCC 14's.
-  pkgsToUse = config.pkgs.extend (_final: prev: {
-    cling = prev.cling.override { gcc-unwrapped = prev.gcc14.cc; };
-  });
+  pkgsToUse = config.pkgs;
 
 in
 

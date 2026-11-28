@@ -30,7 +30,7 @@ tests = describe "Ruby" $ do
   kernelTests "ruby"
   -- kernelTests "ruby_3_1" # EOL
   -- kernelTests "ruby_3_2" # EOL
-  kernelTests "ruby_3_3"
+  -- kernelTests "ruby_3_3" # EOL
   kernelTests "ruby_3_4"
   -- kernelTests "ruby_4_0" -- iruby 0.8.2 doesn't support Ruby 4.0 yet
 

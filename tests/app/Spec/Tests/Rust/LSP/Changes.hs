@@ -24,7 +24,7 @@ tests = describe "Changes" $ do
     waitUntil 120.0 $ do
       waitForDiagnostics >>= \diags -> do
         assertDiagnosticRanges' (L.sortBy (compare `on` (^. LSP.message)) diags) [
-          (Range (Position 0 0) (Position 0 7), Just (InR "E0423"), "expected function, found macro `println`\nnot a function")
+          (Range (Position 0 0) (Position 0 7), Just (InR "E0423"), "cannot find function `println` in this scope\na macro named `println` exists in another namespace")
           , (Range (Position 0 7) (Position 0 7), Just (InR "E0423"), "use `!` to invoke the macro: `!`")
           ]
 
