@@ -1272,13 +1272,23 @@
     "octave": {},
     "postgres": {},
     "python3": {
-      "jedi": {
+      "pyrefly": {
         "capabilities": {
+          "callHierarchyProvider": true,
           "codeActionProvider": {
             "codeActionKinds": [
+              "quickfix",
+              "refactor.extract",
+              "refactor.rewrite",
+              "refactor.delete",
+              "refactor.move",
               "refactor.inline",
-              "refactor.extract"
+              "source.fixAll",
+              "source.fixAll.pyrefly"
             ]
+          },
+          "codeLensProvider": {
+            "resolveProvider": false
           },
           "completionProvider": {
             "resolveProvider": true,
@@ -1292,14 +1302,25 @@
           "definitionProvider": true,
           "documentHighlightProvider": true,
           "documentSymbolProvider": true,
-          "executeCommandProvider": {
-            "commands": []
-          },
+          "foldingRangeProvider": true,
           "hoverProvider": true,
+          "implementationProvider": true,
+          "inlayHintProvider": true,
+          "notebookDocumentSync": {
+            "notebookSelector": [
+              {
+                "cells": [
+                  {
+                    "language": "python"
+                  }
+                ]
+              }
+            ]
+          },
           "positionEncoding": "utf-16",
           "referencesProvider": true,
           "renameProvider": {
-            "prepareProvider": false
+            "prepareProvider": true
           },
           "signatureHelpProvider": {
             "triggerCharacters": [
@@ -1307,28 +1328,96 @@
               ","
             ]
           },
-          "textDocumentSync": {
-            "change": 2,
-            "openClose": true,
-            "save": true,
-            "willSave": false
-          },
+          "textDocumentSync": 2,
           "typeDefinitionProvider": true,
+          "typeHierarchyProvider": true,
           "workspace": {
-            "fileOperations": {},
+            "fileOperations": {
+              "willRename": {
+                "filters": [
+                  {
+                    "pattern": {
+                      "glob": "**/*.{py,pyi}",
+                      "matches": "file"
+                    },
+                    "scheme": "file"
+                  }
+                ]
+              }
+            },
             "workspaceFolders": {
               "changeNotifications": true,
               "supported": true
             }
           },
-          "workspaceSymbolProvider": {
-            "resolveProvider": false
-          }
+          "workspaceSymbolProvider": true
         },
         "diagnosticReportsCellProblem": null,
-        "displayName": "Jedi",
-        "version": "0.46.0",
-        "workspaceSymbolFindsCellSymbol": false
+        "displayName": "Pyrefly",
+        "version": "1.1.1",
+        "workspaceSymbolFindsCellSymbol": true
+      },
+      "ruff": {
+        "capabilities": {
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "source.fixAll.ruff",
+              "source.organizeImports.ruff",
+              "notebook.source.fixAll.ruff",
+              "notebook.source.organizeImports.ruff"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": true
+          },
+          "diagnosticProvider": {
+            "identifier": "Ruff",
+            "interFileDependencies": false,
+            "workDoneProgress": true,
+            "workspaceDiagnostics": false
+          },
+          "documentFormattingProvider": true,
+          "documentRangeFormattingProvider": true,
+          "executeCommandProvider": {
+            "commands": [
+              "ruff.applyFormat",
+              "ruff.applyAutofix",
+              "ruff.applyOrganizeImports",
+              "ruff.printDebugInformation"
+            ],
+            "workDoneProgress": false
+          },
+          "hoverProvider": true,
+          "notebookDocumentSync": {
+            "notebookSelector": [
+              {
+                "cells": [
+                  {
+                    "language": "python"
+                  }
+                ]
+              }
+            ],
+            "save": false
+          },
+          "positionEncoding": "utf-16",
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "workspace": {
+            "workspaceFolders": {
+              "changeNotifications": true,
+              "supported": true
+            }
+          }
+        },
+        "diagnosticReportsCellProblem": true,
+        "displayName": "Ruff",
+        "version": "0.15.14",
+        "workspaceSymbolFindsCellSymbol": null
       }
     },
     "ruby": {

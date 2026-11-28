@@ -2109,7 +2109,7 @@ boolean
 *Default:*
 
 ```nix
-true
+false
 ```
 
 
@@ -2193,7 +2193,7 @@ boolean
 *Default:*
 
 ```nix
-false
+true
 ```
 
 
@@ -2415,7 +2415,7 @@ boolean
 *Default:*
 
 ```nix
-false
+true
 ```
 
 

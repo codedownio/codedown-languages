@@ -45,7 +45,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Lean | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Octave | – | – | – | – | – | – | – |
 | PostgreSQL | – | – | – | – | – | – | – |
-| Python | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
+| Python | ✅ | ✅ | ✅ | ✅ | ✅ | – | ✅ |
 | R | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Ruby | ✅ | ✅ | ✅ | ✅ | ✅ | – | – |
 | Rust | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -89,7 +89,7 @@ Which languages support which notebook and editor features. The graphic version 
 | Lean | – | ✅ | ✅ |
 | Octave | – | – | – |
 | PostgreSQL | – | – | – |
-| Python | – | ✅ | ✅ |
+| Python | ✅ | ✅ | ✅ |
 | R | ✅ | ✅ | ✅ |
 | Ruby | ✅ | ✅ | – |
 | Rust | ✅ | ✅ | ✅ |
