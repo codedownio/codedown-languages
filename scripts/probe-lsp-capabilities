@@ -244,7 +244,7 @@ class LspError(Exception):
 
 
 def read_message(stream):
-    """Read one LSP message (Content-Length framed) off a binary stream."""
+    """Read one LSP message (Content-Length framed) off an unbuffered binary stream."""
     length = None
     while True:
         line = stream.readline()
@@ -257,7 +257,13 @@ def read_message(stream):
             length = int(line.split(b":", 1)[1])
     if length is None:
         raise LspError("no Content-Length header")
-    return json.loads(stream.read(length))
+    body = b""
+    while len(body) < length:
+        chunk = stream.read(length - len(body))
+        if not chunk:
+            raise LspError("server closed the connection")
+        body += chunk
+    return json.loads(body)
 
 
 def write_message(stream, message):
@@ -436,6 +442,8 @@ def probe(config, workspace):
     # do it inside the workspace, which goes away with the probe.
     env["HOME"] = str(workspace)
 
+    # Unbuffered, so select() sees every message that's waiting: a buffered reader can hold a
+    # second message that arrived in the same chunk as the first.
     process = subprocess.Popen(
         config["args"],
         cwd=workspace,
@@ -443,6 +451,7 @@ def probe(config, workspace):
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
+        bufsize=0,
     )
 
     try:
