@@ -147,7 +147,8 @@
             "resolveProvider": true,
             "triggerCharacters": [
               "$",
-              "{"
+              "{",
+              "-"
             ]
           },
           "definitionProvider": true,
@@ -164,7 +165,7 @@
         },
         "diagnosticReportsCellProblem": null,
         "displayName": "bash-language-server",
-        "version": "5.6.0",
+        "version": "5.8.1",
         "workspaceSymbolFindsCellSymbol": true
       }
     },
@@ -205,6 +206,7 @@
               "add-missing-import",
               "add-missing-libspec",
               "add-require-suggestion",
+              "as-to-refer",
               "backward",
               "backward-barf",
               "backward-select",
@@ -217,6 +219,7 @@
               "cursor-info",
               "cycle-coll",
               "cycle-keyword-auto-resolve",
+              "cycle-namespaced-map",
               "cycle-privacy",
               "demote-fn",
               "destructure-keys",
@@ -236,15 +239,18 @@
               "get-in-more",
               "get-in-none",
               "if->cond-refactor",
+              "inline-function",
               "inline-symbol",
               "introduce-let",
               "kill-sexp",
               "move-coll-entry-down",
               "move-coll-entry-up",
               "move-form",
+              "move-to-for-let",
               "move-to-let",
               "promote-fn",
               "raise-sexp",
+              "refer-to-as",
               "replace-refer-all-with-alias",
               "replace-refer-all-with-refer",
               "resolve-macro-as",
@@ -253,6 +259,7 @@
               "sort-clauses",
               "sort-map",
               "suppress-diagnostic",
+              "swap-namespace-with-alias",
               "thread-first",
               "thread-first-all",
               "thread-last",
@@ -341,7 +348,7 @@
         },
         "diagnosticReportsCellProblem": null,
         "displayName": "Clojure LSP",
-        "version": "2026.02.20-16.08.58",
+        "version": "2026.10.15-11.42.38",
         "workspaceSymbolFindsCellSymbol": true
       }
     },
@@ -487,6 +494,7 @@
           "codeActionProvider": {
             "codeActionKinds": [
               "gopls.doc.features",
+              "gopls.dragonSlayer",
               "quickfix",
               "refactor.extract.constant",
               "refactor.extract.constant-all",
@@ -497,6 +505,7 @@
               "refactor.extract.variable-all",
               "refactor.inline.call",
               "refactor.inline.variable",
+              "refactor.move.moveDeclaration",
               "refactor.move.moveType",
               "refactor.rewrite.changeQuote",
               "refactor.rewrite.fillStruct",
@@ -539,6 +548,7 @@
               "gopls.client_open_url",
               "gopls.diagnose_files",
               "gopls.doc",
+              "gopls.dragon_slayer",
               "gopls.edit_go_directive",
               "gopls.extract_to_new_file",
               "gopls.fetch_vulncheck_result",
@@ -554,12 +564,14 @@
               "gopls.mem_stats",
               "gopls.modify_tags",
               "gopls.modules",
+              "gopls.move_declaration",
               "gopls.move_type",
               "gopls.package_symbols",
               "gopls.packages",
               "gopls.regenerate_cgo",
               "gopls.remove_dependency",
               "gopls.reset_go_mod_diagnostics",
+              "gopls.resolve_target",
               "gopls.run_go_work_command",
               "gopls.run_govulncheck",
               "gopls.run_tests",
@@ -578,9 +590,11 @@
             ]
           },
           "experimental": {
-            "interactiveResolveProvider": [
-              "command"
-            ]
+            "interactiveResolveProvider": {
+              "kinds": [
+                "command"
+              ]
+            }
           },
           "foldingRangeProvider": true,
           "hoverProvider": true,
@@ -591,6 +605,48 @@
             "prepareProvider": true
           },
           "selectionRangeProvider": true,
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "definition",
+                "readonly",
+                "defaultLibrary",
+                "static",
+                "array",
+                "bool",
+                "chan",
+                "format",
+                "interface",
+                "map",
+                "number",
+                "pointer",
+                "signature",
+                "slice",
+                "string",
+                "struct",
+                "shadowing"
+              ],
+              "tokenTypes": [
+                "namespace",
+                "type",
+                "typeParameter",
+                "parameter",
+                "property",
+                "variable",
+                "function",
+                "method",
+                "macro",
+                "keyword",
+                "comment",
+                "string",
+                "number",
+                "operator",
+                "label"
+              ]
+            },
+            "range": true
+          },
           "signatureHelpProvider": {
             "retriggerCharacters": [
               ")"
@@ -629,7 +685,7 @@
         },
         "diagnosticReportsCellProblem": null,
         "displayName": "gopls",
-        "version": "0.22.0",
+        "version": "0.24.0",
         "workspaceSymbolFindsCellSymbol": true
       }
     },
@@ -671,17 +727,18 @@
           },
           "executeCommandProvider": {
             "commands": [
-              "959475:cabalHaskellIntegration:cabalAddDependency",
-              "959475:cabalHaskellIntegration:cabalAddModule",
-              "959475:ghcide-extend-import-action:extendImport",
-              "959475:explicit-fields:codeActionResolve",
-              "959475:eval:evalCommand",
-              "959475:ghcide-type-lenses:typesignature.add",
-              "959475:gadt:GADT.toGADT",
-              "959475:importLens:ImportLensCommand",
-              "959475:class:classplugin.codeaction",
-              "959475:class:classplugin.typelens",
-              "959475:moduleName:updateModuleName"
+              "2035399:cabalHaskellIntegration:cabalAddDependency",
+              "2035399:cabalHaskellIntegration:cabalAddModule",
+              "2035399:ghcide-extend-import-action:extendImport",
+              "2035399:explicit-fields:codeActionResolve",
+              "2035399:eval:evalCommand",
+              "2035399:ghcide-type-lenses:typesignature.add",
+              "2035399:gadt:GADT.toGADT",
+              "2035399:importLens:ImportLensCommand",
+              "2035399:class:classplugin.codeaction",
+              "2035399:class:classplugin.typelens",
+              "2035399:rename:updateModuleName",
+              "2035399:splice:expandTHSpliceInplace"
             ],
             "workDoneProgress": false
           },
@@ -766,6 +823,7 @@
             "workDoneProgress": false
           },
           "workspace": {
+            "fileOperations": {},
             "workspaceFolders": {
               "changeNotifications": true,
               "supported": true
@@ -778,7 +836,7 @@
         },
         "diagnosticReportsCellProblem": null,
         "displayName": "Haskell Language Server",
-        "version": "2.13.0.0",
+        "version": "2.15.0.0",
         "workspaceSymbolFindsCellSymbol": true
       }
     },
@@ -839,6 +897,7 @@
               "java.vm.getAllInstalls",
               "java.edit.organizeImports",
               "java.project.refreshDiagnostics",
+              "java.getFullyQualifiedName",
               "java.project.removeFromSourcePath",
               "java.project.listSourcePaths",
               "java.project.updateSettings",
@@ -914,7 +973,7 @@
                 "parameter",
                 "modifier",
                 "keyword",
-                "annotation",
+                "decorator",
                 "annotationMember",
                 "record",
                 "recordComponent"
@@ -948,7 +1007,7 @@
         },
         "diagnosticReportsCellProblem": null,
         "displayName": "Eclipse JDT language server",
-        "version": "1.58.0",
+        "version": "1.63.0",
         "workspaceSymbolFindsCellSymbol": true
       }
     },
@@ -1074,8 +1133,9 @@
           },
           "workspaceSymbolProvider": true
         },
+        "diagnosticReportsCellProblem": null,
         "displayName": "TypeScript language server",
-        "version": "5.3.0",
+        "version": "6.1.0",
         "workspaceSymbolFindsCellSymbol": true
       }
     },
@@ -1327,7 +1387,7 @@
         },
         "diagnosticReportsCellProblem": null,
         "displayName": "Jedi",
-        "version": "0.46.0",
+        "version": "0.47.0",
         "workspaceSymbolFindsCellSymbol": false
       }
     },
@@ -1507,6 +1567,7 @@
                 "typeParameter",
                 "variable",
                 "type",
+                "label",
                 "angle",
                 "arithmetic",
                 "attributeBracket",
@@ -1530,7 +1591,6 @@
                 "formatSpecifier",
                 "generic",
                 "invalidEscapeSequence",
-                "label",
                 "lifetime",
                 "logical",
                 "macroBang",
@@ -1593,7 +1653,7 @@
         },
         "diagnosticReportsCellProblem": true,
         "displayName": "rust-analyzer",
-        "version": "2026-06-01",
+        "version": "2026-11-16",
         "workspaceSymbolFindsCellSymbol": true
       }
     },
@@ -1721,7 +1781,7 @@
         },
         "diagnosticReportsCellProblem": null,
         "displayName": "TypeScript language server",
-        "version": "5.3.0",
+        "version": "6.1.0",
         "workspaceSymbolFindsCellSymbol": true
       }
     }
