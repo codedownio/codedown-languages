@@ -1061,64 +1061,66 @@
       <rect x="314.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 319.9 558.6 L 323.1 561.9 L 329.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Language server: yes (jedi)</title>
+    <g><title>Python - Language server: yes (pyrefly, ruff)</title>
       <rect x="343.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 348.9 558.6 L 352.1 561.9 L 358.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Code completion: yes (jedi)</title>
+    <g><title>Python - Code completion: yes (pyrefly)</title>
       <rect x="372.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 377.9 558.6 L 381.1 561.9 L 387.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Hover docs: yes (jedi)</title>
+    <g><title>Python - Hover docs: yes (pyrefly, ruff)</title>
       <rect x="401.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 406.9 558.6 L 410.1 561.9 L 416.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Signature help: yes (jedi)</title>
+    <g><title>Python - Signature help: yes (pyrefly)</title>
       <rect x="430.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 435.9 558.6 L 439.1 561.9 L 445.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Diagnostics: yes (push)</title>
+    <g><title>Python - Diagnostics: yes (pull + push)</title>
       <rect x="459.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 464.9 558.6 L 468.1 561.9 L 474.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <g><title>Python - Semantic highlighting: no</title>
       <circle cx="498.5" cy="558.5" r="2.2" fill="#c3c2b7"/>
     </g>
-    <g><title>Python - Inlay hints: no</title>
-      <circle cx="527.5" cy="558.5" r="2.2" fill="#c3c2b7"/>
+    <g><title>Python - Inlay hints: yes (pyrefly)</title>
+      <rect x="517.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
+      <path d="M 522.9 558.6 L 526.1 561.9 L 532.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Jump to definition: yes (jedi)</title>
+    <g><title>Python - Jump to definition: yes (pyrefly)</title>
       <rect x="546.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 551.9 558.6 L 555.1 561.9 L 561.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Jump to type definition: yes (jedi)</title>
+    <g><title>Python - Jump to type definition: yes (pyrefly)</title>
       <rect x="575.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 580.9 558.6 L 584.1 561.9 L 590.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Find references: yes (jedi)</title>
+    <g><title>Python - Find references: yes (pyrefly)</title>
       <rect x="604.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 609.9 558.6 L 613.1 561.9 L 619.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Document outline: yes (jedi)</title>
+    <g><title>Python - Document outline: yes (pyrefly)</title>
       <rect x="633.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 638.9 558.6 L 642.1 561.9 L 648.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Workspace symbol search: yes (jedi)</title>
+    <g><title>Python - Workspace symbol search: yes (pyrefly)</title>
       <rect x="662.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 667.9 558.6 L 671.1 561.9 L 677.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Highlight occurrences: yes (jedi)</title>
+    <g><title>Python - Highlight occurrences: yes (pyrefly)</title>
       <rect x="691.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 696.9 558.6 L 700.1 561.9 L 706.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Formatting: no</title>
-      <circle cx="730.5" cy="558.5" r="2.2" fill="#c3c2b7"/>
+    <g><title>Python - Formatting: yes (ruff)</title>
+      <rect x="720.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
+      <path d="M 725.9 558.6 L 729.1 561.9 L 735.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Rename symbol: yes (jedi)</title>
+    <g><title>Python - Rename symbol: yes (pyrefly)</title>
       <rect x="749.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 754.9 558.6 L 758.1 561.9 L 764.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <g><title>Python - Code actions: yes (jedi)</title>
+    <g><title>Python - Code actions: yes (pyrefly, ruff)</title>
       <rect x="778.0" y="548.0" width="21" height="21" rx="5" fill="#e4f4e4"/>
       <path d="M 783.9 558.6 L 787.1 561.9 L 793.3 554.7" fill="none" stroke="#0ca30c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>

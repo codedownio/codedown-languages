@@ -91,7 +91,7 @@ in
     lsp.jedi.enable = mkOption {
       title = "Enable Jedi language server";
       type = types.bool;
-      default = true;
+      default = false;
     };
     lsp.pyright.enable = mkOption {
       title = "Enable Pyright language server";
@@ -142,7 +142,7 @@ in
     lsp.pyrefly.enable = mkOption {
       title = "Enable Pyrefly language server";
       type = types.bool;
-      default = false;
+      default = true;
     };
     lsp.pyrefly.disableLanguageServices = mkOption {
       title = "Disable Pyrefly's language services";
@@ -160,7 +160,7 @@ in
       title = "Enable Ruff language server";
       description = "Linting, formatting and import sorting. It provides no completions or hovers, so pair it with another language server.";
       type = types.bool;
-      default = false;
+      default = true;
     };
     lsp.pylint.enable = mkOption {
       title = "Enable Pylint language server";
