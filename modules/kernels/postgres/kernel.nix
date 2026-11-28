@@ -11,7 +11,7 @@ let
 
   app = python3.pkgs.buildPythonPackage {
     pname = "postgres_kernel";
-    version = "0.1";
+    version = "0.2.2";
 
     pyproject = true;
     build-system = [ python3.pkgs.setuptools ];

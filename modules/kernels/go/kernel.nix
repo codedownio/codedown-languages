@@ -1,6 +1,7 @@
 { lib
 , callPackage
 , stdenv
+, buildGo126Module
 , gophernotes
 
 , displayName
@@ -14,13 +15,16 @@ with lib;
 let
   common = callPackage ../common.nix {};
 
+  # gomacro can't handle *types.Alias, and its go.mod turns them off with gotypesalias=0, a
+  # setting Go 1.27 removed.
+  gophernotesGo126 = gophernotes.override { buildGoModule = buildGo126Module; };
+
   # The upstream tests give the kernel a fixed one second to come up on a ZMQ port, which isn't
   # long enough under the QEMU emulation our aarch64-linux builds run in; the connect fails with
-  # ECONNREFUSED. Everywhere else leave the derivation exactly as nixpkgs ships it, so it can be
-  # substituted from cache.nixos.org rather than rebuilt. The go suite covers the kernel anyway.
+  # ECONNREFUSED. The go suite covers the kernel anyway.
   gophernotes' = if stdenv.hostPlatform.system == "aarch64-linux"
-                 then gophernotes.overrideAttrs (_oldAttrs: { doCheck = false; })
-                 else gophernotes;
+                 then gophernotesGo126.overrideAttrs (_oldAttrs: { doCheck = false; })
+                 else gophernotesGo126;
 
   argv = [
     "${gophernotes'}/bin/gophernotes"
